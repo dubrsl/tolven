@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Temperature</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Value" >
+			<wiz:body>
+				<wiz:group title="Date of observation">
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+				<wiz:group title="#{trim.trim.act.observation.value.PQ.label.value}"> 
+					<h:inputText id="val" value="#{trim.trim.act.observation.value.PQ.value}" required="true">
+						<f:converter converterId="TrimDoubleConverter"/>
+					</h:inputText> #{trim.trim.act.observation.value.PQ.unit}<br/>
+					<h:panelGroup id="valError" style="display:none;color:#FF0000;font-style:italic;" >xxxxx</h:panelGroup><br/>
+				</wiz:group>
+				<wiz:group title="Additional Details" >
+					<wiz:yesno id="tempDetails">Add?</wiz:yesno>
+					<wiz:group title="Method" visible="$('#{menu.elementLabel}:tempDetails').isTrue();">
+						<trim:valueSetMenu id="method" slot="#{trim.trim.act.observation.methodCode}"/>
+					</wiz:group>
+					<wiz:group title="Ambient Temperature" visible="$('#{menu.elementLabel}:tempDetails').isTrue();">
+						<trim:CE id="ambient" layout="pageDirection" valueSet="ambient" value="#{trim.trim.act.relationship['ambient'].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="#{trim.trim.act.relationships[1].act.observation.value.label.value}" visible="$('#{menu.elementLabel}:tempDetails').isTrue();">
+						<trim:ED id="comments" value="#{trim.trim.act.relationship['comment'].act.observation.value}" readonly="false"/>
+					</wiz:group>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Temperature</h1>
+				<p>In this form you will enter your temperature. </p>
+			</wiz:help>
+		</wiz:step>
+ 		<ui:include src="selectEncounter.xhtml"/>
+	</ui:composition>
+</body>
+</html>

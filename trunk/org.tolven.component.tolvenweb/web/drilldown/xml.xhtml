@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Drilldown/show XML</title>
+</head>
+
+<body>
+    <ui:composition>
+		<a href="#" onclick="$('#{menu.elementLabel}rawxml').toggle();">#{msg.XML}</a>
+		<div id="#{menu.elementLabel}rawxml" style="display: none"><pre>#{trim.trimXML}</pre></div>
+	</ui:composition>
+</body>
+</html>

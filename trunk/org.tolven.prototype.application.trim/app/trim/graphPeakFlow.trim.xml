@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>report/graph/peakFlow</name>
+	<description>Graph Peak Flow</description>
+	<page>graphPeakFlow.xhtml</page>
+	<drilldown>graphPeakFlowDD.xhtml</drilldown>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				 <code>GRAPH</code>
+				 <codeSystemName>UMLS</codeSystemName>
+				 <codeSystemVersion>2006AC</codeSystemVersion>
+			 </CD>
+		</code>
+		<title>
+			<ST>Peak Flow Graph</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<ED/>
+			</value>
+		</observation>
+	</act>
+</trim>

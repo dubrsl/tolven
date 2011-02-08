@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Graph Lab Results</title>
+  </head>
+  <body>
+  	<ui:composition>
+		<div id="#{menu.elementLabel}X">
+	        <h:form id="sxsx" onsubmit="return ajaxSubmit2(this);">
+	  				<h:outputText value="Create a Graph"/>
+		            <h:commandButton action="#{menu.createGraph}" value="Graph"/>
+			</h:form>
+			<div>
+				<h:graphicImage value="#{menu.graphURL}" rendered="#{menu.graphURL!=null}" width="600" height="400"/>
+			</div>
+		</div>
+    </ui:composition>
+  </body>
+</html>

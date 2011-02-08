@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.passwordstore">
+
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+
+	<property name="includeSourceInDevLib" value="true" />
+
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+		<!-- Begin list of sections to build. Each section is added to the plugin zip file. -->
+		<antcall target="buildSection">
+			<param name="section" value="ejb"/>
+		</antcall>
+		<!-- End of list of sections to build -->
+		<jar destfile="${buildFolder}/passwordStore.rar">
+			<manifest>
+				<attribute name="Built-By" value="Tolven Healthcare Innovations" />
+			</manifest>
+			<zipfileset dir="${buildFolder}/ejb/classes" />
+			<zipfileset dir="conf" prefix="META-INF" />
+		</jar>
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar" />
+				<include name="passwordStore.rar" />
+			</zipfileset>
+		</zip>
+	</target>
+</project>

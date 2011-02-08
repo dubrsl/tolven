@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Checkboxs</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+<!-- slot is passed in -->
+    <ui:composition>
+      <c:if test="#{readonly != 'true'}">
+         <div tvisible="#{visible}">   
+          <h:selectManyCheckbox id="#{id}" value="#{slot.value.CEValues}" layout="#{layout}" onclick="#{onclick}">
+            <f:selectItems value="#{trim.valueSets[slot.value.valueSet]}"/>
+            <f:converter converterId="DataTypeConverter"/>
+          </h:selectManyCheckbox>
+         </div>
+       </c:if>
+ 
+      
+      <c:if test="#{readonly == 'true'}">
+          #{slot.value.CEValues}
+      </c:if>       
+  	</ui:composition>
+</body>
+</html>

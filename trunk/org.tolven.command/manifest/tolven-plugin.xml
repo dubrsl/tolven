@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.command" version="2.0.11" class="org.tolven.command.TolvenApplication" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<attributes>
+		<attribute id="adminPluginId" value="org.tolven.assembler.admin" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.library.apache-ant" />
+		<import plugin-id="org.tolven.restfulclient" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="tpfclasses" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension-point id="ant-nodeps" parent-plugin-id="org.tolven.library.apache-ant" parent-point-id="runtimeLib" extension-multiplicity="none">
+		<parameter-def id="ant-nodeps" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="runtimeLib" extension-multiplicity="none">
+		<parameter-def id="tpf" default-value="tpf.jar" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="tpf-runtimeLib" parent-plugin-id="org.tolven.command" parent-point-id="runtimeLib" extension-multiplicity="none">
+		<parameter-def id="tpf" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="tolven-restful-client" parent-point-id="runtimeLib" parent-plugin-id="org.tolven.restfulclient" extension-multiplicity="none">
+		<parameter-def id="tolven-restful-client" multiplicity="none-or-one" />
+		<parameter-def id="jersey-client" multiplicity="none-or-one" />
+		<parameter-def id="jersey-core" multiplicity="none-or-one" />
+		<parameter-def id="jsr311" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="downLoadWeb" extension-multiplicity="none">
+		<parameter-def id="download.web.hostname" default-value="#{pluginProperty['download.web.hostname']}" />
+		<parameter-def id="download.web.http.port" default-value="#{pluginProperty['download.web.http.port']}" />
+	</extension-point>
+</plugin>

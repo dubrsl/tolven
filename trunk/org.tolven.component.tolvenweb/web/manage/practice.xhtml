@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>Practice Preferences</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="Practice Setup for #{reg.account.id} - #{reg.account.title}"/>
+        <ui:define name="body">
+        <h:form id="practiceForm" >
+        	<div class="breadcrumbs">
+				<h:commandLink value="Application" action="dispatch" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+				<h:commandLink value="Preferences" action="preferences" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+				<h:outputText value="Practice Setup"/><br/>
+			</div>
+		    <h:dataTable value="#{prov.providers}" var="p" styleClass="general">
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Id"/>
+	                </f:facet>
+	                <h:outputText value="#{p.id}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Provider Name"/>
+	                </f:facet>
+	                <h:outputText value="#{p.name}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Status"/>
+	                </f:facet>
+	                <h:outputText value="#{p.status}" />
+	            </h:column>
+	            <h:column rendered="#{top.accountAdmin}">
+	                <f:facet name="header">
+	                    <h:outputText value="Action"/>
+	                </f:facet>
+					<h:commandLink action="#{prov.editProvider}"  >
+						<h:outputText value="Edit"/>
+					</h:commandLink>
+					<h:outputText value=" | "/>
+					<h:commandLink action="#{prov.toggleStatus}" rendered="#{p.status=='active'}">
+						<h:outputText value="Delete"/>
+					</h:commandLink>
+					<h:commandLink action="#{prov.toggleStatus}" rendered="#{p.status!='active'}">
+						<h:outputText value="Un-Delete"/>
+					</h:commandLink>
+	           </h:column>
+	        </h:dataTable>
+			<h:commandLink value="Show inactive providers" action="#{prov.toggleShowProvider}" immediate="true" rendered="#{!top.showProviderInactive}"/>
+			<h:commandLink value="Hide inactive providers" action="#{prov.toggleShowProvider}" immediate="true" rendered="#{top.showProviderInactive}"/>
+			<br/>
+			<h:commandLink value="Create new provider" action="create" immediate="true"/>
+        </h:form>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

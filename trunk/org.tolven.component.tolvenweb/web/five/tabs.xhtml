@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Menu Level 1</title>
+  </head>
+  <body>
+  	<ui:composition>
+		<div id="tabs" class="tabs" enableOverFlowListener="true">
+		  <ul defaultSelection="#{menu.defaultPathSuffix}">
+			<c:forEach var="item" items="#{menu.preferredSortedChildren}">
+				<c:if test="#{item.role!='placeholder' and item.visible=='true'}">
+					<li id="#{param.element}:#{item.node}:sel" style="display:#{item.visible=='true'?'inline':'none'}">
+						<a href="javascript:showPane('#{param.element}:#{item.node}');">#{item.localeText[top.appBundle]}</a>
+					</li>
+				</c:if>
+				<c:if test="#{item.role=='placeholder'}">
+					<li id="#{param.element}:#{item.node}:sel" style="display:none"></li>
+				</c:if>
+			</c:forEach>
+			<li id="tabs_showDrpDwn" class="showDrpDwn"> <a href="javascript:toggleDrpDwn('tabs_dropdown_loc','tabs_drpDwn')">
+				#{msg.More} <img src='../images/arrow_blue.gif'/></a> 
+				<s id="tabs_dropdown_loc" style="height:0px;position:absolute;"/>
+				<div id="tabs_drpDwn" class="drpDwn" style="display:none;">
+<ul>
+<li> <a href="javascript:getPreferencesMenuItems('#{top.accountUser.account.accountType.knownType}', 'tabs')" style="text-decoration:none;">#{msg.Customize} </a></li>
+</ul></div>
+</li>	
+		  </ul>
+	    </div>
+    </ui:composition>
+  </body>
+</html>

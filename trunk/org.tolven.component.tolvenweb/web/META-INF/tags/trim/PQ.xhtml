@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>A physical quantity</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+    	<h:panelGroup>
+	 <c:choose>
+        <c:when test="#{readonly != 'true'}">
+          <h:inputText id="#{id}Field" value="#{value.PQ.originalText}" size="6" style="text-align:right;"> 
+               <f:converter converterId="TrimPQConverter"/>
+          </h:inputText>
+        </c:when>
+        <c:otherwise>
+          <c:if test="#{not empty value.PQ.originalText}">
+            #{prefix}<h:outputText value="#{value.PQ.originalText}"> 
+              <f:converter converterId="TrimPQConverter"/>
+            </h:outputText>         
+          </c:if>
+        </c:otherwise>
+      </c:choose>
+      <c:if test="#{readonly != 'true' and value.PQ.unit != '1'}" >
+        <h:outputText value=" #{value.PQ.unit}"/>#{suffix}
+      </c:if>
+      <c:if test="#{readonly == 'true' and not empty value.PQ.originalText and value.PQ.unit != '1'}" >
+        <h:outputText value=" #{value.PQ.unit}"/>#{suffix}
+      </c:if>
+      <c:if test="#{empty value.PQ.originalText}">
+        #{default}
+      </c:if>
+      </h:panelGroup>
+  </ui:composition>
+</body>
+</html>

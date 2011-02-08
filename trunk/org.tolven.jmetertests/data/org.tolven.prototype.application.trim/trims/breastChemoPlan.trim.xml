@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>proc/prp/chemo/breast</name>
+	<description>Breast Chemo</description>
+	<reference></reference>
+	<act classCode="PROC" moodCode="INT" >
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:procedure</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:procedure</path>
+			</placeholder>
+		</bind>
+		<page>chemo.xhtml</page>
+		<drilldown>chemoDD.xhtml</drilldown>
+		<code>
+			<label>Regimen</label>
+			<valueSet>chemoRegimen</valueSet>
+		</code>
+		<title>
+			<ST>Chemo</ST>
+		</title>
+		<effectiveTime>
+			<IVL_TS>
+				<low>
+					<label>Projected Start Date</label>
+					<TS />
+				</low>
+				<high>
+					<label>Projected End Date</label>
+					<TS />
+				</high>
+				<width>
+					<PQ>
+						<value>0.0</value>
+						<unit>days</unit>
+					</PQ>
+				</width>
+			</IVL_TS>
+			<PIVL>
+				<period>
+					<PQ>
+						<value>0.0</value>
+						<unit>day</unit>
+					</PQ>
+				</period>
+				<count>
+					<INT>
+						<value>0</value>
+					</INT>
+				</count>
+			</PIVL>
+		</effectiveTime>
+		<repeatNumber>
+			<label>Number or repeats</label>
+			<INT>
+				<value>0</value>
+			</INT>
+		</repeatNumber>
+		<relationship name="nextStep" direction="OUT" typeCode="COMP"
+			optional="true" repeating="true">
+			<choice name="surgery" title="Surgery"
+				include="proc/prp/surgery/breast" />
+			<choice name="chemo" title="Chemotherapy"
+				include="proc/prp/chemo/breast" />
+			<choice name="xrt" title="Radiation"
+				include="proc/prp/radiation/breast" />
+			<choice name="hrt" title="Hormone Replacement"
+				include="proc/prp/hrt/breast" />
+			<choice name="wait" title="Wait"
+				include="proc/prp/waitPlan" />
+		</relationship>
+		<compute>
+			<type>org.tolven.process.ComputePlan</type>
+			<property name="template">
+				<value xsi:type="xs:string">proc/rqo/chemo/breast</value>
+			</property>
+		</compute>
+	</act>
+	<valueSet name="chemoRegimen">
+		<CE>
+			<displayName>Adriamycin / Cytoxan</displayName>
+			<code>AC</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>CMF - Cytoxan / Methotrexate / 5-Flourouracil (5FU)</displayName>
+			<code>CMF</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>EC - Epirubicin / Cytoxan</displayName>
+			<code>EC</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>FAC - 5-Flourouracil (5FU) / Adriamycin / Cytoxan</displayName>
+			<code>FAC</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>FEC - 5-Flourouracil (5FU) / Epirubicin / Cytoxan</displayName>
+			<code>FEC</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>TC (Cytoxan) - Taxotere / Cytoxan</displayName>
+			<code>TCxan</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>TAC - Taxotere / Adriamycin / Cytoxan</displayName>
+			<code>TAC</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>TC (Carboplatin) - Taxotere / Carboplatin</displayName>
+			<code>TCarb</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

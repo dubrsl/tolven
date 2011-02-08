@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html" xmlns:c="http://java.sun.com/jsp/jstl/core">
+<body>
+	<ui:composition template="portlet.xhtml">
+		<ui:define name="content">
+			<h:dataTable id="#{menu.elementLabel}_#{id}" value="#{menu.summaryMenuData}" var="md" cellspacing="0" border="0" cellpadding="0" styleClass="#{databodyclass}">
+				<ui:insert name="tableBody"/>	
+			</h:dataTable>
+			
+			<h:outputLink rendered="#{menu.menuDataCount>menu.thisMenu.numSummaryItems}" value="javascript:showPane('#{menu.drilldown}')" style="#{moreinfostyle}">
+				<h:outputText value="#{msg.More}..." style="COLOR: #333333; TEXT-DECORATION: none;	FONT-SIZE: 75%;TEXT-ALIGN: right;"/>
+			</h:outputLink>
+			<h:outputText rendered="#{menu.menuDataCount==0}" value="#{emptyName}" style="COLOR: #333333; FONT-SIZE: 75%;TEXT-ALIGN: center;#{moreinfostyle}"/>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+

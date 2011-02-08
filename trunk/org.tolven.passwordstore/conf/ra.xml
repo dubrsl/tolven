@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6">
+	<module-name>passwordStore</module-name>
+	<description>Adaptor To A Password Store</description>
+	<display-name>Tolven Password Store Adaptor</display-name>
+	<vendor-name>Tolven</vendor-name>
+	<eis-type>PasswordStore</eis-type>
+	<resourceadapter-version>1.0</resourceadapter-version>
+	<resourceadapter>
+		<resourceadapter-class>org.tolven.connectors.passwordstore.PasswordStoreResourceAdapterImpl</resourceadapter-class>
+		<config-property>
+			<config-property-name>keyStoreURL</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+		</config-property>
+		<config-property>
+			<config-property-name>keyStoreType</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+		</config-property>
+		<config-property>
+			<config-property-name>keyStorePassword</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+		</config-property>
+		<config-property>
+			<config-property-name>passwordStoreURL</config-property-name>
+			<config-property-type>java.lang.String</config-property-type>
+		</config-property>
+		<outbound-resourceadapter>
+			<connection-definition>
+				<managedconnectionfactory-class>org.tolven.connectors.passwordstore.ra.outbound.PasswordStoreManagedConnectionFactoryImpl</managedconnectionfactory-class>
+				<connectionfactory-interface>org.tolven.connectors.passwordstore.api.PasswordStoreConnectionFactory</connectionfactory-interface>
+				<connectionfactory-impl-class>org.tolven.connectors.passwordstore.ra.outbound.PasswordStoreConnectionFactoryImpl</connectionfactory-impl-class>
+				<connection-interface>org.tolven.connectors.passwordstore.api.PasswordStoreConnection</connection-interface>
+				<connection-impl-class>org.tolven.connectors.passwordstore.ra.outbound.PasswordStoreConnectionImpl</connection-impl-class>
+			</connection-definition>
+			<transaction-support>NoTransaction</transaction-support>
+			<authentication-mechanism>
+				<authentication-mechanism-type>BasicPassword</authentication-mechanism-type>
+				<credential-interface>javax.resource.spi.security.PasswordCredential</credential-interface>
+			</authentication-mechanism>
+			<reauthentication-support>true</reauthentication-support>
+		</outbound-resourceadapter>
+	</resourceadapter>
+</connector>

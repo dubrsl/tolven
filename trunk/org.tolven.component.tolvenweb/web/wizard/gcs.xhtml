@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>New Patient Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+<div class="step" wizTitle="#{msg.GettingStarted}" style="display:none">
+	<div class="pagesm">
+		<p>The Glasgow Coma Scale comprises three tests: eye, verbal and motor responses. The three 
+		values separately as well as their sum are considered. The lowest possible GCS 
+		(the sum) is 3 (deep coma or death), while the highest is 15 (fully awake person).</p>
+		<p>Click the next button when you're ready to begin.</p>
+		<p><strong>Note: Preliminary/incomplete</strong></p>
+	</div>
+</div>
+<div class="step" wizTitle="Glasgow Coma Scale" style="display:none" >
+	<div class="pagesm">
+		<fieldset id="#{menu.elementLabel}time">
+			<div align="right" style="margin-top:5px; padding-top:5px; float:right"><a title="More information" href="javascript:toggleHelp('#{menu.elementLabel}','time');"><img src="../images/img_help_t.jpg" border="0" /></a></div>
+			<legend>Assessment Time (T)</legend>
+				<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+			<br/>
+		</fieldset>
+		<fieldset id="#{menu.elementLabel}eye">
+			<div align="right" style="margin-top:5px; padding-top:5px; float:right"><a title="More information" href="javascript:toggleHelp('#{menu.elementLabel}','eye');"><img src="../images/img_help_t.jpg" border="0" /></a></div>
+			<legend>#{trim.trim.act.relationships[0].act.title.ST.value} </legend>
+			<h:selectOneRadio layout="pageDirection" value="#{trim.trim.act.relationships[0].act.observation.value.INT.value}">
+				<f:selectItem itemLabel="Eyes opening spontaneously" itemValue="4"/>
+				<f:selectItem itemLabel="Eye opening to speech" itemValue="3"/>
+				<f:selectItem itemLabel="Eye opening to pain" itemValue="2"/>
+				<f:selectItem itemLabel="No eye opening" itemValue="1"/>
+				<f:selectItem itemLabel="Not assessed" itemValue="0"/>
+				<f:convertNumber integerOnly="true"/>
+			</h:selectOneRadio>
+		</fieldset>
+		<fieldset id="#{menu.elementLabel}verbal">
+			<div align="right" style="margin-top:5px; padding-top:5px; float:right"><a title="More information" href="javascript:toggleHelp('#{menu.elementLabel}','verbal');"><img src="../images/img_help_t.jpg" border="0" /></a></div>
+			<legend>#{trim.trim.act.relationships[1].act.title.ST.value} </legend>
+			<h:selectOneRadio layout="pageDirection" value="#{trim.trim.act.relationships[1].act.observation.value.INT.value}">
+				<f:selectItem itemLabel="Oriented" itemValue="5"/>
+				<f:selectItem itemLabel="Confused" itemValue="4"/>
+				<f:selectItem itemLabel="Inappropriate words" itemValue="3"/>
+				<f:selectItem itemLabel="Incomprehensible sounds" itemValue="2"/>
+				<f:selectItem itemLabel="None" itemValue="1"/>
+				<f:selectItem itemLabel="Not assessed" itemValue="0"/>
+				<f:convertNumber integerOnly="true"/>
+			</h:selectOneRadio>
+		</fieldset>
+		<fieldset id="#{menu.elementLabel}motor">
+			<div align="right" style="margin-top:5px; padding-top:5px; float:right"><a title="More information" href="javascript:toggleHelp('#{menu.elementLabel}','motor');"><img src="../images/img_help_t.jpg" border="0" /></a></div>
+			<legend>#{trim.trim.act.relationships[2].act.title.ST.value} </legend>
+			<h:selectOneRadio layout="pageDirection" value="#{trim.trim.act.relationships[2].act.observation.value.INT.value}">
+				<f:selectItem itemLabel="Obeys commands" itemValue="5"/>
+				<f:selectItem itemLabel="Localizes to pain" itemValue="4"/>
+				<f:selectItem itemLabel="Withdraws from pain" itemValue="3"/>
+				<f:selectItem itemLabel="Extension to pain" itemValue="2"/>
+				<f:selectItem itemLabel="No motor response" itemValue="1"/>
+				<f:selectItem itemLabel="Not assessed" itemValue="0"/>
+				<f:convertNumber integerOnly="true"/>
+			</h:selectOneRadio>
+		</fieldset>
+	</div>
+	<div class="help" id="#{menu.elementLabel}timeHelp" style="display:none">
+		<h1>Assessment Time</h1>
+		<p>The time when the assessment was done, accurate to 5 minutes.</p>
+		<p>Use the +/- controls to adjust the assessment time. Now resets the time to now.</p>
+	</div>
+	<div class="help" id="#{menu.elementLabel}eyeHelp" style="display:none">
+		<h1>Eye Response</h1>
+		<p>Do not confuse "Eye opening to speech" with an awaking of a sleeping person which would score 4, not 3.</p>
+		<p>To induce pain, put pressure on the patient's fingernail bed; if no response then try 
+		supraorbital and sternal pressure/rub.</p>
+	</div>
+	<div class="help" id="#{menu.elementLabel}verbalHelp" style="display:none">
+		<h1>Verbal Response</h1>
+		<p>Do not confuse "Eye opening to speech" with an awaking of a sleeping person which would score 4, not 3.</p>
+		<p>To induce pain, put pressure on the patient's fingernail bed; if no response then try 
+		supraorbital and sternal pressure/rub.</p>
+	</div>
+	<div class="help" id="#{menu.elementLabel}motorHelp" style="display:none">
+		<h1>Motor Response</h1>
+		<p>Do not confuse "Eye opening to speech" with an awaking of a sleeping person which would score 4, not 3.</p>
+		<p>To induce pain, put pressure on the patient's fingernail bed; if no response then try 
+		supraorbital and sternal pressure/rub.</p>
+	</div>
+</div>
+ 		<ui:include src="selectEncounter.xhtml"/>
+	</ui:composition>
+</body>
+</html>

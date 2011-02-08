@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>A point in time</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+    	<wiz:question id="#{id}" >
+    		<h:panelGrid columns="2" rendered="#{readonly!='true'}">
+	    		<h:panelGroup><ui:insert/></h:panelGroup>
+	    		<h:panelGroup>
+					<h:inputText id="#{id}Field" value="#{trim.fieldMap[id]}" />
+					<h:graphicImage id="#{id}Button" value="/images/cal-image.png" style="cursor:pointer; margin-left:5px"/>
+				</h:panelGroup>
+<script type="text/javascript">
+// <![CDATA[
+Calendar.setup({
+inputField   : "#{menu.elementLabel}:#{id}Field",
+ifFormat     : Calendar.getTTString(DEF_DATE_FORMAT),
+showsTime    : false,
+button       : "#{menu.elementLabel}:#{id}Button",
+electric	 : true,
+weekNumbers  : false,
+timeFormat   : "12"
+    });
+  // ]]>
+</script>
+			</h:panelGrid>
+    		<h:panelGrid columns="2" rendered="#{readonly=='true'}">
+	    		<h:panelGroup><ui:insert/></h:panelGroup>
+				<h:outputText value="#{trim.fieldMap[id]}" />
+			</h:panelGrid>
+    	</wiz:question>
+	</ui:composition>
+</body>
+</html>

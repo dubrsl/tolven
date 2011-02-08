@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Lymph Node Involvement - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+			
+			<c:if test="#{trim.fieldMap['leftLaterality']}">
+			<p><b>Left Laterality</b></p>
+				<p>
+				<h:outputText value="Staging Type: "/>
+				<trim:CE id="leftStaging" valueSet="stagingType"  readonly="true"  value="#{trim.trim.act.relationship['left_StagingType'].act.observation.value}" />
+				</p>
+				
+					<c:if test="#{trim.trim.act.relationship['left_StagingType'].act.observation.value.CE == 'y'}">
+						<h:panelGrid columns="2"  >
+							<h:outputText value="#{trim.trim.act.relationship['left_y_NeoadjuvantTherapy'].act.observation.value.label.value} : "/>
+							<trim:selectManyCheck id="left_yNeoadjuvantTherapy" slot="#{trim.trim.act.relationship['left_y_NeoadjuvantTherapy'].act.observation}" layout="pageDirection" style="float:left;" readonly="true"/>
+							<h:outputText value="#{trim.trim.act.relationship['left_y_Tumor'].act.title.ST.value}"/>
+							<trim:CE id="left_yTumor" valueSet="tumor" value="#{trim.trim.act.relationship['left_y_Tumor'].act.observation.value}" readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['left_y_Node'].act.title.ST.value}"/>					
+							<trim:CE id="left_yNode" valueSet="node" value="#{trim.trim.act.relationship['left_y_Node'].act.observation.value}"  readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['left_y_Metastatis'].act.title.ST.value}"/>					
+							<trim:CE id="left_yMetastasis" valueSet="metastasis" value="#{trim.trim.act.relationship['left_y_Metastatis'].act.observation.value}" readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['left_y_CalculatedStaging'].act.title.ST.value}"/>					
+							<h:outputText value="#{trim.trim.act.relationship['left_y_CalculatedStaging'].act.observation.value.ST.value}"/>
+							<h:outputText value="#{trim.trim.act.relationship['left_y_ClinicalStaging'].act.title.ST.value}"/>				
+							<h:outputText value="#{trim.trim.act.relationship['left_y_ClinicalStaging'].act.observation.value.ST.value}"/>	
+						</h:panelGrid>
+					</c:if>
+					<c:if test="#{trim.trim.act.relationship['left_StagingType'].act.observation.value.CE == 'yTNM'}">					
+						<h:panelGrid columns="2" redered="#{trim.trim.act.relationship['left_StagingType'].act.observation.value.CE == 'yTNM'}" >
+							<h:outputText value="#{trim.trim.act.relationship['left_yTNM_NeoadjuvantTherapy'].act.observation.value.label.value} : "/>
+							<trim:selectManyCheck id="left_yTNMNeoadjuvantTherapy" slot="#{trim.trim.act.relationship['left_yTNM_NeoadjuvantTherapy'].act.observation}" layout="pageDirection" style="float:left;" readonly="true"/>
+							<h:outputText value="#{trim.trim.act.relationship['left_yTNM_Tumor'].act.title.ST.value}"/>
+							<trim:CE id="left_yTNMTumor" valueSet="tumor" value="#{trim.trim.act.relationship['left_yTNM_Tumor'].act.observation.value}" readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['left_yTNM_Node'].act.title.ST.value}"/>					
+							<trim:CE id="left_yTNMNode" valueSet="node" value="#{trim.trim.act.relationship['left_yTNM_Node'].act.observation.value}"  readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['left_yTNM_Metastatis'].act.title.ST.value}"/>					
+							<trim:CE id="left_yTNMMetastasis" valueSet="metastasis" value="#{trim.trim.act.relationship['left_yTNM_Metastatis'].act.observation.value}" readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['left_yTNM_CalculatedStaging'].act.title.ST.value}"/>
+							<h:outputText value="#{trim.trim.act.relationship['left_yTNM_CalculatedStaging'].act.observation.value.ST.value}"/>												
+							<h:outputText value="#{trim.trim.act.relationship['left_yTNM_ClinicalStaging'].act.title.ST.value}"/>
+							<h:outputText value="#{trim.trim.act.relationship['left_yTNM_ClinicalStaging'].act.observation.value.ST.value}"/>												
+						</h:panelGrid>
+					</c:if>
+
+			</c:if>
+			
+			
+			<c:if test="#{trim.fieldMap['rightLaterality']}">
+			<p><b>Right Laterality</b></p>
+				<p>
+				<h:outputText value="Staging Type: "/>
+				<trim:CE id="rightStaging" valueSet="stagingType"  readonly="true"  value="#{trim.trim.act.relationship['right_StagingType'].act.observation.value}" />
+				</p>
+					<c:if test="#{trim.trim.act.relationship['right_StagingType'].act.observation.value.CE == 'y'}">				
+						<h:panelGrid columns="2" rendered="#{trim.trim.act.relationship['right_StagingType'].act.observation.value.CE == 'y'}" >
+							<h:outputText value="#{trim.trim.act.relationship['right_y_NeoadjuvantTherapy'].act.observation.value.label.value} : "/>
+							<trim:selectManyCheck id="right_yNeoadjuvantTherapy" slot="#{trim.trim.act.relationship['right_y_NeoadjuvantTherapy'].act.observation}" layout="pageDirection" style="float:left;" readonly="true"/>
+							<h:outputText value="#{trim.trim.act.relationship['right_y_Tumor'].act.title.ST.value}"/>
+							<trim:CE id="right_yTumor" valueSet="tumor" value="#{trim.trim.act.relationship['right_y_Tumor'].act.observation.value}" readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['right_y_Node'].act.title.ST.value}"/>					
+							<trim:CE id="right_yNode" valueSet="node" value="#{trim.trim.act.relationship['right_y_Node'].act.observation.value}"  readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['right_y_Metastatis'].act.title.ST.value}"/>					
+							<trim:CE id="right_yMetastasis" valueSet="metastasis" value="#{trim.trim.act.relationship['right_y_Metastatis'].act.observation.value}" readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['right_y_CalculatedStaging'].act.title.ST.value}"/>
+							<h:outputText value="#{trim.trim.act.relationship['right_y_CalculatedStaging'].act.observation.value.ST.value}"/>												
+							<h:outputText value="#{trim.trim.act.relationship['right_y_ClinicalStaging'].act.title.ST.value}"/>
+							<h:outputText value="#{trim.trim.act.relationship['right_y_ClinicalStaging'].act.observation.value.ST.value}"/>												
+						</h:panelGrid>
+					</c:if>
+					<c:if test="#{trim.trim.act.relationship['right_StagingType'].act.observation.value.CE == 'yTNM'}">					
+						<h:panelGrid columns="2" rendered="#{trim.trim.act.relationship['right_StagingType'].act.observation.value.CE == 'yTNM'}"  >
+							<h:outputText value="#{trim.trim.act.relationship['right_yTNM_NeoadjuvantTherapy'].act.observation.value.label.value} : "/>
+							<trim:selectManyCheck id="right_yTNMNeoadjuvantTherapy" slot="#{trim.trim.act.relationship['right_yTNM_NeoadjuvantTherapy'].act.observation}" layout="pageDirection" style="float:left;" readonly="true"/>
+							<h:outputText value="#{trim.trim.act.relationship['right_yTNM_Tumor'].act.title.ST.value}"/>
+							<trim:CE id="right_yTNMTumor" valueSet="tumor" value="#{trim.trim.act.relationship['right_yTNM_Tumor'].act.observation.value}" readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['right_yTNM_Node'].act.title.ST.value}"/>					
+							<trim:CE id="right_yTNMNode" valueSet="node" value="#{trim.trim.act.relationship['right_yTNM_Node'].act.observation.value}"  readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['right_yTNM_Metastatis'].act.title.ST.value}"/>					
+							<trim:CE id="right_yTNMMetastasis" valueSet="metastasis" value="#{trim.trim.act.relationship['right_yTNM_Metastatis'].act.observation.value}" readonly="true" />
+							<h:outputText value="#{trim.trim.act.relationship['right_yTNM_CalculatedStaging'].act.title.ST.value}"/>
+							<h:outputText value="#{trim.trim.act.relationship['right_yTNM_CalculatedStaging'].act.observation.value.ST.value}"/>												
+							<h:outputText value="#{trim.trim.act.relationship['right_yTNM_ClinicalStaging'].act.title.ST.value}"/>
+							<h:outputText value="#{trim.trim.act.relationship['right_yTNM_ClinicalStaging'].act.observation.value.ST.value}"/>												
+						</h:panelGrid>
+					</c:if>
+			</c:if>
+			
+			<p>
+			<b><h:outputText value="Clinician doing staging: "/></b>
+			<wiz:selectWithOther id="attend"  role="#{trim.trim.act.participation['clinician'].role}" list="#{trim.list['echr:admin:staff:all']}" readonly="true" otherText="Other - not on the list" />
+			</p>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

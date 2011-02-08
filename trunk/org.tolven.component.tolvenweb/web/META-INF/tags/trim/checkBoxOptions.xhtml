@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Checkbox Options</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+<!-- slot is passed in -->
+    <ui:composition> 
+      <c:if test="#{readonly!='true'}">
+         <div tvisible="$('#{menu.elementLabel}:#{proc}').checked" style="#{style}" >   
+			       <h:selectBooleanCheckbox id="#{rel.name}" value="#{rel.enableRelationship}"/> #{rel.act.relationship[option].act.observation.value.label.value}
+			       <trim:selectManyCheck id="#{rel.name}Options" slot="#{rel.act.relationship[option].act.observation}" layout="pageDirection" visible="$('#{menu.elementLabel}:#{rel.name}').checked" onclick="processGroup(this.name)" readonly="#{readonly}"/>               
+         </div>
+      </c:if>
+
+      <c:if test="#{readonly == 'true'}">
+          <trim:selectManyCheck id="#{rel.name}Options" slot="#{rel.act.relationship[option].act.observation}" layout="pageDirection" visible="$('#{menu.elementLabel}:#{rel.name}').checked" onclick="processGroup(this.name)" readonly="#{readonly}"/> 
+      </c:if>  
+
+  	</ui:composition>
+</body>
+</html>

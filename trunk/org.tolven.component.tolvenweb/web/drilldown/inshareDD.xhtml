@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Share Patient - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+			<h:panelGrid columns="2" >
+				<h:outputText value="#{act.effectiveTime.label.value}"/>
+				<trim:TS value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+				<h:outputText value="#{msg.SenderComment}: "/>
+				<h:outputText value="#{trim.trim.message.sender.comment}"/>
+				<h:outputText value="#{msg.Reply}: "/>
+				<h:outputText value="#{trim.trim.message.receiver.comment}"/>
+			</h:panelGrid>
+			<table style="padding:0.5em" >
+				<thead><i>#{msg.Synopsis}</i></thead>
+		    	<c:forEach var="rel" items="#{trim.trim.act.relationships}">
+		    		<tr >
+		    			<td>
+							<h:outputText value="#{rel.act.text.label.value}"/>
+		    			</td>
+		    			<td>
+							<h:outputText value="#{rel.act.text.ST.value}"/>
+		    			</td>
+		    			<td >
+							<h:outputText value="#{rel.act.effectiveTime.IVLTS.low.TS}">
+								<trim:convertTS type="date" timeStyle="" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+							</h:outputText>
+							<h:outputText value="#{rel.act.effectiveTime.TS}">
+								<trim:convertTS type="date" timeStyle="" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+							</h:outputText>
+		    			</td>
+		    		</tr>
+			    </c:forEach>
+			</table>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

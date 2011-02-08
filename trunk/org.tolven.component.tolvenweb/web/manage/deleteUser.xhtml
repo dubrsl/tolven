@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+        <title>Delete a user</title>
+        <meta http-equiv="pragma" content="no-cache"/>
+        <meta http-equiv="cache-control" content="no-cache"/>
+        <meta http-equiv="expires" content="0"/>
+    </head>
+    <body>
+	    <ui:composition template="/templates/simplePage.xhtml">
+	        <ui:param name="pageTitle" value="Delete Tolven User #{reg.tp.uid}"/>
+	        <ui:define name="body">
+				<h:form>
+		        	<div class="breadcrumbs">
+						<h:commandLink value="Application" action="dispatch" immediate="true"/>
+						<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+						<h:commandLink value="Preferences" action="preferences" immediate="true"/>
+						<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+						<h:commandLink value="Edit User Preferences" action="userPreferences" immediate="true"/>
+						<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+						<h:outputText value="Delete User"/><br/>
+					</div>
+					<p>Clicking the delete button below will delete your login credentials and log you out of Tolven for the last time. Other users with 
+					access to the same accounts you have access to will not be affected. If this is not what you intend to do, you should return to the application.
+					You may create a new login account but won't be able to access the same account information unless another user on that same account offers to share that information with you.</p>
+	              	<h:commandButton action="#{top.deleteUser}" value="Delete User"/>
+				</h:form>
+	       </ui:define>
+	    </ui:composition>
+    </body>
+</html>

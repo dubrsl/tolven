@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>reg/evn/assigned/md</name>
+	<page>assigned.xhtml</page>
+	<drilldown>assignedDD.xhtml</drilldown>
+	<menu>global:assignedMenu</menu>
+	<application name="echr">
+		<instance>echr:assigned</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="REG" moodCode="EVN">
+		<code>
+			<CD>
+				<code>physician</code>
+				<codeSystemName>tolven</codeSystemName>
+				<codeSystemVersion>4.0</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Physician</ST>
+		</title>
+		<effectiveTime>
+			<label>Effective time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="create">
+					<placeholder bindAction="merge">
+						<path>echr:assigned</path>
+					</placeholder>
+				</bind>
+				<id>
+					<II>
+						<label>Internal ID (do not change)</label>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{assigned.path}</extension>
+					</II>
+				</id>
+				<statusCode>#{assigned.actStatus}</statusCode>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Physician Name(s)</label>
+						<EN>
+							<label>Legal Name</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{assigned.firstName}</ST>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{assigned.middleName}</ST>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{assigned.lastName}</ST>
+							</part>
+							<part>
+								<label>Suffix</label>
+								<type>SFX</type>
+								<ST/>
+							</part>
+						</EN>
+					</name>
+					<telecom>
+						<label>Telecom</label>
+						<TEL>
+							<label>Phone</label>
+							<use>WP</use>
+							<value>#{assigned.workTelecom}</value>
+						</TEL>
+					</telecom>
+					<livingSubject>
+						<administrativeGenderCode>
+							<label>Gender</label>
+							<new><encoded>#{encode(assigned.gender)}</encoded></new>
+							<valueSet>genders</valueSet>
+						</administrativeGenderCode>
+					</livingSubject>
+					<person>
+						<addr>
+							<label>Address(es)</label>
+							<AD>
+								<label>Work</label>
+								<use>WP</use>
+								<part>
+									<label>Address Line 1</label>
+									<type>AL</type>
+									<ST>#{assigned.addr1}</ST>
+								</part>
+								<part>
+									<label>Address Line 2</label>
+									<type>AL</type>
+									<ST>#{assigned.addr2}</ST>
+								</part>
+								<part>
+									<label>City</label>
+									<type>CTY</type>
+									<ST>#{assigned.city}</ST>
+								</part>
+								<part>
+									<label>State</label>
+									<type>STA</type>
+									<ST>#{assigned.state}</ST>
+								</part>
+								<part>
+									<label>Zip</label>
+									<type>ZIP</type>
+									<ST>#{assigned.zip}</ST>
+								</part>
+								<part>
+									<label>Country</label>
+									<type>CNT</type>
+									<ST>#{assigned.country}</ST>
+								</part>
+							</AD>
+						</addr>
+					</person>
+				</player>
+			</role>
+		</participation>
+	</act>
+	<valueSet name="genders">
+		<CE>
+			<displayName>Male</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Female</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

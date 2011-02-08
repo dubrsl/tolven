@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.prototype.applications" version="2.0.30" vendor="Tolven">
+<!-- Include the full name of a class, above, only if that class will be run from TPF. also see runtime library below. -->
+<!-- The requires section, below, causes these plugins to run. UNcomment any of these or add additional plugins as needed, here. -->
+	<requires>
+		<import plugin-id="org.tolven.component.application" />
+	</requires>
+	<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+		<parameter id="dir" value="app" />
+	</extension>
+</plugin>

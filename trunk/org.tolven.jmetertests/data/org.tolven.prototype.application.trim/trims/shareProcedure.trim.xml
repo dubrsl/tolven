@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>share/procedure</name>
+	<description>Share A Procedure</description>
+	<reference></reference>
+	<act classCode="ACT" moodCode="EVN">
+		<bind application="echr" phase="receive" >
+			<placeholder bindAction="merge">
+				<path>echr:patient:procedure</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="receive">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:procedure</path>
+			</placeholder>
+		</bind>
+		<id>
+			<II>
+				<root>#{computeIDRoot(account)}</root>
+				<extension>#{procedure.path}</extension>			
+			</II>
+		</id>
+		<code>
+			<CD>
+				<code>ProcCode</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3.0</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<label>Procedure</label>
+			<ST>#{procedure.title}</ST>
+		</title>
+		<effectiveTime>
+			<IVL_TS>
+				<low>
+					<label>From Date</label>
+					<TS><value>#{TS(procedure.effectiveTimeLow)}</value></TS>
+				</low>
+				<high>
+					<label>To Date</label>
+					<TS><value>#{TS(procedure.effectiveTimeHigh)}</value></TS>
+				</high>
+			</IVL_TS>
+		</effectiveTime>
+	</act>
+</trim>

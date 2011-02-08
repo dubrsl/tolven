@@ -1,0 +1,44 @@
+dn: ou=SelfWriteAttributes,ou=Policies,ou=default,ou=OrganizationConfig,ou=1.0,ou=iPlanetAMPolicyService,ou=services,o=sunamhiddenrealmdelegationservicepermissions,ou=services,dc=opensso,dc=tolven,dc=org
+changeType: modify
+replace: sunKeyValue
+sunKeyValue: <Policy name="SelfWriteAttributes" referralPolicy="false" active="true">
+	<Rule name="user-read-rule">
+		<ServiceName name="sunAMDelegationService" />
+		<ResourceName name="sms://*@SM_CONFIG_ROOT_SUFFIX@/sunIdentityRepositoryService/1.0/application/*" />
+		<AttributeValuePair>
+			<Attribute name="MODIFY" />
+			<Value>allow</Value>
+		</AttributeValuePair>
+	</Rule>
+	<Subjects name="Subjects" description="">
+		<Subject name="delegation-subject" type="AuthenticatedUsers" includeType="inclusive">
+		</Subject>
+	</Subjects>
+	<Conditions name="AttrCondition" description="">
+		<Condition name="condition" type="UserSelfCheckCondition">
+			<AttributeValuePair>
+				<Attribute name="attributes" />
+				<Value>givenname</Value>
+				<Value>sn</Value>
+				<Value>cn</Value>
+				<Value>userpassword</Value>
+				<Value>mail</Value>
+				<Value>telephonenumber</Value>
+				<Value>postaladdress</Value>
+				<Value>preferredlocale</Value>
+				<Value>iplanet-am-user-password-reset-options</Value>
+				<Value>iplanet-am-user-password-reset-question-answer</Value>
+				<Value>description</Value>
+				<Value>sunIdentityServerDeviceKeyValue</Value>
+				<Value>sunIdentityServerDeviceStatus</Value>
+				<Value>userCertificate</Value>
+				<Value>userPKCS12</Value>
+			</AttributeValuePair>
+		</Condition>
+	</Conditions>
+ </Policy>
+
+dn: ou=SelfWriteAttributes,ou=default,ou=default,ou=OrganizationConfig,ou=1.0,ou=sunEntitlementIndexes,ou=services,o=sunamhiddenrealmdelegationservicepermissions,ou=services,dc=opensso,dc=tolven,dc=org
+changeType: modify
+replace: sunKeyValue
+sunKeyValue: serializable={"creationDate":1292375193193,"policyName":"SelfWriteAttributes","createdBy":"cn=dsameuser,ou=DSAME Users,dc=opensso,dc=tolven,dc=org","name":"SelfWriteAttributes","lastModifiedBy":"cn=dsameuser,ou=DSAME Users,dc=opensso,dc=tolven,dc=org","eSubject":{"state":"{\n  \"className\": \"com.sun.identity.policy.plugins.AuthenticatedUsers\",\n  \"exclusive\": false,\n  \"name\": \"delegation-subject\",\n  \"values\": []\n}","className":"com.sun.identity.entitlement.opensso.PolicySubject"},"lastModifiedDate":1292375193193,"active":"true","className":"com.sun.identity.entitlement.opensso.OpenSSOPrivilege","eCondition":{"state":"{\n  \"className\": \"com.sun.identity.policy.plugins.UserSelfCheckCondition\",\n  \"name\": \"condition\",\n  \"properties\": {\"attributes\": [\n    \"givenname\",\n    \"sn\",\n    \"cn\",\n    \"userpassword\",\n    \"userCertificate\",\n    \"userPKCS12\",\n    \"mail\",\n    \"telephonenumber\",\n    \"postaladdress\",\n    \"preferredlocale\",\n    \"iplanet-am-user-password-reset-options\",\n    \"iplanet-am-user-password-reset-question-answer\",\n    \"description\",\n    \"sunIdentityServerDeviceKeyValue\",\n    \"sunIdentityServerDeviceStatus\"\n  ]}\n}","className":"com.sun.identity.entitlement.opensso.PolicyCondition"},"entitlement":{"actionsValues":{"MODIFY":true},"applicationName":"sunAMDelegationService","name":"user-read-rule","resourceNames":["sms://*dc=opensso,dc=tolven,dc=org/sunIdentityRepositoryService/1.0/application/*"]}}

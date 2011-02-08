@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using JasperAssistant (http://www.jasperassistant.com) -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="path1Histology" pageWidth="216" pageHeight="791" whenNoDataType="AllSectionsNoDetail" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="true"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<style name="Base" isDefault="false" isBlankWhenNull="true" fontName="Helvetica" fontSize="8" pdfFontName="Helvetica"/>
+	<style name="BaseBD" isDefault="false" style="Base" markup="none" isBlankWhenNull="true" fontSize="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="BaseBI" isDefault="false" style="Base" markup="none" isBlankWhenNull="true" fontSize="8" isBold="true" isItalic="true" pdfFontName="Helvetica-BoldOblique"/>
+	<parameter name="SIDE" class="java.lang.String"/>
+	<field name="Type" class="java.lang.Long"/>
+	<field name="Grade" class="java.lang.String"/>
+	<field name="Margins" class="java.lang.String"/>
+	<field name="ClosestMargin" class="java.lang.String"/>
+	<field name="Size" class="java.lang.String"/>
+	<field name="HistologicType" class="java.lang.String"/>	
+	<group name="Group_1">
+		<groupHeader>
+			<band height="14">
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="BaseBI" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="0"/>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Histology"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Report" hyperlinkType="None">
+					<reportElement style="BaseBD" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="0" width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="0"/>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{REPORT_COUNT}.intValue() == 0 ? "None reported" : ""]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Group_2">
+		<groupHeader>
+			<band height="14">
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new Long(1).equals($F{Type})?"Invasive":new Long(2).equals($F{Type})?"DCIS":new Long(3).equals($F{Type})?"LCIS":new Long(4).equals($F{Type})?"Result":""]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="0" width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Long(1).equals($F{Type}) || new Long(2).equals($F{Type}) || new Long(3).equals($F{Type})|| new Long(4).equals($F{Type}))]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[new Long(4).equals($F{Type})?"Benign":$F{HistologicType}!=null?$F{HistologicType}:""]]></textFieldExpression>
+			</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Group_3">
+		<groupHeader>
+			<band height="14">
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+						<printWhenExpression><![CDATA[new Boolean(new Long(1).equals($F{Type}) || new Long(2).equals($F{Type}))]]></printWhenExpression>
+					</reportElement>
+					<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Size"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="0"  width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+					<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{Size}]]></textFieldExpression>
+				</textField>
+		 	</band>
+		</groupHeader>
+	</group>
+	<group name="Group_4">
+		<groupHeader>
+			<band height="14">
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Long(1).equals($F{Type}) || new Long(2).equals($F{Type}))]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Grade"]]></textFieldExpression>
+			</textField>			
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="0" width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Long(1).equals($F{Type}) || new Long(2).equals($F{Type}))]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Grade} != null?$F{Grade}:"N/A"]]></textFieldExpression>
+			</textField>
+		 	</band>
+		</groupHeader>
+	</group>
+	<group name="Group_5">
+		<groupHeader>
+			<band height="14">
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Long(1).equals($F{Type}) || new Long(2).equals($F{Type}) || new Long(3).equals($F{Type}))]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Margins"]]></textFieldExpression>
+			</textField>	
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="0" width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Long(1).equals($F{Type}) || new Long(2).equals($F{Type}) || new Long(3).equals($F{Type}))]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Margins}]]></textFieldExpression>
+			</textField>
+		 	</band>
+		</groupHeader>
+	</group>
+	<group name="Group_6">
+		<groupHeader>
+			<band height="14">
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Long(1).equals($F{Type}) || new Long(2).equals($F{Type}) || new Long(3).equals($F{Type}))]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Closest Margin"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="0" width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF">
+					<printWhenExpression><![CDATA[new Boolean(new Long(1).equals($F{Type}) || new Long(2).equals($F{Type}) || new Long(3).equals($F{Type}))]]></printWhenExpression>
+				</reportElement>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ClosestMargin} != null && $F{ClosestMargin}.length() > 0?$F{ClosestMargin}:"N/A"]]></textFieldExpression>
+			</textField> 		
+		 	</band>
+		</groupHeader>
+	</group>
+	
+	<detail>
+		<band/>		 	
+	</detail>
+</jasperReport>

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard">
+
+      
+<head>
+    <title>Enable Relationship</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <!--
+  
+   - Renders one checkbox with the provided label, and enables all given relations
+   - Value of the Checkbox is not required in this case. 
+   
+   ownerRelation - Name of the Relationship Element that checkbox represents.
+   relations - Names of Relations(separated by comma) that should be enabled upon checking the checkbox
+  -->
+    <ui:composition>
+			<h:selectBooleanCheckbox id="#{id}" layout="pageDirection" value="#{act.relationship[ownerRelation].enableRelationship}" 
+					onclick="{ 
+						var options1 = $('#{menu.elementLabel}:#{id}:checkAndEnableRelation').getElementsByTagName('input');
+						for ( i= 0; i &lt; options1.length; i++ )
+						{
+							options1[i].value=$('#{menu.elementLabel}:#{id}').checked;
+						}
+					}" >
+					<f:selectItem></f:selectItem>
+				</h:selectBooleanCheckbox><h:outputText value="  #{itemLabel}" />
+				<div id="#{menu.elementLabel}:#{id}:checkAndEnableRelation">
+					<c:forEach var="relation" items="${fn:split(relations, ',')}" varStatus="choiceIndex">
+						<h:inputText value="#{act.relationship[relation].enableRelationship}" style="display: none;" />	
+					</c:forEach>					
+				</div>    	
+
+    </ui:composition>
+</body>
+</html>

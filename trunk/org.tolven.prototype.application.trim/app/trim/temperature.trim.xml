@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/temperature</name>
+	<description>Temperature</description>
+	<page>temperature.xhtml</page>
+	<drilldown>temperatureDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Temperature</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>105723007</code>
+                <codeSystem>2.16.840.1.113883.6.96</codeSystem>
+                <codeSystemName>SCT</codeSystemName>
+			</CD>
+		</code>
+		<title>
+			<ST>Temperature</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<PQ>
+					<label>Temperature</label>
+					<value>0.0</value>
+					<unit>C</unit>
+				</PQ>
+			</value>
+			<methodCode>
+				<label>Method</label>
+				<valueSet>method</valueSet>
+			</methodCode>
+		</observation>
+		<relationship name="ambient" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Ambient temperature</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Ambient temperature</label>
+						<valueSet>ambient</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="comment" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Comment</label>
+						<ED/>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="method">
+		<CE>
+			<displayName>Axillary</displayName>
+			<code>C0488002</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Oral</displayName>
+			<code>C0555770</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Rectal</displayName>
+			<code>C0489749</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Typanic</displayName>
+			<code>C0488007</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="ambient">
+		<CE>
+			<displayName>Indoor - Normal Clothing or Bedding </displayName>
+			<code>x1</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Indoor - Reduced Clothing Bedding</displayName>
+			<code>x2</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Indoor - Increased Clothing Bedding</displayName>
+			<code>x3</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Outdoor - Normal Clothing or Bedding</displayName>
+			<code>x4</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Outdoor - Reduced Clothing Bedding</displayName>
+			<code>x5</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Outdoor - Increased Clothing Bedding</displayName>
+			<code>x6</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Thermal Stress - Downward</displayName>
+			<code>x7</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Thermal Stress - Upward</displayName>
+			<code>x8</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Pediatric Incubator</displayName>
+			<code>x9</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

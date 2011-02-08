@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Sample Event - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<div class="pagesm">
+			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+	            <h:outputText value="#{menu.menuDataItem.status}"/>
+			<h:panelGrid columns="2" >
+				<h:outputText value="#{msg.AdmitDate}: "/>
+	            <h:outputText value="#{menu.menuDataItem.effectiveTimeLow}">
+	            	<f:convertDateTime timeStyle="short" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+	            </h:outputText>
+				<h:outputText value="#{msg.DischargeDate}: "/>
+	            <h:outputText value="#{menu.menuDataItem.effectiveTimeHigh}">
+	            	<f:convertDateTime timeStyle="short" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+	            </h:outputText>
+	         </h:panelGrid>
+			<ui:include src="/wizard/samplePerson.xhtml">
+				<ui:param name="entity" value="#{trim.trim.act.participation['subject'].role.player}"/>
+				<ui:param name="readonly" value="true"/>
+			</ui:include>
+		</div>
+		<div class="help">
+			<c:if test="#{menu.menuDataItem.status=='NEW'}">
+				<h1>Finalize</h1>
+				<p>The Submit button remains disabled until all entered data is validated and has been stored on the server in your private holding area. 
+				The time field represents the time when the data was most recently captured on the server (not the time of the observation). Clicking the submit button will
+				mark this document as complete, actionable, and immutable.</p>
+				<p>You may be asked to enter your password. This is necessary to digitally sign this document attesting the fact
+				that only you could have submitted the form.</p>
+			</c:if>
+		</div>
+	</ui:composition>
+</body>
+</html>

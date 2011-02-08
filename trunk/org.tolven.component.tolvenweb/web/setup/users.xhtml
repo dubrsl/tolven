@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+        <title>Tolven Users</title>
+    </head>
+    <body>
+        <p>
+		This form is just used for installation and initial setup. It is not designed to work with a large number of users.</p>
+     <h:form id="users">
+             <h:dataTable value="#{top.allActiveUsers}" var="u" border="1" cellspacing="0">
+                <h:column>
+                     <f:facet name="header">
+                         <h:outputText value="Id"/>
+                     </f:facet>
+                     <h:outputText value="#{u.id}"/>
+                </h:column>
+                <h:column>
+                     <f:facet name="header">
+                         <h:outputText value="UserID (uid)"/>
+                     </f:facet>
+                     <h:outputText value="#{u.ldapUID}"/>
+                </h:column>
+                <h:column>
+                     <f:facet name="header">
+                         <h:outputText value="LDAP DN"/>
+                     </f:facet>
+                     <h:outputText value="#{u.ldapDN}"/>
+               </h:column>
+             </h:dataTable>
+        </h:form>
+        <h:messages errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+        <h:panelGrid columns="3">
+        <h:outputLink value="ldap.jsf">
+        	<h:outputText value="LDAP"/>
+        </h:outputLink>
+        <h:outputLink value="users.jsf">
+        	<h:outputText value="Tolven Users"/>
+        </h:outputLink>
+        <h:outputLink value="createUser.jsf">
+        	<h:outputText value="Create New User"/>
+        </h:outputLink>
+        </h:panelGrid>
+</body>
+</html>

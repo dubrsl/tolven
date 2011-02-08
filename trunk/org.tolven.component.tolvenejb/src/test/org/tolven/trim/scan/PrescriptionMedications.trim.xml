@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>base/observation</extends>
+	<name>Observations/history/currentPrescriptionMedications</name>
+	<description>Current Prescription Medications</description>
+	<author>Tolven</author>
+	<page>currentPrescriptionMedications.xhtml</page>
+	<drilldown>currentPrescriptionMedicationsDD.xhtml</drilldown>
+	<reference />
+	<application name="ephr">
+		<instance>ephr:patient:observation</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:observation</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>X1</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2006AC</codeSystemVersion>
+				<translation />
+			</CD>
+		</code>
+		<title>
+			<ST>Current Prescription Medications</ST>
+		</title>
+		<observation>
+			<value>
+				<label>Medication</label>
+				<valueSet>prescriptionMedications</valueSet>
+			</value>
+		</observation>
+		<relationship name="dose" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Dose</label>
+						<valueSet>dosage</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="frequency" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Frequency</label>
+						<valueSet>frequency</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="reason" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Reason</label>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="comment" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Comment</label>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="prescriptionMedications">
+		<CE>
+			<displayName>Z1</displayName>
+			<code>X2</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<ED />
+		<null type="NI">
+			<label>No information</label>
+		</null>
+	</valueSet>
+	<valueSet name="dosage">
+		<bind>
+			<include>doseVS.trim.xml</include>
+		</bind>	
+		<null type="NI">
+			<label>No information</label>
+		</null>
+	</valueSet>
+</trim>

@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+        <title>Tolven Initial User Setup</title>
+    </head>
+    <body>
+        <p>
+            Create a new demo or test user without requiring activation email. Click the generate button to have the system invent a random user.
+            If you like the name presented, click New User. You can change any part of the generated name prior to clicking create User.
+            If you don't like that person just click Generate again and another one will be generated. 
+            If you click New User a second time for the same user id, you'll get an error. First and last name don't matter  for uniqness.</p>
+            <p>Also, note that the password is in plain text on this page since often it is generated and so you'll need to know what it is.
+            Beyond this point, passwords are hashed. All the more reason to not use this page for production users.</p>
+     <h:form id="createuser">
+            <h:commandButton id="jmc1" action="#{gen.newPerson}" immediate="true" value="Generate"/>
+           <h:panelGrid columns="2">
+                <h:outputText value="User id"/>
+                    <h:inputText id="uid" value="#{gen.uid}" size="50" />
+                <h:outputText value="First Name"/>
+                <h:panelGroup>
+                    <h:inputText id="givenName" value="#{gen.firstName}" size="50" required="true"/>
+                    <h:message for="givenName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+                </h:panelGroup>
+               <h:outputText value="Last Name"/>
+                <h:panelGroup>
+                    <h:inputText id="sn" value="#{gen.lastName}" size="50" required="true"/>
+                    <h:message for="sn" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+                </h:panelGroup>
+                <h:outputText value="Password"/>
+                <h:panelGroup>
+                    <h:inputText id="userPassword" value="#{gen.password}" size="50"/>
+                    <h:message for="userPassword" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+                </h:panelGroup>
+                <h:outputText value="Account Type"/>
+				<h:selectOneMenu value="#{gen.accountType}" required="true">
+					<f:selectItem itemLabel="Clinical" itemValue="echr"/>
+					<f:selectItem itemLabel="Person" itemValue="ephr"/>
+					<f:selectItem itemLabel="Referral" itemValue="referral"/>
+				</h:selectOneMenu>
+           </h:panelGrid>
+            <h:commandButton action="#{gen.newUser}" value="New User"/>
+        </h:form>
+        <h:messages errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+        <h:panelGrid columns="3">
+        <h:outputLink value="ldap.jsf">
+        	<h:outputText value="LDAP"/>
+        </h:outputLink>
+        <h:outputLink value="users.jsf">
+        	<h:outputText value="Tolven Users"/>
+        </h:outputLink>
+        <h:outputLink value="createUser.jsf">
+        	<h:outputText value="Create New User"/>
+        </h:outputLink>
+        </h:panelGrid>
+</body>
+</html>

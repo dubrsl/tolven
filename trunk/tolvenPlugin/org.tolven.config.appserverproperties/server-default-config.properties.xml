@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+	<entry key="mail.debug">false</entry>
+	<entry key="mail.smtp.auth">true</entry>
+	<entry key="mail.smtp.host">smtp.mydomain.com</entry>
+	<entry key="mail.smtp.starttls.enable">true</entry>
+	<entry key="mail.transport.protocol">smtp</entry>
+	<entry key="tolven.timezone">America/Los_Angeles</entry>
+	<entry key="tolven.repository.oid">1.2</entry>
+	<entry key="tolven.login.create.demoUser">true</entry>
+	<entry key="tolven.login.create.activatedUser">true</entry>
+	<entry key="tolven.register.referenceRequired">false</entry>
+	<entry key="tolven.register.expiration">3600</entry>
+	<entry key="tolven.notice.uri">/notice.xhtml</entry>
+	<entry key="tolven.mail.from">notify@mydomain.com</entry>
+	<entry key="tolven.mail.fromName">My Organization</entry>
+	<entry key="tolven.mail.user">notify@mydomain.com</entry>
+	<entry key="tolven.mail.password">mypassword</entry>
+	<entry key="tolven.invitation.host">mydomain.com</entry>
+	<entry key="tolven.invitation.port">8080</entry>
+	<entry key="tolven.invitation.root">/Tolven</entry>
+	<entry key="tolven.invitation.replyTo">http://mydomain.com:8080/Tolven</entry>
+	<entry key="tolven.ldap.baseDN">ou=people,dc=tolven,dc=com</entry>
+	<entry key="tolven.ldap.deleteUser">false</entry>
+	<entry key="tolven.gen.patient.max">1000</entry>
+	<entry key="tolven.web.defaultLogo">/images/lazye.png</entry>
+	<entry key="tolven.web.javascript.debug">false</entry>
+	<entry key="tolven.web.showMore">true</entry>
+	<entry key="tolven.web.cvNextCheck">8</entry>
+	<entry key="tolven.web.cvLongest">64</entry>
+	<entry key="tolven.web.cvBlank">600</entry>
+	<entry key="tolven.web.cvLogout">660</entry>
+	<entry key="tolven.performance.stats">true</entry>
+	<entry key="webserver.http.portRedirect">8443</entry>
+	<entry key="tolven.security.user.privateKeyLength">1024</entry>
+	<entry key="tolven.security.user.privateKeyAlgorithm">RSA</entry>
+	<entry key="tolven.security.user.passwordIterationCount">20</entry>
+	<entry key="tolven.security.user.passwordSaltLength">8</entry>
+	<entry key="tolven.security.user.pbeKeyAlgorithm">PBEWithMD5AndDES</entry>
+	<entry key="tolven.security.account.privateKeyAlgorithm">RSA</entry>
+	<entry key="tolven.security.account.keyLength">1024</entry>
+	<entry key="tolven.security.accountUser.kbeKeyAlgorithm">DESede</entry>
+	<entry key="tolven.security.accountUser.kbeKeyLength">112</entry>
+	<entry key="tolven.security.doc.kbeKeyAlgorithm">DESede</entry>
+	<entry key="tolven.security.doc.kbeKeyLength">112</entry>
+	<entry key="tolven.security.doc.signatureAlgorithm">SHA1withRSA</entry>
+</properties>

@@ -1,0 +1,2484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:trim="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	targetNamespace="urn:tolven-org:trim:4.0" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified" 
+	jaxb:version="2.1" jaxb:extensionBindingPrefixes="xjc">
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings>
+				<xjc:simple/>
+				<xjc:serializable /> 
+			</jaxb:globalBindings>
+		</xs:appinfo>
+	</xs:annotation>
+	<xs:element name="trim" type="Trim"/>
+	<xs:complexType name="Trim">
+		<xs:sequence>
+			<xs:element name="extends" type="xs:string" minOccurs="0"/>
+			<xs:element name="abstract" type="xs:boolean" minOccurs="0"/>
+			<xs:element name="name" type="xs:string" minOccurs="0"/>
+			<xs:element name="description" type="xs:string" minOccurs="0"/>
+			<xs:element name="author" type="xs:string" minOccurs="0"/>
+			<xs:element name="searchPhrase" type="SearchPhrase" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="page" type="xs:string" minOccurs="0"/>
+			<xs:element name="drilldown" type="xs:string" minOccurs="0"/>
+			<xs:element name="menu" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+						The menu element specifies that this trim be available 
+						as an option on the named trimMenu.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="element" type="xs:string" minOccurs="0"/>
+			<xs:element name="tolvenId" type="TolvenId" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="tolvenEventId" type="TolvenId" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="replacesTolvenId" type="TolvenId" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="reference" type="xs:anyURI" minOccurs="0"/>
+			<xs:element name="application" type="Application" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="origin" type="CopyTo" minOccurs="0"/>
+			<xs:element name="copyTo" type="CopyTo" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="message" type="Message" minOccurs="0"/>
+			<xs:element name="transitions" type="Transitions" minOccurs="0"/>
+			<xs:element name="transition" type="xs:string" minOccurs="0"/>
+			<xs:element name="act" type="Act" minOccurs="0"/>
+			<xs:element name="valueSet" type="ValueSet" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="field" type="Field" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="formData" type="xs:base64Binary" minOccurs="0"/>
+			<xs:element name="confirm" type="xs:string" minOccurs="0"/>
+			<xs:element name="patientLinkId" type="xs:long" minOccurs="0"/>
+			<xs:element name="unused" type="Unused" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Unused">
+		<xs:sequence>
+			<xs:element name="II" type="II" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SearchPhrase">
+		<xs:simpleContent>
+			<xs:extension base="st">
+				<xs:attribute name="type" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="ValueSet">
+		<xs:annotation>
+			<xs:documentation>
+				A value set defines a formal list of choices for a value. 
+				While the allowed datatypes are constrained at the schema level by the 
+				specific type of slot, a value set provides a more specific, and often 
+				larger set of choices specific to a TRIM. For example, the observation
+				trim might suggest a physical quantity (PQ) while a Weight assessment
+				might list two specific PQs, one with a unit of kilograms (kg), another with a unit of
+				pounds (lb).
+				A common use for value sets is for the selection of coded data types. In these
+				cases, the choices do not require further input: selecting among the choices 
+				completes the slot. Of course in the case of physical quantities, the choice
+				still requires input, the value itself. 
+				Mixing datatypes is also possible in a valueSet. For example, the value set for 
+				the value of a weight assessment might contain an exceptional value (null flavor)
+				that indicates that the value could not be obtained as well as choices 
+				for kg and lb PQ datatypes.
+				A value set can also reference other value sets. The end user will typically see the
+				fully resolved value set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element name="bind" type="BindTo"/>
+				<xs:element name="AD" type="AD"/>
+				<xs:element name="CD" type="CD"/>
+				<xs:element name="CE" type="CE"/>
+				<xs:element name="CS" type="CS"/>
+				<xs:element name="CV" type="CV"/>
+				<xs:element name="ED" type="ED"/>
+				<xs:element name="EN" type="EN"/>
+				<xs:element name="II" type="II"/>
+				<xs:element name="INT" type="INT"/>
+				<xs:element name="IVLPQ" type="IVL_PQ"/>
+				<xs:element name="null" type="NullFlavor"/>
+				<xs:element name="PQ" type="PQ"/>
+				<xs:element name="RTO" type="RTO"/>
+				<xs:element name="ST" type="ST"/>
+				<xs:element name="TS" type="TS"/>
+				<xs:element name="URG_TS" type="URG_TS"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:Name"/>
+	</xs:complexType>
+	<xs:complexType name="Field">
+		<xs:sequence>
+			<xs:element name="label" type="LabelFacet" minOccurs="0"/>
+			<xs:choice>
+				<xs:element name="value" type="xs:anyType" minOccurs="0"/>
+				<xs:element name="values" minOccurs="0">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="value" type="xs:anyType" minOccurs="0"  maxOccurs="unbounded"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Message">
+		<xs:sequence>
+			<xs:element name="sender" type="Party"/>
+			<xs:element name="receiver" type="Party"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Party">
+		<xs:sequence>
+			<xs:element name="comment" type="xs:string" minOccurs="0"/>
+			<xs:element name="status" type="xs:string" minOccurs="0"/>
+			<xs:element name="subjectName" type="xs:string" minOccurs="0"/>
+			<xs:element name="accountPath" type="xs:string" minOccurs="0"/>
+			<xs:element name="accountId" type="xs:string" minOccurs="0"/>
+			<xs:element name="providerId" type="xs:long" minOccurs="0"/>
+			<xs:element name="accountName" type="xs:string" minOccurs="0"/>
+			<xs:element name="providerName" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="trim" type="xs:string" default="docclin/evn/sharePatientIn"/>
+	</xs:complexType>
+	<xs:complexType name="CopyTo">
+		<xs:sequence>
+			<xs:element name="comment" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="providerId" type="xs:long"/>
+		<xs:attribute name="patientLinkId" type="xs:long"/>
+		<xs:attribute name="accountId" type="xs:long"/>
+		<xs:attribute name="accountName" type="xs:string"/>
+		<xs:attribute name="copy" type="xs:boolean"/>
+	</xs:complexType>
+	<xs:complexType name="TolvenId">
+		<xs:attribute name="accountId" type="xs:string"/>
+		<xs:attribute name="id" type="xs:string"/>
+		<xs:attribute name="path" type="xs:string"/>
+		<xs:attribute name="contextPath" type="xs:string"/>
+		<xs:attribute name="application" type="xs:string"/>
+		<xs:attribute name="principal" type="xs:string"/>
+		<xs:attribute name="status" type="xs:string"/>
+		<xs:attribute name="timestamp" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Application">
+		<xs:annotation>
+			<xs:documentation>
+				An entry in this list indicates that the Trim be made available as a top-level, 
+				free-standing trim to the named application. A trim is not required to be
+				top-level. for example, a history and physical may be composed of a number of trim elements
+				that never occur stand-alone. A systolic BP might be such an example because it is a component
+				of a blood pressure Trim. However, a Blood Pressure trim, which often occurs as part of a 
+				Vital Signs Trim may also be instantiated on its own.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="instance" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+						The instance element specifies that this trim be instantiated at the
+						placeholder specified. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="wip" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+						The wip element specifies which "activity" list this trim should appear on. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:Name"/>
+		<xs:attribute name="signatureRequired" type="xs:boolean"  default="false"/>
+	</xs:complexType>
+	<xs:complexType name="InfrastructureRoot" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				The abstract base of all RIM objects.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="label" type="LabelFacet" minOccurs="0"/>
+			<xs:element name="from" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+						The from element is used to initialize a rim object from
+						some other source. Typically, this is done during instantiation
+						using expression language.
+						For example, an intent act might contain: 
+						&lt;occurrences variable="source"&gt;proc/occurrence&lt;/occurrences&gt; 
+						and the template might acquire the content of the participation of the act as: 
+						&lt;participation&gt;
+						&lt;from&gt;#{source.act.participation['performer']}&lt;/from&gt;
+						&lt;/participation&gt;
+						If more than one from is provided, the first one to yield a non-null
+						result is used. If a from is not found, then any content of the
+						rim object already in place will be used.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bind" type="BindTo" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+						The bind meta-element is trim-specific and is optional. The bind operation 
+						results in a change to the trim. It is important to understand that
+						a bind element remains in the trim after the bind operation and can be repeated.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="realmCode" type="RealmCode" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="typeId" type="IISlot" minOccurs="0"/>
+			<xs:element name="templateId" type="SET_IISlot" minOccurs="0"/>
+			<xs:element name="update" type="UpdateCode" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="internalId" type="xs:string" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="page" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						The page element in a rim object describes a wizard snippet to be used
+						for a specific act, entity, or role within a trim, not the page used for the trim as a whole.
+						This allows arbitrary trims to be combined into a single trim such as when, for example, a user
+						combines BP, temp, Pulse, and respirations into a combined Vital Signs trim yet may also use the
+						trims independently.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="drilldown" type="xs:string" minOccurs="0" maxOccurs="1">
+				<xs:annotation>
+					<xs:documentation>
+						The drilldown element in a rim object describes a page definition snippet to be used
+						to display (read only) a specific act, entity, or role within a trim. A separate page can be defined for
+						the trim as a whole.
+					</xs:documentation>
+				</xs:annotation>			
+			</xs:element>
+			<xs:element name="error" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+						An error associated with this RIM object. Errors of this type are typically detected by compute elements.
+					</xs:documentation>
+				</xs:annotation>			
+			</xs:element>
+			<xs:element name="accountShare" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="enabled" type="xs:boolean" use="optional" default="true" />
+		<xs:attribute name="sourceTrim" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="BindTo">
+		<xs:annotation>
+			<xs:documentation>
+				bindTo contains a list of conditional binding requests.
+				Three types of binding requests:
+				 If an include element is used, it specifies the name of another
+				trim to be instantiated anew.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="include" type="xs:string"/>
+				<xs:element name="valueSet" type="xs:string"/>
+				<xs:element name="placeholder" type="PlaceholderBind">
+					<xs:annotation>
+						<xs:documentation>
+							Specifies the path of an existing type of placeholder. 
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+				<xs:element name="list" type="ListBind"/>
+				<xs:element name="id" type="IISlot">
+					<xs:annotation>
+						<xs:documentation>
+							Binding to an id implies that the system doing the binding has knowledge of
+							an object by that id. A single id-binding can include multiple ids meaning that
+							all ids match or at least no ids conflict. Alternatively, listing individual
+							ids in separate bindTo's means the first one to match is used and no
+							further checking is done. 
+						</xs:documentation>
+					</xs:annotation>
+				</xs:element>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="application" type="xs:string"/>
+		<xs:attribute name="phase" type="BindPhase"/>
+	</xs:complexType>
+	<xs:complexType name="PlaceholderBind">
+		<xs:sequence>
+			<xs:element name="path" type="xs:string"/>
+			<xs:element name="code" type="CDSlot" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="bindAction" type="BindAction" default="exist"/>
+		<xs:attribute name="optional" type="xs:boolean" default="false"/>
+	</xs:complexType>
+	<xs:complexType name="ListBind">
+		<xs:sequence>
+			<xs:element name="path" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="cardinality" type="BindCardinality" default="single"/>
+		<xs:attribute name="optional" type="xs:boolean" default="true"/>
+	</xs:complexType>
+	<xs:simpleType name="BindCardinality">
+		<xs:restriction base="cs">
+			<xs:enumeration value="single"/>
+			<xs:enumeration value="multiple"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BindAction">
+		<xs:annotation>
+			<xs:documentation>
+				Indicates the action when binding to a placeholder.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="exist">
+				<xs:annotation>
+					<xs:documentation>
+						The placeholder must exist in the local account. For example, a trim
+						for a patient weight will usually expect the patient placeholder to
+						already exist. If the "optional" modifier is true, then the placeholder can be null. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="merge">
+				<xs:annotation>
+					<xs:documentation>
+						If the placeholder exists, it is updated. If not, it is created.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="create">
+				<xs:annotation>
+					<xs:documentation>
+						The placeholder is created if it does not exists but not updated if it already exists.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="update">
+				<xs:annotation>
+					<xs:documentation>
+						The placeholder must exist. It is updated.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BindPhase">
+		<xs:annotation>
+			<xs:documentation>
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="parse">
+				<xs:annotation>
+					<xs:documentation>
+						"parse" phase does binding during the parse, actually, right after parse. 
+						Parse is typically when includes are processed. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="create">
+				<xs:annotation>
+					<xs:documentation>
+						"create" phase does the binding during trim instantiation. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="request">
+				<xs:annotation>
+					<xs:documentation>
+						"request" phase means to bind upon request, which usually occurs during a wizard. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="receive">
+				<xs:annotation>
+					<xs:documentation>
+						"receive" phase indicates that binding is done when a trim is received in an account. 
+						This is often necessary to rebind this trim to the current account. For example, the
+						patient will have a different id in the new account.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="send">
+				<xs:annotation>
+					<xs:documentation>
+						"send" phase binding is special in that it instructs the sender to remove bindings
+						prior to sending a trim. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="TemplateId">
+		<xs:simpleContent>
+			<xs:extension base="st">
+				<xs:attribute name="application" type="xs:string"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="Transition">
+		<xs:sequence>
+			<xs:element name="label" type="LabelFacet" minOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="from" type="xs:string" use="optional"/>
+		<xs:attribute name="to" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Transitions">
+		<xs:sequence>
+			<xs:element name="transition" type="Transition" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="initialState" type="xs:string"/>
+		<xs:attribute name="path" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Compute">
+		<xs:annotation>
+			<xs:documentation>
+				Specify a computation that is to be performed on this node.
+				For example, specify that occurrences of an ActRelationship be generated such as for
+				repeating orders on the intent (plan) act. 
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="type" type="xs:string"/>
+			<xs:element name="property" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="value" type="xs:anyType"/>
+					</xs:sequence>
+					<xs:attribute name="name" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="attribute" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:any processContents="skip"/>
+					</xs:sequence>
+					<xs:attribute name="name" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="forTrimName" type="xs:string" use="optional"/>
+		<xs:attribute name="forAccountType" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="Act">
+		<xs:complexContent>
+			<xs:extension base="InfrastructureRoot">
+				<xs:sequence>
+					<xs:element name="sendTo" type="Party" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="transitions" type="Transitions" minOccurs="0"/>
+					<xs:element name="transition" type="xs:string" minOccurs="0"/>
+					<xs:element name="id" type="SET_IISlot" minOccurs="0" />
+					<xs:element name="code" type="CDSlot" minOccurs="0"/>
+					<xs:element name="negationInd" type="BLSlot" minOccurs="0"/>
+					<xs:element name="initialStatusCode" type="ActStatus" minOccurs="0"/>
+					<xs:element name="statusCode" type="ActStatus" minOccurs="0"/>
+					<xs:element name="derivationExpr" type="STSlot" minOccurs="0"/>
+					<xs:element name="title" type="EDSlot" minOccurs="0"/>
+					<xs:element name="text" type="EDSlot" minOccurs="0"/>
+					<xs:element name="effectiveTime" type="GTSSlot" minOccurs="0"/>
+					<xs:element name="activityTime" type="GTSSlot" minOccurs="0"/>
+					<xs:element name="availabilityTime" type="TSSlot" minOccurs="0"/>
+					<xs:element name="priorityCode" type="SET_CESlot" minOccurs="0" />
+					<xs:element name="confidentialityCode" type="SET_CESlot" minOccurs="0" />
+					<xs:element name="repeatNumber" type="IVLINTSlot" minOccurs="0"/>
+					<xs:element name="interruptibleInd" type="BLSlot" minOccurs="0"/>
+					<xs:element name="independentInd" type="BLSlot" minOccurs="0"/>
+					<xs:element name="uncertaintyCode" type="CSSlot" minOccurs="0"/>
+					<xs:element name="reasonCode" type="SET_CESlot" minOccurs="0" />
+					<xs:element name="languageCode" type="CESlot" minOccurs="0"/>
+					<xs:element name="observation" type="Observation" minOccurs="0"/>
+					<xs:element name="patientEncounter" type="PatientEncounter" minOccurs="0"/>
+					<xs:element name="procedure" type="Procedure" minOccurs="0"/>
+					<xs:element name="supply" type="Supply" minOccurs="0"/>
+					<xs:element name="participation" type="ActParticipation" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="relationship" type="ActRelationship" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="compute" type="Compute" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="classCode" type="ActClass" use="required"/>
+				<xs:attribute name="moodCode" type="ActMood" use="required"/>
+				<xs:attribute name="levelCode" type="cs" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Observation">
+		<xs:sequence>
+			<xs:element name="value" type="ObservationValueSlot" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="interpretationCode" type="SET_CESlot" minOccurs="0" />
+			<xs:element name="methodCode" type="SET_CESlot" minOccurs="0" />
+			<xs:element name="targetSiteCode" type="SET_CDSlot" minOccurs="0" />
+			<xs:element name="publicHealthCase" type="PublicHealthCase" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="DiagnosticImage">
+		<xs:sequence>
+			<xs:element name="subjectOrientationCode" type="CESlot" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PublicHealthCase">
+		<xs:sequence>
+			<xs:element name="detectionMethodCode" type="CESlot" minOccurs="0" />
+			<xs:element name="transmissionModeCode" type="CESlot" minOccurs="0" />
+			<xs:element name="diseaseImportedCode" type="CESlot" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PatientEncounter">
+		<xs:sequence>
+			<xs:element name="admissionReferralSourceCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="lengthOfStayQuantity" type="PQSlot" minOccurs="0"/>
+			<xs:element name="dischargeDispositionCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="preAdmitTestInd" type="BLSlot" minOccurs="0"/>
+			<xs:element name="specialCourtesiesCode" type="SET_CESlot" minOccurs="0"/>
+			<xs:element name="specialArrangementCode" type="SET_CESlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Procedure">
+		<xs:sequence>
+			<xs:element name="methodCode" type="SET_CESlot" minOccurs="0"/>
+			<xs:element name="approachSiteCode" type="SET_CDSlot" minOccurs="0"/>
+			<xs:element name="targetSiteCode" type="SET_CDSlot" minOccurs="0"/>
+			<xs:element name="substanceAdministration" type="SubstanceAdministration" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="SubstanceAdministration">
+		<xs:sequence>
+			<xs:element name="routeCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="approachSiteCode" type="SET_CDSlot" minOccurs="0"/>
+			<xs:element name="doseQuantity" type="IVL_PQSlot" minOccurs="0"/>
+			<xs:element name="rateQuantity" type="IVL_PQSlot" minOccurs="0"/>
+			<xs:element name="doseCheckQuantity" type="SET_RTOSlot" minOccurs="0"/>
+			<xs:element name="maxDoseQuantity" type="SET_RTOSlot" minOccurs="0"/>
+			<xs:element name="administrationUnitCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="methodCode" type="SET_CDSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Supply">
+		<xs:sequence>
+			<xs:element name="quantity" type="PQSlot" minOccurs="0"/>
+			<xs:element name="expectedUseTime" type="IVL_TSSlot" minOccurs="0"/>
+			<xs:element name="diet" type="Diet" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Diet">
+		<xs:sequence>
+			<xs:element name="energyQuantity" type="PQSlot" minOccurs="0"/>
+			<xs:element name="carbohydrateQuantity" type="PQSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Participation" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="InfrastructureRoot">
+				<xs:sequence>
+					<xs:element name="functionCode" type="CDSlot" minOccurs="0"/>
+					<xs:element name="negationInd" type="BLSlot" minOccurs="0"/>
+					<xs:element name="noteText" type="EDSlot" minOccurs="0"/>
+					<xs:element name="time" type="IVL_TS" minOccurs="0"/>
+					<xs:element name="modeCode" type="CESlot" minOccurs="0"/>
+					<xs:element name="awarenessCode" type="CESlot" minOccurs="0"/>
+					<xs:element name="signatureText" type="EDSlot" minOccurs="0"/>
+					<xs:element name="performInd" type="BL" minOccurs="0"/>
+					<xs:element name="substitutionConditionCode" type="CESlot" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:Name" use="required"/>
+				<xs:attribute name="typeCode" type="ParticipationType" use="required"/>
+				<xs:attribute name="optional" type="xs:boolean" use="optional"/>
+				<xs:attribute name="repeating" type="xs:boolean" use="optional"/>
+				<xs:attribute name="contextControlCode" type="ContextControl" use="optional"/>
+				<xs:attribute name="sequenceNumber" type="int" use="optional"/>
+				<xs:attribute name="subsetCode" type="ParticipationSubset" use="optional"/>
+				<xs:attribute name="signatureCode" type="ParticipationSignature" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActParticipation">
+		<xs:complexContent>
+			<xs:extension base="Participation">
+				<xs:sequence>
+					<xs:element name="role" type="Role" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RoleParticipation">
+		<xs:complexContent>
+			<xs:extension base="Participation">
+				<xs:sequence>
+					<xs:element name="act" type="Act" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ActRelationship">
+		<xs:complexContent>
+			<xs:extension base="InfrastructureRoot">
+				<xs:sequence>
+					<xs:element name="pauseQuantity" type="PQ" minOccurs="0"/>
+					<xs:element name="negationInd" type="BLSlot" minOccurs="0"/>
+					<xs:element name="act" type="Act" minOccurs="0" />
+					<xs:element name="choice" type="Choice" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="name" type="xs:Name" use="required"/>
+				<xs:attribute name="direction" type="ActRelationshipDirection" use="required"/>
+				<xs:attribute name="typeCode" type="ActRelationshipType" use="required"/>
+				<xs:attribute name="optional" type="xs:boolean" use="optional"/>
+				<xs:attribute name="repeating" type="xs:boolean" use="optional"/>
+				<xs:attribute name="inversionInd" type="bl" use="optional"/>
+				<xs:attribute name="contextControlCode" type="ContextControl" use="optional"/>
+				<xs:attribute name="contextConductionInd" type="bl" use="optional"/>
+				<xs:attribute name="sequenceNumber" type="int" use="optional"/>
+				<xs:attribute name="priorityNumber" type="int" use="optional"/>
+				<xs:attribute name="checkpointCode" type="ActRelationshipCheckpoint" use="optional"/>
+				<xs:attribute name="joinCode" type="ActRelationshipJoin" use="optional"/>
+				<xs:attribute name="seperatableInd" type="bl" use="optional"/>
+				<xs:attribute name="splitCode" type="ActRelationshipSplit" use="optional"/>
+				<xs:attribute name="conjunctionCode" type="RelationshipConjunction" use="optional"/>
+				<xs:attribute name="localVariableName" type="st" use="optional"/>
+				<xs:attribute name="subsetCode" type="ActRelationshipSubset" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Choice">
+		<xs:annotation>
+			<xs:documentation>
+				Choice defines an available alternative binding for the other side of
+				a relationship or participation.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="xs:Name"/>
+		<xs:attribute name="title" type="xs:string"/>
+		<xs:attribute name="include" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Role">
+		<xs:complexContent>
+			<xs:extension base="InfrastructureRoot">
+				<xs:sequence>
+					<xs:element name="transitions" type="Transitions" minOccurs="0"/>
+					<xs:element name="transition" type="xs:string" minOccurs="0"/>
+					<xs:element name="id" type="SET_IISlot" minOccurs="0"/>
+					<xs:element name="code" type="CESlot" minOccurs="0"/>
+					<xs:element name="negationInd" type="BLSlot" minOccurs="0"/>
+					<xs:element name="name" type="ENSlot" minOccurs="0"/>
+					<xs:element name="addr" type="ADSlot" minOccurs="0" />
+					<xs:element name="telecom" type="TELSlot" minOccurs="0" />
+					<xs:element name="statusCode" type="RoleStatus" minOccurs="0"/>
+					<xs:element name="effectiveTime" type="IVL_TSSlot" minOccurs="0"/>
+					<xs:element name="certificateText" type="EDSlot" minOccurs="0"/>
+					<xs:element name="confidentiality" type="SET_CESlot" minOccurs="0" />
+					<xs:element name="quantity" type="RTOSlot" minOccurs="0" />
+					<xs:element name="positionNumber" type="INTSlot" minOccurs="0"/>
+					<xs:element name="access" type="Access" minOccurs="0"/>
+					<xs:element name="employee" type="Employee" minOccurs="0"/>
+					<xs:element name="licensedEntity" type="LicensedEntity" minOccurs="0"/>
+					<xs:element name="patient" type="Patient" minOccurs="0"/>
+					<xs:element name="qualifiedEntity" type="QualifiedEntity" minOccurs="0"/>
+					<xs:element name="player" type="Entity" minOccurs="0"/>
+					<xs:element name="scoper" type="Entity" minOccurs="0"/>
+					<xs:element name="participation" type="RoleParticipation" minOccurs="0" maxOccurs="unbounded"/>
+					<!--xs:element name="outboundLink"	type="OutboundRoleLink" nillable="true" minOccurs="0" maxOccurs="unbounded" /-->
+					<!--xs:element name="inboundLink" type="InboundRoleLink" nillable="true" minOccurs="0"	maxOccurs="unbounded" /-->
+					<xs:element name="compute" type="Compute" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="classCode" type="RoleClass" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Access">
+		<xs:sequence>
+			<xs:element name="approachSiteCode" type="CDSlot" minOccurs="0"/>
+			<xs:element name="targetSiteCode" type="CDSlot" minOccurs="0"/>
+			<xs:element name="gaugeQuantity" type="PQSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Employee">
+		<xs:sequence>
+			<xs:element name="jobCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="jobTitleName" type="SCSlot" minOccurs="0"/>
+			<xs:element name="jobClassCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="occupationCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="salaryTypeCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="salaryQuantity" type="MOSlot" minOccurs="0"/>
+			<xs:element name="hazardExposureText" type="EDSlot" minOccurs="0"/>
+			<xs:element name="protectiveEquipmentText" type="EDSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LicensedEntity">
+		<xs:sequence>
+			<xs:element name="recertificationTime" type="TSSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Patient">
+		<xs:sequence>
+			<xs:element name="veryImportantPersonCode" type="CESlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="QualifiedEntity">
+		<xs:sequence>
+			<xs:element name="equivalenceInd" type="BLSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Entity">
+		<xs:complexContent>
+			<xs:extension base="InfrastructureRoot">
+				<xs:sequence>
+					<xs:element name="transitions" type="Transitions" minOccurs="0"/>
+					<xs:element name="transition" type="xs:string" minOccurs="0"/>
+					<xs:element name="id" type="SET_IISlot" minOccurs="0" />
+					<xs:element name="code" type="CESlot" minOccurs="0"/>
+					<xs:element name="statusCode" type="EntityStatus" minOccurs="0"/>
+					<xs:element name="quantity" type="PQSlot" minOccurs="0"/>
+					<xs:element name="name" type="ENSlot" minOccurs="0" />
+					<xs:element name="desc" type="EDSlot" minOccurs="0"/>
+					<xs:element name="existenceTime" type="IVL_TSSlot" minOccurs="0"/>
+					<xs:element name="telecom" type="TELSlot" minOccurs="0"/>
+					<xs:element name="riskCode" type="CESlot" minOccurs="0"/>
+					<xs:element name="handlingCode" type="CESlot" minOccurs="0"/>
+					<xs:element name="material" type="Material" minOccurs="0"/>
+					<xs:element name="manufacturedMaterial" type="ManufacturedMaterial" minOccurs="0"/>
+					<xs:element name="device" type="Device" minOccurs="0"/>
+					<xs:element name="container" type="Container" minOccurs="0"/>
+					<xs:element name="livingSubject" type="LivingSubject" minOccurs="0"/>
+					<xs:element name="nonPersonLivingSubject" type="NonPersonLivingSubject" minOccurs="0"/>
+					<xs:element name="organization" type="Organization" minOccurs="0"/>
+					<xs:element name="place" type="Place" minOccurs="0"/>
+					<xs:element name="person" type="Person" minOccurs="0"/>
+					<xs:element name="playedRole" type="Role" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="scopedRole" type="Role" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="languageCommunication" type="LanguageCommunication" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="compute" type="Compute" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="classCode" type="EntityClass" use="required"/>
+				<xs:attribute name="determinerCode" type="EntityDeterminer" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LanguageCommunication">
+		<xs:sequence>
+			<xs:element name="languageCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="modeCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="proficiencyLevelCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="preferenceInd" type="BLSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Material">
+		<xs:sequence>
+			<xs:element name="formCode" type="CESlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="ManufacturedMaterial">
+		<xs:sequence>
+			<xs:element name="expirationTime" type="IVL_TS" minOccurs="0"/>
+			<xs:element name="lotNumberText" type="STSlot" minOccurs="0"/>
+			<xs:element name="stabilityTime" type="IVL_TS" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Device">
+		<xs:sequence>
+			<xs:element name="manufacturerModelName" type="SCSlot" minOccurs="0"/>
+			<xs:element name="localRemoteControlStateCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="lastCalibrationTime" type="TSSlot" minOccurs="0"/>
+			<xs:element name="softwareNam" type="SCSlot" minOccurs="0"/>
+			<xs:element name="alertLevelCode" type="CESlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Container">
+		<xs:sequence>
+			<xs:element name="capacityQuantity" type="PQSlot" minOccurs="0"/>
+			<xs:element name="capTypeCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="bottomDeltaQuantity" type="PQSlot" minOccurs="0"/>
+			<xs:element name="heightQuantity" type="PQSlot" minOccurs="0"/>
+			<xs:element name="separatorTypeCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="diameterQuantity" type="PQSlot" minOccurs="0"/>
+			<xs:element name="barrierDeltaQuantity" type="PQSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="LivingSubject">
+		<xs:sequence>
+			<xs:element name="administrativeGenderCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="birthTime" type="TSSlot" minOccurs="0"/>
+			<xs:element name="deceasedInd" type="BLSlot" minOccurs="0"/>
+			<xs:element name="deceasedTime" type="TSSlot" minOccurs="0"/>
+			<xs:element name="multipleBirthInd" type="BLSlot" minOccurs="0"/>
+			<xs:element name="multipleBirthOrderNumber" type="INTSlot" minOccurs="0"/>
+			<xs:element name="organDonorInd" type="BLSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NonPersonLivingSubject">
+		<xs:sequence>
+			<xs:element name="strainText" type="EDSlot" minOccurs="0"/>
+			<xs:element name="genderStatusCode" type="CESlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Organization">
+		<xs:sequence>
+			<xs:element name="addr" type="ADSlot" minOccurs="0"/>
+			<xs:element name="standardIndustryClassCode" type="CESlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Person">
+		<xs:sequence>
+			<xs:element name="addr" type="ADSlot" minOccurs="0"/>
+			<xs:element name="maritalStatusCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="educationLevelCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="disabilityCode" type="SET_CESlot" minOccurs="0"/>
+			<xs:element name="livingArrangementCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="religiousAffiliationCode" type="CESlot" minOccurs="0"/>
+			<xs:element name="raceCode" type="SET_CESlot" minOccurs="0"/>
+			<xs:element name="ethnicGroupCode" type="SET_CESlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Place">
+		<xs:sequence>
+			<xs:element name="mobileInd" type="BLSlot" minOccurs="0"/>
+			<xs:element name="directionsText" type="EDSlot" minOccurs="0"/>
+			<xs:element name="gpsText" type="STSlot" minOccurs="0"/>
+			<xs:element name="addr" type="ADSlot" minOccurs="0"/>
+			<xs:element name="positionText" type="EDSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Slot" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				All RIM-object attributes attributes are represented by a slot.
+				A slot is a wrapper around a normal HL3 V3 Datatype. Slots contain
+				additional information, facets, about the contained datatype such as
+				the label to use, how the attribute might be bound to some
+				object external to the slot (and typically the RIM object).
+				The valueSet facet is used to define a constrained list of
+				choices for the value facet. Additional metadata defined validation
+				criteria. For example, certain dates may require that the data be in the future,
+				such as when scheduling an appointment. Or in the past, such as when recording
+				a historical event. The new facet is used to initialize fields when
+				a trim is instantiated, such as to initialize a date in a new
+				observation to today's date.
+				Slots primarily carry the value facet of the slot. Each slot definition typically allows
+				one or more HL7 datatypes depending on the constraints for that type. For example,
+				an ST can be substituted for an ED. A null flavor can almost always be substituted 
+				for any other datatype. While a slot defines the absolute allowable values, a valueSet can
+				be used to constrain the set of choices (if more than one is allowed) for a specific 
+				attribute.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="from" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+						The from element is used to initialize a slot from
+						some other source. Typically, this is done during instantiation
+						using expression language.
+						For example, an intent act might contain: 
+						&lt;occurrences variable="source"&gt;proc/occurrence&lt;/occurrences&gt; 
+						and the template might acquire the content of the code slot as: 
+						&lt;code&gt;
+						&lt;from&gt;#{source.act.code}&lt;/from&gt;
+						&lt;/code&gt;
+						If more than one from is provided, the first one to yield a non-null
+						result is used. If a from is not found, then any content of the
+						slot in place will be used.
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bind" type="xs:string" minOccurs="0"/>
+			<xs:element name="label" type="LabelFacet" minOccurs="0"/>
+			<xs:element name="new" type="NewFacet" minOccurs="0"/>
+			<xs:element name="validate" type="ValidateFacet" minOccurs="0"/>
+			<xs:element name="valueSet" type="xs:Name" minOccurs="0"/>
+			<xs:element name="originalText" type="st" minOccurs="0"/>
+			<xs:element name="error" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+						An error associated with this RIM object. Errors of this type are typically detected by field validators.
+					</xs:documentation>
+				</xs:annotation>			
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="datatype" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="NewFacet">
+		<xs:annotation>
+			<xs:documentation>
+				The new facet of a slot is only considered during instantiation. It can be considered
+				the initial value of a slot. If a value is also specified, or the name of a value
+				set, then the user can change the value.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="encoded" type="xs:string" minOccurs="0" >
+				<xs:annotation>
+					<xs:documentation>
+						An encoded datatype can be used to seed the value of a slot. For example,
+						the value of a complex datatype might be encoded in a database table and
+						inserted here to cause the creator to insert that DataType here. One such example
+						is gender of a person. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="datatype" type="ConcreteDatatype"/>
+		<xs:attribute name="function" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="ValidateFacet">
+		<xs:attribute name="function" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="LabelFacet">
+		<xs:annotation>
+			<xs:documentation>
+				The label factet(s) of a slot provide user-understandable
+				text. Individual values also carry a
+				label and it will always take priority over the slot lavel.
+				For example, the label of the Patient Weight attribute would be
+				less specific than the label of a particular PQ in a value set 
+				containing a label of Patient Weight in kg.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:simpleContent>
+			<xs:extension base="st">
+				<xs:attribute name="language" type="cs" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="BLSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="BL" type="BL" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CDSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="flavor" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="CD" type="CD" minOccurs="0"/>
+					<xs:element name="CE" type="CE" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EDSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="ST" type="ST" minOccurs="0"/>
+					<xs:element name="ED" type="ED" minOccurs="0"/>
+					<xs:element name="reference" type="TELSlot" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+				<xs:attribute name="language" type="cs" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SET_EDSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="ST" type="ST" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="ED" type="ED" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IVLINTSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="INT" type="INT" minOccurs="0"/>
+					<xs:element name="IVL_INT" type="IVL_INT" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IVL_PQSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="PQ" type="PQ" minOccurs="0"/>
+					<xs:element name="IVL_PQ" type="IVL_PQ" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SET_PQSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="PQ" type="PQ" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="REAL" type="REAL" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="INT" type="INT" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TSSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="TS" type="TS" minOccurs="0"/>
+					<xs:element name="URG_TS" type="URG_TS" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ObservationValueSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice minOccurs="0">
+					<xs:element name="null" type="NullFlavor"/>
+					<xs:element name="AD" type="AD"/>
+					<xs:element name="SETAD" type="AD" maxOccurs="unbounded"/>
+					<xs:element name="BL" type="BL"/>
+					<xs:element name="CD" type="CD"/>
+					<xs:element name="SETCD" type="CD" maxOccurs="unbounded"/>
+					<xs:element name="CE" type="CE"/>
+					<xs:element name="SETCE" type="CE" maxOccurs="unbounded"/>
+					<xs:element name="ED" type="ED"/>
+					<xs:element name="SETED" type="ED" maxOccurs="unbounded"/>
+					<xs:element name="EN" type="EN"/>
+					<xs:element name="SETEN" type="EN" maxOccurs="unbounded"/>
+					<xs:element name="II" type="II"/>
+					<xs:element name="SETII" type="II" maxOccurs="unbounded"/>
+					<xs:element name="INT" type="INT"/>
+					<xs:element name="SETINT" type="INT" maxOccurs="unbounded"/>
+					<xs:element name="PQ" type="PQ"/>
+					<xs:element name="REAL" type="REAL"/>
+					<xs:element name="RTO" type="RTO"/>
+					<xs:element name="SETPQ" type="PQ" maxOccurs="unbounded"/>
+					<xs:element name="IVLPQ" type="IVL_PQ"/>
+					<xs:element name="SETIVLPQ" type="IVL_PQ" maxOccurs="unbounded"/>
+					<xs:element name="ST" type="ST"/>
+					<xs:element name="SETST" type="ST" maxOccurs="unbounded"/>
+					<xs:element name="TS" type="TS"/>
+					<xs:element name="SETTS" type="TS" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DataType">
+		<xs:sequence>
+			<xs:element name="label" type="LabelFacet" minOccurs="0"/>
+			<xs:element name="originalText" type="st" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NullFlavor">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:attribute name="type" type="NullFlavorType"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ADSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:sequence>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="AD" type="AD"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AD">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="use" type="AddressUse" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:choice>
+						<xs:element name="null" type="NullFlavor" />
+						<xs:element name="part" type="ADXPSlot" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:choice>
+					<xs:element name="useablePeriod" type="GTSSlot" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ADXPSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:sequence>
+					<xs:element name="type" type="AddressPartType" minOccurs="0"/>
+					<xs:choice>
+						<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+						<xs:element name="ST" type="ST" minOccurs="0"/>
+						<xs:element name="ED" type="ED" minOccurs="0"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="BL">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:attribute name="value" type="bl" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SET_CDSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="flavor" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="CD" type="CD" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="CE" type="CE" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CD">
+		<xs:complexContent>
+			<xs:extension base="CE">
+				<xs:sequence>
+					<xs:element name="qualifier" type="CR" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CESlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="CE" type="CE" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SET_CESlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="CE" type="CE" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CE">
+		<xs:complexContent>
+			<xs:extension base="CV">
+				<xs:sequence>
+					<xs:element name="translation" type="CD" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CV">
+		<xs:complexContent>
+			<xs:extension base="CS">
+				<xs:sequence>
+					<xs:element name="codeSystem" type="uid" minOccurs="0"/>
+					<xs:element name="codeSystemName" type="st" minOccurs="0"/>
+					<xs:element name="codeSystemVersion" type="st" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CR">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="name" type="CV" minOccurs="0"/>
+					<xs:element name="value" type="CDSlot" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="inverted" type="bl" use="optional" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="CS">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="displayName" type="st" minOccurs="0"/>
+					<xs:element name="code" type="cs" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+<!-- 	<xs:simpleType name="CS">
+		<xs:restriction base="cs"/>
+	</xs:simpleType>
+ -->
+	<xs:complexType name="CSSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="CS" type="CS" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ED">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="representation" type="BinaryDataEncoding" minOccurs="0" />
+					<xs:element name="mediaType" type="cs" minOccurs="0"/>
+					<xs:element name="charset" type="cs" minOccurs="0"/>
+					<xs:element name="compression" type="cs" minOccurs="0"/>
+					<xs:element name="reference" type="TELSlot" minOccurs="0"/>
+					<xs:element name="integrityCheck" type="IntegrityCheck" minOccurs="0"/>
+					<xs:element name="description" type="STSlot" minOccurs="0"/>
+					<xs:element name="thumbnail" type="EDSlot" minOccurs="0"/>
+					<xs:element name="value" type="xs:base64Binary" minOccurs="0"/>
+					<xs:element name="translation" type="SET_EDSlot" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="language" type="cs" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ENSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:sequence>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="EN" type="EN"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="EN">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="use" type="EntityNameUse" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:choice>
+						<xs:element name="null" type="NullFlavor" />
+						<xs:element name="part" type="ENXPSlot" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:choice>
+					<xs:element name="validTime" type="IVL_TSSlot" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ENXPSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:sequence>
+					<xs:element name="type" type="EntityNamePartType" minOccurs="0"/>
+					<xs:element name="qualifier" type="EntityNamePartQualifier" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:choice>
+						<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+						<xs:element name="ST" type="ST" minOccurs="0"/>
+						<xs:element name="ED" type="ED" minOccurs="0"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntegrityCheckType">
+		<xs:simpleContent>
+			<xs:extension base="bin">
+				<xs:attribute name="integrityCheckAlgorithm" type="IntegrityCheckAlgorithm" use="optional" default="SHA-1"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="GTSSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:sequence>
+					<xs:choice>
+						<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+						<xs:element name="SET_TS" type="TS" minOccurs="0" maxOccurs="unbounded"/>
+						<xs:element name="TS" type="TS" minOccurs="0"/>
+						<xs:element name="IVL_TS" type="IVL_TS" minOccurs="0"/>
+					</xs:choice>
+					<xs:element name="PIVL" type="PIVL" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IISlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:sequence>
+					<xs:element name="name" type="xs:Name" minOccurs="0"/>
+					<xs:choice>
+						<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+						<xs:element name="II" type="II" minOccurs="0"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SET_IISlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:sequence>
+					<xs:element name="name" type="xs:Name" minOccurs="0"/>
+					<xs:choice>
+						<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+						<xs:element name="II" type="II" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="II">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="root" type="st"/>
+					<xs:element name="extension" type="st" minOccurs="0"/>
+					<xs:element name="assigningAuthorityName" type="st" minOccurs="0"/>
+					<xs:element name="displayable" type="bl" minOccurs="0"/>
+					<!-- Editable is Not HL7 -->
+					<xs:element name="editable" type="bl" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="INT">
+		<xs:complexContent>
+			<xs:extension base="QTY">
+				<xs:sequence>
+					<xs:element name="value" type="xs:long"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IVL_INT">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="low" type="INTSlot" minOccurs="0"/>
+					<xs:element name="lowInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="high" type="INTSlot" minOccurs="0"/>
+					<xs:element name="highInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="center" type="INTSlot" minOccurs="0"/>
+					<xs:element name="width" type="INTSlot" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="INTSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="INT" type="INT" minOccurs="0"/>
+					<xs:element name="URG_INT" type="URG_INT" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="REALSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="REAL" type="REAL" minOccurs="0"/>
+					<xs:element name="INT" type="INT" minOccurs="0"/>
+					<xs:element name="URG_REAL" type="URG_REAL" minOccurs="0"/>
+					<xs:element name="URG_INT" type="URG_INT" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IVL_REAL">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="low" type="REALSlot" minOccurs="0"/>
+					<xs:element name="lowInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="high" type="REALSlot" minOccurs="0"/>
+					<xs:element name="highInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="center" type="REALSlot" minOccurs="0"/>
+					<xs:element name="width" type="REALSlot" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MOSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="MO" type="PQ" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MO">
+		<xs:complexContent>
+			<xs:extension base="QTY">
+				<xs:sequence>
+					<xs:element name="value" type="xs:double"/>
+					<xs:element name="currency" type="cs"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PQ">
+		<xs:complexContent>
+			<xs:extension base="REAL">
+				<xs:sequence>
+					<xs:element name="unit" type="cs"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PQSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="PQ" type="PQ" minOccurs="0"/>
+					<xs:element name="REAL" type="REAL" minOccurs="0"/>
+					<xs:element name="INT" type="INT" minOccurs="0"/>
+					<xs:element name="URG_PQ" type="URG_PQ" minOccurs="0"/>
+					<xs:element name="URG_REAL" type="URG_REAL" minOccurs="0"/>
+					<xs:element name="URG_INT" type="URG_INT" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IVL_PQ">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="low" type="PQSlot" minOccurs="0"/>
+					<xs:element name="lowInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="high" type="PQSlot" minOccurs="0"/>
+					<xs:element name="highInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="center" type="PQSlot" minOccurs="0"/>
+					<xs:element name="width" type="PQSlot" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="QTY" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				QTY is an abstract type which is used as the basis for quantity datatypes.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="format" type="st" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								A quantity can specify a format containing information about how the
+								field should be displayed in a form. For example, 
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="REAL">
+		<xs:complexContent>
+			<xs:extension base="QTY">
+				<xs:sequence>
+					<xs:element name="value" type="xs:double" minOccurs="0"/>
+<!-- 					<xs:element name="URG_REAL" type="URG_REAL" minOccurs="0"/>
+ -->
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RTO">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="numerator" type="xs:double"/>
+					<xs:element name="denominator" type="xs:double"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RTOSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="RTO" type="RTO" minOccurs="0"/>
+					<xs:element name="REAL" type="REAL" minOccurs="0"/>
+					<xs:element name="INT" type="INT" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SET_RTOSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="RTO" type="RTO" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="REAL" type="REAL" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="INT" type="INT" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SC">
+		<xs:sequence>
+			<xs:element name="value" type="ST"/>
+			<xs:element name="code" type="CE"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="STSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="ST" type="ST" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="SCSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="ST" type="ST" minOccurs="0"/>
+					<xs:element name="SC" type="SC" minOccurs="0"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="ST">
+		<xs:simpleContent>
+			<xs:extension base="st">
+				<xs:attribute name="label" type="xs:string" use="optional"/>
+				<xs:attribute name="language" type="cs" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+<!-- 
+	<xs:complexType name="ST">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="value" type="st"/>
+				</xs:sequence>
+				<xs:attribute name="language" type="cs" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+ -->
+	<xs:complexType name="TELSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+		  		<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="null" type="NullFlavor"/>
+					<xs:element name="URL" type="URL"/>
+					<xs:element name="TEL" type="TEL"/>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+ 	<xs:complexType name="TEL">
+		<xs:complexContent>
+			<xs:extension base="URL">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IVL_TSSlot">
+		<xs:complexContent>
+			<xs:extension base="Slot">
+				<xs:choice>
+					<xs:element name="null" type="NullFlavor" minOccurs="0"/>
+					<xs:element name="TS" type="TS" minOccurs="0"/>
+					<xs:element name="IVL_TS" type="IVL_TS" minOccurs="0" />
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TS">
+		<xs:complexContent>
+			<xs:extension base="QTY">
+				<xs:sequence>
+					<xs:element name="value" type="xs:string" minOccurs="0"/>
+					<xs:element name="w3c" type="xs:dateTime" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TS.DATE">
+		<xs:complexContent>
+			<xs:extension base="TS">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TS.DATE.FULL">
+		<xs:complexContent>
+			<xs:extension base="TS">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TS.DATETIME">
+		<xs:complexContent>
+			<xs:extension base="TS">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TS.DATETIME.FULL">
+		<xs:complexContent>
+			<xs:extension base="TS">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="TS.BIRTH">
+		<xs:complexContent>
+			<xs:extension base="TS">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IVL_TS">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="low" type="TSSlot" minOccurs="0"/>
+					<xs:element name="lowInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="high" type="TSSlot" minOccurs="0"/>
+					<xs:element name="highInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="center" type="TSSlot" minOccurs="0"/>
+					<xs:element name="width" type="PQSlot" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PIVL">
+		<xs:sequence>
+			<xs:element name="phaseLow" type="TSSlot" minOccurs="0"/>
+			<xs:element name="phaseHigh" type="TSSlot" minOccurs="0"/>
+			<xs:element name="period" type="PQSlot" minOccurs="0"/>
+			<xs:element name="frequencyRepeat" type="INTSlot" minOccurs="0"/>
+			<xs:element name="frequencyTime" type="PQSlot" minOccurs="0"/>
+			<xs:element name="count" type="INTSlot" minOccurs="0"/>
+			<xs:element name="displayFrequencyInd" type="BLSlot" minOccurs="0"/>
+			<xs:element name="alignment" type="CSSlot" minOccurs="0"/>
+			<xs:element name="isFlexible" type="BLSlot" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="URG" abstract="true">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="URG_TS">
+		<xs:complexContent>
+			<xs:extension base="URG">
+				<xs:sequence>
+					<xs:element name="low" type="TSSlot" minOccurs="0"/>
+					<xs:element name="lowInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="high" type="TSSlot" minOccurs="0"/>
+					<xs:element name="highInclusive" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="URG_INT" >
+		<xs:complexContent>
+			<xs:extension base="URG">
+				<xs:sequence>
+					<xs:element name="low" type="INTSlot" minOccurs="0"/>
+					<xs:element name="lowInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="high" type="INTSlot" minOccurs="0"/>
+					<xs:element name="highInclusive" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="URG_PQ" >
+		<xs:complexContent>
+			<xs:extension base="URG">
+				<xs:sequence>
+					<xs:element name="low" type="PQSlot" minOccurs="0"/>
+					<xs:element name="lowInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="high" type="PQSlot" minOccurs="0"/>
+					<xs:element name="highInclusive" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="URG_REAL" >
+		<xs:complexContent>
+			<xs:extension base="URG">
+				<xs:sequence>
+					<xs:element name="low" type="REALSlot" minOccurs="0"/>
+					<xs:element name="lowInclusive" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="high" type="REALSlot" minOccurs="0"/>
+					<xs:element name="highInclusive" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="URL">
+		<xs:complexContent>
+			<xs:extension base="DataType">
+				<xs:sequence>
+					<xs:element name="use" type="TelecommunicationAddressUse" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="useablePeriod" type="IVL_TS" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="value" type="st"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="IntegrityCheck">
+		<xs:attribute name="nullFlavor" type="NullFlavorType" use="optional"/>
+		<xs:attribute name="language" type="cs" use="optional"/>
+	</xs:complexType>
+	<xs:simpleType name="bin">
+		<xs:restriction base="xs:base64Binary"/>
+	</xs:simpleType>
+	<xs:simpleType name="cs">
+		<xs:restriction base="xs:token">
+			<xs:pattern value="[^\s]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="bl">
+		<xs:restriction base="xs:boolean">
+			<xs:pattern value="true|false"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="int">
+		<xs:restriction base="xs:int"/>
+	</xs:simpleType>
+	<xs:simpleType name="st">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="uid">
+		<xs:union memberTypes="oid uuid ruid"/>
+	</xs:simpleType>
+	<xs:simpleType name="oid">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-2](\.(0|[1-9][0-9]*))*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="url">
+		<xs:restriction base="xs:anyURI"/>
+	</xs:simpleType>
+	<xs:simpleType name="uuid">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9a-zA-Z]{8}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{4}-[0-9a-zA-Z]{12}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ruid">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[A-Za-z][A-Za-z0-9\-]*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ts">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[0-9]{1,8}|([0-9]{9,14}|[0-9]{14,14}\.[0-9]+)([+\-][0-9]{1,4})?"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CompressionAlgorithm">
+		<xs:annotation>
+			<xs:documentation>
+				vocSet: T10620 (C-0-T10620-cpt)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="Z"/>
+			<xs:enumeration value="DF"/>
+			<xs:enumeration value="GZ"/>
+			<xs:enumeration value="ZL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IntegrityCheckAlgorithm">
+		<xs:annotation>
+			<xs:documentation>
+				vocSet: T17385 (C-0-T17385-cpt)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="SHA-1"/>
+			<xs:enumeration value="SHA-256"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ConcreteDatatype">
+		<xs:restriction base="cs">
+			<xs:enumeration value="BL"/>
+			<xs:enumeration value="TS"/>
+			<xs:enumeration value="ST"/>
+			<xs:enumeration value="ED"/>
+			<xs:enumeration value="IVLTS"/>
+			<xs:enumeration value="PQ"/>
+			<xs:enumeration value="INT"/>
+			<xs:enumeration value="REAL"/>
+			<xs:enumeration value="II"/>
+			<xs:enumeration value="CD"/>
+			<xs:enumeration value="CE"/>
+			<xs:enumeration value="CS"/>
+			<xs:enumeration value="CO"/>
+			<xs:enumeration value="IVLPQ"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AddressPartType">
+		<xs:restriction base="cs">
+			<xs:enumeration value="AL"/>
+			<xs:enumeration value="ADL"/>
+			<xs:enumeration value="UNIT"/>
+			<xs:enumeration value="UNID"/>
+			<xs:enumeration value="DAL"/>
+			<xs:enumeration value="DINSTA"/>
+			<xs:enumeration value="DINSTQ"/>
+			<xs:enumeration value="DINST"/>
+			<xs:enumeration value="DMOD"/>
+			<xs:enumeration value="DMODID"/>
+			<xs:enumeration value="SAL"/>
+			<xs:enumeration value="BNR"/>
+			<xs:enumeration value="BNN"/>
+			<xs:enumeration value="BNS"/>
+			<xs:enumeration value="STR"/>
+			<xs:enumeration value="STB"/>
+			<xs:enumeration value="STTYP"/>
+			<xs:enumeration value="DIR"/>
+			<xs:enumeration value="INT"/>
+			<xs:enumeration value="CAR"/>
+			<xs:enumeration value="CEN"/>
+			<xs:enumeration value="CNT"/>
+			<xs:enumeration value="CPA"/>
+			<xs:enumeration value="DEL"/>
+			<xs:enumeration value="CTY"/>
+			<xs:enumeration value="POB"/>
+			<xs:enumeration value="ZIP"/>
+			<xs:enumeration value="PRE"/>
+			<xs:enumeration value="STA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="BinaryDataEncoding">
+		<xs:restriction base="xs:NMTOKEN">
+			<xs:enumeration value="B64"/>
+			<xs:enumeration value="TXT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityNamePartType">
+		<xs:restriction base="cs">
+			<xs:enumeration value="DEL"/>
+			<xs:enumeration value="FAM"/>
+			<xs:enumeration value="GIV"/>
+			<xs:enumeration value="PFX"/>
+			<xs:enumeration value="SFX"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityNameUse">
+		<xs:restriction base="cs">
+			<xs:enumeration value="A"/>
+			<xs:enumeration value="C"/>
+			<xs:enumeration value="L"/>
+			<xs:enumeration value="OR"/>
+			<xs:enumeration value="P"/>
+			<xs:enumeration value="PHON"/>
+			<xs:enumeration value="SNDX"/>
+			<xs:enumeration value="SRCH"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SetOperator">
+		<xs:annotation>
+			<xs:documentation>
+				vocSet: T17416 (C-0-T17416-cpt)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="H"/>
+			<xs:enumeration value="E"/>
+			<xs:enumeration value="I"/>
+			<xs:enumeration value="A"/>
+			<xs:enumeration value="P"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TimingEvent">
+		<xs:annotation>
+			<xs:documentation>
+				vocSet: T10706 (C-0-T10706-cpt)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="AC"/>
+			<xs:enumeration value="ACM"/>
+			<xs:enumeration value="ACD"/>
+			<xs:enumeration value="ACV"/>
+			<xs:enumeration value="HS"/>
+			<xs:enumeration value="IC"/>
+			<xs:enumeration value="ICD"/>
+			<xs:enumeration value="ICM"/>
+			<xs:enumeration value="ICV"/>
+			<xs:enumeration value="PC"/>
+			<xs:enumeration value="PCD"/>
+			<xs:enumeration value="PCM"/>
+			<xs:enumeration value="PCV"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TelecommunicationAddressUse">
+		<xs:restriction base="cs">
+			<xs:enumeration value="H"/>
+			<xs:enumeration value="HP"/>
+			<xs:enumeration value="HV"/>
+			<xs:enumeration value="WP"/>
+			<xs:enumeration value="DIR"/>
+			<xs:enumeration value="PUB"/>
+			<xs:enumeration value="BAD"/>
+			<xs:enumeration value="TMP"/>
+			<xs:enumeration value="AS"/>
+			<xs:enumeration value="EC"/>
+			<xs:enumeration value="MC"/>
+			<xs:enumeration value="PG"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AddressUse">
+		<xs:annotation>
+			<xs:documentation>
+				abstDomain: A190 (C-0-T201-A190-cpt)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="BAD"/>
+			<xs:enumeration value="TMP"/>
+			<xs:enumeration value="H"/>
+			<xs:enumeration value="HP"/>
+			<xs:enumeration value="HV"/>
+			<xs:enumeration value="WP"/>
+			<xs:enumeration value="DIR"/>
+			<xs:enumeration value="PUB"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="PostalAddressUse">
+		<xs:annotation>
+			<xs:documentation>
+				vocSet: T10637 (C-0-T10637-cpt)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="ABC"/>
+			<xs:enumeration value="IDE"/>
+			<xs:enumeration value="SYL"/>
+			<xs:enumeration value="BAD"/>
+			<xs:enumeration value="TMP"/>
+			<xs:enumeration value="PHYS"/>
+			<xs:enumeration value="PST"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityNamePartQualifier">
+		<xs:restriction base="cs">
+			<xs:enumeration value="LS"/>
+			<xs:enumeration value="IN"/>
+			<xs:enumeration value="TITLE"/>
+			<xs:enumeration value="AC"/>
+			<xs:enumeration value="NB"/>
+			<xs:enumeration value="PR"/>
+			<xs:enumeration value="VV"/>
+			<xs:enumeration value="AD"/>
+			<xs:enumeration value="BR"/>
+			<xs:enumeration value="SP"/>
+			<xs:enumeration value="CL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NullFlavorType">
+		<xs:restriction base="cs">
+			<xs:enumeration value="OTH"/>
+			<xs:enumeration value="NINF"/>
+			<xs:enumeration value="PINF"/>
+			<xs:enumeration value="ASKU"/>
+			<xs:enumeration value="NAV"/>
+			<xs:enumeration value="UNK"/>
+			<xs:enumeration value="QS"/>
+			<xs:enumeration value="NASK"/>
+			<xs:enumeration value="TRC"/>
+			<xs:enumeration value="NI"/>
+			<xs:enumeration value="MSK"/>
+			<xs:enumeration value="NA"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActClass">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ACCM"/>
+			<xs:enumeration value="ACCT"/>
+			<xs:enumeration value="ACSN"/>
+			<xs:enumeration value="ACT"/>
+			<xs:enumeration value="ACTN"/>
+			<xs:enumeration value="ADJUD"/>
+			<xs:enumeration value="ALRT"/>
+			<xs:enumeration value="BATTERY"/>
+			<xs:enumeration value="CACT"/>
+			<xs:enumeration value="CASE"/>
+			<xs:enumeration value="CATEGORY"/>
+			<xs:enumeration value="CDALVLONE"/>
+			<xs:enumeration value="CLNTRL"/>
+			<xs:enumeration value="CLUSTER"/>
+			<xs:enumeration value="CNOD"/>
+			<xs:enumeration value="CNTRCT"/>
+			<xs:enumeration value="COMPOSITION"/>
+			<xs:enumeration value="COND"/>
+			<xs:enumeration value="CONS"/>
+			<xs:enumeration value="CONTREG"/>
+			<xs:enumeration value="COV"/>
+			<xs:enumeration value="CTTEVENT"/>
+			<xs:enumeration value="DGIMG"/>
+			<xs:enumeration value="DIET"/>
+			<xs:enumeration value="DISPACT"/>
+			<xs:enumeration value="DOC"/>
+			<xs:enumeration value="DOCBODY"/>
+			<xs:enumeration value="DOCCLIN"/>
+			<xs:enumeration value="DOCSECT"/>
+			<xs:enumeration value="EHR"/>
+			<xs:enumeration value="ENC"/>
+			<xs:enumeration value="ENTRY"/>
+			<xs:enumeration value="EXTRACT"/>
+			<xs:enumeration value="FCNTRCT"/>
+			<xs:enumeration value="FOLDER"/>
+			<xs:enumeration value="INC"/>
+			<xs:enumeration value="INFO"/>
+			<xs:enumeration value="INFRM"/>
+			<xs:enumeration value="INVE"/>
+			<xs:enumeration value="INVSTG"/>
+			<xs:enumeration value="LIST"/>
+			<xs:enumeration value="MPROT"/>
+			<xs:enumeration value="OBS"/>
+			<xs:enumeration value="OBSCOR"/>
+			<xs:enumeration value="OBSSER"/>
+			<xs:enumeration value="ORGANIZER"/>
+			<xs:enumeration value="OUTB"/>
+			<xs:enumeration value="PCPR"/>
+			<xs:enumeration value="PROC"/>
+			<xs:enumeration value="REG"/>
+			<xs:enumeration value="REV"/>
+			<xs:enumeration value="ROIBND"/>
+			<xs:enumeration value="ROIOVL"/>
+			<xs:enumeration value="SBADM"/>
+			<xs:enumeration value="SPCOBS"/>
+			<xs:enumeration value="SPCTRT"/>
+			<xs:enumeration value="SPECCOLLECT"/>
+			<xs:enumeration value="SPLY"/>
+			<xs:enumeration value="STC"/>
+			<xs:enumeration value="STORE"/>
+			<xs:enumeration value="SUBST"/>
+			<xs:enumeration value="TOPIC"/>
+			<xs:enumeration value="TRNS"/>
+			<xs:enumeration value="VERIF"/>
+			<xs:enumeration value="XACT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActMood">
+		<xs:restriction base="cs">
+			<xs:enumeration value="APT"/>
+			<xs:enumeration value="ARQ"/>
+			<xs:enumeration value="DEF"/>
+			<xs:enumeration value="EVN"/>
+			<xs:enumeration value="EVN.CRT"/>
+			<xs:enumeration value="EXPEC"/>
+			<xs:enumeration value="GOL"/>
+			<xs:enumeration value="INT"/>
+			<xs:enumeration value="OPT"/>
+			<xs:enumeration value="PERM"/>
+			<xs:enumeration value="PERMRQ"/>
+			<xs:enumeration value="PRMS"/>
+			<xs:enumeration value="PRP"/>
+			<xs:enumeration value="RMD"/>
+			<xs:enumeration value="RQO"/>
+			<xs:enumeration value="RSK"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityClass">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ENT"/>
+			<xs:enumeration value="RGRP"/>
+			<xs:enumeration value="HCE"/>
+			<xs:enumeration value="LIV"/>
+			<xs:enumeration value="PSN"/>
+			<xs:enumeration value="NLIV"/>
+			<xs:enumeration value="ANM"/>
+			<xs:enumeration value="MIC"/>
+			<xs:enumeration value="PLNT"/>
+			<xs:enumeration value="MAT"/>
+			<xs:enumeration value="CHEM"/>
+			<xs:enumeration value="FOOD"/>
+			<xs:enumeration value="MMAT"/>
+			<xs:enumeration value="CONT"/>
+			<xs:enumeration value="HOLD"/>
+			<xs:enumeration value="DEV"/>
+			<xs:enumeration value="CER"/>
+			<xs:enumeration value="MODDV"/>
+			<xs:enumeration value="PLC"/>
+			<xs:enumeration value="CITY"/>
+			<xs:enumeration value="COUNTRY"/>
+			<xs:enumeration value="COUNTY"/>
+			<xs:enumeration value="PROVINCE"/>
+			<xs:enumeration value="ORG"/>
+			<xs:enumeration value="PUB"/>
+			<xs:enumeration value="STATE"/>
+			<xs:enumeration value="NAT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityDeterminer">
+		<xs:restriction base="cs">
+			<xs:enumeration value="INSTANCE"/>
+			<xs:enumeration value="KIND"/>
+			<xs:enumeration value="QUANTIFIED_KIND"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationType">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ADM"/>
+			<xs:enumeration value="ATND"/>
+			<xs:enumeration value="AUT"/>
+			<xs:enumeration value="AUTHEN"/>
+			<xs:enumeration value="BBY"/>
+			<xs:enumeration value="BEN"/>
+			<xs:enumeration value="CAGNT"/>
+			<xs:enumeration value="CALLBCK"/>
+			<xs:enumeration value="CON"/>
+			<xs:enumeration value="COV"/>
+			<xs:enumeration value="CSM"/>
+			<xs:enumeration value="CST"/>
+			<xs:enumeration value="DEV"/>
+			<xs:enumeration value="DIR"/>
+			<xs:enumeration value="DIS"/>
+			<xs:enumeration value="DIST"/>
+			<xs:enumeration value="DON"/>
+			<xs:enumeration value="DST"/>
+			<xs:enumeration value="ELOC"/>
+			<xs:enumeration value="ENT"/>
+			<xs:enumeration value="ESC"/>
+			<xs:enumeration value="GUAR"/>
+			<xs:enumeration value="HLD"/>
+			<xs:enumeration value="IND"/>
+			<xs:enumeration value="INF"/>
+			<xs:enumeration value="IRCP"/>
+			<xs:enumeration value="LA"/>
+			<xs:enumeration value="LOC"/>
+			<xs:enumeration value="NOT"/>
+			<xs:enumeration value="NRD"/>
+			<xs:enumeration value="ORG"/>
+			<xs:enumeration value="PART"/>
+			<xs:enumeration value="PPRF"/>
+			<xs:enumeration value="PRCP"/>
+			<xs:enumeration value="PRD"/>
+			<xs:enumeration value="PRF"/>
+			<xs:enumeration value="RCT"/>
+			<xs:enumeration value="RCV"/>
+			<xs:enumeration value="RDV"/>
+			<xs:enumeration value="REF"/>
+			<xs:enumeration value="REFB"/>
+			<xs:enumeration value="REFT"/>
+			<xs:enumeration value="RESP"/>
+			<xs:enumeration value="RML"/>
+			<xs:enumeration value="SBJ"/>
+			<xs:enumeration value="SPC"/>
+			<xs:enumeration value="SPRF"/>
+			<xs:enumeration value="TRANS"/>
+			<xs:enumeration value="TRC"/>
+			<xs:enumeration value="VIA"/>
+			<xs:enumeration value="VRF"/>
+			<xs:enumeration value="WIT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ContextControl">
+		<xs:restriction base="cs">
+			<xs:enumeration value="AN"/>
+			<xs:enumeration value="AP"/>
+			<xs:enumeration value="ON"/>
+			<xs:enumeration value="OP"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleClass">
+		<xs:restriction base="cs">
+			<xs:enumeration value="ACCESS"/>
+			<xs:enumeration value="ACTI"/>
+			<xs:enumeration value="ACTM"/>
+			<xs:enumeration value="ADMM"/>
+			<xs:enumeration value="ADTV"/>
+			<xs:enumeration value="AFFL"/>
+			<xs:enumeration value="AGNT"/>
+			<xs:enumeration value="ALQT"/>
+			<xs:enumeration value="ASSIGNED"/>
+			<xs:enumeration value="BASE"/>
+			<xs:enumeration value="BIRTHPL"/>
+			<xs:enumeration value="CAREGIVER"/>
+			<xs:enumeration value="CASEBJ"/>
+			<xs:enumeration value="CIT"/>
+			<xs:enumeration value="CLAIM"/>
+			<xs:enumeration value="COLR"/>
+			<xs:enumeration value="COMPAR"/>
+			<xs:enumeration value="CON"/>
+			<xs:enumeration value="CONT"/>
+			<xs:enumeration value="COVPTY"/>
+			<xs:enumeration value="CRINV"/>
+			<xs:enumeration value="CRSPNSR"/>
+			<xs:enumeration value="DSDLOC"/>
+			<xs:enumeration value="DST"/>
+			<xs:enumeration value="ECON"/>
+			<xs:enumeration value="EMP"/>
+			<xs:enumeration value="EXPR"/>
+			<xs:enumeration value="FLVR"/>
+			<xs:enumeration value="GEN"/>
+			<xs:enumeration value="GRIC"/>
+			<xs:enumeration value="GUAR"/>
+			<xs:enumeration value="GUARD"/>
+			<xs:enumeration value="HLD"/>
+			<xs:enumeration value="HLTHCHRT"/>
+			<xs:enumeration value="IACT"/>
+			<xs:enumeration value="IDENT"/>
+			<xs:enumeration value="INDIV"/>
+			<xs:enumeration value="INGR"/>
+			<xs:enumeration value="INST"/>
+			<xs:enumeration value="INVSBJ"/>
+			<xs:enumeration value="ISDLOC"/>
+			<xs:enumeration value="ISLT"/>
+			<xs:enumeration value="LIC"/>
+			<xs:enumeration value="LOCE"/>
+			<xs:enumeration value="MANU"/>
+			<xs:enumeration value="MBR"/>
+			<xs:enumeration value="MIL"/>
+			<xs:enumeration value="MNT"/>
+			<xs:enumeration value="NAMED"/>
+			<xs:enumeration value="NOK"/>
+			<xs:enumeration value="OWN"/>
+			<xs:enumeration value="PART"/>
+			<xs:enumeration value="PAT"/>
+			<xs:enumeration value="PAYEE"/>
+			<xs:enumeration value="PAYOR"/>
+			<xs:enumeration value="POLHOLD"/>
+			<xs:enumeration value="PROG"/>
+			<xs:enumeration value="PROV"/>
+			<xs:enumeration value="PRS"/>
+			<xs:enumeration value="PRSV"/>
+			<xs:enumeration value="QUAL"/>
+			<xs:enumeration value="RESBJ"/>
+			<xs:enumeration value="RET"/>
+			<xs:enumeration value="RGPR"/>
+			<xs:enumeration value="ROL"/>
+			<xs:enumeration value="SAME"/>
+			<xs:enumeration value="SDLOC"/>
+			<xs:enumeration value="SGNOFF"/>
+			<xs:enumeration value="SPEC"/>
+			<xs:enumeration value="SPNSR"/>
+			<xs:enumeration value="STBL"/>
+			<xs:enumeration value="STD"/>
+			<xs:enumeration value="STOR"/>
+			<xs:enumeration value="SUBS"/>
+			<xs:enumeration value="SUBSCR"/>
+			<xs:enumeration value="SUBY"/>
+			<xs:enumeration value="TERR"/>
+			<xs:enumeration value="THER"/>
+			<xs:enumeration value="UNDWRT"/>
+			<xs:enumeration value="WRTE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipType">
+		<xs:restriction base="cs">
+			<xs:enumeration value="APND"/>
+			<xs:enumeration value="ARR"/>
+			<xs:enumeration value="AUTH"/>
+			<xs:enumeration value="CAUS"/>
+			<xs:enumeration value="CHRG"/>
+			<xs:enumeration value="CIND"/>
+			<xs:enumeration value="COMP"/>
+			<xs:enumeration value="COST"/>
+			<xs:enumeration value="COVBY"/>
+			<xs:enumeration value="CREDIT"/>
+			<xs:enumeration value="CTRLV"/>
+			<xs:enumeration value="DEBIT"/>
+			<xs:enumeration value="DEP"/>
+			<xs:enumeration value="DOC"/>
+			<xs:enumeration value="DRIV"/>
+			<xs:enumeration value="ELNK"/>
+			<xs:enumeration value="EVID"/>
+			<xs:enumeration value="EXPL"/>
+			<xs:enumeration value="FLFS"/>
+			<xs:enumeration value="GEN"/>
+			<xs:enumeration value="GEVL"/>
+			<xs:enumeration value="GOAL"/>
+			<xs:enumeration value="INST"/>
+			<xs:enumeration value="ITEMSLOC"/>
+			<xs:enumeration value="LIMIT"/>
+			<xs:enumeration value="MFST"/>
+			<xs:enumeration value="MITGT"/>
+			<xs:enumeration value="MTCH"/>
+			<xs:enumeration value="NAME"/>
+			<xs:enumeration value="OBJC"/>
+			<xs:enumeration value="OBJF"/>
+			<xs:enumeration value="OCCR"/>
+			<xs:enumeration value="OPTN"/>
+			<xs:enumeration value="OREF"/>
+			<xs:enumeration value="OUTC"/>
+			<xs:enumeration value="PERT"/>
+			<xs:enumeration value="PRCN"/>
+			<xs:enumeration value="PREV"/>
+			<xs:enumeration value="REFR"/>
+			<xs:enumeration value="REFV"/>
+			<xs:enumeration value="REV"/>
+			<xs:enumeration value="RISK"/>
+			<xs:enumeration value="RPLC"/>
+			<xs:enumeration value="RSON"/>
+			<xs:enumeration value="SAS"/>
+			<xs:enumeration value="SCH"/>
+			<xs:enumeration value="SEQL"/>
+			<xs:enumeration value="SPRT"/>
+			<xs:enumeration value="SPRTBND"/>
+			<xs:enumeration value="SUBJ"/>
+			<xs:enumeration value="SUCC"/>
+			<xs:enumeration value="SUMM"/>
+			<xs:enumeration value="TRIG"/>
+			<xs:enumeration value="UPDT"/>
+			<xs:enumeration value="VRXCRPT"/>
+			<xs:enumeration value="XCRPT"/>
+			<xs:enumeration value="XFRM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipDirection">
+		<xs:restriction base="cs">
+			<xs:enumeration value="IN"/>
+			<xs:enumeration value="OUT"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleLinkType">
+		<xs:restriction base="cs">
+			<xs:enumeration value="REL"/>
+			<xs:enumeration value="DIRAUTH"/>
+			<xs:enumeration value="INDAUTH"/>
+			<xs:enumeration value="PART"/>
+			<xs:enumeration value="BACKUP"/>
+			<xs:enumeration value="REPL"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RoleStatus">
+		<xs:restriction base="cs">
+			<xs:enumeration value="nullified"/>
+			<xs:enumeration value="normal"/>
+			<xs:enumeration value="active"/>
+			<xs:enumeration value="cancelled"/>
+			<xs:enumeration value="pending"/>
+			<xs:enumeration value="suspended"/>
+			<xs:enumeration value="terminated"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActStatus">
+		<xs:restriction base="cs">
+			<xs:enumeration value="nullified"/>
+			<xs:enumeration value="obsolete"/>
+			<xs:enumeration value="normal"/>
+			<xs:enumeration value="aborted"/>
+			<xs:enumeration value="active"/>
+			<xs:enumeration value="cancelled"/>
+			<xs:enumeration value="completed"/>
+			<xs:enumeration value="held"/>
+			<xs:enumeration value="new"/>
+			<xs:enumeration value="suspended"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="EntityStatus">
+		<xs:restriction base="cs">
+			<xs:enumeration value="nullified"/>
+			<xs:enumeration value="normal"/>
+			<xs:enumeration value="active"/>
+			<xs:enumeration value="terminated"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="UpdateCode">
+		<xs:restriction base="cs">
+			<xs:enumeration value="REF"/>
+			<xs:enumeration value="OVL"/>
+			<xs:enumeration value="UPD"/>
+			<xs:enumeration value="CREF"/>
+			<xs:enumeration value="COVL"/>
+			<xs:enumeration value="CUPD"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationSignature">
+		<xs:restriction base="cs">
+			<xs:enumeration value="I"/>
+			<xs:enumeration value="X"/>
+			<xs:enumeration value="S"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipCheckpoint">
+		<xs:annotation>
+			<xs:documentation>vocSet: T10349 (C-0-T10349-cpt)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="B"/>
+			<xs:enumeration value="E"/>
+			<xs:enumeration value="S"/>
+			<xs:enumeration value="X"/>
+			<xs:enumeration value="T"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipJoin">
+		<xs:annotation>
+			<xs:documentation>vocSet: T10360 (C-0-T10360-cpt)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="D"/>
+			<xs:enumeration value="X"/>
+			<xs:enumeration value="K"/>
+			<xs:enumeration value="W"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipSplit">
+		<xs:annotation>
+			<xs:documentation>vocSet: T10355 (C-0-T10355-cpt)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="E1"/>
+			<xs:enumeration value="EW"/>
+			<xs:enumeration value="I1"/>
+			<xs:enumeration value="IW"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ActRelationshipSubset">
+		<xs:restriction base="cs">
+			<xs:enumeration value="MAX"/>
+			<xs:enumeration value="MIN"/>
+			<xs:enumeration value="SUM"/>
+			<xs:enumeration value="FUTURE"/>
+			<xs:enumeration value="LAST"/>
+			<xs:enumeration value="NEXT"/>
+			<xs:enumeration value="FUTSUM"/>
+			<xs:enumeration value="PAST"/>
+			<xs:enumeration value="FIRST"/>
+			<xs:enumeration value="RECENT"/>
+			<xs:enumeration value="PREVSUM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="ParticipationSubset">
+		<xs:restriction base="cs">
+			<xs:enumeration value="MAX"/>
+			<xs:enumeration value="MIN"/>
+			<xs:enumeration value="SUM"/>
+			<xs:enumeration value="FUTURE"/>
+			<xs:enumeration value="LAST"/>
+			<xs:enumeration value="NEXT"/>
+			<xs:enumeration value="FUTSUM"/>
+			<xs:enumeration value="PAST"/>
+			<xs:enumeration value="FIRST"/>
+			<xs:enumeration value="RECENT"/>
+			<xs:enumeration value="PREVSUM"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RealmCode">
+		<xs:restriction base="cs">
+			<xs:enumeration value="US"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RelationshipConjunction">
+		<xs:annotation>
+			<xs:documentation>vocSet: T10365 (C-0-T10365-cpt)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cs">
+			<xs:enumeration value="AND"/>
+			<xs:enumeration value="XOR"/>
+			<xs:enumeration value="OR"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Lymph Node Involvement - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+				<p><b>Procedure Name: <h:outputText value=" #{trim.trim.act.relationship['procedure'].act.title.ST.value}"/> </b>
+				</p>
+				
+				<table>
+				
+				<c:if test="#{trim.trim.act.relationship['sentinelLymphNodesPostive'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['sentinelLymphNodesPostive'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['sentinelLymphNodesPostive'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['sentinelLymphNodesExamined'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['sentinelLymphNodesExamined'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['sentinelLymphNodesExamined'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['nonSentinelLymphNodesPostive'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['nonSentinelLymphNodesPostive'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['nonSentinelLymphNodesPostive'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['nonSentinelLymphNodesExamined'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['nonSentinelLymphNodesExamined'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['nonSentinelLymphNodesExamined'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+
+				<c:if test="#{trim.trim.act.relationship['axillaryLymphNodesPositive'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['axillaryLymphNodesPositive'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['axillaryLymphNodesPositive'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['axillaryLymphNodesExamined'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['axillaryLymphNodesExamined'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['axillaryLymphNodesExamined'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+
+
+				<c:if test="#{trim.trim.act.relationship['internalMammaryLymphNodesPositive'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['internalMammaryLymphNodesPositive'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['internalMammaryLymphNodesPositive'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['internalMammaryLymphNodesExamined'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['internalMammaryLymphNodesExamined'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['internalMammaryLymphNodesExamined'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['supraclavicularLymphNodesPositive'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['supraclavicularLymphNodesPositive'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['supraclavicularLymphNodesPositive'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['supraclavicularLymphNodesExamined'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['supraclavicularLymphNodesExamined'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['supraclavicularLymphNodesExamined'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+
+				<c:if test="#{trim.trim.act.relationship['infraclavicularLymphNodesPositive'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['infraclavicularLymphNodesPositive'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['infraclavicularLymphNodesPositive'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['infraclavicularLymphNodesExamined'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['infraclavicularLymphNodesExamined'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['infraclavicularLymphNodesExamined'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+
+
+
+					<tr>
+					<td colspan="2"><br></br></td>
+					</tr>
+
+
+					<tr>
+					<td>
+
+					<h:outputText value="#{trim.trim.act.relationship['lymphNodeStatus'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:CE valueSet="nodeStatus" value="#{trim.trim.act.relationship['lymphNodeStatus'].act.observation.value}" readonly="true"/>
+					</td>
+					</tr>
+						
+
+					<tr>
+					<td colspan="2">
+					</td>
+					</tr>
+
+					<tr>
+					<td>
+
+					<h:outputText value="#{trim.trim.act.relationship['nodesExamined'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['nodesExamined'].act.observation.value}" readonly="true" />	
+					</td>
+					</tr>
+
+
+				<c:if test="#{trim.trim.act.relationship['noMetastases_totalNodesWithITC'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['noMetastases_totalNodesWithITC'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['noMetastases_totalNodesWithITC'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['noMetastases_nodesExaminedWithITC'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['noMetastases_nodesExaminedWithITC'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['noMetastases_nodesExaminedWithITC'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+
+
+				<c:if test="#{trim.trim.act.relationship['positive_totalPositiveNodes'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['positive_totalPositiveNodes'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:INT value="#{trim.trim.act.relationship['positive_totalPositiveNodes'].act.observation.value}" readonly="true" />
+					</td>
+					</tr>
+					
+				</c:if>
+				<c:if test="#{trim.trim.act.relationship['postive_largestMetastatisSize'].enabled}">
+					<tr>
+					<td>
+				
+					<h:outputText value="#{trim.trim.act.relationship['postive_largestMetastatisSize'].act.title.ST.value}:" />
+					</td>
+					<td>
+						<wiz:dataTypeSelect value="#{trim.trim.act.relationship['postive_largestMetastatisSize'].act.observation.value}" destination="trim.act.relationship['postive_largestMetastatisSize'].act.observation.value" valueSet="metastatisDataType" id="metasDataType" readonly="true"/>
+					</td>
+					</tr>
+				</c:if>
+				
+					<tr>
+					<td>
+
+					<h:outputText value="#{trim.trim.act.relationship['extraNodalExtension'].act.title.ST.value}:" />
+					</td>
+					<td>
+					
+					<trim:CE valueSet="extraNodal" value="#{trim.trim.act.relationship['extraNodalExtension'].act.observation.value}" readonly="true"/>		
+					</td>
+					</tr>
+
+				
+				
+				</table>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

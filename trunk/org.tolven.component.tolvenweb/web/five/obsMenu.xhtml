@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Observation Menu</title>
+  </head>
+  <body>
+  	<ui:composition>
+ <script language="JavaScript" type="text/javascript">
+// <![CDATA[
+	#{menu.elementLabel}DG = new Rico.LiveGrid( '#{menu.element}LG', 15, #{menu.menuDataCount}, 
+				'menuData.ajax', 
+				{prefetchBuffer: true, 
+				tableClass: 'dataGrid', 
+				largeBufferSize: 4.0,
+				nearLimitFactor: 0.7,
+				requestParameters: [{name: 'element', value: visiblePage}],
+				loadingClass: 'dataGridLoading',
+				sortAscendImg: '../images/sort_asc.gif', 
+				sortDescendImg:'../images/sort_desc.gif'});  
+
+// ]]>
+</script>
+		<div id="#{menu.element}LGDG" style="width:990px;padding:5px">
+			<table id="#{menu.element}LG_header" >
+			  <thead>
+				  <tr>
+					  <th align="left" width="210px">Observation</th>
+				  </tr>
+			  </thead>
+			</table> 
+			<table id="#{menu.element}LG" >
+			  <tbody>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+				<tr><td width="210px">-</td></tr>
+			  </tbody>
+			</table>
+		</div>
+	</ui:composition>
+  </body>
+</html>

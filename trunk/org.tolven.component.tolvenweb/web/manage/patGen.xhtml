@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>User Preferences</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="Generate Patients for #{reg.account.id} - #{reg.account.title}"/>
+        <ui:define name="body">
+			<h:form id="patGen" >
+	        	<div class="breadcrumbs">
+					<h:commandLink value="Application" action="dispatch" immediate="true"/>
+					<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+					<h:commandLink value="Preferences" action="preferences" immediate="true"/>
+					<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+					<h:outputText value="Generate Patients"/>
+				</div>
+
+				<h:outputText value="Generate random patients and add them to this account.&nbsp;&nbsp;
+				The generator runs in the background and will take several minutes to run.&nbsp;&nbsp;
+				The generator creates a lot of data.&nbsp;&nbsp;
+				But you may notice that it does not create the exact number of patient specified:&nbsp;
+				The generator automatically discards people that have not been born yet and some but not all people that are deceased.&nbsp;&nbsp;
+				Also, the fact that pregnancies result in zero, one or more live births makes the number hard to hit exactly.
+				" escape="false"/>
+				<br/><br/>
+
+		           <h:panelGrid columns="2">
+		                <h:outputText value="Number of Patients to generate (maximum=#{top.properties['tolven.gen.patient.max']})"/>
+		                <h:inputText id="count" value="#{gen.numberToGenerate}" size="4">
+		                	<f:validateLongRange minimum="1" maximum="#{top.properties['tolven.gen.patient.max']}"/>
+		                </h:inputText>
+		                <h:outputText value="Patients began arriving in which year"/>
+		                <h:inputText id="startYear" value="#{gen.generateHistoryFrom}" size="4"/>
+		            </h:panelGrid>
+		            <h:commandButton action="#{gen.createCHRPatients}" value="Generate Patients"/>
+
+				<h:message for="patGen" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+			</h:form>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

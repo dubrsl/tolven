@@ -1,0 +1,741 @@
+package echr
+// See http://wiki.tolven.org/doc/index.php/Plugin:org.tolven.component.tolvenejb#PlaceholderFacts
+// for details on the following annotation:
+//@use echr placeholders
+
+ /* Tolven */
+import java.util.*;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.doc.entity.*;
+import java.lang.Integer;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.app.bean.Mode;
+import org.tolven.app.bean.Plan;
+import org.tolven.core.entity.Status;
+import org.tolven.model.Patient;
+
+global org.tolven.app.AppEvalAdaptor app;
+global Date now;
+import function org.tolven.trim.contstants.PatientImportance.isVIP;
+
+/**
+ * **** SAMPLE Placeholder ************************
+ */
+rule "Place Sample on sample list"
+	when
+		$msSample: MenuStructure( role == "placeholder", path == "echr:sample" )
+		$msSampleList: MenuStructure( role == "list", path == "echr:samples:all" )
+		$mdSample: MenuData( menuStructure == $msSample )
+	then
+		app.info( "Place Sample on Samples list"); 
+		app.createReferenceMD( $mdSample, $msSampleList );
+end
+
+rule "Queue attached CCR document"
+	when
+		$msDoc: MenuStructure( role == "placeholder", path == "echr:document"  )
+		$mdDoc: MenuData( menuStructure == $msDoc, string01=='CCR' )
+	then
+		app.info( "Qeueue CCR attachment" );
+		app.queueAttachments( "urn:astm-org:CCR" );
+end
+
+rule "Queue attached CDA document"
+	when
+		$msDoc: MenuStructure( role == "placeholder", path == "echr:document"  )
+		$mdDoc: MenuData( menuStructure == $msDoc, string01=='CDA' )
+	then
+		app.info( "Qeueue CDA attachment" );
+		app.queueAttachments( "urn:hl7-org:v3" );
+end
+
+rule "Queue attached NUH document"
+	when
+		$msDoc: MenuStructure( role == "placeholder", path == "echr:document"  )
+		$mdDoc: MenuData( menuStructure == $msDoc, string01=='NUH' )
+	then
+		app.info( "Qeueue CDA attachment" );
+		app.queueAttachments( "nuh" );
+end
+
+/**
+ * If a female patient over 40 has not had a mammogram in over 3 years, add the patient to mammo list.
+ * Otherwise, the patient should NOT be on the mammo list.
+ * This rule does not apply to VIP patients.
+ * See: http://wiki.tolven.org/tc/index.php/Mammography_(SCT_71651007)
+ */
+rule "Patient Needs Mammogram"
+    when
+        /* A Patient procedure list is defined in metadata */
+        $msProcList: MenuStructure( role == "list", path == "echr:patient:procedures:pxList" )
+        /* A list of Patients needing mammograms is defined in metadata */
+        $msList: MenuStructure( path == "echr:patients:mammo" )
+        /* A patient exists with matching demographics */
+        $patient: org.tolven.model.Patient( sex=='Female', ageInYears > 40 )
+        /* See if there is a recent mammogram */
+//        eval( !isRecent( $msProcList, $patient, yearsAgo(3), kindsOf( "SCT", 119040011 ) ) 
+        /* Patient must not be VIP */
+        eval( !isVIP($patient.getPlaceholder().getField( "vip")) )
+    then
+        app.createReferenceMD( $patient.getPlaceholder(), $msList );
+end
+
+/**
+ * Identify the patient, if one occurs in this transaction. Only one, unique patient object gets created.
+ */
+rule "Identify Patient based on activity related to the patient"
+	when
+		/* Any activity occurred on some patient */
+		$msPatient: MenuStructure( role == "placeholder", path == "echr:patient" )
+		$md: MenuData( $mdPatient: parent01!=null, parent01.menuStructure == $msPatient)
+	then
+		insert( new org.tolven.model.Patient( $mdPatient, now ));
+end
+
+/**
+ * Identify the patient when the patient is created in this transaction
+ */
+rule "Insert patient as patient model"
+	when
+		$msPatient: MenuStructure( role == "placeholder", path == "echr:patient" )
+		$mdPatient: MenuData( reference==null, menuStructure == $msPatient )
+	then
+		insert( new org.tolven.model.Patient( $mdPatient, now ));
+end
+
+rule "Place Procedure on Px list"
+	when
+		$msList: MenuStructure( path == "echr:patient:procedures:pxList" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:px" )
+		$md: MenuData( menuStructure == $ms)
+	then
+		app.createReferenceMD( $md, $msList );
+end
+
+rule "Add Px to summaries"
+	when
+		$msList: MenuStructure( path == "echr:patient:summary:procsum" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:px" )
+		$md: MenuData( menuStructure == $ms )		
+	then
+		MenuData md = app.createReferenceMD( $md, $msList );
+end
+
+/**
+ * Historical items are not present in working memory unless we request them.
+ * Harvest patient list entry for this patient (if processing any kind of patient data)
+ */
+rule "Harvest patient list item"
+	when
+		$msPatientAll: MenuStructure( path == "echr:patients:all" )
+		$md: MenuData( path matches "echr:patient\-.*", $mdPat: parent01 )
+	then
+		app.insertReferencingItems( $md, $msPatientAll );
+end
+
+rule "Add problem name to patient list"
+	when
+		$msProblem: MenuStructure( role == "placeholder", path == "echr:patient:problem" )
+		$mdProblem: MenuData( menuStructure == $msProblem )
+		$msPatList: MenuStructure( path == "echr:patients:all" )
+		$mdPatList: MenuData( menuStructure == $msPatList )
+	then
+		$mdPatList.addPhrase( $mdProblem.getString01(), "problem", "en_US" );
+end
+
+/**
+ * Add Location to location list
+ */
+rule "Add location to location list"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:location" )
+		$msList: MenuStructure( role == "list", path == "echr:admin:locations:all" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		MenuData mdLocList = app.createReferenceMD( $md, $msList );
+		mdLocList.addPhrase( $md.getString01(), "location", "en_US" );
+end
+
+/**
+ * Staff Registration act
+ */
+rule "Add staff to staff list"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:assigned" )
+		$msList: MenuStructure( role == "list", path == "echr:admin:staff:all" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		MenuData mdStaffList = app.createReferenceMD( $md, $msList );
+		mdStaffList.addPhrase( $md.getString01(), "family", "en_US" );
+		mdStaffList.addPhrase( $md.getString02(), "given", "en_US" );
+		mdStaffList.addPhrase( $md.getString03(), "given", "en_US" );
+		mdStaffList.addPhrase( $md.getString04(), "gender", "en_US" );
+end
+
+rule "Add document to document list"
+	when
+		MenuStructure( role == "list", $path: path == "echr:admin:documents:all" )
+		$msDoc: MenuStructure( role == "placeholder", path == "echr:document" )
+		$mdDoc: MenuData( menuStructure == $msDoc )
+	then
+		MenuData mdDocumentList = app.createReferenceMD( $mdDoc, $path );
+end
+
+/**
+  * If we have a document and a patient at the same time, 
+  * then add the document to the patient's document list.
+  */
+rule "Add document to patient document list also"
+	when
+		$msList: MenuStructure( role == "list", path == "echr:patient:documents:all" )
+		$msDoc: MenuStructure( role == "placeholder", path == "echr:patient:patDoc" )
+		$mdDoc: MenuData( menuStructure == $msDoc )
+//        org.tolven.model.Patient( $pat: placeholder )
+	then
+		MenuData mdDocumentList = app.createReferenceMD( $mdDoc, $msList);
+end
+
+rule "Place Medication on medication list"
+	when
+		$msMedication: MenuStructure( role == "placeholder", path == "echr:patient:medication" )
+		$msMedList: MenuStructure( role == "list", path == "echr:patient:medications:current" )
+		$mdMedication: MenuData( menuStructure == $msMedication )
+	then
+		app.createReferenceMD( $mdMedication, "echr:patient:medications:current" );
+end
+
+rule "Place Cancelled Medication on Cancelled list"
+	when
+		$msMedication: MenuStructure( role == "placeholder", path == "echr:patient:medication" )
+		$msMedList: MenuStructure( role == "list", path == "echr:patient:medications:canceled" )
+		$mdMedication: MenuData( menuStructure == $msMedication, actStatus=="cancelled"  )
+	then
+		app.info( "Place Cancled Medication on Cancled list"); 
+		app.createReferenceMD( $mdMedication, "echr:patient:medications:canceled" );
+end
+
+rule "Place Medication on Medication summary list"
+	when
+		$msMedication: MenuStructure( role == "placeholder", path == "echr:patient:medication" )
+		$mdMedication: MenuData( menuStructure == $msMedication )
+	then
+		// Add act to patient's Medication list
+		app.createReferenceMD( $mdMedication, "echr:patient:summary:medsum" );
+end
+
+rule "Place Encounter on Encounter summary list"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "echr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter )
+	then
+		// Add act to patient's Encounter summary (list)
+		app.createReferenceMD( $mdEncounter, "echr:patient:summary:encsum" );
+end
+
+rule "Place Encounters on encounter list"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "echr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter, actStatus=='active' )
+	then
+		MenuData mdEncList = app.createReferenceMD( $mdEncounter, "echr:patient:encounters:active" );
+end
+
+rule "Place Encounters on inactive encounter list"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "echr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter, actStatus!='active' )
+	then
+		MenuData mdEncList = app.createReferenceMD( $mdEncounter, "echr:patient:encounters:inactive" );
+end
+
+rule "Place Encounters on the account-wide encounter list"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "echr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter )
+		$list: MenuStructure( path == "echr:admin:encounters:all" )
+	then
+		MenuData mdEncList = app.createReferenceMD( $mdEncounter, $list );
+end
+
+rule "Place Encounters on inpatient list"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "echr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter, actStatus=='active', $mdPat: parent01 )
+	then
+		MenuData mdInList = app.createReferenceMD( $mdEncounter, "echr:patients:in" );
+end
+
+rule "Ensure Encounter is updated when patient is updated"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "echr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter, actStatus=='active', $mdPat: parent01 )
+	then
+		app.touchIf( $mdEncounter, $mdPat );
+end
+
+rule "Ensure Encounter is updated when location is updated"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "echr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter, actStatus=='active', $mdFac: parent03!=null )
+	then
+		app.touchIf( $mdEncounter, $mdFac );
+end
+
+rule "Place Encounter on staff list"
+	when
+		$list: MenuStructure( path == "echr:assigned:encounters:in" )
+		$msEncounter: MenuStructure( role == "placeholder", path == "echr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter, actStatus=='active', $attender: parent04 != null )
+	then
+		MenuData mdInList = app.createReferenceMD( $mdEncounter, $list, $attender );
+end
+
+rule "Place Appointment on staff appointment list"
+	when
+		$msAppointment: MenuStructure( role == "placeholder", path == "echr:patient:appointment" )
+		$mdAppointment: MenuData( menuStructure == $msAppointment, actStatus=='active', $attender: parent02!=null )
+		$list: MenuStructure( path == "echr:assigned:appointments:all" )
+	then
+		// Add appointment to staff (attender) Appointment summary (list)
+		MenuData md = app.createReferenceMD( $mdAppointment, $list, $attender );
+end
+
+rule "Place Appointment on appointment summary list"
+	when
+		$msAppointment: MenuStructure( role == "placeholder", path == "echr:patient:appointment" )
+		$mdAppointment: MenuData( menuStructure == $msAppointment, actStatus=='active' )
+	then
+		// Add act to patient's Appointment summary (list)
+		MenuData md = app.createReferenceMD( $mdAppointment, "echr:patient:summary:apptsum" );
+end
+
+rule "Place Appointment on active appointment list"
+	when
+		$msAppointment: MenuStructure( role == "placeholder", path == "echr:patient:appointment" )
+		$mdAppointment: MenuData( menuStructure == $msAppointment, actStatus=='active' )
+	then
+		app.createReferenceMD( $mdAppointment, "echr:patient:appointments:future" );
+end
+
+rule "Place Appointment on completed appointment list"
+	when
+		$msAppointment: MenuStructure( role == "placeholder", path == "echr:patient:appointment" )
+		$mdAppointment: MenuData( menuStructure == $msAppointment, actStatus!='active' )
+	then
+		app.createReferenceMD( $mdAppointment, "echr:patient:appointments:past" );
+end
+
+rule "Place Personal Event on summary list"
+	when
+		$msPEvent: MenuStructure( role == "placeholder", path == "echr:patient:personalEvent" )
+		$mdPEvent: MenuData( menuStructure == $msPEvent, actStatus == "active" )
+	then
+		MenuData md = app.createReferenceMD( $mdPEvent, "echr:patient:summary:pevnsum" );
+end
+
+rule "Place Personal Event on Personal Event list"
+	when
+		$msPEvent: MenuStructure( role == "placeholder", path == "echr:patient:personalEvent" )
+		$mdPEvent: MenuData( menuStructure == $msPEvent, actStatus == "active" )
+	then
+		app.createReferenceMD( $mdPEvent, "echr:patient:personalEvents:all" );
+end
+
+rule "Update Allergies count on patient placeholder"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, $mdPat: parent01 )
+	then
+		$mdPat.setLong01( ($mdPat.getLong01()==null)?1:$mdPat.getLong01()+ 1 );
+end
+
+rule "Place Allergies on Allergies summary list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy )
+	then
+		MenuData mdAllergyList = app.createReferenceMD( $mdAllergy, "echr:patient:summary:allergysum" );
+end
+
+rule "Place Allergies on allergy list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy )
+	then
+		MenuData mdDXList = app.createReferenceMD( $mdAllergy, "echr:patient:allergies:current" );
+end
+
+rule "Place Cancelled Allegies on Cancelled list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$msList: MenuStructure( role == "list", path == "echr:patient:allergies:canceled" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, actStatus=="cancelled"  )
+	then
+		app.info( "Place Cancled Allegies on Cancled list"); 
+		app.createReferenceMD( $mdAllergy, $msList );
+end
+
+rule "Place suspended Allegies on Suspended list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$msList: MenuStructure( role == "list", path == "echr:patient:allergies:suspended" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, actStatus=="suspended"  )
+	then
+		app.info( "Place suspended Allegies on Suspended list"); 
+		app.createReferenceMD( $mdAllergy, $msList );
+end
+
+rule "Place held Allegies on Held list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$msList: MenuStructure( role == "list", path == "echr:patient:allergies:held" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, actStatus=="held"  )
+	then
+		app.info( "Place held Allegies on Held list"); 
+		app.createReferenceMD( $mdAllergy, $msList );
+end
+
+rule "Place nullified Allegies on Nullified list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$msList: MenuStructure( role == "list", path == "echr:patient:allergies:nullified" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, actStatus=="nullified"  )
+	then
+		app.info( "Place nullified Allegies on Nullified list"); 
+		app.createReferenceMD( $mdAllergy, $msList );
+end
+
+rule "Place obsolete Allegies on Obsolete list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$msList: MenuStructure( role == "list", path == "echr:patient:allergies:obsolete" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, actStatus=="obsolete"  )
+	then
+		app.info( "Place obsolete Allegies on Obsolete list"); 
+		app.createReferenceMD( $mdAllergy, $msList );
+end
+
+rule "Place aborted Allegies on Aborted list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$msList: MenuStructure( role == "list", path == "echr:patient:allergies:aborted" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, actStatus=="aborted"  )
+	then
+		app.info( "Place aborted Allegies on Aborted list"); 
+		app.createReferenceMD( $mdAllergy, $msList );
+end
+
+rule "Place completed Allegies on Completed list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "echr:patient:allergy" )
+		$msList: MenuStructure( role == "list", path == "echr:patient:allergies:completed" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, actStatus=="completed"  )
+	then
+		app.info( "Place completed Allegies on Completed list"); 
+		app.createReferenceMD( $mdAllergy, $msList );
+end
+
+rule "Add patient to VIP list"
+	when
+		$msPatient: MenuStructure( role == "placeholder", path == "echr:patient" )
+		$msPatientAll: MenuStructure( path == "echr:patients:vip" )
+		$mdPatient: MenuData( reference==null, menuStructure == $msPatient )
+		eval( isVIP($mdPatient.getField( "vip")) )
+	then
+		MenuData mdPatList = app.createReferenceMD( $mdPatient, $msPatientAll );
+		mdPatList.addPhrase( $mdPatient.getStringField("lastName"), "family", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("firstName"), "given", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("middleName"), "given", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("sex"), "gender", "en_US" );
+		insert( mdPatList );
+end
+
+/**
+ * Add Patient to all patients list, except for VIP patients
+ */
+rule "Add patient to patient list"
+	when
+		$msPatient: MenuStructure( role == "placeholder", path == "echr:patient" )
+		$msPatientAll: MenuStructure( path == "echr:patients:all" )
+		$mdPatient: MenuData( reference==null, menuStructure == $msPatient, actStatus!="terminated" )
+		eval( !isVIP($mdPatient.getField( "vip")) )
+	then
+		MenuData mdPatList = app.createReferenceMD( $mdPatient, $msPatientAll );
+		mdPatList.addPhrase( $mdPatient.getStringField("lastName"), "family", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("firstName"), "given", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("middleName"), "given", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("sex"), "gender", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("mrn"), "id", "en_US" );
+		insert( mdPatList );
+end
+
+rule "Add patient to terminated patient list"
+	when
+		$msPatient: MenuStructure( role == "placeholder", path == "echr:patient" )
+		$msPatientAll: MenuStructure( path == "echr:patients:terminated" )
+		$mdPatient: MenuData( reference==null, menuStructure == $msPatient, actStatus=="terminated" )
+	then
+		MenuData mdPatList = app.createReferenceMD( $mdPatient, $msPatientAll );
+		mdPatList.addPhrase( $mdPatient.getStringField("lastName"), "family", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("firstName"), "given", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("middleName"), "given", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("sex"), "gender", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("mrn"), "id", "en_US" );
+		insert( mdPatList );
+end
+
+rule "Add Asthma problem to Asthma patient list"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:problem" )
+		$md: MenuData( menuStructure == $ms, actStatus!="nullified", 
+			$dxName: string01 matches "(?i).*asthma.*", $mdPat : parent01 )
+		$msList: MenuStructure( path == "echr:patients:asthma" )
+		eval( !isVIP($mdPat.getField( "vip")) )
+	then
+		app.createReferenceMD( $mdPat, $msList );
+end
+
+rule "Add Diabetes problem to Diabetes patient list"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:problem" )
+		$md: MenuData( menuStructure == $ms, actStatus!="nullified", 
+			$dxName: string01 matches "(?i).*diabetes.*", $mdPat : parent01 )
+		$msList: MenuStructure( path == "echr:patients:dm" )
+		eval( !isVIP($mdPat.getField( "vip")) )
+	then
+		app.createReferenceMD( $mdPat, $msList );
+end
+
+rule "Add patient with Hypertension problem to Hypertension patient list"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:problem" )
+		$md: MenuData( menuStructure == $ms, actStatus!="nullified", 
+			$dxName: string01 matches "(?i).*hypertension.*", $mdPat : parent01 )
+		$msList: MenuStructure( path == "echr:patients:htn" )
+		eval( !isVIP($mdPat.getField( "vip")) )
+	then
+		app.createReferenceMD( $mdPat, $msList );
+end
+
+/**
+ * If we find an observation placeholder, add it to the observation list. 
+ */
+rule "Place observation on observation list"
+	when
+		$msObservation: MenuStructure( role == "placeholder", path == "echr:patient:observation" )
+		$mdObservation: MenuData( menuStructure == $msObservation, actStatus!="nullified" )
+	then
+		// Add act to patient's observation list
+		MenuData mdObsList = app.createReferenceMD( $mdObservation, "echr:patient:observations:all" );
+		mdObsList.addPhrase( $mdObservation.getString01(), "obs", "en_US" );
+end
+
+/**
+ * If we find an observation placeholder, add it to the observation summary. 
+ */
+rule "Place observation on observation summary list"
+	when
+		$obs: observation( actStatus!="nullified", knownType=="echr")
+	then
+		app.createReferenceMD( $obs, "echr:patient:summary:obssum" );
+end
+
+rule "Place Diagnosis on diagnosis list"
+	when
+		$msDiagnosis: MenuStructure( role == "placeholder", path == "echr:patient:diagnosis" )
+		$mdDiagnosis: MenuData( menuStructure == $msDiagnosis, actStatus!="nullified" )
+	then
+//		app.info( "Place Diagnosis on dx list"); 
+		MenuData mdDXList = app.createReferenceMD( $mdDiagnosis, "echr:patient:diagnoses:current" );
+		mdDXList.addPhrase( $mdDiagnosis.getString01(), "dx", "en_US" );
+end
+
+rule "Place Diagnosis on dx summary list"
+	when
+		$msDiagnosis: MenuStructure( role == "placeholder", path == "echr:patient:diagnosis" )
+		$mdDiagnosis: MenuData( menuStructure == $msDiagnosis, actStatus!="nullified" )
+	then
+		MenuData mdDXList = app.createReferenceMD( $mdDiagnosis, "echr:patient:summary:dxsum" );
+end
+
+rule "Add Diagnosis to patient list word index"
+	when
+		$msDiagnosis: MenuStructure( role == "placeholder", path == "echr:patient:diagnosis" )
+		$mdDiagnosis: MenuData( menuStructure == $msDiagnosis, actStatus!="nullified", $dxName: string01, $mdPat : parent01 )
+	then
+		List<MenuData> patListMDs = app.findReferencingMDs( $mdPat, "echr:patients:all" );
+		for( MenuData md : patListMDs) {
+			md.addPhrase( $dxName, "dx", "en_US" );
+		}
+end
+
+rule "Add Asthma Diagnosis to Asthma patient list"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:diagnosis" )
+		$md: MenuData( menuStructure == $ms, actStatus!="nullified", 
+			$dxName: string01 matches ".*Asthma.*", $mdPat : parent01 )
+		$msList: MenuStructure( path == "echr:patients:asthma" )
+	then
+		app.createReferenceMD( $mdPat, $msList );
+end
+
+rule "Place Plan on summary list"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "echr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, string02!="Obsolete" )
+	then
+		MenuData md = app.createReferenceMD( $mdPlan, "echr:patient:summary:plansum" );
+end
+
+rule "Place Plan on Treatment Plan list"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "echr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, actStatus == "active" )
+	then
+		app.createReferenceMD( $mdPlan, "echr:patient:plans:all" );
+end
+
+rule "Place Plan on Timeline"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "echr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, string02 != "Obsolete" )
+		Plan( $plan : path )
+		$msPlanProcSum: MenuStructure( path == $plan )
+	then
+		MenuData md = app.createReferenceMD( $mdPlan, $msPlanProcSum );
+end
+
+rule "Add result to summaries"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:result" )
+		$md: MenuData( menuStructure == $ms )
+		$msList: MenuStructure( path == "echr:patient:summary:resultsum" )
+	then
+		MenuData md = app.createReferenceMD( $md, $msList );
+end
+
+rule "Place Request on Request list"
+	when
+		$msList: MenuStructure( path == "echr:patient:results:request" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:request" )
+		$md: MenuData( menuStructure == $ms, parent02==null)
+	then
+		app.createReferenceMD( $md, $msList );
+end
+
+rule "Place Result on Lab Result list"
+	when
+		$msList: MenuStructure( path == "echr:patient:results:lab" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:result" )
+		$md: MenuData( menuStructure == $ms, parent02!=null, parent02.string06!="Imaging X-ray")
+	then
+		app.createReferenceMD( $md, $msList );
+end
+
+rule "Place Result on Rad Result list"
+	when
+		$msList: MenuStructure( path == "echr:patient:results:rad" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:result" )
+		$md: MenuData( menuStructure == $ms, parent02!=null, parent02.string06=="Imaging X-ray")
+	then
+		app.createReferenceMD( $md, $msList );
+end
+
+rule "Place Result on Rad Result list2"
+	when
+		$msList: MenuStructure( path == "echr:patient:results:rad" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:result" )
+		$md: MenuData( menuStructure == $ms, parent02==null, string06=="Imaging X-ray")
+	then
+		app.createReferenceMD( $md, $msList );
+end
+
+rule "Place Provider on Provider list"
+	when
+		Mode( direction == "local" )
+		$msList: MenuStructure( path == "echr:admin:providers:all" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:provider" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		MenuData md = app.createReferenceMD( $md, $msList );
+// 		Allow replies as well
+		app.addMyProvider( $md.getField("providerId") );
+end
+
+rule "Place Trial form on Trial form list"
+	when
+		Mode( direction == "local" )
+		$msList: MenuStructure( path == "echr:patient:trialForms:all" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:trialForm" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		MenuData md = app.createReferenceMD( $md, $msList );
+end
+
+rule "Place Immunization on Immunization list"
+	when
+		$msMedication: MenuStructure( role == "placeholder", path == "echr:patient:immunization" )
+		$msMedList: MenuStructure( role == "list", path == "echr:patient:immu:current" )
+		$mdMedication: MenuData( menuStructure == $msMedication )
+	then
+		app.createReferenceMD( $mdMedication, "echr:patient:immu:current" );
+end
+
+rule "Place Problem on Problems list"
+	when
+		$msProblem: MenuStructure( role == "placeholder", path == "echr:patient:problem" )
+		$msProblemList: MenuStructure( role == "list", path == "echr:patient:problems:current" )		
+		$mdProblem: MenuData( menuStructure == $msProblem)
+	then
+		app.createReferenceMD( $mdProblem, "echr:patient:problems:current" );
+end
+
+rule "Place problem on probsum summary list"
+	when
+		$msProblem: MenuStructure( role == "placeholder", path == "echr:patient:problem" )
+		$mdProblem: MenuData( menuStructure == $msProblem )
+	then
+		MenuData mdPXList = app.createReferenceMD( $mdProblem, "echr:patient:summary:probsum" );
+end
+
+rule "Place AccountList on AccountLists list"
+	when
+		$msList: MenuStructure( path == "echr:admin:lists:accountLists" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:accountList" )
+		$md: MenuData( menuStructure == $ms)
+	then
+		app.createReferenceMD( $md, $msList );
+end
+
+rule "Place Favorite item on AccountList list"
+	when
+		$msList: MenuStructure( path == "echr:accountList:favorites" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:accountList:favorite" )
+		$md: MenuData( menuStructure == $ms)
+	then
+		MenuData mdList = app.createReferenceMD( $md, $msList );
+		mdList.addPhrase( $md.getString01(), "term", "en_US" );
+end
+
+rule "Place PersonalList on PersonalLists list"
+	when
+		$msList: MenuStructure( path == "echr:assigned:lists:personalLists" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:assigned:personalList" )
+		$md: MenuData( menuStructure == $ms)
+	then
+		app.createReferenceMD( $md, $msList );
+end
+
+rule "Place PersonalFavorite item on PersonalList list"
+	when
+		$msList: MenuStructure( path == "echr:personalList:favorites" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:personalList:pfavorite" )
+		$md: MenuData( menuStructure == $ms)
+	then
+		MenuData mdList = app.createReferenceMD( $md, $msList );
+		mdList.addPhrase( $md.getString01(), "term", "en_US" );
+end
+
+

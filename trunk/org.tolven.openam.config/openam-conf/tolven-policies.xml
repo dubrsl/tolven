@@ -1,0 +1,1016 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE Policies
+PUBLIC "-//Sun Java System Access Manager 7.1 2006Q3 Admin CLI DTD//EN" "jar://com/sun/identity/policy/policyAdmin.dtd">
+
+<Policies>
+	<Policy name="tolvenapi.admin.policy" referralPolicy="false" active="true">
+		<Rule name="https://-*-.able.com:8443/api/accounts">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/accounts" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/accounts/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/accounts/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="DELETE" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="PUT" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/accountTypes">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/accountTypes" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/accountTypes/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/accountTypes/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="DELETE" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="PUT" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/application.wadl">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/application.wadl" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/loader/createTrimHeader?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/loader/createTrimHeader?*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/loader/createTrimHeader/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/loader/createTrimHeader/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/loader/loadApplication?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/loader/loadApplication?*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/loader/loadApplications/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/loader/loadApplications/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/loader/packageBody?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/loader/packageBody?*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/scheduler/interval/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/scheduler/interval/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/scheduler/stop/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/scheduler/stop/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/scheduler/timeout/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/scheduler/timeout/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/loader/storeReport?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/loader/storeReport?*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/loader/queueActivateNewTrimHeaders/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/loader/queueActivateNewTrimHeaders/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/tolvenproperties/find">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/tolvenproperties/find" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/tolvenproperties/find?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/tolvenproperties/find?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/tolvenproperties/set/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/tolvenproperties/set/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/tolvenproperties/remove/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/tolvenproperties/remove/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/tolvenproperties/reset/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/tolvenproperties/reset/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/activate/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/activate/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/placeholders/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/placeholders/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/placeholders">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/placeholders" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/placeholders/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/placeholders/*" />
+			<AttributeValuePair>
+				<Attribute name="DELETE" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="PUT" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/accountUsers/*/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/accountUsers/*/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/accountUsers/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/accountUsers/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/details/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/details/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/details/*/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/details/*/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Subjects>
+			<Subject name="tolvenAdmin" type="AMIdentitySubject" includeType="inclusive">
+				<AttributeValuePair>
+					<Attribute name="Values" />
+					<Value>id=tolvenAdmin,ou=group,o=tolven,ou=services,dc=opensso,dc=tolven,dc=org</Value>
+				</AttributeValuePair>
+			</Subject>
+		</Subjects>
+		<Conditions name="vestibuleConditions" description="vestibuleConditions">
+			<Condition name="userContext-vestibule" type="SessionPropertyCondition">
+				<AttributeValuePair>
+					<Attribute name="userContext" />
+					<Value>vestibule</Value>
+				</AttributeValuePair>
+			</Condition>
+		</Conditions>
+	</Policy>
+	<Policy name="tolvenweb.api.vestibule.policy" referralPolicy="false" active="true">
+		<Rule name="https://-*-.able.com:8443/api/accounts">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/accounts" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/accounts/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/accounts/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="DELETE" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="PUT" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/accountUsers/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/accountUsers/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/accountUsers?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/accountUsers?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/details/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/details/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/details?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/details?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/vestibule/accountList">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/vestibule/accountList" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/vestibule/enter/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/vestibule/enter/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/vestibule/exit/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/vestibule/exit/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/vestibule/selectAccount/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/vestibule/selectAccount/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Subjects>
+			<Subject name="tolvenSSO" type="AMIdentitySubject" includeType="inclusive">
+				<AttributeValuePair>
+					<Attribute name="Values" />
+					<Value>id=tolvenSSO,ou=group,o=tolven,ou=services,dc=opensso,dc=tolven,dc=org</Value>
+				</AttributeValuePair>
+			</Subject>
+		</Subjects>
+		<Conditions name="vestibuleConditions" description="vestibuleConditions">
+			<Condition name="userContext-vestibule" type="SessionPropertyCondition">
+				<AttributeValuePair>
+					<Attribute name="userContext" />
+					<Value>vestibule</Value>
+				</AttributeValuePair>
+			</Condition>
+		</Conditions>
+	</Policy>
+	<Policy name="tolvenweb.api.policy" referralPolicy="false" active="true">
+		<Rule name="https://-*-.able.com:8443/api/account/default/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/account/default/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/account/properties/set/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/account/properties/set/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/accounts/refresh/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/accounts/refresh/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/account/user/add/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/account/user/add/" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/document/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/document/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/document/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/document/*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/generator/ccr">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/generator/ccr" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/generator/ccr?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/generator/ccr?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/accountUsers/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/accountUsers/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/accountUsers?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/accountUsers?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/details/">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/details/" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/user/details?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/user/details?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/api/vestibule/accountList">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/api/vestibule/accountList" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Subjects>
+			<Subject name="tolvenSSO" type="AMIdentitySubject" includeType="inclusive">
+				<AttributeValuePair>
+					<Attribute name="Values" />
+					<Value>id=tolvenSSO,ou=group,o=tolven,ou=services,dc=opensso,dc=tolven,dc=org</Value>
+				</AttributeValuePair>
+			</Subject>
+		</Subjects>
+		<Conditions name="vestibuleConditions" description="vestibuleConditions">
+			<Condition name="userContext-account" type="SessionPropertyCondition">
+				<AttributeValuePair>
+					<Attribute name="userContext" />
+					<Value>account</Value>
+				</AttributeValuePair>
+			</Condition>
+		</Conditions>
+	</Policy>
+	<Policy name="tolvenweb.vestibule.policy" referralPolicy="false" active="true">
+		<Rule name="https://-*-.able.com:8443/Tolven/ajax/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/ajax/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/ajax/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/ajax/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/download/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/download/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/error.jsp">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/error.jsp" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/error.jsp?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/error.jsp?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/error-403.jsp">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/error-403.jsp" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/error-403.jsp?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/error-403.jsp?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/images/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/images/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/javax.faces.resource?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/javax.faces.resource?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/javax.faces.resource/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/javax.faces.resource/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/loggedOut.jsf">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/loggedOut.jsf" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/manage/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/manage/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/manage/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/manage/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/scripts/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/scripts/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/styles/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/styles/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/vestibule/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/vestibule/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/vestibule/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/vestibule/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Subjects>
+			<Subject name="tolvenSSO" type="AMIdentitySubject" includeType="inclusive">
+				<AttributeValuePair>
+					<Attribute name="Values" />
+					<Value>id=tolvenSSO,ou=group,o=tolven,ou=services,dc=opensso,dc=tolven,dc=org</Value>
+				</AttributeValuePair>
+			</Subject>
+		</Subjects>
+		<Conditions name="vestibuleConditions" description="vestibuleConditions">
+			<Condition name="userContext-vestibule" type="SessionPropertyCondition">
+				<AttributeValuePair>
+					<Attribute name="userContext" />
+					<Value>vestibule</Value>
+				</AttributeValuePair>
+			</Condition>
+		</Conditions>
+	</Policy>
+	<Policy name="tolvenweb.policy" referralPolicy="false" active="true">
+		<Rule name="https://-*-.able.com:8443/Tolven/ajax/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/ajax/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/ajax/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/ajax/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/document/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/document/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/document/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/document/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/drilldown/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/drilldown/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/drilldown/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/drilldown/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/error.jsp">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/error.jsp" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/error.jsp?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/error.jsp?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/error-403.jsp">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/error-403.jsp" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/error-403.jsp?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/error-403.jsp?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/five/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/five/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/five/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/five/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/images/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/images/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/javax.faces.resource?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/javax.faces.resource?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/javax.faces.resource/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/javax.faces.resource/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/loggedOut.jsf">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/loggedOut.jsf" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/manage/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/manage/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/manage/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/manage/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/private/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/private/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/private/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/private/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/report/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/report/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/report/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/report/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/scripts/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/scripts/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/styles/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/styles/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/wizard/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/wizard/*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/Tolven/wizard/*?*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/Tolven/wizard/*?*" />
+			<AttributeValuePair>
+				<Attribute name="GET" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Subjects>
+			<Subject name="tolvenSSO" type="AMIdentitySubject" includeType="inclusive">
+				<AttributeValuePair>
+					<Attribute name="Values" />
+					<Value>id=tolvenSSO,ou=group,o=tolven,ou=services,dc=opensso,dc=tolven,dc=org</Value>
+				</AttributeValuePair>
+			</Subject>
+		</Subjects>
+		<Conditions name="vestibuleConditions" description="vestibuleConditions">
+			<Condition name="userContext-account" type="SessionPropertyCondition">
+				<AttributeValuePair>
+					<Attribute name="userContext" />
+					<Value>account</Value>
+				</AttributeValuePair>
+			</Condition>
+		</Conditions>
+	</Policy>
+</Policies>

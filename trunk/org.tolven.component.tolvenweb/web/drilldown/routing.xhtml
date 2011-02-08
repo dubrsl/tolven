@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Routing recap</title>
+</head>
+
+<body>
+    <ui:composition>
+		<h:panelGroup rendered="#{trim.showSelectedRouting}">
+			<h3>Routing</h3>
+			<c:if test="#{menu.menuDataItem.status=='NEW'}">
+   			<p>Upon submission, a copy of this will be routed to:</p>
+   			</c:if>
+			<c:if test="#{menu.menuDataItem.status!='NEW'}">
+   			<p>This was routed to:</p>
+   			</c:if>
+            <h:dataTable value="#{trim.selectedRouting}" var="ae">
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="#{msg.AccountId}"/>
+	                </f:facet>
+	                <h:outputText value="#{ae.accountId}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="#{msg.AccountName}"/>
+	                </f:facet>
+	                <h:outputText value="#{ae.accountName}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="#{msg.Comment}"/>
+	                </f:facet>
+	                <h:outputText value="#{ae.comment}"/>
+	            </h:column>
+            </h:dataTable>
+		</h:panelGroup>			    
+	</ui:composition>
+</body>
+</html>

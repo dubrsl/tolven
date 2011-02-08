@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Share Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="#{msg.GettingStarted}" >
+			<wiz:body>
+				<p>You have received information about a patient. 
+				You can review the information and then decide if you want to keep the 
+				information or not.</p>
+				<ol>
+					<li>Cancel the share request without responding to the sender</li>
+					<li>Deny the request and send a response to the sender</li>
+					<li>Accept the data in the request</li>
+				</ol>
+			</wiz:body>
+			<wiz:help>
+				<h1>Getting Started</h1>
+				<p>Help provides additional information about each page</p>
+				<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yuo can continue at any time later.
+				If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
+				Once submitted, you will not be able to Cancel the form.</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Reason" >
+			<wiz:body>
+				<wiz:group title="Sender"> 
+					<h:outputText value="#{trim.trim.message.sender.accountName}"/>
+				</wiz:group>
+				<wiz:group title="Comment from sender"> 
+					<h:outputText value="#{trim.trim.message.sender.comment}"/>
+				</wiz:group>
+				<wiz:group title="Regarding Patient"> 
+					<h:outputText value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].formatted}"/>
+				</wiz:group>
+			</wiz:body>
+		</wiz:step>
+		<c:if test="#{top.accountType=='echr'}">
+			<wiz:step title="Patient" >
+				<wiz:body>
+					<wiz:group title="Add this new data to my patient">
+		                <h:selectOneMenu id="mypat" value="#{trim.trim.act.participation['subject'].role.id.for[top.accountUser.account].extension}">
+		                   	<f:selectItem itemValue="#{null}" itemLabel="None"/>
+		                	<f:selectItems value="#{trim.list['echr:patients:all~Name']}"/>
+		                </h:selectOneMenu>
+		                <br/>
+		                <h:outputLink value="javascript:instantiate('reg/evn/patient','#{menu.element}','#{menu.element}')">
+		                	<h:outputText value="create new patient"/>
+		                </h:outputLink><br/>
+		                <h:outputLink value="javascript:getRemoteContent(visiblePage);">
+		                	<h:outputText value="refresh"/>
+		                </h:outputLink> 
+					</wiz:group>
+					<wiz:group title="Patient's data from sender">
+						<trim:personSummary entity="#{trim.trim.act.participation['subject'].role.player}" readonly="true"/>
+					</wiz:group>
+				</wiz:body>
+			</wiz:step>
+		</c:if>
+		<c:if test="#{top.accountType=='ephr'}">
+			<wiz:step title="Person" >
+				<wiz:body>
+					<wiz:group title="Add this new data to someone in this ePHR account">
+		                <h:selectOneMenu id="mypat" value="#{trim.trim.act.participation['subject'].role.id.for[top.accountUser.account].extension}">
+		                   	<f:selectItem itemValue="#{null}" itemLabel="None"/>
+		                	<f:selectItems value="#{trim.list['ephr:patients:all~Name']}"/>
+		                </h:selectOneMenu>
+		                <br/>
+		                <h:outputLink value="javascript:instantiate('reg/evn/patient','#{menu.element}','#{menu.element}')">
+		                	<h:outputText value="create new person"/>
+		                </h:outputLink><br/>
+		                <h:outputLink value="javascript:getRemoteContent(visiblePage);">
+		                	<h:outputText value="refresh"/>
+		                </h:outputLink> 
+					</wiz:group>
+					<wiz:group title="Data from sender">
+						<trim:personSummary entity="#{trim.trim.act.participation['subject'].role.player}" readonly="true"/>
+					</wiz:group>
+				</wiz:body>
+			</wiz:step>
+		</c:if>
+		<wiz:step title="Information to accept" >
+			<wiz:body>
+				<wiz:group title="Accept"> 
+					<table style="padding:0.5em" >
+				    	<c:forEach var="rel" items="#{trim.trim.act.relationships}">
+				    		<tr >
+				    			<td>
+									<h:outputText value="#{rel.act.text.label.value}"/>
+				    			</td>
+				    			<td>
+									<h:outputText value="#{rel.act.text.ST.value}"/>
+				    			</td>
+				    			<td >
+									<h:outputText value="#{rel.act.effectiveTime.IVLTS.low.TS}">
+										<trim:convertTS type="date" timeStyle="" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+									</h:outputText>
+									<h:outputText value="#{rel.act.effectiveTime.TS}">
+										<trim:convertTS type="date" timeStyle="" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+									</h:outputText>
+				    			</td>
+				    		</tr>
+					    </c:forEach>
+					</table>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Share</h1>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Decision" >
+			<wiz:body>
+				<wiz:group title="Do you accept this data?"> 
+					<h:selectOneRadio id="accept" value="#{trim.trim.message.receiver.status}" >
+						<f:selectItem itemLabel="Yes" itemValue="accept"/>
+						<f:selectItem itemLabel="No" itemValue="reject"/>
+					</h:selectOneRadio>
+				</wiz:group>
+				<wiz:group title="Comment from you to sender"> 
+					<h:inputText value="#{trim.trim.message.receiver.comment}" size="60"/>
+				</wiz:group>
+			</wiz:body>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>

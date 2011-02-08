@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Share Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="#{msg.GettingStarted}" >
+			<wiz:body>
+				<p>Use this form to share patient data with someone else. You will:</p>
+				<ol>
+					<li>Confirm which patient's data you will be sharing.</li>
+					<li>Specify where the data will be sent.</li>
+					<li>Select which data to share.</li>
+					<li>Indicate the reason for sharing the information.</li>
+					<li>Review the transaction and submit.</li>
+				</ol>
+				<wiz:group title="Patient's data that will be shared">
+			  		<h:outputText value="#{menu.menuDataItem.parent01.string02} #{menu.menuDataItem.parent01.string01}"/> 
+			  		<h:panelGroup rendered="#{menu.menuDataItem.parent01.string04!=null}">
+				  		<h:outputText value=" ["/> 
+				  		<h:outputText value="#{menu.menuDataItem.parent01.string04} "/> 
+				  		<h:outputText value="#{menu.menuDataItem.parent01.date01}" converter="ageConverter"/>
+				  		<h:outputText value="]"/> 
+				  	</h:panelGroup>
+				</wiz:group>
+				<p>If this is correct, click the Next button below to proceed. 
+				Otherwise, click Cancel to cancel the sharing transaction.</p>
+			</wiz:body>
+			<wiz:help>
+				<h1>Getting Started</h1>
+				<p>Help provides additional information about each page</p>
+				<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yuo can continue at any time later.
+				If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
+				Once submitted, you will not be able to Cancel the form.</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Destination" >
+			<wiz:body>
+				<c:if test="#{top.accountType=='echr'}">
+					<wiz:group title="Send to" >
+		                <h:selectOneMenu id="prov1" value="#{trim.trim.message.receiver.accountPath}">
+		                   	<f:selectItem itemLabel="Select"/>
+		                	<f:selectItems value="#{trim.list['echr:patient:share:accountShares~Name']}"/>
+		                	<f:selectItems value="#{trim.list['echr:admin:providers:all~Name']}"/>
+		                </h:selectOneMenu>
+		            </wiz:group>
+				</c:if>
+				<c:if test="#{top.accountType=='ephr'}">
+					<wiz:group title="Select a Provider">
+		                <h:selectOneMenu id="prov2" value="#{trim.trim.message.receiver.accountPath}">
+		                   	<f:selectItem itemLabel="Select"/>
+		                	<f:selectItems value="#{trim.list['ephr:patient:share:accountShares~Name']}"/>
+		                	<f:selectItems value="#{trim.list['ephr:providers:all~Name']}"/>
+		                </h:selectOneMenu>
+	              	</wiz:group>
+				</c:if>
+			</wiz:body>
+			<wiz:help>
+				<p>Help needed here.</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Type of information to share" >
+			<wiz:body>
+				<wiz:group title="Share"> 
+					<table>
+            			<c:forEach var="comp" items="#{trim.activeComputes}">
+            				<c:if test="#{comp.type=='org.tolven.process.Harvest'}">
+								<tr><td>
+									<h:selectBooleanCheckbox id="#{comp.property['relationship']}X" value="#{comp.property['enabled']}" converter="javax.faces.Boolean">
+										<h:outputLabel for="#{comp.property['relationship']}X">
+											#{comp.property['title']}
+										</h:outputLabel>
+									</h:selectBooleanCheckbox>
+								</td></tr>
+							</c:if>
+	        			</c:forEach>
+					</table>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Share</h1>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Reason" >
+			<wiz:body>
+				<wiz:group title="Why are you sending this information?"> 
+					<h:inputText value="#{trim.trim.message.sender.comment}" size="60" required="true"/>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Share</h1>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>

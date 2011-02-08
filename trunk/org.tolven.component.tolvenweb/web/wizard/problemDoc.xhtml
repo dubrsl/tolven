@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Problems</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+      <div id="popupGrids">
+  			<div id="#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}" class="popupgrid"/>          
+      </div>
+ 
+ 		<wiz:step title="Add #{trim.trim.act.relationship['type'].act.title.ST.value}s" >
+			<wiz:body>
+         	 <h:inputText id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" style="display: none;" converter="javax.faces.Boolean"/>			
+			 <h:inputText  id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
+			 <h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
+			 <h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />										
+				<wiz:group title="Problem">
+		          <table>
+		            <c:if test="#{not empty trim.trim.act.relationshipsList['entry']}">
+		              <tr>
+		                <th><u>Name</u></th>
+		                <th></th>
+		              </tr>
+		            </c:if>
+		            <c:forEach items="#{trim.trim.act.relationshipsList['entry']}" var="item" varStatus="itemIndex">
+		              <tr>
+		                <td>#{item.act.observation.value.CE.displayName}</td>
+		                <td><a href="javascript:removeTemplate('#{menu.elementLabel}',#{item.sequenceNumber})">delete</a> </td>
+		              </tr>              
+		            </c:forEach>
+		          </table>
+					<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'addTemplate', '#{menu.elementLabel}', 0)">Add #{trim.trim.act.relationship['type'].act.title.ST.value}</a>
+				</wiz:group>
+				<wiz:group title="Onset of Symptoms">
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+				<c:if test="#{top.accountType=='echr'}">
+					<ui:include src="author.xhtml"/>
+				</c:if>
+				<wiz:group title="Additional Details" >
+					<wiz:yesno id="probDetails">Add?</wiz:yesno>
+					<wiz:group title="Episodicity" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
+						<trim:valueSetMenu id="episodicity" slot="#{trim.trim.act.relationship['episodicity'].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="Severity" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
+						<trim:CE id="severity" valueSet="severity" value="#{trim.trim.act.relationships[1].act.observation.value}" layout="pageDirection" />
+					</wiz:group>
+					<wiz:group title="Course" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
+						<trim:CE id="course" valueSet="course" value="#{trim.trim.act.relationships[2].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="Onset" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
+						<trim:CE id="onset" valueSet="onset" value="#{trim.trim.act.relationships[3].act.observation.value}" layout="pageDirection" />
+					</wiz:group>
+				</wiz:group>
+				
+			</wiz:body>			
+		</wiz:step>
+    
+	</ui:composition>
+
+	
+</body>
+</html>

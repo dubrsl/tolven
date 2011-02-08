@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Select Data Type</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    	<ui:composition>
+    		<c:if test="#{readonly!='true'}" >
+		 <table>
+		  <tr><td>
+		  
+
+
+				<c:if test="#{value.value != null}">
+				<h:selectOneMenu id="#{id}"  required="#{required}" requiredMessage="#{requiredMessage}" value="#{value.value.label.value}" onchange="{ 	 	
+					
+
+					$('#{menu.elementLabel}:enableFlag#{id}').value= 'true';
+					$('#{menu.elementLabel}:dataTypeDestination#{id}').value= &quot;#&quot; + &quot;{#{destination}}&quot;;
+					$('#{menu.elementLabel}:dataTypeSource#{id}').value= &quot;#&quot; + &quot;{trim.valueSet['#{valueSet}'].values[&quot; + ($('#{menu.elementLabel}:#{id}').selectedIndex -1) + &quot;]}&quot;;
+
+					ajaxSubmit4($('#{menu.elementLabel}'), $('#{menu.elementLabel}').parentNode.id, $('#{menu.elementLabel}').getAttribute('currentStep'));
+
+					}" >
+					<f:selectItem itemLabel="Select.." itemValue="" />
+					<c:forEach var="dataTypeItem" items="#{trim.trim.valueSet[valueSet].values}">
+					<f:selectItem itemLabel="#{dataTypeItem.label.value}" itemValue="#{dataTypeItem.label.value}" />
+					</c:forEach>
+				  </h:selectOneMenu>  
+
+				</c:if>
+		  	
+		  		 
+		  		 <c:if test="#{value.value == null}">
+		  			<h:selectOneMenu id="#{id}" required="#{required}" requiredMessage="#{requiredMessage}"  onchange="{ 	 	
+					
+						$('#{menu.elementLabel}:enableFlag#{id}').value= 'true';
+						$('#{menu.elementLabel}:dataTypeDestination#{id}').value= &quot;#&quot; + &quot;{#{destination}}&quot;;
+						$('#{menu.elementLabel}:dataTypeSource#{id}').value= &quot;#&quot; + &quot;{trim.valueSet['#{valueSet}'].values[&quot; + ($('#{menu.elementLabel}:#{id}').selectedIndex - 1) + &quot;]}&quot;;
+
+						ajaxSubmit4($('#{menu.elementLabel}'), $('#{menu.elementLabel}').parentNode.id, $('#{menu.elementLabel}').getAttribute('currentStep'));
+
+						}" >
+						<f:selectItem itemLabel="Select.." itemValue="" />
+						<c:forEach var="dataTypeItem" items="#{trim.trim.valueSet[valueSet].values}">
+						<f:selectItem itemLabel="#{dataTypeItem.label.value}" itemValue="#{dataTypeItem.label.value}" />
+						</c:forEach>
+					  </h:selectOneMenu>  
+		  			
+		  		 </c:if>
+		  		 
+			 <h:inputText id="enableFlag#{id}" value="#{compute.property['enabled']}" style="display: none;" converter="javax.faces.Boolean"/>
+			 <h:inputText id="dataTypeDestination#{id}" value="#{compute.property['dataTypeDestination']}" style="display: none;" />
+			 <h:inputText id="dataTypeSource#{id}" value="#{compute.property['dataTypeSource']}" style="display: none;" />
+			 
+		  </td>
+		  <td> 
+
+		<c:choose>
+			<c:when test="#{value.datatype == 'OBSVALUE'}" >
+				<!-- ObservationValueSetEx -->
+			  	<c:choose>
+					<c:when test="#{value.PQ != null}" >
+						<h:inputText id="PQField#{id}" value="#{value.PQ.value}" size="6"> 
+							<f:converter converterId="TrimDoubleConverter"/>
+						</h:inputText>
+					</c:when>
+					<c:otherwise>
+						<!-- Null Flavor: No Form Fields -->			
+					</c:otherwise>
+			  	</c:choose>
+			</c:when>			  	
+			<c:otherwise>
+				<!-- GTSSlotEx -->	
+				<c:choose>
+					<c:when test="#{value.TS != null}" >
+						<trim:TS id="TS#{id}" value="#{value.TS}" dateStyle="short" />
+					</c:when>
+					<c:otherwise>
+						<!-- Null Flavor: No Form Fields -->			
+					</c:otherwise>
+				</c:choose>					
+			</c:otherwise>
+		</c:choose>
+
+		   
+		  </td>
+		  <td>
+		  </td></tr>
+		  </table>
+		  </c:if> 
+		  
+		<c:if test="#{readonly=='true'}" >
+			<c:choose>
+				<c:when test="#{value.datatype == 'OBSVALUE'}" >
+						<!-- ObservationValueSetEx -->
+				  	<c:choose>
+					<c:when test="#{value.PQ != null}" >
+						<h:outputText value="#{value.PQ.value}" > 
+							<f:converter converterId="TrimDoubleConverter"/>
+						</h:outputText><h:outputText value=" #{value.PQ.unit}"/>
+					</c:when>
+					<c:otherwise>
+						<!-- Null Flavor: No Form Fields -->			
+
+					</c:otherwise>
+				  	</c:choose>
+				</c:when>			  	
+				<c:otherwise>
+					<!-- GTSSlotEx -->	
+					<c:choose>
+					<c:when test="#{value.TS != null}" >
+						<trim:TS id="TSD#{id}" value="#{value.TS}" dateStyle="short" readonly="#{readonly}" />
+					</c:when>
+					<c:otherwise>
+						<!-- Null Flavor: No Form Fields -->		
+						<h:outputText value="#{value.value.label.value}" />	
+					</c:otherwise>
+					</c:choose>		  					
+				</c:otherwise>
+			</c:choose>		  
+		  </c:if>
+		  
+ 
+	</ui:composition>
+</body>
+</html>

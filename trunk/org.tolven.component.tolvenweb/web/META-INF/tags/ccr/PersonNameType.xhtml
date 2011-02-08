@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ccr="http://www.tolven.org/jsf/ccr"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+	<title>Hi</title>
+</head>
+<body>
+
+<ui:component >
+<f:subview id="#{id}" >
+<h:commandLink action="#{ccr.add}" rendered="#{name==null}">
+	<h:outputText value="Add #{description}"/>
+	<f:param name="parent" value="#{parent}"/>
+	<f:param name="type" value="org.tolven.ccr.PersonNameType"/>
+</h:commandLink>
+<h:panelGroup  rendered="#{name!=null}">
+	<f:subview id="i" >
+		<h:outputText value="#{description}"/> 
+		<h:panelGrid columns="2">
+	        <h:outputText value="Given"/> <h:inputText id="given" value="#{name.given}" converter="stringListConverter"/>
+	        <h:outputText value="Middle"/> <h:inputText id="middle" value="#{name.middle}" converter="stringListConverter"/>
+	        <h:outputText value="Family"/> <h:inputText id="family" value="#{name.family}" converter="stringListConverter"/>
+	        <h:outputText value="Suffix"/> <h:inputText id="suffix" value="#{name.suffix}" converter="stringListConverter" size="10"/>
+	        <h:outputText value="Title"/> <h:inputText id="title" value="#{name.title}" converter="stringListConverter" size="10"/>
+	        <h:outputText value="NickName"/> <h:inputText id="nickName" value="#{name.nickName}" converter="stringListConverter"/>
+        </h:panelGrid>
+    </f:subview>
+	<f:subview id="o">
+		<h:panelGroup rendered="#{not empty name.given}">
+	        <h:outputText value="Given: "/> <h:outputText id="given" value="#{name.given}" converter="stringListConverter"/>
+        </h:panelGroup>
+		<h:panelGroup rendered="#{not empty name.middle}">
+	        <h:outputText value="Middle: "/> <h:outputText id="middle" value="#{name.middle}" converter="stringListConverter"/>
+        </h:panelGroup>
+		<h:panelGroup rendered="#{not empty name.family}">
+	        <h:outputText value="Family: "/> <h:outputText id="family" value="#{name.family}" converter="stringListConverter"/>
+        </h:panelGroup>
+		<h:panelGroup rendered="#{not empty name.suffix}">
+	        <h:outputText value="Suffix: "/> <h:outputText id="suffix" value="#{name.suffix}" converter="stringListConverter" />
+        </h:panelGroup>
+		<h:panelGroup rendered="#{not empty name.title}">
+	        <h:outputText value="Title: "/> <h:outputText id="title" value="#{name.title}" converter="stringListConverter"/>
+        </h:panelGroup>
+		<h:panelGroup rendered="#{not empty name.nickName}">
+	        <h:outputText value="NickName: "/> <h:outputText id="nickName" value="#{name.nickName}" converter="stringListConverter"/>
+        </h:panelGroup>
+    </f:subview>
+</h:panelGroup>
+</f:subview>
+</ui:component>
+</body>
+</html>

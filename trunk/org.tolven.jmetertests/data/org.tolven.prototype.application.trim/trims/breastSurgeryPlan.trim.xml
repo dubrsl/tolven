@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>proc/prp/surgery/breast</name>
+	<description>Breast Surgery Plan</description>
+	<reference></reference>
+	<act classCode="PROC" moodCode="INT">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:procedureGroup</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:procedureGroup</path>
+			</placeholder>
+		</bind>
+		<page>surgery.xhtml</page>
+		<drilldown>surgeryDD.xhtml</drilldown>
+		<code>
+			<valueSet>surgicalProcedure</valueSet>
+		</code>
+		<title>
+			<ST>Surgery</ST>
+		</title>
+		<effectiveTime>
+			<label>Date of Surgery</label>
+			<TS/>
+		</effectiveTime>
+		<procedure>
+			<targetSiteCode>
+				<valueSet>laterality</valueSet>
+			</targetSiteCode>
+		</procedure>
+		<participation name="performer" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<relationship name="axillary" direction="OUT" typeCode="COMP">
+			<act classCode="PROC" moodCode="EVN">
+				<code>
+					<valueSet>axillarySurgery</valueSet>
+				</code>
+				<title>
+					<ST>Axillary Surgery</ST>
+				</title>
+				<procedure>
+					<targetSiteCode>
+						<valueSet>laterality</valueSet>
+					</targetSiteCode>
+				</procedure>
+			</act>
+		</relationship>
+		<relationship name="nextStep" direction="OUT" typeCode="COMP" optional="true" repeating="true">
+			<choice name="surgery" title="Surgery" include="proc/prp/surgery/breast"/>
+			<choice name="chemo" title="Chemotherapy" include="proc/prp/chemo/breast"/>
+			<choice name="xrt" title="Radiation" include="proc/prp/radiation/breast"/>
+			<choice name="hrt" title="Hormone Replacement" include="proc/prp/hrt/breast"/>
+			<choice name="wait" title="Wait" include="proc/prp/waitPlan"/>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.ComputePlan</type>
+			<property name="template">
+				<value xsi:type="xs:string">proc/rqo/surgery/breast</value>
+			</property>
+		</compute>
+	</act>
+	<valueSet name="laterality">
+		<null type="UNK">
+			<label>Select Laterality</label>
+		</null>
+		<CE>
+			<displayName>Left</displayName>
+			<code>l</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Right</displayName>
+			<code>r</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Both</displayName>
+			<code>b</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="surgicalProcedure">
+		<null type="UNK">
+			<label>Select Procedure</label>
+		</null>
+		<CE>
+			<displayName>Partial Mastectomy</displayName>
+			<code>pm</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Partial Mastectomy plus mastoplasty</displayName>
+			<code>pmm</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Partial Mastectomy plus breast reduction</displayName>
+			<code>pmbr</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Modified Radical Mastectomy</displayName>
+			<code>mrm</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Skin Sparing Mastectomy plus reconstruction</displayName>
+			<code>ssmr</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Total Skin Sparing Mastectomy</displayName>
+			<code>tssm</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Expansion</displayName>
+			<code>exp</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Permanent Expansion</displayName>
+			<code>pexp</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="axillarySurgery">
+		<null type="UNK">
+			<label>Select Axillary Surgery</label>
+		</null>
+		<CE>
+			<displayName>Sentinel Lymph Node</displayName>
+			<code>sln</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Possible Axillary Lymph Node</displayName>
+			<code>paln</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Axillary Lymph Node</displayName>
+			<code>aln</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Work in process</title>
+  </head>
+  <body>
+  	<ui:composition>
+	  <div class="info">
+	    <div class="allergies">
+	    <table>
+	    	<tr>
+    		<td>
+	    	  <div id="#{param.element}_wip" class="wip"  enableOverFlowListener="true">
+	          <ul defaultSelection="#{menu.defaultPathSuffix}">
+	            <c:forEach var="item" items="#{menu.preferredSortedChildren}">
+					<c:if test="#{(item.role=='tab' or item.role=='list') and item.visible=='true' and item.sequence lt 0}">
+						<li id="#{param.element}:#{item.node}:sel">
+							<a href="javascript:showPane('#{param.element}:#{item.node}');"> #{item.localeText[top.appBundle]}</a>
+						</li>
+					</c:if>
+	 				<c:if test="#{(item.role=='placeholder' or item.role=='event') }">
+						<li id="#{param.element}:#{item.node}:sel" style="display:none"></li>
+					</c:if>
+	            </c:forEach>
+	          </ul>
+	     </div>
+	    </td></tr>
+	    </table>
+	    </div>
+	   </div>
+  	</ui:composition>
+  </body>
+</html>

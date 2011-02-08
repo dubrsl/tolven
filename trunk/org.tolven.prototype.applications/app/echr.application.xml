@@ -1,0 +1,6 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd"
+	name="echr" creatable="true" title="Clinician Health Record" 
+	logo="/images/eCHR.png" css="/styles/echr.css" homePage="echr.jsf" >
+	<depends>global</depends>
+	<menu name="echr" title="eCHR" page="/five/tabs.xhtml" visible="true"/>
+</application>

@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard">
+<head>
+    <title>A wizard to list the attachments for a menudata item</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link href="#{facesContext.externalContext.request.contextPath}#{top.accountUser.account.accountType.CSS}" 
+			type="text/css" rel="stylesheet" />
+		<link href="#{facesContext.externalContext.request.contextPath}/styles/tolven.css"
+			type="text/css" rel="stylesheet" />		
+		<script language="JavaScript" type="text/javascript">
+	 	// <![CDATA[
+
+		 function createView(id, docId ) {
+		 	var a = document.createElement( "a" );
+		 	a.href = "#";
+		 	a.onclick = function() {hideView( id );};
+		 	a.appendChild( document.createTextNode( "Close") );
+		 	var view = document.createElement( "div" );
+		 	view.id = id;
+		 	view.style.display = 'none';
+		 	view.appendChild( a );
+		 	view.appendChild( document.createElement( "br" ));
+		 	var views = document.getElementById( "view" );
+		 	views.appendChild(view);
+		 	return view;
+		 }
+		 
+		 function createImageView(id, docId ) {
+		 	var view = createView( id, docId );
+		 	var img = document.createElement( "img" );
+		 	img.src = "/Tolven/document?docId=" + docId + "&width=400&height=400";
+		 	view.appendChild( img );
+		 	return view;
+		 }
+	
+		 function showView( id, docId) {
+		 	 var view = document.getElementById(id);
+		 	 if (view==null) {
+	 	 		view = createImageView(id, docId);
+		 	 }
+			 view.style.display='block';
+			 document.getElementById('upload').style.display='none';
+		 }
+		 function hideView( id ) {
+			 document.getElementById(id).style.display='none';
+			 document.getElementById('upload').style.display='block';
+		 }
+	  // ]]>
+	</script>
+</head>
+<body>
+    <ui:composition>
+    		<wiz:body>
+		    	<wiz:group title="Attachments" class="pagesum">	
+						<div class="wholePage" >
+							<div id="upload" style="display:block" >
+							   <h:dataTable value="#{menu.drilldownAttachments}" var="att" width="100%" 
+											border="1" cellspacing="0" cellpadding="2" 
+											rendered="#{!empty menu.drilldownAttachments }">
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Content"/>
+											</f:facet>
+											<h:outputLink value="/Tolven/document" rendered="#{att.mediaPrefix!='image'}" 
+												target="_blank">
+												<f:param name="docId" value="#{att.attachedDocument.id}" />
+									        	<f:param name="element" value="#{menu.element}"/>
+												<h:outputText value="View #{att.mediaPrefix} #{att.mediaSuffix}"/> 
+											</h:outputLink>
+											<h:outputLink value="#" onclick="showView('att#{att.id}', '#{att.attachedDocument.id}');" 
+													rendered="#{att.mediaPrefix=='image'}">
+									            <img src="/Tolven/document?docId=#{att.attachedDocument.id}&amp;width=80&amp;height=80" />
+											</h:outputLink>
+										</h:column>
+										<h:column rendered="false">
+											<f:facet name="header">
+												<h:outputText value="Id"/>
+											</f:facet>
+											<h:outputText value="#{att.id}"/>
+										</h:column>
+										<h:column>
+											<f:facet name="header">
+												<h:outputText value="Description"/>
+											</f:facet>
+											<h:outputText value="#{att.description}"/>
+										</h:column>				
+									</h:dataTable>
+							 </div>
+							</div>
+						</wiz:group>	         	
+        </wiz:body>
+	</ui:composition>
+</body>
+</html>

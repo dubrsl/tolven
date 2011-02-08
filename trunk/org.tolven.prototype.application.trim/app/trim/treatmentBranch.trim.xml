@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>proc/prp/treatmentBranch</name>
+	<description>Treatment Plan Branch</description>
+	<reference></reference>
+	<act classCode="PROC" moodCode="PRP">
+		<page>bcc/planBranch.xhtml</page>
+		<drilldown>planBranchDD.xhtml</drilldown>
+		<relationship name="treatment" direction="OUT" typeCode="PERT" optional="true" repeating="true">
+			<choice name="surgery" title="Surgery" include="proc/prp/surgery/breast"/>
+			<choice name="chemo" title="Chemotherapy" include="proc/prp/chemo/breast"/>
+			<choice name="xrt" title="Radiation" include="proc/prp/radiation/breast"/>
+			<choice name="hrt" title="Hormone Replacement" include="proc/prp/hrt/breast"/>
+			<choice name="wait" title="Wait" include="proc/prp/waitPlan"/>
+		</relationship>
+	</act>
+</trim>

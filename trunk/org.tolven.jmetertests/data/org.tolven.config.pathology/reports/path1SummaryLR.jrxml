@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using JasperAssistant (http://www.jasperassistant.com) -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="path1SummaryLR" pageWidth="216" pageHeight="791" whenNoDataType="AllSectionsNoDetail" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="true"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<import value="org.tolven.app.el.AgeFormat"/>
+	<import value="org.tolven.core.entity.AccountUser"/>
+	<import value="org.tolven.report.ProcedureReportDataSource"/>
+	<import value="org.tolven.report.PathStagingReportDataSource"/>
+	<import value="org.tolven.report.PathHistologyReportDataSource"/>
+	<import value="org.tolven.report.TolvenReportDataSource"/>
+	<import value="org.tolven.report.PathNodesReportDataSource"/>
+	<import value="org.tolven.report.PathReceptorsReportDataSource"/>
+	<style name="Base" isDefault="false" isBlankWhenNull="true" fontName="Helvetica" fontSize="8" pdfFontName="Helvetica"/>
+	<style name="BaseBI" isDefault="false" style="Base" markup="none" isBlankWhenNull="true" fontSize="8" isBold="true" isItalic="true" pdfFontName="Helvetica-BoldOblique"/>
+	<parameter name="SIDE" class="java.lang.String"/>
+	<parameter name="path" class="java.lang.String"/>
+	<group name="Laterality">
+		<groupHeader>
+			<band height="14">
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="BaseBI" stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="216" height="14" forecolor="#FFFFFF" backcolor="#666666"/>
+					<box padding="0"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{SIDE}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="LastProcedure">
+		<groupHeader>
+			<band height="14">
+				<subreport>
+					<reportElement x="0" y="0" width="216" height="14" isRemoveLineWhenBlank="true"/>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<subreportParameter name="SIDE">
+						<subreportParameterExpression><![CDATA[$P{SIDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="path">
+						<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new ProcedureReportDataSource("echr:patient:procedureGroups:active",$P{path}, $P{SIDE},(AccountUser)$P{REPORT_PARAMETERS_MAP}.get("accountUser"))]]></dataSourceExpression>
+					<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[ProcedureReportDataSource.getJasperReport("path1LastProcedure")]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Histology">
+		<groupHeader>
+			<band height="14">
+				<subreport>
+					<reportElement x="0" y="0" width="216" height="14" isRemoveLineWhenBlank="true"/>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<subreportParameter name="SIDE">
+						<subreportParameterExpression><![CDATA[$P{SIDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="path">
+						<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new PathHistologyReportDataSource("echr:patient:histologies:active",$P{path}, $P{SIDE},(AccountUser)$P{REPORT_PARAMETERS_MAP}.get("accountUser"))]]></dataSourceExpression>
+					<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[TolvenReportDataSource.getJasperReport("path1Histology")]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Nodes">
+		<groupHeader>
+			<band height="14">
+				<subreport>
+					<reportElement x="0" y="0" width="216" height="14" isRemoveLineWhenBlank="true"/>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<subreportParameter name="SIDE">
+						<subreportParameterExpression><![CDATA[$P{SIDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="path">
+						<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="Title">
+						<subreportParameterExpression><![CDATA["Sentinel Nodes"]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new PathNodesReportDataSource("echr:patient:nodes:active","echr:patient:sentinelNodes:active",$P{path}, $P{SIDE},(AccountUser)$P{REPORT_PARAMETERS_MAP}.get("accountUser"))]]></dataSourceExpression>
+					<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[TolvenReportDataSource.getJasperReport("path1Nodes")]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Receptors">
+		<groupHeader>
+			<band height="14">
+				<subreport>
+					<reportElement x="0" y="0" width="216" height="14" isRemoveLineWhenBlank="true"/>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<subreportParameter name="SIDE">
+						<subreportParameterExpression><![CDATA[$P{SIDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="path">
+						<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new PathReceptorsReportDataSource("echr:patient:receptors:active",$P{path}, $P{SIDE},(AccountUser)$P{REPORT_PARAMETERS_MAP}.get("accountUser"))]]></dataSourceExpression>
+					<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[TolvenReportDataSource.getJasperReport("path1Receptors")]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Staging">
+		<groupHeader>
+			<band height="14">
+				<subreport>
+					<reportElement x="0" y="0" width="216" height="14" isRemoveLineWhenBlank="true"/>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<subreportParameter name="SIDE">
+						<subreportParameterExpression><![CDATA[$P{SIDE}]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="path">
+						<subreportParameterExpression><![CDATA[$P{path}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new PathStagingReportDataSource("echr:patient:stagingNodes:active",$P{path}, $P{SIDE},(AccountUser)$P{REPORT_PARAMETERS_MAP}.get("accountUser"))]]></dataSourceExpression>
+					<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[TolvenReportDataSource.getJasperReport("path1Staging")]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<detail>
+		<band/>
+	</detail>
+</jasperReport>

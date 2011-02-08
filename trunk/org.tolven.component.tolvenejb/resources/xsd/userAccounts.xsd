@@ -1,0 +1,29 @@
+<xs:schema xmlns="urn:tolven-org:userAccounts:1.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	targetNamespace="urn:tolven-org:userAccounts:1.0" 
+	elementFormDefault="qualified" attributeFormDefault="unqualified" 
+	jaxb:version="2.1" jaxb:extensionBindingPrefixes="xjc">
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings>
+				<xjc:simple/>
+				<xjc:serializable /> 
+			</jaxb:globalBindings>
+		</xs:appinfo>
+	</xs:annotation>
+	<xs:element name="userAccounts" type="UserAccounts"/>
+	<xs:complexType name="UserAccounts">
+		<xs:sequence>
+			<xs:element name="userAccount" type="UserAccount" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="username" type="xs:string"/>
+		<xs:attribute name="timestamp" type="xs:dateTime"/>
+	</xs:complexType>
+	<xs:complexType name="UserAccount">
+		<xs:attribute name="accountUserId" type="xs:long"/>
+		<xs:attribute name="accountId" type="xs:long"/>
+		<xs:attribute name="title" type="xs:string"/>
+	</xs:complexType>
+</xs:schema>

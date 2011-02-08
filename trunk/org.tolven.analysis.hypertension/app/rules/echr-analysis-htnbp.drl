@@ -1,0 +1,191 @@
+package echr.analysis.htnbp
+ /* Tolven */
+import java.util.*;
+
+import org.tolven.app.entity.MenuData;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.doc.entity.*;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+
+import org.tolven.analysis.SnapshotEvent;
+import org.tolven.analysis.HTNBPSnapshotEvent;
+import org.tolven.analysis.SnapshotLocal;
+
+global org.tolven.app.AppEvalAdaptor app;
+global Date now;
+
+rule "Create patientcohort for htn.bpsnapshot"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:problem" )
+		$md: MenuData( menuStructure == $ms, actStatus!="nullified", string01 matches "(?i).*hypertension.*", $mdPat : parent01 )
+		$msPatientcohort: MenuStructure( role == "placeholder", path == "echr:patient:patientcohort" )
+		$msCohortPatientList: MenuStructure( role == "list", path == "echr:cohort:patients" )
+		$msPatientCohortList: MenuStructure( role == "list", path == "echr:patient:cohorts:current" )
+		$msCohort: MenuStructure( role == "placeholder", path == "echr:cohort" )
+		$msList: MenuStructure( role == "list", path == "echr:analysis:cohorts:all" )
+		$snapshotBean: SnapshotLocal()
+	then
+		//app.debug( "Create patientcohort for htn.bpsnapshot" );
+		MenuData patientcohort = $snapshotBean.findPatientcohort("htn", $mdPat, app.getAccount());
+		if(patientcohort == null) {
+			MenuData cohort = $snapshotBean.findCohort("htn",  app.getAccount());
+			if(cohort == null) {
+	            cohort = app.createPlaceholder($msCohort);
+	            cohort.setString01("Hypertension");
+	            cohort.setString02("htn");
+	            cohort.setDate01(now);
+				$snapshotBean.addCohortPlaceholderID("htn", cohort);
+				app.createReferenceMD( cohort, $msList );
+			}
+			Map<String, Object> menuDataMap = new HashMap<String, Object>();
+			menuDataMap.put("patient", $mdPat.getId());
+			menuDataMap.put("cohort", cohort.getId());
+			patientcohort = app.createPlaceholder( $msPatientcohort, menuDataMap );
+			patientcohort.setDate01( now );
+			$snapshotBean.addPatientcohortPlaceholderID("htn", patientcohort);
+			app.createReferenceMD( patientcohort, $msPatientCohortList );
+			app.createReferenceMD( patientcohort, $msCohortPatientList, cohort );
+		}
+end
+
+rule "Update latest htn.bpsnapshot"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:observation" )
+		$md: MenuData( menuStructure == $ms, $mdPat: parent01, string01 matches "(?i).*Blood Pressure.*", $pqValue01: pqValue01, $pqUnits01: pqUnits01, $pqValue02: pqValue02, $pqUnits02: pqUnits02, $date: date01 )
+		$snapshotBean: SnapshotLocal()
+	then
+		//app.debug( "Update latest htn.bpsnapshot" );
+		MenuData patientcohort = $snapshotBean.findPatientcohort( "htn", $mdPat.getId(), app.getAccount() );
+		if(patientcohort != null) {
+			MenuData lastBP = (MenuData) patientcohort.getField("lastBP");
+			if(lastBP == null || (lastBP.getField("date01") != null && $date.after(lastBP.getDateField("date01")))) {
+				patientcohort.setField("lastBP", $md);
+			}
+		}
+end
+
+rule "Insert HTNBPSnapshotEvent into working memory"
+	when
+		SnapshotEvent( cohortType == "org.tolven.cohort.htn", snapshotType == "bpsnapshot", $snapshotType: snapshotType )
+		$msSnapshot: MenuStructure( role == "placeholder", path == "echr:cohort:bpsnapshot" )
+		$msSnapshotList: MenuStructure( role == "list", path =="echr:cohort:snapshots:bpsnapshot" )
+		$snapshotBean: SnapshotLocal()
+	then
+		//app.debug( "Insert HTNBPSnapshotEvent into working memory");
+		MenuData cohort = $snapshotBean.findCohort("htn",  app.getAccount());
+		if(cohort != null) {
+			List<MenuData> patientcohorts = $snapshotBean.findCohortPatients(cohort, app.getAccount() );
+			for( MenuData patientcohort : patientcohorts) {
+				insert ( patientcohort );
+			}
+			Map<String, Object> menuDataMap = new HashMap<String, Object>();
+			menuDataMap.put("cohort", cohort.getId());
+			MenuData snapshot = app.createPlaceholder( $msSnapshot, menuDataMap );
+			snapshot.setString01("Hypertension Blood Pressure");
+			snapshot.setDate01( now );
+			snapshot.setField("targetPercent", Double.parseDouble(app.getAccount().getProperty().get("org.tolven.cohort.htn.bpsnapshot.target")));
+			snapshot.setField("allCount", 0L);
+			snapshot.setField("normCount", 0L);
+			snapshot.setField("abnormCount", 0L);
+			app.createReferenceMD( snapshot, $msSnapshotList );
+			HTNBPSnapshotEvent htnbpSnapshotEvent = new HTNBPSnapshotEvent();
+			htnbpSnapshotEvent.setCohort(cohort);
+			htnbpSnapshotEvent.setSnapshot(snapshot);
+			htnbpSnapshotEvent.setLowSystolic(Double.parseDouble(app.getAccount().getProperty().get("org.tolven.cohort.htn.bpsnapshot.lowSystolic")));
+			htnbpSnapshotEvent.setHighSystolic(Double.parseDouble(app.getAccount().getProperty().get("org.tolven.cohort.htn.bpsnapshot.highSystolic")));
+			htnbpSnapshotEvent.setLowDiastolic(Double.parseDouble(app.getAccount().getProperty().get("org.tolven.cohort.htn.bpsnapshot.lowDiastolic")));
+			htnbpSnapshotEvent.setHighDiastolic(Double.parseDouble(app.getAccount().getProperty().get("org.tolven.cohort.htn.bpsnapshot.highDiastolic")));
+			insert( htnbpSnapshotEvent );
+			$snapshotBean.upateMenuDataVersion( "echr:analysis:portal:htnbpsnapshotsum", app.getAccount(), now );
+		}
+end
+
+rule "Insert last htn.bpsnapshot Observation into working memory"
+	when
+		HTNBPSnapshotEvent( $cohort: cohort )
+		$msPatientcohort: MenuStructure( role == "placeholder", path == "echr:patient:patientcohort" )
+		$mdPatientcohort: MenuData( menuStructure == $msPatientcohort, $mdPat: parent01, parent02 == $cohort )
+		eval ($mdPatientcohort.getField("lastBP") != null )
+	then
+		//app.debug( "Insert last htn.bpsnapshot Observation into working memory" );
+		insert($mdPatientcohort.getField("lastBP"));
+end
+
+rule "Create And Insert htn.bpsnapshot Snapshotresult into working memory"
+	when
+		HTNBPSnapshotEvent( $cohort: cohort, $snapshot: snapshot )
+		$msPatientcohort: MenuStructure( role == "placeholder", path == "echr:patient:patientcohort" )
+		$mdPatientcohort: MenuData( menuStructure == $msPatientcohort, parent02 == $cohort, $mdPat: parent01 )
+		$msResult: MenuStructure( role == "placeholder", path == "echr:patient:observation" )
+		$mdResult: MenuData( menuStructure == $msResult, parent01 == $mdPat )
+		eval ( $mdPatientcohort.getField("lastBP") != null && $mdPatientcohort.getField("lastBP").equals($mdResult) )
+		$msSnapshotresult: MenuStructure( role == "placeholder", path == "echr:cohort:bpsnapshot:bpsnapshotresult" )
+	then
+		//app.debug( "Create And Insert htn.bpsnapshot Snapshotresult into working memory" );
+		Map<String, Object> menuDataMap = new HashMap<String, Object>();
+		menuDataMap.put("bpsnapshot", $snapshot.getId());
+		menuDataMap.put("patient", $mdPat.getId());
+		menuDataMap.put("result", $mdResult.getId());
+		MenuData mdSnapshotresult = app.createPlaceholder( $msSnapshotresult, menuDataMap );
+		mdSnapshotresult.setField("bpSystolicValue", $mdResult.getPqValue02());
+		mdSnapshotresult.setField("bpSystolicUnits", $mdResult.getPqUnits02());
+		mdSnapshotresult.setField("bpDiastolicValue", $mdResult.getPqValue03());
+		mdSnapshotresult.setField("bpDiastolicUnits", $mdResult.getPqUnits03());
+		mdSnapshotresult.setField("bpDate", $mdResult.getDate01());
+		insert ( mdSnapshotresult );
+end
+
+rule "Create And Insert Null htn.bpsnapshot Snapshotresult into working memory"
+	when
+		HTNBPSnapshotEvent( $cohort: cohort, $snapshot: snapshot )
+		$msPatientcohort: MenuStructure( role == "placeholder", path == "echr:patient:patientcohort" )
+		$mdPatientcohort: MenuData( menuStructure == $msPatientcohort, parent02 == $cohort, $mdPat: parent01 )
+		eval ( $mdPatientcohort.getField("lastBP") == null )
+		$msSnapshotresult: MenuStructure( role == "placeholder", path == "echr:cohort:bpsnapshot:bpsnapshotresult" )
+	then
+		//app.debug( "Create And Insert Null htn.bpsnapshot Snapshotresult into working memory" );
+		Map<String, Object> menuDataMap = new HashMap<String, Object>();
+		menuDataMap.put("bpsnapshot", $snapshot);
+		menuDataMap.put("patient", $mdPat);
+		MenuData mdSnapshotresult = app.createPlaceholder( $msSnapshotresult, menuDataMap );
+		insert ( mdSnapshotresult );
+end
+
+rule "Add patientcohorts To dm.bpsnapshot Snapshot Norm List"
+	when
+		HTNBPSnapshotEvent( $cohort: cohort, $snapshot: snapshot, $lowSystolic: lowSystolic, $highSystolic: highSystolic, $lowDiastolic: lowDiastolic, $highDiastolic: highDiastolic )
+		$msSnapshotresult: MenuStructure( role == "placeholder", path == "echr:cohort:bpsnapshot:bpsnapshotresult" )
+		$mdSnapshotresult: MenuData( menuStructure == $msSnapshotresult, $mdPat: parent02 )
+		eval ( $mdSnapshotresult.getField("bpSystolicValue") != null && $mdSnapshotresult.getDoubleField("bpSystolicValue") <= $highSystolic )
+		eval ( $mdSnapshotresult.getField("bpDiastolicValue") != null && $mdSnapshotresult.getDoubleField("bpDiastolicValue") <= $highDiastolic )
+		$msNormList: MenuStructure( role == "list", path == "echr:cohort:bpsnapshot:normbp" )
+		$msAllList: MenuStructure( role == "list", path == "echr:cohort:bpsnapshot:all" )
+	then
+		//app.debug( "Add patientcohorts To htn.bpsnapshot Snapshot Norm List: " + $msNormList);
+		app.createReferenceMD( $mdSnapshotresult, $msNormList );
+		long count = $snapshot.getLongField("normCount").longValue();
+		$snapshot.setField("normCount", ++count);
+		app.createReferenceMD( $mdSnapshotresult, $msAllList );
+		count = $snapshot.getLongField("allCount").longValue();
+		$snapshot.setField("allCount", ++count);
+end
+
+rule "Add patientcohorts htn.bpsnapshot Snapshot High List"
+	when
+		HTNBPSnapshotEvent( $cohort: cohort, $snapshot: snapshot, $lowSystolic: lowSystolic, $highSystolic: highSystolic, $lowDiastolic: lowDiastolic, $highDiastolic: highDiastolic )
+		$msSnapshotresult: MenuStructure( role == "placeholder", path == "echr:cohort:bpsnapshot:bpsnapshotresult" )
+		$mdSnapshotresult: MenuData( menuStructure == $msSnapshotresult, $mdPat: parent02 )
+		eval ( $mdSnapshotresult.getField("bpSystolicValue") == null || $mdSnapshotresult.getDoubleField("bpSystolicValue") > $highSystolic )
+		eval ( $mdSnapshotresult.getField("bpDiastolicValue") == null || $mdSnapshotresult.getDoubleField("bpDiastolicValue") > $highDiastolic )
+		$msHighList: MenuStructure( role == "list", path == "echr:cohort:bpsnapshot:abnormbp" )
+		$msAllList: MenuStructure( role == "list", path == "echr:cohort:bpsnapshot:all" )
+	then
+		//app.debug( "Add patientcohorts htn.bpsnapshot Snapshot High List: " );
+		app.createReferenceMD( $mdSnapshotresult, $msHighList );
+		long count = $snapshot.getLongField("abnormCount").longValue();
+		$snapshot.setField("abnormCount", ++count);
+		app.createReferenceMD( $mdSnapshotresult, $msAllList );
+		count = $snapshot.getLongField("allCount").longValue();
+		$snapshot.setField("allCount", ++count);
+end

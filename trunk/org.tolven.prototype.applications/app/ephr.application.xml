@@ -1,0 +1,1358 @@
+<application name="ephr" creatable="true" title="Personal Health Record" 
+	logo="/images/ePHR.png" css="/styles/ephr.css" 
+	homePage="ephr.jsf" xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure ">
+	<depends>global</depends>
+	<menu name="ephr" title="ePHR" page="/five/tabs.xhtml" visible="true">
+		<list name="problems" title="Problems" page="/five/list.xhtml" visible="never" query="global:problemMenu">
+			<column name="Problem" title="Problem" instantiate="true" internal="string01" width="36.0" />
+		</list>
+		<list name="medications" title="Medications" page="/five/list.xhtml" visible="never" query="global:medicationMenu">
+			<column name="Medication" title="Medication" instantiate="true" internal="string01" width="36.0" />
+		</list>
+		<list name="allergies" title="Allergies" page="/five/list.xhtml" visible="never" query="global:allergyMenu">
+			<column name="allergy" title="Allergy" instantiate="true" internal="string01" width="36.0" />
+		</list>
+		<list name="pxList" title="Procedures" page="/five/list.xhtml" visible="never" query="global:pxMenu">
+			<column name="procedure" title="Procedure" instantiate="true" visible="true" internal="string01" width="40.0" />
+			<column name="heading" title="procName" visible="false" internal="string02" width="40.0" />
+		</list>
+		<menu name="activity" title="Activity" page="/five/activities.xhtml" visible="true">
+			<list name="all" title="All Activity" page="/five/list.xhtml" visible="true" >
+				<column name="Date" internal="date01" format="d MMM yyyy" width="7.0"/>
+				<column name="For" internal="string01" width="20.0">
+					<from>#{trim.act.participation['recordTarget'].role.player.name.EN['L'].formatted}</from>
+					<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+					<from>#{newInShare.subject}</from>
+				</column>
+				<column name="Action" internal="string02" reference="true" width="20.0">
+					<from>#{trim.description}</from>
+				</column>
+				<column name="RequestedBy" internal="string03" width="15.0"/>
+				<column name="Priority" internal="long01" width="6.5"/>
+				<column name="Due" internal="date02" format="d MMM yyyy" width="6.0"/>
+			</list>
+			<list name="inShares" title="Received Shares" page="/five/list.xhtml" visible="true" drilldown="ephr:newInShare">
+				<column name="Name" internal="string01" reference="true" width="40.0">
+					<from>#{trim.description}</from>
+				</column>
+				<column name="Source" internal="string02" width="25.0"/>
+				<column name="Contact" internal="string03" width="25.0"/>
+				<column name="Accepted" internal="string04" width="10.0"/>
+			</list>
+		</menu>
+		<menu name="patients" title="My Family" page="/five/patients.xhtml" visible="true">
+			<list name="all" title="Member" page="/five/list.xhtml" visible="true" drilldown="ephr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0"/>
+				<column name="First" internal="string01" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Last" internal="string02" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="DOB" internal="date01" format="d MMM yyyy" width="7.0">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5"/>
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:patientMenu" >
+					<column name="Action" internal="string01" instantiate="true" width="25.0"/>
+				</action>
+			</list>
+			<instance name="wip" title="WIP" page="/wizard/wizard.xhtml" heading="/five/chartLink.xhtml"/>
+		</menu>
+		<menu name="providers" title="My Providers" page="/five/bar2.xhtml" visible="true" >
+			<list name="all" title="All Providers" page="/five/list.xhtml" visible="true" drilldown="ephr:provider">
+				<column name="providerId" internal="long01" width="10.0">
+					<from>#{provider.providerId}</from>
+				</column>
+				<column name="Name" internal="string01" reference="true" width="25.0">
+					<from>#{provider.name}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:providerMenu">
+					<column name="Provider" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+			<instance name="wip" title="New" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml"/>
+		</menu>
+	</menu>
+	<placeholder name="provider" title="Provider" eventInstance="ephr:wip" page="/five/provider.xhtml" heading="/five/providerLink.xhtml">
+		<field name="providerId" internal="long01" >
+			<from>#{trim.field['providerId']}</from>
+		</field>
+		<field name="name" internal="string01" >
+			<from>#{findProvider(trim.field['providerId']).name}</from>
+			<from>#{trim.description}</from>
+		</field>
+		<menu name="patients" title="Patients" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All" uniqueKey="patient" page="/five/list.xhtml" visible="true" drilldown="ephr:patient">
+				<column name="patient" internal="parent02" visible="false">
+					<from>#{outShare.patient}</from>
+				</column>
+				<column name="Name" internal="string01" reference="true" width="15.0">
+					<from>#{outShare.patient.lastName}</from>
+				</column>
+				<column name="Details" internal="_computed" width="20.0">
+					<from>#{patient.firstName} #{patient.middleName}, #{age(patient.dob,accountUser)}, #{patient.sex}</from>
+				</column>
+				<column name="Status" internal="string05" width="6.0"/>
+			</list>
+		</menu>
+	</placeholder>
+	<placeholder name="newInShare" title="Received Share, prior to assignment" page="/wizard/wizard.xhtml" heading="/five/shareLink.xhtml">
+		<field name="effectiveTime" internal="date01">
+			<from>#{trim.act.effectiveTime.TS.date}</from>
+		</field>
+		<field name="senderName" internal="string01" >
+			<from>#{trim.message.sender.accountName}</from>
+		</field>
+		<field name="senderComment" internal="string02" >
+			<from>#{trim.message.sender.comment}</from>
+		</field>
+		<field name="receiverName" internal="string03" >
+			<from>#{trim.message.receiver.accountName}</from>
+		</field>
+		<field name="receiverComment" internal="string04" >
+			<from>#{trim.message.receiver.comment}</from>
+		</field>
+		<field name="subject" internal="string05">
+			<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+		</field>
+		<!-- Also, pull demographics from message -->
+		<field name="lastName">
+			<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formattedParts['FAM']}</from>
+		</field>
+		<field name="firstName">
+			<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formattedParts['GIV[0]']}</from>
+		</field>
+		<field name="middleName">
+			<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formattedParts['GIV[1]']}</from>
+		</field>
+		<field name="dob">
+			<from>#{trim.act.participation['subject'].role.player.livingSubject.birthTime.TS.date}</from>
+		</field>
+		<field name="sex">
+			<from>#{trim.act.participation['subject'].role.player.livingSubject.administrativeGenderCode.CE.displayName}</from>
+		</field>
+		<field name="gender" >
+			<from>#{trim.act.participation['subject'].role.player.livingSubject.administrativeGenderCode.value}</from>
+		</field>
+		<field name="race"  internal="string06">
+			<from>#{trim.field['race']}</from>
+			<from>#{nuh["race_d"]}</from>
+		</field>
+		<field name="nationality"  internal="string07">
+			<from>#{trim.field['nationality']}</from>
+		</field>
+		<field name="homeAddr1" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['AL[1]'].ST.value}</from>
+		</field>
+		<field name="homeAddr2" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['AL[1]'].ST.value}</from>
+		</field>
+		<field name="homeCity" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['CTY'].ST.value}</from>
+		</field>
+		<field name="homeState" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['STA'].ST.value}</from>
+		</field>
+		<field name="homeZip" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['ZIP'].ST.value}</from>
+		</field>
+		<field name="homeCountry" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['CNT'].ST.value}</from>
+		</field>
+		<field name="homeTelecom" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.telecom.TEL['H'].value}</from>
+		</field>
+	</placeholder>
+	<placeholder name="patient" title="Patient" eventInstance="ephr:patients:wip" page="/five/patient.xhtml" heading="/five/chartLink.xhtml">
+		<field name="lastName" internal="string01">
+			<from>#{xpath['patient/name/family/text()']}</from>
+			<from>#{xpath['patient/name/text()']}</from>
+			<from>#{role.player.name.EN['L'].formattedParts['FAM']}</from>
+		</field>
+		<field name="firstName" internal="string02" >
+				<from>#{xpath['patient/name/given/text()']}</from>
+			<from>#{role.player.name.EN['L'].formattedParts['GIV[0]']}</from>
+		</field>
+		<field name="middleName" internal="string03" >
+			<from>#{xpath["patient/name/family[@qualifier='BR']/text()"]}</from>
+			<from>#{role.player.name.EN['L'].formattedParts['GIV[1]']}</from>
+		</field>
+		<field name="dob" internal="date01" >
+			<from>#{TStoDate(xpath['patient/birthTime/@value'])}</from>
+			<from>#{role.player.livingSubject.birthTime.TS.date}</from>
+		</field>
+		<field name="sex" internal="string04" >
+			<from>#{xpath['patient/administrativeGenderCode/@code']}</from>
+			<from>#{role.player.livingSubject.administrativeGenderCode.CE.displayName}</from>
+		</field>
+		<field name="gender" >
+			<from>#{role.player.livingSubject.administrativeGenderCode.value}</from>
+		</field>
+		<field name="race"  internal="string06">
+			<from>#{trim.field['race']}</from>
+		</field>
+		<field name="nationality"  internal="string07">
+			<from>#{trim.field['nationality']}</from>
+		</field>
+		<field name="homeAddr1" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['AL[0]'].ST.value}</from>
+		</field>
+		<field name="homeAddr2" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['AL[1]'].ST.value}</from>
+		</field>
+		<field name="homeCity" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['CTY'].ST.value}</from>
+		</field>
+		<field name="homeState" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['STA'].ST.value}</from>
+		</field>
+		<field name="homeZip" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['ZIP'].ST.value}</from>
+		</field>
+		<field name="homeCountry" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['CNT'].ST.value}</from>
+		</field>
+		<field name="homeTelecom" >
+			<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.telecom.TEL['H'].value}</from>
+		</field>
+		<field name="primaryName" internal="_computed">
+			<from>#{patient.primary.lastName}</from>
+			<from>#{patient.otherPrimary}</from>
+		</field>
+		<field name="primary" internal="parent03">
+			<from>#{internalId( account, trim.act.participation['subject'].role.participation['subject'].act.participation['primary'].role.id)}</from>
+		</field>
+		<field name="otherPrimary" internal="_extended">
+			<from>#{trim.act.participation['subject'].role.participation['subject'].act.participation['primary'].role.player.name.EN['L'].formatted}</from>
+		</field>
+		<field name="surgeonName" internal="_computed">
+			<from>#{patient.surgeon.lastName}</from>
+			<from>#{patient.otherSurgeon}</from>
+		</field>
+		<field name="surgeon" internal="parent04">
+			<from>#{internalId( account, trim.act.participation['subject'].role.participation['subject'].act.participation['surgeon'].role.id)}</from>
+		</field>
+		<field name="otherSurgeon" internal="_extended">
+			<from>#{trim.act.participation['subject'].role.participation['subject'].act.participation['surgeon'].role.player.name.EN['L'].formatted}</from>
+		</field>
+		<field name="allergyCount" internal="long01">
+		</field>
+		<menu name="summary" title="Overview" page="/five/bar2.xhtml" >
+			<list name="probsum" visible="never">
+				<column name="effectiveTime" internal="date01" format="MM/dd/yy">
+					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="title" internal="string01">
+					<from>#{problem.title}</from>
+				</column>			
+				</list>
+				<list name="resultsum" visible="never">
+				<column name="effectiveTime" internal="date01" format="MM/dd/yy">
+					<from>#{result.effectiveTime}</from>
+				</column>
+				<column name="title" internal="string01">
+					<from>#{result.title}</from>
+				</column>
+			</list>
+			<list name="obssum" visible="never">
+				<column name="test" internal="string01" >
+					<from>#{observation.test}</from>
+				</column>
+				<column name="effectiveTime" internal="date01">
+					<from>#{observation.effectiveTime}</from>
+				</column>
+				<column name="value" internal="pqValue01">
+					<from>#{observation.value}</from>
+				</column>
+				<column name="units" internal="pqUnits01">
+					<from>#{observation.units}</from>
+				</column>
+				<column name="author" internal="parent02">
+					<from>#{observation.author}</from>
+				</column>
+				<column name="encounter" internal="parent03">
+					<from>#{observation.encounter}</from>
+				</column>
+				<column name="enteredBy" internal="string05">
+					<from>#{observation.enteredBy}</from>
+				</column>
+			</list>
+			<list name="encsum" visible="never">
+				<column name="Date" internal="date01">
+					<from>#{encounter.effectiveTimeLow}</from>
+				</column>
+				<column name="purpose" internal="string01">
+					<from>#{encounter.purpose}</from>
+				</column>
+			</list>
+			<list name="medsum" visible="never">
+				<column name="date" internal="date01" format="MM/dd/yy">
+					<from>#{medication.effectiveTimeLow}</from>
+				</column>
+				<column name="title" internal="string01">
+					<from>#{medication.title}</from>
+				</column>
+				<column name="source" internal="string05">
+					<from>#{medication.author.lastName}</from>
+					<from>#{medication.enteredBy}</from>
+				</column>
+			</list>
+			<list name="apptsum" visible="never">
+				<column name="date" internal="date01" format="MM/dd/yy">
+					<from>#{appointment.effectiveTime}</from>
+				</column>
+				<column name="purpose" internal="string01">
+					<from>#{appointment.title} #{appointment.attender.lastName}</from>
+				</column>
+			</list>
+			<list name="remindersum" visible="never"/>
+			<list name="allergysum" visible="never">
+				<column name="date" internal="date01" format="yyyy">
+					<from>#{allergy.effectiveTime}</from>
+				</column>
+				<column name="title" internal="string01">
+					<from>#{allergy.title}</from>
+				</column>
+				<column name="enteredBy" internal="string05">
+					<from>#{allergy.enteredBy}</from>
+				</column>
+			</list>
+			<list name="dxsum" visible="never">
+				<column name="Date" internal="date01" format="MM/dd/yy">
+					<from>#{diagnosis.effectiveTime}</from>
+				</column>
+				<column name="title" internal="string01">
+					<from>#{diagnosis.title}</from>
+				</column>
+			</list>
+			<list name="procsum" visible="never" >
+				<column name="FromDate" internal="date01" format="MM/dd/yy">
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="ToDate" internal="date02" format="MM/dd/yy">
+					<from>#{procedure.effectiveTimeHigh}</from>
+				</column>
+				<column name="title" internal="string01">
+					<from>#{procedure.title}</from>
+				</column>
+			</list>
+			<list name="pevnsum" visible="never">
+				<column name="dateFrom" internal="date01" format="MM/dd/yy">
+					<from>#{personalEvent.effectiveTimeLow}</from>
+				</column>
+				<column name="dateTo" internal="date02" format="MM/dd/yy">
+					<from>#{personalEvent.effectiveTimeHigh}</from>
+				</column>
+				<column name="event" internal="string01">
+					<from>#{personalEvent.event}</from>
+				</column>
+			</list>
+			<list name="plansum" visible="never">
+				<column name="FromDate" internal="date01" format="MM/dd/yy">
+					<from>#{plan.effectiveTimeLow}</from>
+				</column>
+				<column name="title" internal="string01">
+					<from>#{plan.title}</from>
+				</column>
+				<column name="author" internal="string02">
+					<from>#{plan.author.lastName}</from>
+				</column>
+				<column name="planStatus" internal="string03">
+					<from>#{plan.planStatus}</from>
+				</column>
+			</list>
+			<list name="plan1sum" visible="never">
+				<column name="title" internal="string01">
+					<from>#{plan.title}</from>
+					<from>#{procedure.title}</from>
+				</column>
+				<column name="author" internal="string02">
+					<from>#{plan.author.lastName}</from>
+				</column>
+				<column name="FromDate" internal="date01">
+					<from>#{plan.effectiveTimeLow}</from>
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="ToDate" internal="date02">
+					<from>#{plan.effectiveTimeHigh}</from>
+					<from>#{procedure.effectiveTimeHigh}</from>
+				</column>
+			</list>
+			<list name="plan2sum" visible="never">
+				<column name="title" internal="string01">
+					<from>#{plan.title}</from>
+					<from>#{procedure.title}</from>
+				</column>
+				<column name="author" internal="string02">
+					<from>#{plan.author.lastName}</from>
+				</column>
+				<column name="FromDate" internal="date01">
+					<from>#{plan.effectiveTimeLow}</from>
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="ToDate" internal="date02">
+					<from>#{plan.effectiveTimeHigh}</from>
+					<from>#{procedure.effectiveTimeHigh}</from>
+				</column>
+			</list>
+			<list name="plan3sum" visible="never">
+				<column name="title" internal="string01">
+					<from>#{plan.title}</from>
+					<from>#{procedure.title}</from>
+				</column>
+				<column name="author" internal="string02">
+					<from>#{plan.author.lastName}</from>
+				</column>
+				<column name="FromDate" internal="date01">
+					<from>#{plan.effectiveTimeLow}</from>
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="ToDate" internal="date02">
+					<from>#{plan.effectiveTimeHigh}</from>
+					<from>#{procedure.effectiveTimeHigh}</from>
+				</column>
+			</list>
+			<list name="plan4sum" visible="never">
+				<column name="title" internal="string01">
+					<from>#{plan.title}</from>
+					<from>#{procedure.title}</from>
+				</column>
+				<column name="author" internal="string02">
+					<from>#{plan.author.lastName}</from>
+				</column>
+				<column name="FromDate" internal="date01">
+					<from>#{plan.effectiveTimeLow}</from>
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="ToDate" internal="date02">
+					<from>#{plan.effectiveTimeHigh}</from>
+					<from>#{procedure.effectiveTimeHigh}</from>
+				</column>
+			</list>
+			<portal name="portal" title="Summary" page="/five/portletView.xhtml" visible="true">
+				<portletColumn>
+					<portlet name="probsum" portalColumn="1" sequence="1" title="Problems" page="/five/problemSummary.xhtml" query="ephr:patient:summary:probsum" visible="true" drilldown=":problems">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:problemDocMenu">
+							<column name="Problem" internal="string01" instantiate="true" width="40.0" />
+						</action>
+					</portlet>
+					<portlet name="resultsum" title="Results" page="/five/resultSummary.xhtml" query="ephr:patient:summary:resultsum" visible="true" drilldown=":results"/>  
+					<portlet name="obssum" portalColumn="1" sequence="3" title="Observations" page="/five/obsSummary.xhtml" query="ephr:patient:summary:obssum" visible="true" drilldown=":observations">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:observationMenu">
+							<column name="Observation" internal="string01" instantiate="true" width="40.0" />
+						</action>
+					</portlet>
+				</portletColumn>
+				<portletColumn>
+					<portlet name="medsum" portalColumn="2" sequence="1" title="Active Medications" page="/five/summaryPortletList.xhtml" query="ephr:patient:summary:medsum" visible="true" drilldown=":medications">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:medicationDocMenu">
+							<column name="Medication" internal="string01" instantiate="true" width="40.0" />
+						</action>
+					</portlet>
+					<portlet name="apptsum" portalColumn="2" sequence="2" title="Appointments" page="/five/summaryPortletList.xhtml" query="ephr:patient:summary:apptsum" visible="true" drilldown=":appointments">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu">
+							<column name="Appointment" internal="string01" instantiate="true" width="30.0" />
+						</action>
+					</portlet>
+					<portlet name="remindersum" portalColumn="2" sequence="3" title="Reminders" page="/five/reminderSummary.xhtml" query="ephr:patient:summary:remindersum" visible="false" drilldown=":reminders">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:reminderMenu">
+							<column name="Reminder" internal="string01" instantiate="true" width="40.0" />
+						</action>
+					</portlet>
+					<portlet name="encsum" portalColumn="2" sequence="4" title="Encounters" page="/five/encounterSummary.xhtml" query="ephr:patient:summary:encsum" visible="true" drilldown=":encounters">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:encounterMenu">
+							<column name="Encounter" internal="string01" instantiate="true" width="40.0" />
+						</action>
+					</portlet>
+					<portlet name="plansum" portalColumn="2" sequence="5" title="Treatment Plans" page="/five/summaryPortletList.xhtml" query="ephr:patient:summary:plansum" visible="true" drilldown=":plans">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:treatmentPlanMenu">
+							<column name="Plan" internal="string01" instantiate="true" width="30.0" />
+						</action>
+					</portlet>
+				</portletColumn>
+				<portletColumn>
+					<portlet name="allergysum" portalColumn="3" sequence="1" title="Allergies" page="/five/summaryPortletList.xhtml" query="ephr:patient:summary:allergysum" visible="true" drilldown=":allergies">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:allergyDocMenu">
+							<column name="Allergy" internal="string01" instantiate="true" width="40.0" />
+						</action>
+					</portlet>
+					<portlet name="dxsum" portalColumn="3" sequence="2" title="Diagnoses" page="/five/summaryPortletList.xhtml" query="ephr:patient:summary:dxsum" visible="true" drilldown=":diagnoses">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:dxMenu">
+							<column name="Diagnosis" internal="string01" instantiate="true" width="40.0" />
+						</action>
+					</portlet>
+					<portlet name="procsum" portalColumn="3" sequence="3" title="Procedures" page="/five/summaryPortletList.xhtml" query="ephr:patient:summary:procsum" visible="true" drilldown=":procedures">
+						<action title="New" name="menu" query="global:pxDocMenu" visible="true" page="/five/list.xhtml">
+							<column width="40.0" instantiate="true" internal="string01" name="Procedure" />
+						</action>
+					</portlet>
+					<portlet name="pevnsum" portalColumn="3" sequence="4" title="Personal Events" page="/five/summaryPortletList.xhtml" query="ephr:patient:summary:pevnsum" visible="true" drilldown=":personalEvents">
+						<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu">
+							<column name="Appointment" internal="string01" instantiate="true" width="30.0" />
+						</action>
+					</portlet>
+				</portletColumn>
+			</portal>
+			<timeline name="timeline" title="Timeline" page="/five/timelineView.xhtml" visible="true">
+				<band name="probsum" title="Problems" query="ephr:patient:summary:probsum" visible="true" interval="month" style="#99FFCC" drilldown=":problems"/>  
+				<band name="medsum" title="Active Medications" query="ephr:patient:summary:medsum" visible="true" interval="month" style="CCFFFF" drilldown=":medications"/>
+				<band name="procsum" title="Procedures" query="ephr:patient:summary:procsum" visible="true" interval="month" style="E0E0E0" drilldown=":procedures"/>  
+				<band name="encsum" title="Encounters" query="ephr:patient:summary:encsum" visible="true" interval="month" style="FFFFAD" drilldown=":encounters"/>  
+				<band name="pevnsum" title="Personal Events" query="ephr:patient:summary:pevnsum" visible="true" interval="month" style="FFFFAD" drilldown=":personalEvents">
+					<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu" >
+						<column name="Appointment" internal="string01" instantiate="true" width="30.0"/>
+					</action>
+				</band>  
+				<band name="plan1sum" title="Treatment Plan" query="ephr:patient:summary:plan1sum" visible="true" interval="month" style="FFFFAD" drilldown=":plans">  
+					<action name="menu" title="Action" page="/five/list.xhtml" visible="true" query="global:planActionMenu" >
+						<column name="Action" internal="string01" instantiate="true" width="30.0"/>
+					</action>
+				</band>
+				<band name="plan2sum" title="Treatment Plan" query="ephr:patient:summary:plan2sum" visible="true" interval="month" style="FFFFAD" drilldown=":plans">
+					<action name="menu" title="Action" page="/five/list.xhtml" visible="true" query="global:planActionMenu" >
+						<column name="Action" internal="string01" instantiate="true" width="30.0"/>
+					</action>
+				</band>  
+				<band name="plan3sum" title="Treatment Plan" query="ephr:patient:summary:plan3sum" visible="true" interval="month" style="FFFFAD" drilldown=":plans">
+					<action name="menu" title="Action" page="/five/list.xhtml" visible="true" query="global:planActionMenu" >
+						<column name="Action" internal="string01" instantiate="true" width="30.0"/>
+					</action>
+				</band>  
+				<band name="plan4sum" title="Treatment Plan" query="ephr:patient:summary:plan4sum" visible="true" interval="month" style="FFFFAD" drilldown=":plans">
+					<action name="menu" title="Action" page="/five/list.xhtml" visible="true" query="global:planActionMenu" >
+						<column name="Action" internal="string01" instantiate="true" width="30.0"/>
+					</action>
+				</band>  
+				<band name="apptsum" title="Appointments" query="ephr:patient:summary:apptsum" visible="true" interval="month" style="D4FFD4" drilldown=":appointments"/>  
+			</timeline>
+			<calendar name="calendar" title="Calendar" page="/five/calendarView.xhtml" visible="true">
+				<entry name="encounter" title="Encounter" query="ephr:patient:summary:encsum" visible="true" drilldown=":encounters"/>  
+				<entry name="med" title="Active Medication" query="ephr:patient:summary:medsum" visible="true" drilldown=":medications"/>  
+				<entry name="appointment"  title="Appointment" query="ephr:patient:summary:apptsum" visible="true" drilldown=":appointments">
+					<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu" >
+						<column name="Appointment" internal="string01" instantiate="true" width="30.0"/>
+					</action>
+				</entry>
+				<entry name="reminder"  title="Reminder" query="ephr:patient:summary:remindersum" visible="true" drilldown=":reminders"/>
+				<entry name="procedure"  title="Procedure" query="ephr:patient:summary:procsum" visible="true" drilldown=":procedures"/>
+				<entry name="pevnsum" title="Personal Event" query="ephr:patient:summary:pevnsum" visible="true" drilldown=":personalEvents"/>  
+			</calendar>
+		</menu>
+		<menu name="problems" title="Problems" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="Current" page="/five/list.xhtml" visible="true" drilldown=":problem">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="Problem" internal="string01" reference="true" width="40.0">
+					<from>#{problem.title}</from>
+				</column>
+				<column name="Source" internal="string02" width="25.0">
+					<from>#{problem.author.lastName}</from>
+					<from>#{problem.enteredBy}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:problemDocMenu">
+					<column name="Problem" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+		</menu>
+		<menu name="medications" title="Medications" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="Current" page="/five/list.xhtml" visible="true" drilldown=":medication">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{medication.effectiveTimeLow}</from>
+				</column>
+				<column name="Medication" internal="string01" reference="true" width="35.0">
+					<from>#{medication.title}</from>
+				</column>
+				<column name="Dose" internal="string04" width="25.0">
+					<from>#{medication.dose}</from>
+				</column>
+				<column name="Status" internal="string03" width="15.0">
+				</column>
+				<column name="Source" internal="string02" width="25.0">
+					<from>#{medication.author.lastName}</from>
+					<from>#{medication.enteredBy}</from>
+				</column>
+			</list>
+			<trimList name="menu" title="New" page="/five/list.xhtml" visible="true" placeholder="global:medicationDocMenu">
+				<column name="Medication" internal="string01" instantiate="true" width="40.0"/>
+			</trimList>
+		</menu>
+		<menu name="allergies" title="Allergies" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="Current" page="/five/list.xhtml" visible="true" drilldown=":allergy">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{allergy.effectiveTime}</from>
+				</column>
+				<column name="Allergy" internal="string01" reference="true" width="40.0">
+					<from>#{allergy.title}</from>
+				</column>
+				<column name="Source" internal="string02" width="25.0">
+					<from>#{allergy.author.lastName}</from>
+					<from>#{allergy.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="21.0">
+					<from>#{allergy.encounter.effectiveTimeLow}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:allergyDocMenu">
+					<column name="Allergy" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+		</menu>
+		<menu name="results" title="Results" page="/five/bar2.xhtml" visible="true">
+			<list name="request" title="Requests" page="/five/list.xhtml" visible="true" drilldown="request">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0"/>
+				<column name="Test" internal="string01" reference="true" width="25.0"/>
+				<column name="Status" internal="string02" width="15.0"/>
+				<column name="Source" internal="parent02" width="25.0"/>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:resultMenu">
+					<column name="Result" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+			<list name="lab" title="Lab" page="/five/list.xhtml" visible="true" drilldown=":result">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0"/>
+				<column name="Test" internal="string01" reference="true" width="15.0"/>
+				<column name="Result" internal="string02" width="15.0"/>
+				<column name="Value" internal="pqValue01" width="6.0" align="right"/>
+				<column name="Units" internal="pqUnits01" width="6.0"/>
+				<column name="Interp" internal="string04" width="20.0"/>
+				<column name="Source" internal="parent02" width="25.0"/>
+			</list>
+			<list name="rad" title="Radiology" page="/five/list.xhtml" visible="true" drilldown=":result">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0"/>
+				<column name="Test" internal="string01" reference="true" width="15.0"/>
+				<column name="Result" internal="string02" width="15.0"/>
+				<column name="Interp" internal="string04" width="20.0"/>
+				<column name="Source" internal="parent02" width="25.0"/>
+			</list>
+		</menu>
+		<menu name="appointments" title="Appointments" page="/five/bar2.xhtml" visible="true">
+			<list name="future" title="Upcoming" page="/five/list.xhtml" visible="true" drilldown=":appointment">
+				<column name="Date" internal="date01" format="MM/dd/yy hh:mm" width="10.0">
+					<from>#{appointment.effectiveTime}</from>
+				</column>
+				<column name="Purpose" internal="string01" reference="true" width="30.0">
+					<from>#{appointment.title}</from>
+				</column>
+				<column name="With" internal="string03" width="30.0">
+					<from>#{appointment.attender.lastName}</from>
+				</column>
+				<column name="At" internal="string05" width="20.0">
+					<from>#{appointment.location.name}</from>
+					<from>#{appointment.otherLocation}</from>
+				</column>
+				<column name="Source" internal="string02" width="25.0">
+					<from>#{appointment.enteredBy}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu" >
+					<column name="Appointment" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+			<list name="past" title="Past" page="/five/list.xhtml" visible="true" drilldown=":appointment">
+				<column name="Date" internal="date01" format="MM/dd/yy hh:mm" width="10.0">
+					<from>#{appointment.effectiveTime}</from>
+				</column>
+				<column name="Purpose" internal="string01" reference="true" width="25.0">
+					<from>#{appointment.title}</from>
+				</column>
+				<column name="With" internal="string03" width="20.0">
+					<from>#{appointment.attender.lastName}</from>
+					<from>#{appointment.otherAttender}</from>
+				</column>
+				<column name="At" internal="string05" width="20.0">
+					<from>#{appointment.location.name}</from>
+					<from>#{appointment.otherLocation}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{appointment.enteredBy}</from>
+				</column>
+				<column name="Status" internal="string04" width="15.0">
+					<from>#{appointment.actStatus}</from>
+				</column>
+			</list>
+		</menu>
+		<menu name="encounters" title="Encounters" page="/five/bar2.xhtml" visible="true">
+			<list name="list" title="List" page="/five/list.xhtml" visible="true" drilldown=":encounter">
+				<column name="From" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{encounter.effectiveTimeLow}</from>
+				</column>
+				<column name="To" internal="date02" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{encounter.effectiveTimeHigh}</from>
+				</column>
+				<column name="Purpose" internal="string01" reference="true" width="20.0">
+					<from>#{encounter.purpose}</from>
+				</column>
+				<column name="Status" internal="string03" width="10.0">
+					<from>#{encounter.actStatus}</from>
+				</column>
+				<column name="Attending" internal="string06" width="20.0">
+					<from>#{encounter.attender.lastName}</from>
+					<from>#{encounter.enteredBy}</from>
+				</column>
+				<column name="Admitting" internal="string02" width="20.0">
+					<from>#{encounter.admitter.lastName}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:encounterMenu" >
+					<column name="Encounter" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+		</menu>
+		<menu name="diagnoses" title="Diagnoses" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="Current" page="/five/list.xhtml" visible="true" drilldown=":diagnosis">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{diagnosis.effectiveTime}</from>
+				</column>
+				<column name="Diagnosis" internal="string01" reference="true" width="40.0">
+					<from>#{diagnosis.title}</from>
+				</column>
+				<column name="Code" internal="string02" reference="true" width="15.0">
+					<from>#{diagnosis.code}</from>
+				</column>
+				<column name="Source" internal="string03" width="15.0">
+					<from>#{diagnosis.author.lastName}</from>
+					<from>#{diagnosis.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="15.0">
+				</column>
+			</list>
+			<trimList name="menu" title="New" page="/five/list.xhtml" visible="true" placeholder="global:diagnosisMenu" >
+				<column name="Diagnosis" internal="string01" instantiate="true" width="40.0"/>
+			</trimList>
+		</menu>
+		<menu name="observations" title="Observations" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="List" page="/five/list.xhtml" visible="true" drilldown=":observation">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{observation.effectiveTime}</from>
+				</column>
+				<column name="Test" internal="string01" reference="true" width="20.0">
+					<from>#{observation.test}</from>
+				</column>
+				<column name="Value" internal="pqValue01" width="6.0" align="right">
+					<from>#{observation.value}</from>
+				</column>
+				<column name="Units" internal="pqUnits01" width="6.0">
+					<from>#{observation.units}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{observation.author.lastName}</from>
+					<from>#{observation.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="21.0"/>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:observationMenu" >
+					<column name="Observation" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+			<list name="graphs" title="Graphs" page="/five/list.xhtml" visible="false" drilldown=":graph">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0"/>
+				<column name="Graph" internal="string01" reference="true" width="20.0"/>
+				<column name="Source" internal="string02" width="25.0">
+					<from>#{graph.author.lastName}</from>
+					<from>#{graph.enteredBy}</from>
+				</column>
+			</list>
+			<trimList name="graph" title="Graph" page="/five/list.xhtml" visible="true" placeholder="global:observationGraphMenu" >
+				<column name="Graph" internal="string01" instantiate="true" width="40.0"/>
+			</trimList>
+		</menu>
+		<menu name="reminders" title="Reminders" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="Current" page="/five/list.xhtml" visible="true" drilldown=":reminder">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0"/>
+				<column name="Reminder" internal="string01" reference="true" width="40.0"/>
+				<column name="Source" internal="string02" width="25.0">
+					<from>#{reminder.author.lastName}</from>
+					<from>#{reminder.enteredBy}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:reminderMenu" >
+					<column name="Reminder" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+		</menu>
+		<menu name="plans" title="Plans" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown=":plan">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{plan.effectiveTimeLow}</from>
+				</column>
+				<column name="Plan" internal="string01" reference="true" width="25.0">
+					<from>#{plan.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="8.0">
+					<from>#{plan.planStatus}</from>
+				</column>
+				<column name="Source" internal="string03" width="15.0">
+					<from>#{plan.author.lastName}</from>
+					<from>#{plan.enteredBy}</from>
+				</column>
+			</list>
+		</menu>
+		<menu name="procedures" title="Procedures" page="/five/bar2.xhtml" visible="true">
+			<list name="active" title="Active" page="/five/list.xhtml" visible="true" drilldown=":procedure">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="Procedure" internal="string01" reference="true" width="40.0">
+					<from>#{procedure.title}</from>
+				</column>
+				<column name="Performer" internal="string03" width="15.0">
+					<from>#{procedure.performer}</from>
+				</column>
+			</list>
+			<list name="chemo" title="Chemotherapy" page="/five/list.xhtml" visible="true" drilldown=":procedure">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="Procedure" internal="string01" reference="true" width="40.0">
+					<from>#{procedure.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="8.0">
+					<from>#{procedure.planStatus}</from>
+				</column>
+				<column name="Performer" internal="string03" width="15.0">
+					<from>#{procedure.performer}</from>
+				</column>
+			</list>
+			<list name="surgery" title="Surgery" page="/five/list.xhtml" visible="true" drilldown=":procedure">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="Procedure" internal="string01" reference="true" width="40.0">
+					<from>#{procedure.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="8.0">
+					<from>#{procedure.planStatus}</from>
+				</column>
+				<column name="Performer" internal="string03" width="15.0">
+					<from>#{procedure.performer}</from>
+				</column>
+			</list>
+			<list name="radiation" title="Radiation" page="/five/list.xhtml" visible="true" drilldown=":procedure">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{procedure.effectiveTimeLow}</from>
+				</column>
+				<column name="Procedure" internal="string01" reference="true" width="40.0">
+					<from>#{procedure.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="8.0">
+					<from>#{procedure.planStatus}</from>
+				</column>
+				<column name="Performer" internal="string03" width="15.0">
+					<from>#{procedure.performer}</from>
+				</column>
+			</list>
+		</menu>
+		<menu name="personalEvents" title="Personal Events" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown=":personalEvent">
+				<column name="From" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{personalEvent.effectiveTimeLow}</from>
+				</column>
+				<column name="To" internal="date02" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{personalEvent.effectiveTimeHigh}</from>
+				</column>
+				<column name="Event" internal="string01" reference="true" width="40.0">
+						<from>#{personalEvent.event}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu">
+					<column name="Event" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+		</menu>
+		<menu name="personal" title="Personal" page="/five/bar2.xhtml" visible="true">
+			<list name="identity" title="Identity" page="/five/personal.xhtml" visible="true" drilldown="ephr:patient"/>
+			<list name="providers" title="Providers" page="/five/list.xhtml" visible="true" drilldown=":patprovider">
+				<column name="Provider" internal="string01" width="40.0">
+					<from>#{patprovider.provider.lastName}</from>
+				</column>
+			</list>
+		</menu>
+		<menu name="documents" sequence="21" title="Document" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All Documents" page="/five/list.xhtml" visible="true" drilldown=":patDoc">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{patDoc.effectiveTime}</from>
+				</column>
+				<column name="Name" internal="string01" width="25.0" reference="true">
+					<from>#{patDoc.title}</from>
+				</column>
+				<column name="Source" internal="string02" width="45.0" >
+					<from>#{patDoc.source}</from>
+				</column>
+			</list>
+		</menu>
+		<menu name="share" title="Share" page="/five/bar2.xhtml" visible="true">
+			<list name="outShares" title="Sent Shares" page="/five/list.xhtml" visible="true" drilldown=":outShare">
+				<column name="effectiveTime" internal="date01" width="13.0">
+					<from>#{outShare.effectiveTime}</from>
+				</column>
+				<column name="MyComment" internal="string02" width="30.0" reference="true">
+					<from>#{outShare.senderComment}</from>
+				</column>
+				<column name="ReceiverName" internal="string03" width="20.0">
+					<from>#{outShare.receiverName}</from>
+				</column>
+				<column name="receiverComment" internal="string04" width="30.0">
+					<from>#{outShare.receiverComment}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:shareMenu">
+					<column name="Share" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+			<list name="inShares" title="Received Shares" page="/five/list.xhtml" visible="true" drilldown=":inShare">
+				<column name="effectiveTime" internal="date01" width="13.0">
+					<from>#{inShare.effectiveTime}</from>
+				</column>
+				<column name="SenderComment" internal="string02" width="30.0" reference="true">
+					<from>#{inShare.senderComment}</from>
+				</column>
+				<column name="SenderName" internal="string03" width="20.0">
+					<from>#{inShare.senderName}</from>
+				</column>
+				<column name="MyComment" internal="string04" width="30.0">
+					<from>#{inShare.receiverComment}</from>
+				</column>
+			</list>
+			<!-- Keep track of which providers this patient has shared from and to, regardless of how many times a share has occurred. -->
+			<list name="providerShares" uniqueKey="ProviderId" title="Provider Shares" page="/five/list.xhtml" visible="true">
+				<column name="ProviderId" internal="long02" >
+					<from>#{outShare.providerId}</from>
+					<from>#{inShare.providerId}</from>
+				</column>
+				<column name="Name" internal="string01" width="25">
+					<from>#{outShare.receiverName}</from>
+					<from>#{inShare.senderName}</from>
+				</column>
+				<column name="Comment" internal="string02" width="30">
+					<from>#{outShare.receiverComment}</from>
+					<from>#{inShare.senderComment}</from>
+				</column>
+			</list>
+			<list name="accountShares" uniqueKey="AccountId" title="Account Shares" page="/five/list.xhtml" visible="true">
+				<column name="AccountId" internal="long01" >
+					<from>#{outShare.accountId}</from>
+					<from>#{inShare.accountId}</from>
+				</column>
+				<column name="Name" internal="string01" width="25">
+					<from>#{outShare.receiverName}</from>
+					<from>#{inShare.senderName}</from>
+				</column>
+				<column name="Comment" internal="string02" width="30">
+					<from>#{outShare.receiverComment}</from>
+					<from>#{inShare.senderComment}</from>
+				</column>
+			</list>
+			<list name="access" title="Access" page="/five/list.xhtml" visible="true">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0"/>
+				<column name="User" internal="string01" width="25.0"/>
+				<column name="Purpose" internal="string02" width="25.0"/>
+				<column name="Remote IP" internal="string03" width="25.0"/>
+			</list>
+		</menu>
+		<instance name="wip" title="New Patient Event" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml"/>
+		<placeholder name="encounter" title="Encounter" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/encounterLink.xhtml">
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="purpose" internal="string01" >
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="actStatus" internal="string03">
+				<from>#{act.statusCode}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="admitter" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['admitter'].role.id)}</from>
+			</field>
+			<field name="location" internal="parent03">
+				<from>#{internalId( account, trim.act.participation['location'].role.id)}</from>
+			</field>
+			<field name="attender" internal="parent04">
+				<from>#{internalId( account, trim.act.participation['attender'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="problem" title="Problem" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/problemLink.xhtml">
+			<field name="title" internal="string01" >
+				<from>#{trim.description}</from>
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['author'].role.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="medication" title="Medication" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/medicationLink.xhtml">
+			<field name="title" internal="string01" >
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="source" internal="string02" >
+			</field>			
+			<field name="status" internal="string03" >
+			</field>			
+			<field name="brand" internal="string04" >
+			</field>			
+			<field name="dateType" internal="dateType" >
+			</field>									
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="dose" internal="_extended" >
+			</field>
+			<field name="frequency" internal="_extended" >
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['author'].role.id)}</from>
+			</field>
+			<field name="encounter" internal="parent03">
+				<from>#{internalId( account, trim.act.relationship['encounter'].act.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="allergy" title="Allergy" eventInstance="ephr:patient:wip"  page="/wizard/wizard.xhtml" heading="/five/allergyLink.xhtml">
+			<field name="title" internal="string01" >
+				<from>#{act.observation.value.CE.displayName}</from>
+				<from>#{act.text.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['author'].role.id)}</from>
+			</field>
+			<field name="encounter" internal="parent03">
+				<from>#{internalId( account, trim.act.relationship['encounter'].act.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="result" title="Result" eventInstance="ephr:patient:wip"  page="/wizard/wizard.xhtml" heading="/five/resultLink.xhtml">
+			<field name="title" internal="string01" >
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="request" title="Test Request" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/resultLink.xhtml">
+			<field name="title" internal="string01" >
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="appointment" title="Appointment" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/appointmentLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="title" internal="string01" >
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="notes" internal="string02" >
+				<from>#{act.text.ST.value}</from>
+			</field>
+			<field name="actStatus" internal="string04">
+				<from>#{act.statusCode}</from>
+			</field>
+			<field name="otherAttender" internal="string03">
+			</field>
+			<field name="otherLocation" internal="string06">
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="attender" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['attender'].role.id)}</from>
+			</field>
+			<field name="location" internal="parent03">
+				<from>#{internalId( account, trim.act.participation['location'].role.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="diagnosis" title="Diagnosis" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/dxLink.xhtml">
+			<field name="title" internal="string01" >
+				<from>#{act.observation.value.CE.displayName}</from>
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="code" internal="string02" >
+				<from>#{act.observation.value.CE.code}</from>
+			</field>
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, act.participation['author'].role.id)}</from>
+			</field>
+			<field name="encounter" internal="parent03">
+				<from>#{internalId( account, act.relationship['encounter'].act.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="displayName"  >
+				<from>#{act.observation.value.CE.displayName}</from>
+			</field>
+			<field name="codeSystem"  >
+				<from>#{act.observation.value.CE.codeSystem}</from>
+			</field>
+			<field name="codeSystemName"  >
+				<from>#{act.observation.value.CE.codeSystemName}</from>
+			</field>
+		</placeholder>
+		<placeholder name="observation" title="Observation" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/obsLink.xhtml">
+			<field name="test" internal="string01" >
+				<from>#{act.text.ST.value}</from>			
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="value" internal="pqValue01">
+				<from>#{act.observation.value.PQ.value}</from>
+			</field>
+			<field name="units" internal="pqUnits01">
+				<from>#{act.observation.value.PQ.unit}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['author'].role.id)}</from>
+			</field>
+			<field name="encounter" internal="parent03">
+				<from>#{internalId( account, trim.act.relationship['encounter'].act.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="graph" title="Graph" eventInstance="ephr:patient:wip"  page="/wizard/wizard.xhtml" heading="/five/graphLink.xhtml">
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+		</placeholder>
+		<placeholder name="reminder" title="Reminder" eventInstance="ephr:patient:wip"  page="/wizard/wizard.xhtml" heading="/five/reminderLink.xhtml">
+			<field name="type" internal="string01" >
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="text" internal="string02" >
+				<from>#{act.text.ST.value}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="procedure" title="Procedure" eventInstance="ephr:patient:wip"  page="/wizard/wizard.xhtml" heading="/five/treatmentLink.xhtml">
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="plan" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['plan'].role.id)}</from>
+			</field>
+			<field name="performer" internal="parent03">
+				<from>#{internalId( account, trim.act.participation['performer'].role.id)}</from>
+			</field>
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="title" internal="string01" >
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="procType" internal="string02" >
+				<from>#{act.code.CD.code}</from>
+			</field>
+			<field name="moodCode" internal="string04" >
+				<from>#{act.moodCode}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="outShare" title="Sent Share" eventInstance="ephr:patient:wip" page="/wizard/outShare.xhtml" heading="/five/shareLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="provider" internal="parent02">
+				<from>#{trim.message.receiver.accountPath}</from>
+			</field>
+			<field name="senderName" internal="string01" >
+				<from>#{trim.message.sender.accountName}</from>
+			</field>
+			<field name="senderComment" internal="string02" >
+				<from>#{trim.message.sender.comment}</from>
+			</field>
+			<field name="receiverName" internal="string03" >
+				<from>#{trim.message.receiver.accountName}</from>
+			</field>
+			<field name="receiverComment" internal="string04" >
+				<from>#{trim.message.receiver.comment}</from>
+			</field>
+			<field name="accountId" internal="long01" >
+				<from>#{trim.message.receiver.accountId}</from>
+			</field>
+			<field name="providerId" internal="long02" >
+				<from>#{trim.message.receiver.providerId}</from>
+			</field>
+			<field name="subject" internal="string05">
+				<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+			</field>
+		</placeholder>
+		<placeholder name="inShare" title="Received Share" eventInstance="ephr:patient:wip"  page="/wizard/inShare.xhtml" heading="/five/shareLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="senderName" internal="string01" >
+				<from>#{trim.message.sender.accountName}</from>
+			</field>
+			<field name="senderComment" internal="string02" >
+				<from>#{trim.message.sender.comment}</from>
+			</field>
+			<field name="receiverName" internal="string03" >
+				<from>#{trim.message.receiver.accountName}</from>
+			</field>
+			<field name="receiverComment" internal="string04" >
+				<from>#{trim.message.receiver.comment}</from>
+			</field>
+			<field name="accountId" internal="long01" >
+				<from>#{trim.message.sender.accountId}</from>
+			</field>
+			<field name="providerId" internal="long02" >
+				<from>#{trim.message.sender.providerId}</from>
+			</field>
+			<field name="subject" internal="string05">
+				<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+			</field>
+		</placeholder>
+		<placeholder name="personalEvent" title="Personal Event" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/personalEventLink.xhtml">
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="event" internal="string01" >
+				<from>#{act.text.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="plan" title="Plan" page="/wizard/wizard.xhtml" eventInstance="ephr:patient:wip" heading="/five/treatmentLink.xhtml">
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="title" internal="string01" >
+				<from>#{act.text.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="planStatus" internal="string02" >
+				<from>#{act.relationship["planStatus"].act.observation.value.CE.displayName}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['author'].role.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+		<placeholder name="patDoc" title="Document" page="/wizard/wizard.xhtml" heading="/five/documentLink.xhtml">
+			<field name="effectiveTime" internal="date01" >
+			</field>
+			<field name="title" internal="string01" >
+			</field>
+			<field name="source" internal="string05" >
+			</field>
+		</placeholder>
+		<placeholder name="patprovider" title="Provider" eventInstance="ephr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/providerLink.xhtml">
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="provider" internal="parent02">
+				<from>#{internalId( account, trim.act.participation['responsibleParty'].role.id)}</from>
+			</field>
+		</placeholder>
+	</placeholder>
+
+</application>

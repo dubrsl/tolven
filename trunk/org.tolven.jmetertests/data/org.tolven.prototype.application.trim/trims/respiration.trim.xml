@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/respiration</name>
+	<page>respiration.xhtml</page>
+	<drilldown>respirationDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Respiration</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0436708</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Respiration Rate</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<PQ>
+					<value>0.0</value>
+					<unit>RPM</unit>
+				</PQ>
+			</value>
+		</observation>
+		<relationship name="rhythm" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Rhythm</label>
+						<valueSet>rhythm</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="Position" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Position</label>
+						<valueSet>position</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="ventilationType" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Ventilation Type</label>
+						<valueSet>ventilationType</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="comment" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Comment</label>
+						<ED/>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="ventilationType">
+		<CE>
+			<code>C0599338</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Assisted</displayName>
+		</CE>
+		<CE>
+			<code>C0412771</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Spontaneous</displayName>
+		</CE>
+	</valueSet>	
+	
+	
+	<valueSet name="rhythm">
+		<CE>
+			<code>C0231813</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Ataxic</displayName>
+		</CE>
+		<CE>
+			<code>C0235744</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Interrupted</displayName>
+		</CE>
+		<CE>
+			<code>C0425492</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Irregular</displayName>
+		</CE>
+	</valueSet>	
+		<valueSet name="position">
+		<CE>
+			<code>C0231472</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Standing</displayName>
+		</CE>
+		<CE>
+			<code>C0277814</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Sitting</displayName>
+		</CE>
+		<CE>
+			<code>C0444334</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Lying</displayName>
+		</CE>
+		<CE>
+			<code>X1</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Reclining</displayName>
+		</CE>
+	</valueSet>	
+</trim>

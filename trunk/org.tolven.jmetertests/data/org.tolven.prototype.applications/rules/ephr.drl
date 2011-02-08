@@ -1,0 +1,302 @@
+package ephr
+ /* Tolven */
+import java.util.*;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.doc.entity.*;
+import java.lang.Integer;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.app.bean.Mode;
+import org.tolven.app.bean.Plan;
+import org.tolven.core.entity.Status;
+
+global org.tolven.app.AppEvalAdaptor app;
+global Date now;
+/**
+  * If we have a document and a patient at the same time, 
+  * then add the document to the patient's document list.
+  */
+rule "Add document to patient document list also"
+	when
+		$msList: MenuStructure( role == "list", path == "ephr:patient:documents:all" )
+		$msDoc: MenuStructure( role == "placeholder", path == "ephr:patient:patDoc" )
+		$mdDoc: MenuData( menuStructure == $msDoc )
+	then
+		MenuData mdDocumentList = app.createReferenceMD( $mdDoc, $msList);
+end
+
+rule "Place Medication on medication list"
+	when
+		$msMedication: MenuStructure( role == "placeholder", path == "ephr:patient:medication" )
+		$msMedList: MenuStructure( role == "list", path == "ephr:patient:medications:current" )
+		$mdMedication: MenuData( menuStructure == $msMedication, $mdPat: parent01 )
+	then
+		app.info( "Place Medication on Medication list"); 
+		app.createReferenceMD( $mdMedication, "ephr:patient:medications:current" );
+end
+
+rule "Place Medication on Medication summary list"
+	when
+		$msMedication: MenuStructure( role == "placeholder", path == "ephr:patient:medication" )
+		$mdMedication: MenuData( menuStructure == $msMedication, $mdPat: parent01 )
+	then
+		app.info( "Place Medication on med summary"); 
+		// Add act to patient's Medication list
+		app.createReferenceMD( $mdMedication, "ephr:patient:summary:medsum" );
+end
+
+rule "Place Encounter on Encounter summary list"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "ephr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter )
+	then
+		app.info( "Place Encounter on enc summary"); 
+		// Add act to patient's Encounter summary (list)
+		app.createReferenceMD( $mdEncounter, "ephr:patient:summary:encsum" );
+end
+
+rule "Place Encounters on encounter list"
+	when
+		$msEncounter: MenuStructure( role == "placeholder", path == "ephr:patient:encounter" )
+		$mdEncounter: MenuData( menuStructure == $msEncounter )
+	then
+		app.info( "Place Encounter on encounter list"); 
+		MenuData mdEncList = app.createReferenceMD( $mdEncounter, "ephr:patient:encounters:list" );
+end
+
+rule "Place Appointment on active appointment list"
+	when
+		$msAppointment: MenuStructure( role == "placeholder", path == "ephr:patient:appointment" )
+		$mdAppointment: MenuData( menuStructure == $msAppointment, actStatus=='active' )
+	then
+//		app.info( "Place Appointment on future appointment list"); 
+		app.createReferenceMD( $mdAppointment, "ephr:patient:appointments:future" );
+end
+
+rule "Place Appointment on completed appointment list"
+	when
+		$msAppointment: MenuStructure( role == "placeholder", path == "ephr:patient:appointment" )
+		$mdAppointment: MenuData( menuStructure == $msAppointment, actStatus!='active' )
+	then
+//		app.info( "Place Appointment on past appointment list"); 
+		app.createReferenceMD( $mdAppointment, "ephr:patient:appointments:past" );
+end
+rule "Place Appointment on appointment summary list"
+	when
+		$msAppointment: MenuStructure( role == "placeholder", path == "ephr:patient:appointment" )
+		$mdAppointment: MenuData( menuStructure == $msAppointment, actStatus=='active' )
+	then
+//		app.info( "Place Appointment on appt summary"); 
+		// Add act to patient's Appointment summary (list)
+		MenuData md = app.createReferenceMD( $mdAppointment, "ephr:patient:summary:apptsum" );
+end
+
+rule "Place Personal Event on summary list"
+	when
+		$msPEvent: MenuStructure( role == "placeholder", path == "ephr:patient:personalEvent" )
+		$mdPEvent: MenuData( menuStructure == $msPEvent, actStatus == "active" )
+	then
+		app.info( "Place Personal Event on summary"); 
+		MenuData md = app.createReferenceMD( $mdPEvent, "ephr:patient:summary:pevnsum" );
+end
+
+rule "Place Personal Event on Personal Event list"
+	when
+		$msPEvent: MenuStructure( role == "placeholder", path == "ephr:patient:personalEvent" )
+		$mdPEvent: MenuData( menuStructure == $msPEvent, actStatus == "active" )
+	then
+		app.info( "Place Personal Event on Personal Event list"); 
+		app.createReferenceMD( $mdPEvent, "ephr:patient:personalEvents:all" );
+end
+
+rule "Update Allergies count on patient placeholder"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "ephr:patient:allergy" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy, $mdPat: parent01 )
+	then
+		app.info( "Bump allergy count on patient"); 
+		$mdPat.setLong01( ($mdPat.getLong01()==null)?1:$mdPat.getLong01()+ 1 );
+end
+
+rule "Place Allergies on Allergies summary list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "ephr:patient:allergy" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy )
+	then
+		app.info( "Place allergy on allergy summary"); 
+		MenuData mdAllergyList = app.createReferenceMD( $mdAllergy, "ephr:patient:summary:allergysum" );
+end
+
+rule "Place Allergies on allergy list"
+	when
+		$msAllergy: MenuStructure( role == "placeholder", path == "ephr:patient:allergy" )
+		$mdAllergy: MenuData( menuStructure == $msAllergy )
+	then
+		app.info( "Place Allergy on allergy list"); 
+		MenuData mdDXList = app.createReferenceMD( $mdAllergy, "ephr:patient:allergies:current" );
+end
+
+/**
+ * Add Patient to all patients list
+ */
+rule "Add patient to patient list"
+	when
+		$msPatient: MenuStructure( role == "placeholder", path == "ephr:patient" )
+		$msPatientAll: MenuStructure( path == "ephr:patients:all" )
+		$mdPatient: MenuData( reference==null, menuStructure == $msPatient )
+	then
+		MenuData mdPatList = app.createReferenceMD( $mdPatient, $msPatientAll );
+		mdPatList.addPhrase( $mdPatient.getStringField("lastName"), "family", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("firstName"), "given", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("middleName"), "given", "en_US" );
+		mdPatList.addPhrase( $mdPatient.getStringField("sex"), "gender", "en_US" );
+end
+
+/**
+ * If we find a (new) observation placeholder, we'll want to add it to the observation list. 
+ */
+rule "Place observation on observation list"
+	when
+		$msObservation: MenuStructure( role == "placeholder", path == "ephr:patient:observation" )
+		$mdObservation: MenuData( menuStructure == $msObservation )
+	then
+		app.info( "Place observation on observation list"); 
+		// Add act to patient's observation list
+		MenuData mdObsList = app.createReferenceMD( $mdObservation, "ephr:patient:observations:all" );
+		mdObsList.addPhrase( $mdObservation.getString01(), "obs", "en_US" );
+end
+
+/**
+ * If we find an observation placeholder, add it to the observation summary. 
+ */
+rule "Place observation on observation summary list"
+	when
+		$msObservation: MenuStructure( role == "placeholder", path == "ephr:patient:observation" )
+		$mdObservation: MenuData( menuStructure == $msObservation )
+	then
+		app.info( "Place observation on obs summary"); 
+		// Add act to patient's observation list
+		MenuData mdObsList = app.createReferenceMD( $mdObservation, "ephr:patient:summary:obssum" );
+end
+
+rule "Place Diagnosis on diagnosis list"
+	when
+		$msDiagnosis: MenuStructure( role == "placeholder", path == "ephr:patient:diagnosis" )
+		$mdDiagnosis: MenuData( menuStructure == $msDiagnosis )
+	then
+		app.info( "Place Diagnosis on dx list"); 
+		MenuData mdDXList = app.createReferenceMD( $mdDiagnosis, "ephr:patient:diagnoses:current" );
+		mdDXList.addPhrase( $mdDiagnosis.getString01(), "dx", "en_US" );
+end
+
+rule "Place Diagnosis on dx summary list"
+	when
+		$msDiagnosis: MenuStructure( role == "placeholder", path == "ephr:patient:diagnosis" )
+		$mdDiagnosis: MenuData( menuStructure == $msDiagnosis )
+	then
+		app.info( "Place Diagnosis on dx summary"); 
+		MenuData mdDXList = app.createReferenceMD( $mdDiagnosis, "ephr:patient:summary:dxsum" );
+end
+
+rule "Add Diagnosis to patient list word index"
+	when
+		$msDiagnosis: MenuStructure( role == "placeholder", path == "ephr:patient:diagnosis" )
+		$mdDiagnosis: MenuData( menuStructure == $msDiagnosis, $dxName: string01, $mdPat : parent01 )
+	then
+		app.info( "Add Diagnosis to patient list"); 
+		List<MenuData> patListMDs = app.findReferencingMDs( $mdPat, "ephr:patients:all" );
+		for( MenuData md : patListMDs) {
+			md.addPhrase( $dxName, "dx", "en_US" );
+		}
+end
+
+rule "Place Plan on summary list"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "ephr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, string02!="Obsolete" )
+	then
+		app.info( "Place plan on summary"); 
+		MenuData md = app.createReferenceMD( $mdPlan, "ephr:patient:summary:plansum" );
+end
+
+rule "Place Plan on Treatment Plan list"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "ephr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, actStatus == "active" )
+	then
+		app.info( "Place Plan on Treatment plan list"); 
+		app.createReferenceMD( $mdPlan, "ephr:patient:plans:all" );
+end
+
+rule "Place Plan on Timeline"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "ephr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, string02 != "Obsolete" )
+		Plan( $plan : path )
+		$msPlanProcSum: MenuStructure( path == $plan )
+	then
+		app.info( "Place Plan on timeline: " + $plan);
+		MenuData md = app.createReferenceMD( $mdPlan, $msPlanProcSum );
+end
+
+rule "Procedure display"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:procedure" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		app.info( "Procedure id:" + $md.getId() + ", string01: " + $md.getString01() + ", string04: " + $md.getString04()); 
+end
+
+rule "Add planned procedure to timeline"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "ephr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, string02 == "Proposed" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:procedure" )
+		$md: MenuData( menuStructure == $ms, string04 == "INT" )
+		Plan( $plan : path )
+		$msPlanProcSum: MenuStructure( path == $plan )
+	then
+		MenuData md = app.createReferenceMD( $md, $msPlanProcSum );
+		app.info( "Place planned procedure on timeline: " + md.getString01()); 
+end
+
+rule "Add active procedure to summaries"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "ephr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, string02 == "Active" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:procedure" )
+		$md: MenuData( menuStructure == $ms, string04 == "RQO" )
+		$msList: MenuStructure( path == "ephr:patient:summary:procsum" )
+	then
+		MenuData md = app.createReferenceMD( $md, $msList );
+		app.info( "Place active procedure on timeline: " + md.getString01()); 
+end
+
+rule "Place Procedure on Procedure list"
+	when
+		$msList: MenuStructure( path == "ephr:patient:procedures:active" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:procedure" )
+		$msPlan: MenuStructure( role == "placeholder", path == "ephr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, string02 == "Active" )
+		$md: MenuData( menuStructure == $ms, string04 == "RQO" )
+	then
+		app.createReferenceMD( $md, $msList );
+		app.info( "Place Procedure on Procedure list"); 
+end
+
+rule "Place Provider on Provider list"
+	when
+		Mode( direction == "local" )
+		$msList: MenuStructure( path == "ephr:providers:all" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:provider" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		app.info( "Place provider on provider list"); 
+		MenuData md = app.createReferenceMD( $md, $msList );
+// 		Allow replies as well
+		app.addMyProvider( $md.getField("providerId") );
+end
+
+
+

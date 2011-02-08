@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/bloodPressure</name>
+	<page>bloodPressure.xhtml</page>
+	<drilldown>bloodPressureDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Blood_Pressure_-_Complete</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0436781</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2006AC</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Blood Pressure</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<relationship name="systolic" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C0436793</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<title>
+					<ST>Systolic BP</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Systolic</label>
+						<PQ>
+							<value></value>
+							<unit>mmHg</unit>
+						</PQ>
+					</value>
+				</observation>
+				<compute>
+					<type>org.tolven.process.ParseOriginalText</type>
+					<property name="slot">
+						<value xsi:type="xs:string">\#{act.observation.value}</value>
+		            </property>
+				</compute>
+			</act>
+		</relationship>
+		<relationship name="diastolic" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C0436794</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<title>
+					<ST>Diastolic BP</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Diastolic</label>
+						<PQ>
+							<value></value>
+							<unit>mmHg</unit>
+						</PQ>
+					</value>
+				</observation>
+				<compute>
+					<type>org.tolven.process.ParseOriginalText</type>
+					<property name="slot">
+						<value xsi:type="xs:string">\#{act.observation.value}</value>
+		            </property>
+				</compute>
+			</act>
+		</relationship>
+		<relationship name="comment" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Comment</label>
+						<ED/>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<!-- Get originalText parsed into the real value of value node -->
+		<compute>
+			<type>org.tolven.process.Copy</type>
+			<property name="destination">
+   				<value xsi:type="xs:string">\#{trim.act.text.ST.value}</value>
+			</property>
+			<property name="source">
+				<value xsi:type="xs:string">\#{trim.act.title.ST.value} \#{trim.act.relationship['systolic'].act.observation.value}/\#{trim.act.relationship['diastolic'].act.observation.value}</value>
+            </property>
+		</compute>
+	</act>
+</trim>

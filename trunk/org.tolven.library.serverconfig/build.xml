@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.library.serverconfig">
+
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+
+	<property name="include.java" value="false" />
+	<property name="include.java.source.code" value="false" />
+	<!-- 
+	Source code will be included in the devLib jar file if true. Otherwise, source code
+	known to this build script will not be in the plugin
+	 -->
+	<property name="includeSourceInDevLib" value="false" />
+
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+	</target>
+
+</project>

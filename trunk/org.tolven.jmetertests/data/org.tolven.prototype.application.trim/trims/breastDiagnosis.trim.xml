@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<abstract>true</abstract>
+	<name>obs/evn/breastdiagnosis</name>
+	<menu>global:breastDiagnosisMenu</menu>
+	<reference>http://wikihit.org/wiki/index.php/Diagnosis</reference>
+	<application name="ephr">
+		<instance>ephr:patient:diagnosis</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:diagnosis</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:diagnosis</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:diagnosis</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>C0332139</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Diagnosis</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of Diagnosis</label>
+			<valueSet>timeValueSet</valueSet>
+			<TS>
+				<label>Date of Visit</label>
+				<value>#{TS(now)}</value>
+			</TS>			
+		</effectiveTime>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<relationship name="diagnosisLocation" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Location</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Location</label>
+						<valueSet>diagnosisLocationVS</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="isMetastatic" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Metastatic</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Metastatic</label>
+						<valueSet>isMetastaticVS</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>		
+		<relationship enabled="false" name="metastaticLocation_1" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Lymph nodes above the collarbone (supraclavicular nodes)</ST>
+				</title>
+			</act>
+		</relationship>
+		<relationship enabled="false" name="metastaticLocation_2" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Lymph nodes below the collarbone (infraclavicular nodes)</ST>
+				</title>
+			</act>
+		</relationship>
+		<relationship enabled="false" name="metastaticLocation_3" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Chest wall</ST>
+				</title>
+			</act>
+		</relationship>
+		<relationship enabled="false" name="metastaticLocation_4" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Other</ST>
+				</title>
+				<relationship name="otherMetastaticLocation" direction="OUT" typeCode="PERT" >
+					<act classCode="OBS" moodCode="EVN">
+						<title>
+							<ST>Other Metastatic Locations</ST>
+						</title>
+						<observation>
+							<value>
+								<label>Other Metastatic Locations</label>
+								<ED></ED>
+							</value>
+						</observation>
+					</act>
+				</relationship>				
+			</act>
+		</relationship>
+		<relationship name="otherDiagnosis" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Other diagnosis information</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Other diagnosis information</label>
+						<ED></ED>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="currentStatus" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Current Status</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Current Status</label>
+						<valueSet>currentStatusVS</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.Copy</type>
+			<property name="destination">
+   				<value xsi:type="xs:string">\#{trim.act.text.ST.value}</value>
+			</property>
+			<property name="source">
+				<value xsi:type="xs:string">\#{trim.act.title.ST.value} \#{trim.act.observation.value.CE.displayName}</value>
+            </property>
+		</compute>
+		<compute>
+			<type>org.tolven.process.DataTypeSelect</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>			
+			<property name="dataTypeDestination">
+   				<value xsi:type="xs:string"></value>
+			</property>
+			<property name="dataTypeSource">
+				<value xsi:type="xs:string"></value>
+            </property>
+		</compute>
+	</act>
+	<valueSet name="isMetastaticVS">
+		<CE>
+			<displayName>Yes</displayName>
+			<code>C0565959</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>No</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="diagnosisLocationVS">
+		<CE>
+			<displayName>Left</displayName>
+			<code>C0565959</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Right</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="metastaticLocationVC">
+		<CE>
+			<displayName>Lymph nodes above the collarbone (supraclavicular nodes)</displayName>
+			<code>C0547040</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Lymph nodes below the collarbone (infraclavicular nodes)</displayName>
+			<code>C1299392</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Chest wall</displayName>
+			<code>C0205081</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Other</displayName>
+			<code>C1299393</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="currentStatusVS">
+		<CE>
+			<displayName>Active</displayName>
+			<code>C0205178</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Inactive</displayName>
+			<code>C0205191</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+    	<valueSet name="timeValueSet">
+		<TS>
+			<label>Date of Visit</label>
+			<value>#{TS(now)}</value>
+		</TS>
+        <null type="NA">
+            <label>Unknown</label>
+        </null>
+	</valueSet>
+</trim>

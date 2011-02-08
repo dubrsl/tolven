@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.jmetertests">
+
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+
+	<property name="includeSourceInDevLib" value="false" />
+
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+		<!-- Begin list of sections to build. Each section is added to the plugin zip file. -->
+		<antcall target="buildSection">
+			<param name="section" value="java"/>
+			<param name="lib" value="lib/ApacheJMeter_core.jar:lib/ApacheJMeter_java.jar"/>
+		</antcall>
+		<!-- End of list of sections to build -->
+		<jar destfile="build/tolven-jmeter-test.jar">
+			<zipfileset dir="build/java/classes" />
+		</jar>
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar"/>
+			</zipfileset>
+		</zip>
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir=".">
+				<include name="data/**" />
+				<include name="java/**" />
+				<include name="simple-controller-configs/**" />
+				<include name="simple-controllers/**" />
+				<include name="threads/**" />
+				<include name="defaultTestPlan.jmx" />
+				<include name="globalVariables.jmx" />
+				<include name="README.txt" />
+			</zipfileset>
+			<zipfileset dir="build">
+				<include name="tolven-jmeter-test.jar" />
+			</zipfileset>
+		</zip>
+	</target>
+</project>

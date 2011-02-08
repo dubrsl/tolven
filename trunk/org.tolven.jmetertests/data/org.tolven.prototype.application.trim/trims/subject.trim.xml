@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>reg/evn/subject</name>
+	<description>New Study Person</description>
+	<page>trial/newSubject.xhtml</page>
+	<drilldown>subjectDD.xhtml</drilldown>
+	<menu>global:patientMenu</menu>
+ 	<tolvenId application="#{knownType}" path="#{patient.path}" id="#{patient.id}" accountId="#{account.id}"/>
+ 	<tolvenEventId application="#{knownType}" path="#{patient.path}" id="#{patient.id}" accountId="#{account.id}"/>
+	<application name="echr">
+		<instance>echr:patient</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.participation['subject'].role.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New Patient</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+	</transitions>
+	<act classCode="REG" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Subject</ST>
+		</title>
+		<effectiveTime>
+			<label>Effective time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr">
+					<placeholder>
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<id>
+					<label>Record Number</label>
+					<name>recordNumber</name>
+					<II>
+						<root>1.1</root>
+						<extension/>
+					</II>
+				</id>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Subject</label>
+						<EN>
+							<label>Identity</label>
+							<use>L</use>
+							<part>
+								<label>Name Code</label>
+								<type>FAM</type>
+								<ST>#{patient.lastName}</ST>
+							</part>
+							<part>
+								<label>Participant Number</label>
+								<type>GIV</type>
+								<ST>#{patient.firstName}</ST>
+							</part>
+						</EN>
+					</name>
+					<livingSubject>
+						<administrativeGenderCode>
+							<label>Gender</label>
+							<valueSet>genders</valueSet>
+						</administrativeGenderCode>
+						<birthTime>
+							<label>Date of Birth</label>
+							<TS/>
+						</birthTime>
+					</livingSubject>
+					<person>
+					</person>
+				</player>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+	</act>
+	<valueSet name="genders">
+		<CE>
+			<displayName>Male</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Female</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

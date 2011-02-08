@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using JasperAssistant (http://www.jasperassistant.com) -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="path1Staging" pageWidth="216" pageHeight="791" whenNoDataType="AllSectionsNoDetail" columnWidth="216" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="true"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<style name="Base" isDefault="false" isBlankWhenNull="true" fontName="Helvetica" fontSize="8" pdfFontName="Helvetica"/>
+	<style name="BaseBD" isDefault="false" style="Base" markup="none" isBlankWhenNull="true" fontSize="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="BaseBI" isDefault="false" style="Base" markup="none" isBlankWhenNull="true" fontSize="8" isBold="true" isItalic="true" pdfFontName="Helvetica-BoldOblique"/>
+	<parameter name="SIDE" class="java.lang.String"/>
+	<field name="Type" class="java.lang.String"/>
+	<field name="CalculatedStage" class="java.lang.String"/>
+	<field name="Adjucated" class="java.lang.String"/>
+	<group name="Group_1">
+		<groupHeader>
+			<band height="14">
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="BaseBI" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="0"/>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Staging"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" evaluationTime="Report" hyperlinkType="None">
+					<reportElement style="BaseBD" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="0" width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+					<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="0"/>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$V{REPORT_COUNT}.intValue() == 0 ? "None reported" : ""]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<detail>
+		<band height="28">
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Type}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="0" width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{CalculatedStage}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="14" width="72" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Final:"]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="72" y="14" width="144" height="14" isRemoveLineWhenBlank="true" backcolor="#FFFFFF"/>
+				<box topPadding="1" leftPadding="5" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Adjucated}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

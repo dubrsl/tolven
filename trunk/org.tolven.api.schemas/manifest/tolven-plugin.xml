@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.api.schemas" version="2.0.7" vendor="Tolven Inc" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.war" />
+		<import plugin-id="org.tolven.component.tolvenweb" />
+		<import plugin-id="org.tolven.component.library" />
+		<import plugin-id="org.tolven.component.tolvenear" />
+	</requires>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="warclasses" plugin-id="org.tolven.component.war" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.component.library.api-schemas.jar" plugin-id="org.tolven.component.library" point-id="lib">
+		<parameter id="lib" value="api-schemas.jar" />
+	</extension>
+	<extension id="org.tolven.component.tolvenear.api-schemas.jar" plugin-id="org.tolven.component.tolvenear" point-id="javaModuleProduct">
+		<parameter id="jar" value="api-schemas.jar" />
+	</extension>
+</plugin>

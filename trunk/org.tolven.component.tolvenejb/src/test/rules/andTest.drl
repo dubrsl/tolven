@@ -1,0 +1,18 @@
+package test.andAsComma
+ 
+import java.util.*;
+import org.tolven.app.entity.*;
+import test.rules.*;
+
+global java.io.PrintStream out;
+
+rule "AndTest1"
+	when
+		$msPatient: MenuStructure( role == "placeholder", path == "echr:patient" )
+		$md: MenuData( $mdPatient: parent01!=null, parent01.menuStructure == $msPatient)
+	then
+		out.println( "msPatient:" + $msPatient );
+		out.println( $md );
+		out.println( $mdPatient );
+end
+

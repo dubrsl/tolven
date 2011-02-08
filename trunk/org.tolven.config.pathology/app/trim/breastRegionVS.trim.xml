@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<name>valueSet/breastRegionVS</name>
+	<description />
+	<author>Tolven</author>
+	<reference>http://www.wikihit.org/wiki/index.php?title=Template:Breast_Location&amp;oldid=14126</reference>
+	<valueSet name="breastRegion">
+	 	<CE>
+            <label>UNK</label>            
+            <displayName>unknown/not indicated</displayName>
+            <code>_UNK_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+       		<label>UIQ</label>
+            <displayName>upper inner quadrant</displayName>
+            <code>_UIQ_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <label>UOQ</label>
+            <displayName>upper outer quadrant</displayName>
+            <code>_UOQ_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+        	<label>LIQ</label>            
+            <displayName>lower inner quadrant</displayName>
+            <code>_LIQ_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+        	<label>LOQ</label>            
+            <displayName>lower outer quadrant</displayName>
+            <code>_LOQ_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+        	<label>ATB</label>            
+            <displayName>axillary tail of breast</displayName>
+            <code>_ATB_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <label>OLB</label>
+            <displayName>overlapping lesion of breast</displayName>
+            <code>_OLB_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+        	<label>CEN</label>            	
+            <displayName>central</displayName>
+            <code>_CEN_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <label>SUBR</label>
+            <displayName>subareolar region</displayName>
+            <code>_SUBR_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <label>NPL</label>
+            <displayName>nipple</displayName>
+            <code>_NPL_</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>       
+	</valueSet>
+</trim>

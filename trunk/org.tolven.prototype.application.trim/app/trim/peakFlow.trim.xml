@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/peakFlow</name>
+	<page>peakFlow.xhtml</page>
+	<drilldown>peakFlowDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Peak_Flow</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				 <code>C0857465</code>
+				 <codeSystemName>UMLS</codeSystemName>
+				 <codeSystemVersion>2006AC</codeSystemVersion>
+			 </CD>
+		</code>
+		<title>
+			<ST>Peak Flow</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<label>Peak Flow Value</label>
+				<PQ>
+					<value>0.0</value>
+					<unit>L/min</unit>
+				</PQ>
+			</value>
+		</observation>
+		<relationship name="comment" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Comment</label>
+						<ED/>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+</trim>

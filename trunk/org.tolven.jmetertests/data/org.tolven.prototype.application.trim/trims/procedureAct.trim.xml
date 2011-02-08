@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<abstract>true</abstract>
+	<name>procedureAct</name>
+	<author>Tolven</author>
+	<act classCode="OBS" moodCode="EVN">
+		<relationship typeCode="PERT" direction="OUT" name="procedure">
+			<act moodCode="EVN" classCode="OBS">
+				<bind application="echr" phase="create">
+					<list cardinality="single">
+						<path>echr:patient:procedure</path>
+					</list>
+				</bind>
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{procedure.path}</extension>
+					</II>
+				</id>
+				<title>
+					<ST>#{procedure.title}</ST>
+				</title>
+			</act>
+		</relationship>	
+	</act>
+</trim>

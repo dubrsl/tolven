@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+      <ui:composition template="/templates/mailTemplate.xhtml">
+       <ui:define name="body">
+        <p>Tolven recently sent you an activation message containing a link that 
+        would activate the account you created. Since you were not able to complete
+        the activation of your login within #{top.properties['tolven.register.expiration']/60} minutes of registering we have removed 
+        your registration for security purposes. 
+        Please register again at <a href ="#{top.properties['tolven.invitation.replyTo']}">#{top.properties['tolven.invitation.replyTo']}</a> </p>
+       </ui:define>
+      </ui:composition>
+    </body>
+</html>

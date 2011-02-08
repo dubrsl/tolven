@@ -1,0 +1,206 @@
+.userprefbox{
+	display:none;
+	z-index:20;
+	position:absolute;
+	top:50px;
+	left:250px;
+	background-color:#fff;
+	width:300px;
+	border:1px solid #7AA5D6;
+	padding:0 0 6px;
+	FONT: 1em/1.4em Geneva, Arial, Helvetica, sans-serif; 
+	text-align: center;
+}
+.userprefbox table td.title{
+	background-color:#dedede;
+	width:100%;
+}
+.userprefbox table{
+	width:100%;
+	margin:0;
+	padding:0;
+	z-index:99;
+}
+.userprefbox fieldset {
+	margin: 5px;
+	font-size: 1em;
+	font-weight:bold;
+}
+.userprefbox fieldset legend{
+	cursor: pointer;
+}
+.userpreftitle{
+	background-color:#BBD3F2;
+	color:#0E4380;
+	font-size: 1.2em;
+	font-weight:bold;
+	line-height: 20px;
+	padding-left:0.25em;
+	text-align: left;
+}
+.userpreffooter{
+	
+}
+.innerUserPrefBox{
+	padding:4px;
+}
+.innerUserPrefBox .prefBoxInstrUL{
+	list-style-type: disc;
+	padding-left:0;
+}
+.innerUserPrefBox ul.prefBoxInstrUL li{
+	font-size:.9em;
+	color: #339;
+}
+.userpreful {
+padding: 0px;
+text-align: left;
+}
+.userpreful li{
+	display: block;
+	list-style-type:none;
+}
+.sort_list{
+	padding-bottom:2em;
+}
+.sort_list .sortdiv {
+	width: 98%;
+	overflow:hidden;
+	margin: 0.5em;
+}
+
+.emptyspan{
+ height: 100px;
+}
+
+a.maxbox, a.minbox, a.closetab, a.ddbox{
+	 float:right;
+	 margin-left:3px;
+	 margin-top:2px;
+	 width: 1em;
+	 height: 1em;
+}
+a.actionBox{
+	float: right;
+	font-weight:normal;
+	text-decoration: none;	 
+}
+a.maxbox{
+}
+a.minbox{
+}
+a.closetab {
+}
+a.ddbox{
+}
+
+
+.hideundo{
+	visibility:hidden;
+}
+.showundo{
+	visibility:visible;
+}
+.showundo a{
+	background-color: #FFFF99;
+	color: #000000;
+	font-weight:bold;
+	padding-left:1em;
+	padding-right:1em;
+	text-decoration: none;
+}
+
+.userprefhref{
+	text-decoration: none;
+}
+.userprefsettingdiv {
+	font-weight:bold;
+}
+
+.userprefsettingdiv ul{
+padding: 0px;
+}
+.userprefsettingdiv .viewtbas a{
+DISPLAY: block;
+FLOAT: left;
+padding-left: 5px;
+white-space:nowrap;
+COLOR: #4D4D4D;
+BACKGROUND: #ffffff;
+FONT-FAMILY: 'Lucide Grande', Verdana, Arial, sans-serif;
+MARGIN: 0px 0px 0px 5px;
+WIDTH: auto;
+TEXT-DECORATION: none;
+line-height: 1.4em;
+}
+.userprefsettingdiv .viewtbas a:hover{
+BACKGROUND: #527ba4; 
+COLOR: #ffffff;
+}
+.userprefsettingdiv .viewtbas a.active{
+BACKGROUND: #527ba4; 
+COLOR: #ffffff;
+}
+.disablesummarydrag, .enablesummarydrag{
+	color: #FFFFFF;
+	text-decoration: none;
+}
+.show{
+	display:block;
+}
+.hide{
+	display:none;
+}
+.hidedataTableBody tbody{
+	display:none;
+}
+
+#faderPane{ 
+	background-color:#666666;
+	display:none;
+	height:100%;
+	left:0pt;
+	opacity:.40;
+	position:absolute;
+	top:0pt;
+	width:100%;
+	z-index:15;
+	filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=75);
+}
+.summaryoptions{
+	padding:.5em;
+	background-color:#E5ECF9;
+	font-weight:normal;
+}
+.summaryhoverborder{
+border:1px dashed;
+}
+.calendar{
+z-index : 100;
+}.prefBox div {
+padding: 0px;
+text-align: left;
+}
+.prefBox div{
+padding: 0px;
+margin-top: 0px;
+line-height: 1em;
+}
+.prefBox div fieldset{
+padding: 0px;
+margin-top: 5px;
+height: 40px;
+}
+.prefBox div fieldset ul{
+padding: 0px;
+margin-top: 0px;
+}
+.prefBox div fieldset ul li{
+float: left;
+}
+.prefBox div fieldset legend{
+padding: 0px;
+margin-top: 0px;
+color: #0E4380;
+font-weight: bold;
+}

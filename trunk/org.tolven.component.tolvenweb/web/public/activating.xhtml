@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+	<title>Activating </title>
+</head>
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="Tolven activation"/>
+        <ui:param name="staticPage" value="true"/>
+        <ui:define name="body">
+        	<c:if test="#{activate.invitationId==0}">
+				<p>An email is being sent to you now. The email will contain a link which will allow you to 
+				sign in to Tolven for the first time. The special first-time sign in will activate your account. </p>
+				<p>If the email does not arrive or you do not successfully sign in for the first time within
+				#{top.properties['tolven.register.expiration']/60} minutes, your user id will be automatically
+				deleted allowing you to <a href ="#{top.properties['tolven.invitation.replyTo']}/public/register.jsf">register again</a>.</p> 
+<p>Please make a note of your new username:</p> 
+<pre>
+	#{reg.tp.uid}
+</pre>
+<p>and the password you registered.</p>
+
+<p>You can close this window now.</p>
+		
+</c:if>			
+<c:if test="#{activate.invitationId!=0 and activate.invitation.status=='active'}">
+<p>Your next step is to sign in to tolven for the first time with your new username and password.</p>
+	<h:form >
+		<h:panelGrid columns="2">
+			<h:outputText value="Your User Id"/>
+			<h:outputText value="#{activate.invitationDetail.principal}"/>
+			<h:outputText value="Invitation Id (from email)"/>
+			<h:inputText value="#{activate.invitationId}" readonly="true"/>
+			<h:outputLink value="#{facesContext.externalContext.request.contextPath}/private/application.jsf">
+				<f:param name="invitationId" value="#{activate.invitationId}"/>
+				<h:outputText value="Sign in"/>
+			</h:outputLink> 
+		</h:panelGrid>
+		<br/><br/>[Status: <b>#{activate.invitation.status}</b> - Expiration: <b>#{activate.invitation.expiration}]</b>
+	</h:form>
+</c:if>
+<c:if test="#{activate.invitationId!=0 and activate.invitation.status=='obsolete'}">
+<p>Sorry. As a security precaution, your new user id has been removed because the time alloted for you to
+activate the account has expired. You can <a href ="#{top.properties['tolven.invitation.replyTo']}/public/register.jsf">register again</a> with the same or different information. 
+As a result, you will receive a new invitation email.</p>
+</c:if>
+<!-- To prevent abuse, don't make a distinction between a valid invitation that has already been used an an invalid invitation -->
+<c:if test="#{activate.invitationId!=0 and (activate.invitation.status=='completed' or activate.invitation.status==null) }">
+<p>Your user id is already activated. You can just directly <a href="#{top.properties['tolven.invitation.replyTo']}">sign in</a> from now on.</p>
+<p>Here is a URL you can bookmark for direct access to Tolven sign in:
+	<a href="#{top.properties['tolven.invitation.replyTo']}">Tolven</a>, or</p>
+<pre>
+	#{top.properties['tolven.invitation.replyTo']}
+</pre>
+</c:if>
+        </ui:define>
+    </ui:composition>
+</body>
+</html>

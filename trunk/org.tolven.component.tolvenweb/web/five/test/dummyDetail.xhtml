@@ -1,0 +1,19 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <f:attribute name="Cache-Control" value="no-cache"/> 
+    <f:attribute name="expires" value="1"/>
+    <f:attribute name="contentType" value="text/xml"/>
+
+	<ajax-response>
+		<response type="element" id="rslt">
+			<h:outputText value="#{top.tp.cn}, you have access to 1 account." rendered="#{top.accountCount == 1}" />
+			<h:outputText value="#{top.tp.cn}, you have access to #{top.accountCount} accounts." rendered="#{top.accountCount > 1}" />
+			<br /> <br />
+			<h:outputText id="name" value="This number is from the server at #{top.serverTime} is: #{top.dummyCount}" />
+ 	   	</response>
+	</ajax-response>
+</f:view>

@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Diagnosis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<ui:composition>
+
+		<wiz:step title="#{rel.act.observation.value.CE.displayName}" >
+			<wiz:body>
+				<div class="delete"> 
+					<a href="#" onclick="javascript:removeTemplate('#{menu.elementLabel}',#{rel.sequenceNumber})">Remove this Diagnosis</a>
+				</div>			
+				<wiz:group title="#{rel.act.title.ST}">
+					<h:outputText value="#{rel.act.observation.value.CE.displayName}"/>
+				</wiz:group>
+				<wiz:group title="#{rel.act.effectiveTime.label.value}">
+					<trim:TS id="effectiveTime#{rel.sequenceNumber}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" />
+				</wiz:group>
+				<wiz:group title="Additional Details" >
+					<wiz:yesno id="allergyDetails#{rel.sequenceNumber}">Add?</wiz:yesno>
+					<wiz:group title="#{rel.act.relationship['reaction'].act.title.ST}" visible="$('#{menu.elementLabel}:allergyDetails#{rel.sequenceNumber}').isTrue();">
+						<trim:CE id="reaction#{rel.sequenceNumber}" valueSet="reaction" value="#{rel.act.relationship['reaction'].act.observation.value}" layout="pageDirection"/>
+					</wiz:group>
+					<wiz:group title="#{rel.act.relationship['severity'].act.title.ST}" visible="$('#{menu.elementLabel}:allergyDetails#{rel.sequenceNumber}').isTrue();">
+						<trim:CE id="severity#{rel.sequenceNumber}" valueSet="severity" value="#{rel.act.relationship['severity'].act.observation.value}" layout="pageDirection" />
+					</wiz:group>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>TBD</p>
+			</wiz:help>
+		</wiz:step>
+
+</ui:composition>
+
+</body>
+</html>

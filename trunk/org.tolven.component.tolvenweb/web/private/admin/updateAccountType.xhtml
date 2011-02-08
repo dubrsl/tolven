@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>System Administration</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="../../templates/portalTemplate.xhtml">
+		<ui:param name="skin" value="echr"/>
+        <ui:define name="content">
+        <h2>System Administration - Account Types</h2>
+         <h3>Update Account Type</h3>
+	        <h:form id="updateAccountType">
+	          <h:messages errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+       		  <h:inputHidden id="id" value ="#{sys.currentAccountType.id}"/>
+	          <h:panelGrid columns="2">
+	           		<h:outputText value="Id"/>
+	           		<h:inputText id="id2" value ="#{sys.currentAccountType.id}" size="10" readonly="true" />
+	           		<h:outputText value="Account Type"/>
+	           		<h:inputText id="type" value ="#{sys.currentAccountType.knownType}" size="20" required="true"/>
+	           		<h:outputText value="Homepage"/>
+	           		<h:inputText id="homepage" value ="#{sys.currentAccountType.homePage}" size="20"/>
+	           		<h:outputText value="Description"/>
+	           		<h:inputText id="longdesc" value="#{sys.currentAccountType.longDesc}" size="20"/>
+	           		<h:outputText value="Read only(default false)"/>
+	           		<h:selectBooleanCheckbox id="readonly" value="#{sys.currentAccountType.readOnly}"/>
+	           		<h:outputText value="Status"/>
+	           		<h:selectOneMenu id="status" value="#{sys.currentAccountType.status}">
+	           			<f:selectItem itemValue="new" itemLabel="Pending (new)"/>
+	           			<f:selectItem itemValue="active" itemLabel="Active"/>
+	           			<f:selectItem itemValue="inactive" itemLabel="Inactive"/>
+	           		</h:selectOneMenu>
+	           </h:panelGrid>
+               <h:commandButton action="cancel" immediate="true" value="Cancel"/>
+               <h:commandButton action="#{sys.updateAccountType}" value="Update"/>
+           </h:form>
+		</ui:define>
+    </ui:composition>
+  </body>
+</html>

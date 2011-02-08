@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Handle next steps in a plan</title>
+</head>
+
+<body>
+    <ui:composition >
+		<!-- If there's an act, then include it. -->
+    	<c:if test="#{nextStep.act!=null}">
+    		<tr >
+    			<td >
+					<h:outputText value="#{nextStep.act.effectiveTime.IVLTS.low.TS}">
+						<trim:convertTS type="date" timeStyle="" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+					</h:outputText>
+					<h:outputText value="#{nextStep.act.effectiveTime.TS}">
+						<trim:convertTS type="date" timeStyle="" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+					</h:outputText>
+    			</td>
+    			<td >#{nextStep.act.title.ST.value}</td>
+    		</tr>
+	     	<!-- 
+	     		Run through each relationship in the act looking for nextSteps. 
+	     		At this level a next step follows the previous step. 
+	    	-->
+	    	<c:forEach var="rel" items="#{nextStep.act.relationships}">
+		    	<c:if test="#{rel.name=='nextStep'}">
+			     	<ui:include src="nextStepDD.xhtml">
+			     		<ui:param name="nextStep" value="#{rel}"/>
+			     	</ui:include>
+			     </c:if>
+		    </c:forEach>
+	     </c:if>
+	</ui:composition>
+</body>
+</html>

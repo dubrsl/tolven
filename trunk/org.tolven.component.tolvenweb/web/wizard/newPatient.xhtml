@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+<head>
+    <title>Patient Registration</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+			<wiz:step title="#{msg.GettingStarted}">
+				<wiz:body>
+					<p>Create a patient/health record</p>
+					<c:if test="#{top.accountType=='ephr'}">
+							<p>Congratulations! You have just established a PHR (personal health record) account. In order to actually create a PHR for yourself or for anyone else for whom you have some health care responsibility, you will need to fill out some information.</p>
+					</c:if>
+					<p>Click Next to start.</p>
+				</wiz:body>
+				<wiz:help>
+					<p>Help provides additional information about each page</p>
+					<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yoo can continue at any time later.
+					If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
+					Once submitted, you will not be able to Cancel the form.</p>
+				</wiz:help>
+			</wiz:step>
+			<wiz:step title="Demographics" >
+				<wiz:body>
+					<trim:person entity="#{trim.trim.act.participations[0].role.player}"/>
+					<wiz:group title="Action">
+						<h:selectOneMenu id="#{menu.elementLabel}status" value="#{trim.trim.status}">
+						    <c:forEach var="trans" items="#{trim.trim.eventTransitions}">
+								<f:selectItem itemLabel="#{trans.label.value}" itemValue="#{trans.to}"/>
+						    </c:forEach>
+						</h:selectOneMenu>
+					</wiz:group>
+					<c:if test="#{top.accountType=='ephr'}">
+						<wiz:group title="Identifiers">
+							<trim:SETII setii="#{trim.trim.act.participation['subject'].role.id}"/>
+						</wiz:group>
+					</c:if>
+				</wiz:body>
+				<wiz:help>
+					<p>We need to know the name, age, and gender of the person being added.</p>
+				</wiz:help>
+			</wiz:step>
+			<c:if test="#{top.accountType=='echr'}">
+				<wiz:downloadStep title="Duplicates" include="/wizard/duplicates.jsf">
+				</wiz:downloadStep>
+				<wiz:step title="Patient" >
+					<wiz:body>
+						<trim:patient role="#{trim.trim.act.participation['subject'].role}"/>
+						<wiz:group title="Physicians">
+							<p>Primary MD: 
+								<wiz:selectWithOther id="primarymd" role="#{trim.trim.act.participation['subject'].role.participation['subject'].act.participation['primary'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" />
+	    					</p>
+	    					<br/>
+							<p>Surgeon: 
+								<wiz:selectWithOther id="surgeon"   role="#{trim.trim.act.participation['subject'].role.participation['subject'].act.participation['surgeon'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" />
+	    					</p>							
+						</wiz:group>
+						<wiz:group title="Additional Details">
+							<h:panelGrid columns="2">
+							<h:outputText value="#{msg.Race}"/>
+								<h:panelGroup>
+									<wiz:textGeneric id="race" size="15"/>
+								</h:panelGroup>
+							</h:panelGrid>
+							
+						</wiz:group>
+					</wiz:body>
+					<wiz:help>
+						<p>Information about this patient</p>
+					</wiz:help>
+				</wiz:step>
+			</c:if>
+	</ui:composition>
+</body>
+</html>
+

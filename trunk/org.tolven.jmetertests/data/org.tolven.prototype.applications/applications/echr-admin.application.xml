@@ -1,0 +1,254 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<extends path="echr">
+		<list name="problems" title="Problems" page="/five/list.xhtml" visible="never" query="global:problemMenu">
+			<column name="Problem" title="Problem" instantiate="true" internal="string01" width="40.0" />
+		</list>
+	</extends>
+	<extends path="echr">
+		<list name="medications" title="Medications" page="/five/list.xhtml" visible="never" query="global:medicationMenu">
+			<column name="Medication" title="Medication" instantiate="true" internal="string01" width="40.0" />
+		</list>
+	</extends>
+	
+	<extends path="echr">
+		<list name="allergies" title="Allergies" page="/five/list.xhtml" visible="never" query="global:allergyMenu">
+			<column name="allergy" title="Allergy" instantiate="true" internal="string01" width="40.0" />
+		</list>
+	</extends>
+	<extends path="echr">
+		<list name="pxList" title="Procedures" page="/five/list.xhtml" visible="never" query="global:pxMenu">
+			<column name="procedure" title="Procedure" instantiate="true" visible="true" internal="string01" width="40.0" />
+			<column name="heading" title="procName" visible="false" internal="string02" width="40.0" />
+		</list>
+	</extends>
+	<extends path="echr">
+		<menu name="activity" sequence="10" title="Activity" page="/five/activities.xhtml" visible="true">
+			<list name="all" title="All Activity" page="/five/list.xhtml" visible="true" >
+				<column name="Date" internal="date01" format="d MMM yyyy" width="7.0"/>
+				<column name="For" internal="string01" width="20.0">
+					<from>#{trim.act.participation['recordTarget'].role.player.name.EN['L'].formatted}</from>
+					<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+					<from>#{newInShare.subject}</from>
+				</column>
+				<column name="Action" internal="string02" reference="true" width="20.0">
+					<from>#{trim.description}</from>
+				</column>
+				<column name="RequestedBy" internal="string03" width="15.0"/>
+				<column name="Priority" internal="long01" width="6.5"/>
+				<column name="Due" internal="date02" format="d MMM yyyy" width="6.0"/>
+			</list>
+			<list name="inShares" title="Received Shares" page="/five/list.xhtml" visible="true" drilldown="echr:newInShare">
+				<column name="Name" internal="string01" reference="true" width="40.0">
+					<from>#{trim.description}</from>
+				</column>
+				<column name="Source" internal="string02" width="25.0"/>
+				<column name="Contact" internal="string03" width="25.0"/>
+				<column name="Accepted" internal="string04" width="10.0"/>
+			</list>
+<!--
+ 			<list name="autoOpen" title="Auto Open" page="/five/list.xhtml" visible="true">
+				<column name="OpenDate" internal="date01" format="d MMM yyyy" width="7.0"/>
+				<column name="Action" internal="string02" reference="true" width="20.0">
+					<from>#{trim.description}</from>
+				</column>
+			</list>
+ -->
+ 		</menu>
+	</extends>
+	<extends path="echr">
+		<menu name="admin" sequence="20" title="Admin" page="/five/admin.xhtml" visible="true">
+			<menu name="providers" title="Providers" page="/five/bar2.xhtml" visible="true" >
+				<list name="all" title="All Providers" page="/five/list.xhtml" visible="true" drilldown="echr:provider">
+					<column name="providerId" internal="long01" width="10.0">
+						<from>#{provider.providerId}</from>
+					</column>
+					<column name="Name" internal="string01" reference="true" width="25.0">
+						<from>#{provider.name}</from>
+					</column>
+					<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:providerMenu">
+						<column name="Provider" internal="string01" instantiate="true" width="40.0"/>
+					</action>
+				</list>
+			</menu>
+			<menu name="lists" title="Lists" page="/five/bar2.xhtml" visible="true">
+				<list name="accountLists" title="AccountLists" page="/five/list.xhtml" visible="true" drilldown="echr:accountList">
+					<column name="Title" internal="string01" width="15.0">
+						<from>#{accountList.name}</from>
+					</column>
+					<column name="DisplayName" internal="string02" width="20.0" reference="true">
+						<from>#{accountList.displayName}</from>
+					</column>
+					<column name="Type" internal="string04" width="20.0">
+						<from>#{accountList.type}</from>
+					</column>
+					<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:accountListsMenu">
+						<column name="Name" internal="string01" instantiate="true" width="40.0" />
+					</action>
+				</list>
+			</menu>
+			<menu name="staff" title="Staff" page="/five/bar2.xhtml" visible="true" >
+				<list name="all" title="All Staff Members" page="/five/list.xhtml" visible="true" drilldown="echr:assigned">
+					<column name="Name" internal="string01" reference="true" width="25.0">
+						<from>#{assigned.lastName}, #{assigned.firstName} #{assigned.middleName}</from>
+					</column>
+					<column name="Gender" internal="string04" width="20.0">
+						<from>#{assigned.sex}</from>
+					</column>
+					<column name="Phone" width="20.0">
+						<from>#{assigned.workTelecom}</from>
+					</column>
+					<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:assignedMenu">
+						<column name="Staff" internal="string01" instantiate="true" width="40.0"/>
+					</action>
+				</list>
+			</menu>
+			<menu name="locations" title="Location" page="/five/bar2.xhtml" visible="true">
+				<list name="all" title="All Locations" page="/five/list.xhtml" visible="true" drilldown="echr:location">
+					<column name="Name" internal="string01" width="25.0" reference="true">
+						<from>#{location.name}</from>
+					</column>
+					<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:locationMenu">
+						<column name="Location" internal="string01" instantiate="true" width="40.0"/>
+					</action>
+				</list>
+			</menu>
+			<menu name="technical" title="Technical" page="/five/bar2.xhtml" visible="true">
+				<menu name="overview" title="Overview" page="/five/jsp/overview.jsp" visible="true" />
+			</menu>
+			<menu name="documents" title="Documents" page="/five/bar2.xhtml" visible="true">
+				<list name="all" title="All Documents" page="/five/list.xhtml" visible="true" drilldown="echr:document">
+					<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+						<from>#{document.effectiveTime}</from>
+					</column>
+					<column name="Name" internal="string01" width="25.0" reference="true">
+						<from>#{document.title}</from>
+					</column>
+					<column name="Contents" internal="string02" width="45.0" >
+						<from>#{document.text}</from>
+					</column>
+					<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:documentMenu">
+						<column name="Document" internal="string01" instantiate="true" width="40.0"/>
+					</action>
+				</list>
+			</menu>
+			<instance name="wip" title="New" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml"/>
+		</menu>
+	</extends>
+	<extends path="echr">
+		<placeholder name="event" sequence="80" title="A new event" page="/wizard/wizard.xhtml" heading="/five/eventLink.xhtml">
+			<field name="date" internal="date01" />
+			<field name="For" internal="string01" >
+				<from>#{trim.act.participation['recordTarget'].role.player.name.EN['L'].formatted}</from>
+				<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+				<from>#{newInShare.subject}</from>
+			</field>
+			<field name="Action" internal="string02">
+				<from>#{trim.description}</from>
+			</field>
+			<field name="RequestedBy" internal="string03"/>
+			<field name="Priority" internal="long01"/>
+			<field name="Due" internal="date02"/>
+		</placeholder>
+	</extends>
+	<extends path="echr">
+		<placeholder name="provider" sequence="70" title="Provider" eventInstance="echr:admin:wip" page="/five/provider.xhtml" heading="/five/providerLink.xhtml">
+			<field name="providerId" internal="long01" >
+				<from>#{trim.field['providerId']}</from>
+			</field>
+			<field name="name" internal="string01" >
+				<from>#{findProvider(trim.field['providerId']).name}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<menu name="patients" title="Patients" page="/five/bar2.xhtml" visible="true">
+				<list name="all" title="All" uniqueKey="Patient" page="/five/list.xhtml" visible="true" drilldown="ephr:patient">
+					<column name="patient" internal="parent02" visible="false">
+						<from>#{outShare.patient}</from>
+					</column>
+					<column name="Name" internal="string01" reference="true" width="15.0">
+						<from>#{outShare.patient.lastName}</from>
+					</column>
+					<column name="Details" internal="_computed" width="20.0">
+						<from>#{patient.firstName} #{patient.middleName} #{age(patient.dob, now, locale} #{patient.sex}</from>
+					</column>
+				</list>
+			</menu>
+		</placeholder>
+	</extends>
+	<extends path="echr">
+		<placeholder name="assigned" sequence="90" title="Staff Member" eventInstance="echr:admin:wip" page="/five/assigned.xhtml" heading="/five/assignedLink.xhtml">
+			<field name="firstName" internal="string02" >
+				<from>#{role.player.name.EN['L'].formattedParts['GIV[0]']}</from>
+			</field>
+			<field name="lastName" internal="string01">
+				<from>#{role.player.name.EN['L'].formattedParts['FAM']}</from>
+			</field>
+			<field name="middleName" internal="string03" >
+				<from>#{role.player.name.EN['L'].formattedParts['GIV[1]']}</from>
+			</field>
+			<field name="addr1" >
+				<from>#{role.player.person.addr.AD['WP'].part['AL[0]'].ST.value}</from>
+			</field>
+			<field name="addr2" >
+				<from>#{role.player.person.addr.AD['WP'].part['AL[1]'].ST.value}</from>
+			</field>
+			<field name="city" >
+				<from>#{role.player.person.addr.AD['WP'].part['CTY'].ST.value}</from>
+			</field>
+			<field name="state" >
+				<from>#{role.player.person.addr.AD['WP'].part['STA'].ST.value}</from>
+			</field>
+			<field name="zip" >
+				<from>#{role.player.person.addr.AD['WP'].part['ZIP'].ST.value}</from>
+			</field>
+			<field name="country" >
+				<from>#{role.player.person.addr.AD['WP'].part['CNT'].ST.value}</from>
+			</field>
+			<field name="workTelecom" >
+				<from>#{role.player.telecom.TEL['WP'].value}</from>
+			</field>
+			<field name="sex" internal="string04" >
+				<from>#{role.player.livingSubject.administrativeGenderCode.CE.code=='C0024554'?'Male':'Female'}</from>
+			</field>
+			<field name="gender" >
+				<from>#{role.player.livingSubject.administrativeGenderCode.CE}</from>
+			</field>
+			<menu name="appointments" title="Appointments" page="/five/bar2.xhtml" visible="true">
+				<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown="echr:patient:appointment">
+					<column name="Date" internal="date01" width="10.0">
+						<from>#{appointment.effectiveTime}</from>
+					</column>
+					<column name="Patient" internal="string01" reference="true" width="20.0">
+						<from>#{appointment.patient.lastName}, #{appointment.patient.firstName} - #{appointment.patient.sex} </from>
+					</column>
+					<column name="Purpose" internal="string02" width="30.0">
+						<from>#{appointment.title}</from>
+					</column>
+				</list>
+			</menu>
+			<menu name="personal" title="Personal" page="/five/bar2.xhtml" visible="true">
+				<list name="identity" title="Identity" page="/five/assignedPersonal.xhtml" visible="true" drilldown="echr:assigned"/>
+			</menu>
+		</placeholder>
+	</extends>
+	<extends path="echr">
+		<placeholder name="location" title="Location" eventInstance="echr:admin:wip" page="/five/location.xhtml" heading="/five/locationLink.xhtml">
+			<field name="name" internal="string01" >
+				<from>#{trim.isName['reg/evn/location/.*'].act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr">
+		<placeholder name="document" title="Document" page="/wizard/wizard.xhtml" heading="/five/documentLink.xhtml">
+			<field name="title" internal="string01" >
+				<from>#{trim.act.title.ST.value}</from>
+			</field>
+			<field name="text" internal="string02" >
+				<from>#{trim.act.text.ST.value}</from>
+			</field>
+			<field name="effectiveTime" internal="date01" >
+				<from>#{trim.act.effectiveTime.TS.date}</from>
+			</field>
+		</placeholder>
+	</extends>
+</application>

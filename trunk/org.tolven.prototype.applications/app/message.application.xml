@@ -1,0 +1,6 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure" >
+	<property name="org.tolven.message.testMessage" accountType="echr" file="message/testMessage.html"/>
+	<property name="org.tolven.message.testMessage" accountType="ephr" file="message/testMessage.html"/>
+	<property name="org.tolven.message.activate" accountType="global" file="message/activate.html"/>
+	<property name="org.tolven.message.heading" accountType="global" file="message/heading.html"/>
+</application>

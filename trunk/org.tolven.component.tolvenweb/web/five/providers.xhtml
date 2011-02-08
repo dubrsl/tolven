@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Medical History</title>
+  </head>
+  <body>
+  	<ui:composition>
+  		<div class="paneBody">
+   		      <h:dataTable value="#{menu.providersModel}" var="aes" styleClass="manage">
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Account"/>
+	                </f:facet>
+	                <h:outputText value="#{aes.otherAccount.id}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Title"/>
+	                </f:facet>
+                    <h:outputText value="#{aes.otherAccount.title}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Action"/>
+	                </f:facet>
+                    <a href="#" onclick="sendCCR('#{menu.drilldownItem.id}', '#{aes.otherAccount.id}');">
+                    	Send Summary
+                    </a>
+	            </h:column>
+	          </h:dataTable>
+	        <p>Temporary: the Summary is sent immediately rather than starting a wizard.</p>
+		</div>	      
+  	</ui:composition>
+  </body>
+</html>
