@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Pathology Summary</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="#{msg.GettingStarted}" >
+			<wiz:body>
+				<p>Pathology Specimen</p>
+				<p>In this form you will choose the procedures for Pathology Specimen. </p>
+				<p>Click the next button to choose the set of procedures.</p>
+			</wiz:body>
+			<wiz:help>
+				<h1>getting Started</h1>
+				<p>Help provides additional information about each page</p>
+				<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yuo can continue at any time later.
+				If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
+				Once submitted, you will not be able to Cancel the form.</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Pathology Summary" >
+			<wiz:body>
+            <h:panelGrid columns="2" cellpadding="5;" >
+	    			   <h:outputText value="Select an #{trim.trim.act.relationship['encounter'].act.title.ST}:"/>   
+                <h:selectOneMenu id="enc" value="#{trim.trim.act.relationship['encounter'].act.id.for[top.accountUser.account].extension}" style="margin-left: 10px;">
+                    <f:selectItem itemValue="#{null}" itemLabel="None"/>
+                    <f:selectItems value="#{trim.list['echr:patient:encounters:active~Location,Attending']}"/>
+                </h:selectOneMenu>
+                
+                <h:outputText value="Select a #{trim.trim.act.relationship['procedure'].act.title.ST}:"/>
+                <h:selectOneMenu id="proc" value="#{trim.trim.act.relationship['procedure'].act.id.for[top.accountUser.account].extension}" style="margin-left: 10px;">
+                    <f:selectItem itemValue="#{null}" itemLabel="None"/>
+                    <f:selectItems value="#{trim.list['echr:patient:procedures:active~Procedure']}"/>
+                    </h:selectOneMenu>
+                
+                <h:outputText value="#{trim.trim.act.relationship['pathologyResult'].act.title.ST.value}"/>
+                <wiz:radio id="#{trim.trim.act.relationship['pathologyResult'].name}" value="#{trim.trim.act.relationship['pathologyResult'].act.observation.value.CE}">
+                  <f:selectItems value="#{trim.valueSets[trim.trim.act.relationship['pathologyResult'].act.observation.value.valueSet]}"/>
+                  <f:converter converterId="DataTypeConverter"/>
+                </wiz:radio>
+             </h:panelGrid>
+
+
+            <c:set var="invasiveCancer" value="#{trim.trim.act.relationship['pathologyResult'].act.relationships[0]}" scope="page" />
+            <wiz:group title="#{invasiveCancer.act.title.ST.value}">
+              <table cellpadding="3">
+                <tr>
+                  <td><h:outputText value="#{invasiveCancer.act.relationship['tumorSize'].act.title.ST.value}"/>  </td>
+                  <td><h:inputText value="#{invasiveCancer.act.relationship['tumorSize'].act.observation.value.PQ.value}"/> #{invasiveCancer.act.relationship['tumorSize'].act.observation.value.PQ.unit}</td>
+                </tr>
+                <tr>
+                  <td>   #{invasiveCancer.act.relationship['multifocalTumor'].act.title.ST.value}  </td>
+                  <td>
+                    <wiz:radio id="#{invasiveCancer.act.relationship['multifocalTumor'].name}" value="#{invasiveCancer.act.relationship['multifocalTumor'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[invasiveCancer.act.relationship['multifocalTumor'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>                  
+                </tr>
+                <tr/>
+                <tr>
+                  <td style="vertical-align:top;"> #{invasiveCancer.act.relationship['invasiveHistology'].act.title.ST.value}</td>
+                  <td> <trim:selectManyCheck  id="#{invasiveCancer.act.relationship['invasiveHistology'].name}" slot="#{invasiveCancer.act.relationship['invasiveHistology'].act.observation}" layout="pageDirection" onclick="processGroup(this.name)"/></td>
+                </tr>
+                <tr>
+                  <td style="vertical-align:middle;"> #{invasiveCancer.act.relationship['signsOfTreatmentEffect'].act.title.ST.value}  </td>
+                  <td style="vertical-align:top;">
+                    <wiz:radio id="#{invasiveCancer.act.relationship['signsOfTreatmentEffect'].name}" value="#{invasiveCancer.act.relationship['signsOfTreatmentEffect'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[invasiveCancer.act.relationship['signsOfTreatmentEffect'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+
+                  </td>                  
+                </tr>
+                <tr>
+                  <td>
+                    #{invasiveCancer.act.relationship['nuclearGrade'].act.title.ST.value}
+                  </td>
+                  <td>
+                    <wiz:radio id="#{invasiveCancer.act.relationship['nuclearGrade'].name}" value="#{invasiveCancer.act.relationship['nuclearGrade'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[invasiveCancer.act.relationship['nuclearGrade'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{invasiveCancer.act.relationship['mitoticCount'].act.title.ST.value}
+                  </td>
+                  <td>
+                    <wiz:radio id="#{invasiveCancer.act.relationship['mitoticCount'].name}" value="#{invasiveCancer.act.relationship['mitoticCount'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[invasiveCancer.act.relationship['mitoticCount'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{invasiveCancer.act.relationship['tubulePapillaformation'].act.title.ST.value}
+                  </td>
+                  <td>
+                    <wiz:radio id="#{invasiveCancer.act.relationship['tubulePapillaformation'].name}" value="#{invasiveCancer.act.relationship['tubulePapillaformation'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[invasiveCancer.act.relationship['tubulePapillaformation'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{invasiveCancer.act.relationship['totalPoints'].act.title.ST.value}
+                  </td>
+                  <td><h:inputText value="#{invasiveCancer.act.relationship['totalPoints'].act.observation.value.INT.value}">
+                   
+                      </h:inputText>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{invasiveCancer.act.relationship['inflammatory'].act.title.ST.value}
+                  </td>
+                  <td>                   
+                    <wiz:radio id="#{invasiveCancer.act.relationship['inflammatory'].name}" value="#{invasiveCancer.act.relationship['inflammatory'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[invasiveCancer.act.relationship['inflammatory'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{invasiveCancer.act.relationship['lymphaticVascularInvasion'].act.title.ST.value}
+                  </td>
+                  <td>                   
+                    <wiz:radio id="#{invasiveCancer.act.relationship['lymphaticVascularInvasion'].name}" value="#{invasiveCancer.act.relationship['lymphaticVascularInvasion'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[invasiveCancer.act.relationship['lymphaticVascularInvasion'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align:top;">
+                    #{invasiveCancer.act.relationship['skin'].act.title.ST.value}
+                  </td>
+                  <td>                   
+                    <wiz:radio id="#{invasiveCancer.act.relationship['skin'].name}" layout="pageDirection" value="#{invasiveCancer.act.relationship['skin'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[invasiveCancer.act.relationship['skin'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="vertical-align:top;">
+                    #{invasiveCancer.act.relationship['resectionMargins'].act.title.ST.value}
+                  </td>
+                  <td> 
+                  	<c:forEach var="marginRel" items="#{invasiveCancer.act.relationship['resectionMargins'].act.relationships}">
+                  	<table>
+                  		<tr>
+                  			<td>#{marginRel.act.title.ST.value}</td>
+                  			<td> 
+                  			    <wiz:radio id="#{invasiveCancer.name}:resectionMargins:#{marginRel.name}" value="#{marginRel.act.observation.value.CE}">
+			                      <f:selectItems value="#{trim.valueSets[marginRel.act.observation.value.valueSet]}"/>
+			                      <f:converter converterId="DataTypeConverter"/>
+			                    </wiz:radio>                  			
+                  			</td>                  			
+                  		</tr>
+                  		<tr>
+                  			<td>#{marginRel.act.relationship['marginSize'].act.title.ST.value}</td>
+                  			<td> 
+                  			    <wiz:radio id="#{invasiveCancer.name}:resectionMargins:#{marginRel.name}:marginSize" value="#{marginRel.act.relationship['marginSize'].act.observation.value.PQ}">
+			                      <f:selectItems value="#{trim.valueSets[marginRel.act.relationship['marginSize'].act.observation.value.valueSet]}"/>
+			                      <f:converter converterId="DataTypeConverter"/>
+			                    </wiz:radio>                  			
+                  			</td>                  			
+                  		</tr>
+                  	</table>
+                  		
+                  	</c:forEach>             
+                  </td>
+                </tr>
+              </table>
+            </wiz:group>
+              
+            <c:set var="dcis" value="#{trim.trim.act.relationship['pathologyResult'].act.relationship['DCIS']}" scope="page" />
+            <wiz:group title="#{dcis.act.title.ST.value}">
+             <table cellpadding="3">
+                <tr>
+                  <td>
+                    #{dcis.act.relationship['DCISType'].act.title.ST.value}
+                  </td>
+                  <td>
+                    <wiz:radio id="dcis#{dcis.act.relationship['DCISType'].name}" value="#{dcis.act.relationship['DCISType'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[dcis.act.relationship['DCISType'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{dcis.act.relationship['DCISTumorSize'].act.title.ST.value}
+                  </td>
+                  <td>
+                    
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{dcis.act.relationship['nuclearGrade'].act.title.ST.value}
+                  </td>
+                  <td>
+                    <wiz:radio id="dcis#{dcis.act.relationship['nuclearGrade'].name}" value="#{dcis.act.relationship['nuclearGrade'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[dcis.act.relationship['nuclearGrade'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{dcis.act.relationship['necrosis'].act.title.ST.value}
+                  </td>
+                  <td>
+                    <wiz:radio id="dcis#{dcis.act.relationship['necrosis'].name}" value="#{dcis.act.relationship['necrosis'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[dcis.act.relationship['necrosis'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    #{dcis.act.relationship['microcalcifications'].act.title.ST.value}
+                  </td>
+                  <td>
+                    <wiz:radio id="dcis#{dcis.act.relationship['microcalcifications'].name}" value="#{dcis.act.relationship['microcalcifications'].act.observation.value.CE}">
+                      <f:selectItems value="#{trim.valueSets[dcis.act.relationship['microcalcifications'].act.observation.value.valueSet]}"/>
+                      <f:converter converterId="DataTypeConverter"/>
+                    </wiz:radio>
+                  </td>
+                </tr>
+             </table>            
+            </wiz:group>
+             
+          </wiz:body>
+			<wiz:help>
+				<h1>Procedure</h1>
+				<p>Help needed here.</p>
+			</wiz:help>
+		</wiz:step>
+ 	</ui:composition>
+</body>
+</html>

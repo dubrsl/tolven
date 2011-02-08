@@ -1,0 +1,121 @@
+package org.tolven.rules
+ 
+import java.util.*;
+import org.tolven.ccr.*;
+import org.tolven.ccr.ex.*;
+
+global java.io.PrintStream out;
+
+/**
+ * When a CCR document is processed, we first explode the document to include each of the types of elements
+ * provided at the top level and at one level down in the body section. For example, each 
+ * ResultType is asserted but not the Tests contained within a result. Other rules will further decompose
+ * such components.
+ * In several cases, we need to create a simple wrapper since the classes used in CCR don't always
+ * contain type information. For example, StructuredProductType does not independently identify
+ * the purpose of the object (Medication, immunization, MedicalEquipment, etc). The wrapper works quite 
+ * well for rules which can then just select on the class itself rather than having to dig into the object
+ * looking for types codes, etc (if such codes even existed).
+ */
+rule "ccr"
+	when
+		$ccr : ContinuityOfCareRecord($version : version == "V1.0")
+	then
+		out.println( "Found ccr version: " + $version + " Id: " + $ccr.getCCRDocumentObjectID()); 
+ 		for ( ContinuityOfCareRecord.Patient pat : $ccr.getPatient() ) insert( pat ); 
+		if ($ccr.getBody()!=null) {
+			ContinuityOfCareRecord.Body	body = $ccr.getBody();
+			for (ActorType actor : $ccr.getActors().getActor()) insert( actor );
+			if (body.getAlerts()!=null) {
+				for (AlertType alert : body.getAlerts().getAlert()) insert( alert );
+			}
+			if (body.getEncounters()!=null) {
+				for (EncounterType encounter : body.getEncounters().getEncounter()) insert( encounter );
+			}
+			if (body.getFamilyHistory()!=null) {
+				for (FamilyHistoryType famHX : body.getFamilyHistory().getFamilyProblemHistory()) insert( famHX );
+			}
+			if (body.getFunctionalStatus()!=null) {
+				for (FunctionType functionalStatus : body.getFunctionalStatus().getFunction()) insert( functionalStatus );
+			}
+			if (body.getHealthCareProviders()!=null) {
+				insert( body.getHealthCareProviders());
+			}
+			if (body.getImmunizations()!=null) {
+				insert( body.getImmunizations() );
+			}
+			if (body.getMedicalEquipment()!=null) {
+				insert( body.getMedicalEquipment() );
+			}
+			if (body.getMedications()!=null) {
+				insert( body.getMedications() );
+			}
+			if (body.getPayers()!=null) {
+				for (InsuranceType payer : body.getPayers().getPayer()) insert( payer );
+			}
+			if (body.getPlanOfCare()!=null) {
+				for (PlanType plan : body.getPlanOfCare().getPlan()) insert( plan );
+			}
+			if (body.getProblems()!=null) {
+				for (ProblemType problem : body.getProblems().getProblem()) insert( problem );
+			}
+			if (body.getProcedures()!=null) {
+				for (ProcedureType procedure : body.getProcedures().getProcedure()) insert( procedure );
+			}
+			if (body.getResults()!=null) {
+				for (ResultType result : body.getResults().getResult()) insert( result );
+			}
+			if (body.getSocialHistory()!=null) {
+				for (SocialHistoryType socialHistory : body.getSocialHistory().getSocialHistoryElement()) insert( socialHistory );
+			}
+			if (body.getSupport()!=null) {
+				insert( body.getSupport() );
+			}
+			if (body.getVitalSigns()!=null) {
+				insert( body.getVitalSigns() );
+			}
+		}
+end
+
+rule "ccr patient"
+	when
+		$patient : ContinuityOfCareRecord.Patient($patientActorId : actorID)
+		$actor : ActorType(actorObjectID == $patientActorId)
+	then
+		out.println( "Found CCR patient actor: " + 
+			$actor.getPerson().getName().getCurrentName().getFamily() ); 
+end
+		
+rule "ccr alert"
+	when
+		$alert : AlertTypeEx( )
+	then
+		out.println( "Found CCR alert: " + $alert.getDescriptionText() ); 
+end
+
+rule "ccr problem"
+	when
+		$problem : ProblemTypeEx( )
+	then
+		out.println( "Found CCR problem: " + $problem.getDescriptionText() ); 
+end
+
+rule "ccr result"
+	when
+		$result : ResultTypeEx( )
+	then
+		out.println( "Found CCR result: " + $result.getDescriptionText() );
+		// Assert the individual tests
+		for (TestType test : $result.getTest()) {
+			insert( test );
+		}
+end
+
+rule "ccr result - test"
+	when
+		$test : TestTypeEx( )
+	then
+		out.println( "Found CCR test: " + $test.getDescriptionText() ); 
+end
+
+

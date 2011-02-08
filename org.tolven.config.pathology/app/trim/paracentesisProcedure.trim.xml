@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<name>path/paracentesisProcedure</name>
+	<description>Paracentesis</description>
+	<author>Tolven</author>
+	<act moodCode="EVN" classCode="PROC">
+		<relationship typeCode="PERT" direction="OUT" name="procedure">
+			<act moodCode="EVN" classCode="PROC">
+				<bind phase="create" application="echr">
+					<placeholder bindAction="create">
+						<path>echr:patient:procedureGroup:procedure</path>
+					</placeholder>
+				</bind>
+				<bind phase="create" application="ephr">
+					<placeholder bindAction="create">
+						<path>ephr:patient:procedureGroup:procedure</path>
+					</placeholder>
+				</bind>
+				<id />
+				<code>
+					<CD>
+						<displayName>Abdominal paracentesis</displayName>
+						<code>89305009</code>
+						<codeSystem>2.16.840.1.113883.6.96</codeSystem>						
+					</CD>
+				</code>
+				<title>
+					<ST></ST>
+				</title>
+				<effectiveTime>
+					<label>Date of Procedure</label>
+					<TS>
+						<value>#{TS(now)}</value>
+					</TS>
+				</effectiveTime>				
+				<relationship typeCode="PERT" direction="OUT" name="laterality">
+					<act moodCode="EVN" classCode="OBS">
+						<observation>
+							<value>
+								<label></label>
+							</value>
+						</observation>
+						<relationship typeCode="PERT" direction="OUT" name="location">
+							<act moodCode="EVN" classCode="OBS">
+								<observation>
+									<value>
+										<label></label>
+									</value>
+								</observation>
+							</act>
+						</relationship>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="specimen" enabled="true">
+					<act classCode="SPECCOLLECT" moodCode="EVN">
+						<bind application="echr">
+							<placeholder bindAction="create">
+								<path>echr:patient:procedureGroup:procedure:specimen</path>
+							</placeholder>
+						</bind>
+						<bind application="ephr">
+							<placeholder bindAction="create">
+								<path>ephr:patient:procedureGroup:procedure:specimen</path>
+							</placeholder>
+						</bind>
+						<id />
+						<title>
+							<ST />
+						</title>
+						<effectiveTime>
+							<label>Time of observation</label>
+							<new datatype="TS" function="now" />
+						</effectiveTime>
+						<participation name="specimen" typeCode="SPC">
+							<role classCode="SPEC">
+								<id>
+									<II>
+										<root>accessionNumber</root>
+										<extension></extension>
+									</II>
+								</id>
+								<player determinerCode="INSTANCE" classCode="MAT">
+									<quantity>
+										<label>size</label>
+										<PQ>
+											<originalText></originalText>
+											<value>0.0</value>
+											<unit>cm</unit>
+										</PQ>
+									</quantity>
+								</player>
+							</role>
+						</participation>
+						<participation name="lab" typeCode="LOC">
+							<role classCode="LOCE">
+								<bind application="echr" phase="request">
+									<list cardinality="multiple">
+										<path>echr:admin:locations:all</path>
+									</list>
+								</bind>
+								<bind application="ephr" phase="request">
+									<list cardinality="multiple">
+										<path>ephr:admin:locations:all</path>
+									</list>
+								</bind>
+								<id />
+								<player classCode="PLC" determinerCode="INSTANCE">
+									<name>
+										<label>Lab</label>
+										<originalText></originalText>
+									</name>
+								</player>
+							</role>
+						</participation>
+					</act>
+				</relationship>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="location">		
+	</valueSet>
+	<valueSet name="laterality">	
+	</valueSet>	
+</trim>

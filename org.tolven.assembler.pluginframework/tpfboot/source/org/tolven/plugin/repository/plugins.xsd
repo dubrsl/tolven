@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:tolven-org:plugins:1.0" targetNamespace="urn:tolven-org:plugins:1.0" elementFormDefault="qualified">
+
+	<xs:element name="plugins">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="info" type="InfoDetail" minOccurs="0" maxOccurs="1" />
+				<xs:element name="plugin" type="PluginDetail" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="property" type="PluginPropertyDetail" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element name="constraint" type="ConstraintDetail" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="InfoDetail">
+		<xs:sequence>
+			<xs:element name="timestamp" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="PluginDetail">
+		<xs:sequence>
+			<xs:element name="version" type="PluginVersionDetail" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="dependent" type="DependentPluginDetail" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="root" type="RootPluginDetail" minOccurs="0" maxOccurs="1" />
+			<xs:element name="property" type="PluginPropertyDetail" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+		<xs:attribute name="useVersion" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="PluginVersionDetail">
+		<xs:sequence>
+			<xs:element name="uri" type="xs:anyURI" minOccurs="0" maxOccurs="1" />
+			<xs:element name="messageDigest" type="MessageDigestDetail" minOccurs="0" maxOccurs="1" />
+		</xs:sequence>
+		<xs:attribute name="id" type="xs:string" use="required" />
+		<xs:attribute name="runtime" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="DependentPluginDetail">
+		<xs:attribute name="id" type="xs:string" use="required" />
+		<xs:attribute name="version" type="xs:string" use="required" />
+		<xs:attribute name="requiresMinVersion" type="xs:string" />
+		<xs:attribute name="requiresMaxVersion" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="RootPluginDetail">
+		<xs:attribute name="minVersion" type="xs:string" />
+		<xs:attribute name="maxVersion" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="PluginPropertyDetail">
+		<xs:sequence>
+			<xs:element name="property" type="PluginPropertyDetail" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="value" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="MessageDigestDetail">
+		<xs:sequence>
+			<xs:element name="value" type="xs:string" />
+		</xs:sequence>
+		<xs:attribute name="type" type="xs:string" />
+	</xs:complexType>
+
+	<xs:complexType name="ConstraintDetail">
+		<xs:attribute name="plugin-id" type="xs:string" use="required" />
+		<xs:attribute name="minVersion" type="xs:string" />
+		<xs:attribute name="maxVersion" type="xs:string" />
+	</xs:complexType>
+
+</xs:schema>

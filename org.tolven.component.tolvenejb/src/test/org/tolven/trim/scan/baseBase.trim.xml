@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<abstract>true</abstract>
+	<name>baseBase/observation</name>
+	<description>Description from BaseBase</description>
+	<author>BaseBase Author</author>
+	<field name="field1"><value xsi:type="xs:string">Hello from BaseBase</value></field>
+	<field name="field2"><value xsi:type="xs:string">BaseBase -- should not show up</value></field>
+</trim>

@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Wait Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Wait" >
+			<wiz:body>
+				<wiz:group title="Duration">
+					<trim:INT id="count#{stepNo}" value="#{treatment.effectiveTime.PIVL.count}" readonly="false"/>
+				</wiz:group>
+				<wiz:group title="Notes">
+					<trim:ST id="notes#{stepNo}" value="#{treatment.text}" readonly="false"/>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Wait</h1>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>

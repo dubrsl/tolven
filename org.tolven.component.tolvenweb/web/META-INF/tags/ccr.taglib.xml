@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE facelet-taglib PUBLIC
+  "-//Sun Microsystems, Inc.//DTD Facelet Taglib 1.0//EN"
+  "http://java.sun.com/dtd/facelet-taglib_1_0.dtd">
+
+<facelet-taglib>
+	<namespace>http://www.tolven.org/jsf/ccr</namespace>
+	<tag>
+		<tag-name>actor</tag-name>
+		<source>ccr/actorType.xhtml</source>
+	</tag>
+	<tag>
+		<tag-name>person</tag-name>
+		<source>ccr/actorTypePerson.xhtml</source>
+	</tag>
+	<tag>
+		<tag-name>name</tag-name>
+		<source>ccr/PersonNameType.xhtml</source>
+	</tag>
+</facelet-taglib>

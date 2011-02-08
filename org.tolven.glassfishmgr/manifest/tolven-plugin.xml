@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.glassfishmgr" version="2.0.1" class="org.tolven.glassfishmgr.GlassFishMgrPlugin" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<attributes>
+		<attribute id="guiComponentParentId" value="#{pluginProperty['guiComponentParentId']}" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.library.pluginframework.gui" />
+		<import plugin-id="org.tolven.library.application" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="tpfclasses">
+			<export prefix="*" />
+		</library>
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension-point id="tpfgui" extension-multiplicity="none" parent-point-id="runtimeLib" parent-plugin-id="org.tolven.library.pluginframework.gui">
+		<parameter-def multiplicity="none-or-one" id="tpfgui" />
+	</extension-point>
+	<extension-point id="swing-layout" extension-multiplicity="none" parent-point-id="runtimeLib" parent-plugin-id="org.tolven.library.swinglayout">
+		<parameter-def multiplicity="none-or-one" id="swingLayout" />
+	</extension-point>
+</plugin>

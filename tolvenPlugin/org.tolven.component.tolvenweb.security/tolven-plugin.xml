@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.tolvenweb.security" version="0.0.2" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.tolvenweb"/>
+		<import plugin-id="org.tolven.component.war"/>
+	</requires>
+	<extension id="org.tolven.component.tolvenweb.security.LoginConfig" plugin-id="org.tolven.component.war" point-id="login-config">
+		<parameter id="auth-method" value="FORM" />
+		<parameter id="form-login-page" value="/private/login.jsf" />
+		<parameter id="form-error-page" value="/public/loginFail.jsf" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.component.tolvenweb.security.SessionConfig" plugin-id="org.tolven.component.war" point-id="session-config">
+		<parameter id="session-timeout" value="30" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.component.tolvenweb.security.WelcomeFileList" plugin-id="org.tolven.component.war" point-id="welcome-file-list">
+		<parameter id="welcome-file" value="index.jsp"/>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.component.tolvenweb.security.SecurityRole" plugin-id="org.tolven.component.war" point-id="security-role">
+		<parameter id="role-name" value="*" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.component.tolvenweb.security.ErrorPage" plugin-id="org.tolven.component.war" point-id="error-page">
+		<parameter id="error-code" value="500" />
+		<parameter id="location" value="/error.jsp" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+</plugin>

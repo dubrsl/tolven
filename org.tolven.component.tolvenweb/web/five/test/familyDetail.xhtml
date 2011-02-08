@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Family details</title>
+  </head>
+  <body>
+  	<ui:composition>
+		<div id="fdpane">
+  			<hr/>
+          <h:panelGrid columns="4">
+               <h:outputText value="Id"/>
+               <h:inputText id="id" value="#{menu.targetMenuPath.nodeValues['detail']}" readonly="true"/>
+               <h:outputText value="Name"/>
+               <h:inputText id="name" value="#{gen.family.familyName}" readonly="true"/>
+          </h:panelGrid>
+          <h:panelGrid columns="8">
+               <h:outputText value="Address"/>
+               <h:inputText id="addr" value="#{gen.family.address}" readonly="true"/>
+               <h:outputText value="City"/>
+               <h:inputText id="city" value="#{gen.family.city}" readonly="true"/>
+               <h:outputText value="state"/>
+               <h:inputText id="state" value="#{gen.family.state}" readonly="true"/>
+               <h:outputText value="Zip"/>
+               <h:inputText id="zip" value="#{gen.family.zip}" readonly="true"/>
+          </h:panelGrid>
+           <h:dataTable id="familyMembers" value="#{gen.familyMembers}" var="member" cellspacing="0" border="1" cellpadding="3">
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Role"/>
+           		</f:facet>
+           		<h:outputText id="fmr" value="#{member.role}"/>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Name"/>
+           		</f:facet>
+           		<h:outputText id="fmn" value="#{member.person.first} #{member.person.last}"/>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="DoB"/>
+           		</f:facet>
+           		<h:outputText id="fmb" value="#{member.person.formattedDob}"/>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Age"/>
+           		</f:facet>
+           		<h:outputText id="fma" value="#{member.person.ageNow}"/>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Gender"/>
+           		</f:facet>
+           		<h:outputText id="fmg" value="#{member.person.gender}"/>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Cause of Death"/>
+           		</f:facet>
+           		<h:outputText id="fmcd" value="#{member.person.causeOfDeath}"/>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Age at Death"/>
+           		</f:facet>
+           		<h:outputText id="fmaad" value="#{member.person.ageAtDeath}"/>
+           	</h:column>
+           </h:dataTable>
+          </div>
+    </ui:composition>
+  </body>
+</html>

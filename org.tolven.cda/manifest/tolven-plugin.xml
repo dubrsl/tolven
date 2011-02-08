@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.cda" version="2.0.7" vendor="Tolven" >
+	<requires>
+	    <import plugin-id="org.tolven.component.tolvenejb" />
+		<import plugin-id="org.tolven.component.application" />
+	    <import plugin-id="org.tolven.component.tolvenweb" />
+	</requires>
+	<extension id="trims" plugin-id="org.tolven.component.application" point-id="trims">
+		<parameter id="dir" value="app/trim" />
+	</extension>
+	<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+		<parameter id="dir" value="app" />
+	</extension>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<!-- Add the CDA DocType -->
+	<extension id="property1" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="org.tolven.doctype.DocTypeFactory" />
+		<parameter id="name" value="documentTypeClassName" />
+		<parameter id="value" value="org.tolven.cda.doctype.CDADocumentType" />
+	</extension>
+	<!-- Add the CDA message processor for TolvenMessage messages -->
+	<extension id="property2" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="org.tolven.doc.bean.Evaluator" />
+		<parameter id="name" value="processorJNDI" />
+		<parameter id="value" value="java:global/tolven/tolvenEJB/ProcessCDA!org.tolven.cda.api.ProcessCDALocal" />
+	</extension>
+	<!-- Include this plugin in the tolvenEJB.jar -->
+	<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+	</extension>
+	<extension id="drilldownDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="drilldownDirectory">
+	     <parameter id="sourceDirectory" value="web/drilldown" />
+	</extension>
+	<extension id="wizardDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="wizardDirectory">
+	     <parameter id="sourceDirectory" value="web/wizard" />
+	</extension>
+
+</plugin>

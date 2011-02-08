@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Patient Summary</title>
+  </head>
+  <body>
+  	<ui:composition>
+	   <div id="summary-box-#{param.element}" class="userprefsettingdiv" style="text-align: right; padding-right: 8px; color:#ffffff;">
+			<span class="hideundo" id="undo-#{param.element}" >
+				<a href="javascript:Tolven.Util.voidFn();" onclick="javascript:undoPrevAction(this, 'summary-box-#{param.element}');return false;">Undo</a> 
+			</span>	
+				<a href="javascript:getSummaryPreferences('#{menu.thisMenu.path}', 'summary')" class="userprefhref">#{msg.Settings}</a>
+	  </div>
+	<c:forEach items="#{menu.preferredChildPaths}" var="child">
+		  <div id="#{child}:menu" class="popupgrid"/>
+		<script language="JavaScript" type="text/javascript">
+			// <![CDATA[
+			getRemoteContent( "#{child}", "#{child}" );
+			// ]]>
+		</script>
+	</c:forEach>
+			<script language="JavaScript" type="text/javascript">
+			// <![CDATA[
+			enableSummaryReorg('summary-box-#{param.element}');
+			// ]]>		  
+		</script>
+	<div class="summary" id="#{param.element}_portlet">
+		<div id="summary-box-#{param.element}_1" class="sort_list" summaryorder="">
+			<c:forEach items="#{menu.preferredChildPathsColumn1}" var="child" varStatus="status">
+				<div  style="position: relative;" id="item_0${status.index}" class="sortdiv">
+					<div id="#{child}" class="summaryItem" />
+				</div>
+			</c:forEach>
+			<c:if test="#{empty menu.preferredChildPathsColumn1}">
+				<span style="width: 100%; display: block;" class="emptyspan"> </span>
+			</c:if>
+			<c:if test="#{not empty menu.preferredChildPathsColumn1}">
+				<span style="width: 100%; height:1px; display: block;" class=""> </span>
+			</c:if>
+		</div>
+			
+		<div id="summary-box-#{param.element}_2" class="sort_list" summaryorder="">
+			<c:forEach items="#{menu.preferredChildPathsColumn2}" var="child" varStatus="status">
+				<div style="position: relative;" id="item_1${status.index}" class="sortdiv">
+					<div id="#{child}" class="summaryItem" />
+				</div>
+			</c:forEach>
+			<c:if test="#{empty menu.preferredChildPathsColumn1}">
+				<span style="width: 100%; display: block;" class="emptyspan"> </span>
+			</c:if>
+			<c:if test="#{not empty menu.preferredChildPathsColumn1}">
+				<span style="width: 100%; height:1px; display: block;" class=""> </span>
+			</c:if>
+		</div>
+	
+		<div id="summary-box-#{param.element}_3" class="sort_list" summaryorder="">
+			<c:forEach items="#{menu.preferredChildPathsColumn3}" var="child" varStatus="status">
+				<div style="position: relative;" id="item_2${status.index}" class="sortdiv">
+					<div id="#{child}" class="summaryItem" />
+				</div>
+			</c:forEach>
+			<c:if test="#{empty menu.preferredChildPathsColumn1}">
+				<span style="width: 100%; display: block;" class="emptyspan"> </span>
+			</c:if>
+			<c:if test="#{not empty menu.preferredChildPathsColumn1}">
+				<span style="width: 100%; height:1px; display: block;" class=""> </span>
+			</c:if>
+		</div>
+	</div>
+	</ui:composition>
+  </body>
+</html>

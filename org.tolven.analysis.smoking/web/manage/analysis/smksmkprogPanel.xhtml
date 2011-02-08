@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>smk Panel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<ui:composition>
+	<h:form id="smksmkprogForm">
+		<fieldset><legend>Properties</legend>
+			<fieldset><legend>Target</legend>
+				<h:inputText id="smksmkprogTarget" value="#{cohortAnalysis.properties[smksmkprogTargetProperty]}" size="1"
+					required="true"
+					validatorMessage=" Target must be a number from 0 to 100 inclusive"
+					requiredMessage=" A Target is required">
+					<f:validateDoubleRange minimum="0" maximum="100" />
+				</h:inputText>
+				<h:outputText value=" % of patients on Smoking Cessation Program" readonly="true" />
+			</fieldset>
+			<h:message for="smksmkprogTarget" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
+			<fieldset><legend>Threshold</legend>
+				<h:outputText value="Patients included in Smoking Cessation Program" />
+			</fieldset>
+			<h:commandButton action="#{cohortAnalysis.updateProperties}" value="Update" />
+			<h:message for="smksmkprogForm" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
+		</fieldset>
+	</h:form>
+</ui:composition>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Drilldown/finalization page</title>
+</head>
+
+<body>
+    <ui:composition>
+	<c:catch var="e">
+		<c:set var="msg" value="#{top.appBundle}" />
+		<f:subview id="drilldown">
+			<c:if test="#{trim.trim.drilldown!=null}">
+				<ui:include src="/drilldown/#{trim.trim.drilldown}">
+			   		<ui:param name="act" value="#{trim.trim.act}"/>
+				</ui:include>
+				<br/>
+			</c:if>
+			<c:if test="#{trim.trim.drilldown==null}">
+				No drilldown page defined
+			</c:if>
+		</f:subview>
+		<div style="clear:both"/>
+		<c:if test="false">
+		<wiz:group title="Fields" >
+  			<a href="#" onclick="$('#{menu.elementLabel}fieldTable').toggle();">#{msg.ShowHide}</a>
+  			<div id="#{menu.elementLabel}fieldTable" style="display:none">
+				<h:dataTable value="#{trim.fieldList}" var="f" rowClasses="odd,even">
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msg.Id}"/>
+						</f:facet>
+						<h:outputText value="#{f.name}"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msg.Value}"/>
+						</f:facet>
+						<h:outputText value="#{f.value}"/>
+					</h:column>
+				</h:dataTable>
+			</div>
+		</wiz:group>
+		</c:if>
+		<c:if test="#{forBubble != 'true'}">
+			<c:if test="#{trim.signatureRequired}">
+				<wiz:group title="#{msg.SignatureOrSignatures}" >
+					<c:if test="#{menu.menuDataItem.status=='NEW'}">
+						<h:outputText value="#{msg.SignatureRequiredOnThisDocument}" />
+					</c:if>
+					<c:if test="#{menu.menuDataItem.status!='NEW'}">
+							<a href="#" onclick="$('#{menu.elementLabel}signatures').toggle();">#{msg.ShowHide}</a>
+							<div id="#{menu.elementLabel}signatures" style="display: none"><pre>#{trim.trimSignatures}</pre></div>
+					</c:if>
+				</wiz:group>
+			</c:if>
+			<c:if test="#{empty msg['tolven.web.showxml'] or msg['tolven.web.showxml']=='true'}">
+				<ui:include src="xml.xhtml"/>
+				<br/>
+			</c:if>
+	  	</c:if>
+	</c:catch>
+	<c:if test="#{e!=null}">
+		<div class="errorPane">
+			<h3>Error detected in pane</h3> 
+			<p>Element: #{menu.element}</p>
+			<p>Version: #{menu.menuDataVersion.version}</p>
+			<p>Error: #{e}</p>
+			<p>Page: #{menu.thisMenu.template}</p>
+			<p>Type: #{menu.thisMenu.templateType}</p>
+		</div>
+	</c:if>
+	</ui:composition>
+</body>
+</html>

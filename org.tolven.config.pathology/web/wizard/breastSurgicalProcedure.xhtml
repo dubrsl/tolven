@@ -1,0 +1,1293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:wiz="http://www.tolven.org/jsf/wizard"
+   xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+ <title>Breast Surgical Procedure</title>
+ <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="#{facesContext.externalContext.request.contextPath}/scripts/testLazyLoad.js" type="text/javascript"></script>
+</head>
+
+<body>
+ <ui:composition>
+   <wiz:step title="Procedure" autoUpdate="false">
+    <wiz:body>
+     <table style="width:100%;">
+      <tbody>
+       <tr>
+        <td style="width:20%;">#{trim.trim.act.effectiveTime.label.value}</td>
+        <td><trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" /> </td>
+       </tr>
+       <tr>
+        <td>Surgeon</td>
+        <td><wiz:selectWithOther id="surgeon" role="#{trim.trim.act.participation['surgeon'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" /></td>
+       </tr>
+       <tr>
+        <td colspan="2"><b> Surgical Procedures</b></td>
+       </tr>
+       <tr>
+        <td colspan="2" style="padding-left:5px;">
+         <table style="width:100%;" id="newProcWidgetTBL">
+          <tr>
+           <td style="width:40%;"> Procedure</td>
+           <td style="width:20%;"> Laterality</td>
+           <td style="width:40%;"> Location</td>
+          </tr>
+          <tr><td colspan="3" style="vertical-align:top;"><hr/></td></tr>
+          <c:forEach var="savedProc" items="#{trim.trim.act.relationshipsList['procedure']}" varStatus="procedureIndex">
+           <c:if test="#{savedProc != null}"> <!-- NEED TO FIX IN THE APPLICATION -->
+           <tr class="savedProc" id="save#{procedureIndex.index}" onclick="javascript:wizEditProcedure('#{menu.elementLabel}','#{procedureIndex.index}')"> 
+            <td>#{savedProc.act.title.ST.value}</td>
+            <td>#{savedProc.act.relationship['laterality'].act.observation.value.CE}</td>
+            <td>#{savedProc.act.relationship['laterality'].act.relationship['location'].act.observation.value.CE}</td>
+           </tr>
+           <tr style="display:none;" class="editProc" id="edit#{procedureIndex.index}">
+            <td colspan="3">
+             <table style="width:100%;">
+              <tr>
+               <td style="width:40%;">
+                <h:inputText style="display:none;" id="procedure#{procedureIndex.index}" value="#{savedProc.sourceTrim}"/> 
+                <h:outputText  id="procedureTitle#{procedureIndex.index}" value="#{savedProc.act.title.ST.value}"/>                
+               </td>
+               <td style="width:20%;">
+                 <wiz:selectOneMenu id="laterality#{procedureIndex.index}">
+                 </wiz:selectOneMenu>
+               </td>
+               <td style="width:40%;">
+                  <wiz:selectOneMenu id="location#{procedureIndex.index}">
+                  </wiz:selectOneMenu>
+               </td>
+              </tr>
+              <!-- Method codes -->
+              <!-- <tr>
+               <td colspan="3" style="padding-top:10px;">
+                <b>#{savedProc.act.observation.methodCode.label.value}</b>
+               </td>
+              </tr> -->
+              <tr>
+               <td colspan="3" style="padding-top:10px;" id="method#{procedureIndex.index}">
+                <trim:valueSetMenu id="methodCode#{procedureIndex.index}" slot="#{savedProc.act.observation.methodCode}"/>
+               </td>
+              </tr>
+              <tr>
+               <td colspan="3" style="padding-top:15px;">
+                <input type="button" value="save" id="saveProc#{procedureIndex.index}" onclick="javascript:wizUpdateProcedure('#{menu.element}','#{menu.elementLabel}','#{procedureIndex.index}')"/>
+                &#160;&#160;<a href="javascript:wizCancelUpdateProcedure(#{procedureIndex.index})">cancel</a>
+                &#160;&#160;<a href="javascript:wizRemoveProcedure('#{menu.element}','#{menu.elementLabel}',#{procedureIndex.index})" style="color:red;">remove procedure</a>
+               </td>
+               </tr>
+             </table>
+            </td>
+            <td/>
+            <td/>
+           </tr>
+           </c:if>
+          </c:forEach>  
+          <tr style="display:none;" class="editProc" id="newProcWidget">
+           <td colspan="3">
+            <table style="width:100%;">
+             <tr>
+              <td style="width:40%;">
+               <wiz:selectOneMenu id="procedure" onchange="javascript:wizSelectProcedure('#{menu.elementLabel}')">
+                <c:forEach var="choice" items="#{trim.trim.act.relationship['procedures'].choices}" varStatus="choiceIndex">
+                 <f:selectItem itemLabel="#{choice.title}" itemValue="#{choice.include}"/>
+                </c:forEach>
+               </wiz:selectOneMenu>
+              </td>
+              <td style="width:20%;">
+               <wiz:selectOneMenu disabled="true" id="laterality" onchange="javascript:wizSelectLaterality('#{menu.elementLabel}')"/>
+              </td>
+              <td style="width:40%;">
+               <wiz:selectOneMenu disabled="true" id="location"/>
+              </td>
+             </tr>
+             <tr>
+               <td colspan="3" style="padding-top:10px;" id="method">
+                
+               </td>
+              </tr>
+             <tr>
+              <td colspan="3" style="padding-top:15px;">
+               <input type="button" id="saveProc" disabled="true" value="save" onclick="javascript:wizCreateProcedure('newProcWidget','addProcAnchor','#{menu.element}','#{menu.elementLabel}')"/> 
+               &#160;&#160;<a href="javascript:wizCancelCreateProcedure('newProcWidget','addProcAnchor')">cancel</a>
+              </td>
+             </tr>
+            </table>
+           </td>
+           <td/>
+           <td/>
+          </tr>
+          <tr id="addProcAnchor"><td colspan="3" style="padding-left:5px;">
+          <a href="javascript:wizAddProcedure('newProcWidget','addProcAnchor','#{menu.elementLabel}')">add procedure</a></td></tr>
+         </table>
+        </td>  
+       </tr>
+      </tbody>
+     </table>  
+    </wiz:body>
+   </wiz:step>
+ <!-- END: Edit procedures-->
+
+ <!-- Start: Specimen -->
+ <wiz:step title="Specimen" style="width:50%;">
+   <span style="font-weight:bold;margin:10px;">Specimen entry for procedures performed on&#160; <trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" readonly="true"/> by &#160;<wiz:selectWithOther id="surgeon" role="#{trim.trim.act.participation['surgeon'].role}" readonly="true" otherText="Other - not on the list" /></span>
+   <br/>
+    <c:forEach var="procedure" items="#{trim.trim.act.relationshipsList['procedure']}" varStatus="procedureIndex">
+      <c:if test="#{procedure.enableRelationship != false}">
+      <c:set var="specimenName" value="#{procedure.act.title.ST.value}&#160;"/>
+      <c:if test="#{not empty procedure.act.relationship['laterality']}">
+       <c:set var="specimenName" value="#{procedure.act.title.ST.value}&#160;#{procedure.act.relationship['laterality'].act.observation.value.CE}"/> 
+      </c:if>
+      <c:if test="#{not empty procedure.act.relationship['laterality'].act.relationship['location']}">
+       <c:set var="specimenName" value="#{procedure.act.title.ST.value}&#160;#{procedure.act.relationship['laterality'].act.observation.value.CE}&#160;#{procedure.act.relationship['laterality'].act.relationship['location'].act.observation.value.CE}"/>
+      </c:if>
+       <wiz:group title="#{specimenName}" class="specimen" prefix="Procedure:" id="specimen#{procedureIndex.index}">
+        <table cellpadding="5px" style="margin-top:10px;">
+        <c:if test="#{empty procedure.act.relationshipsList['specimen']}">
+         <tr>
+          <td colspan="2"> <a href="javascript:addSpecimen('#{menu.element}',#{procedureIndex.index},'procedures/addSpecimenTemplate','#{menu.elementLabel}')">add another specimen</a> </td> 
+         </tr>    
+        </c:if>
+        <c:forEach var="_specimen" items="#{procedure.act.relationshipsList['specimen']}" varStatus="_specimenIndex"> 
+         <tr>
+          <td>Accession Number</td>
+          <td> <h:inputText id="accessionNumber#{procedureIndex.index}#{_specimenIndex.index}" value="#{_specimen.act.participation['specimen'].role.id.for['accessionNumber'].extension}"/> 
+          </td>
+         </tr>
+         <c:if test="#{_specimen.act.participation['specimen'].role.player != null}">
+          <tr>
+           <td>Size</td>
+           <td> <trim:PQ id="size#{procedureIndex.index}#{_specimenIndex.index}" value="#{_specimen.act.participation['specimen'].role.player.quantity}"/> 
+           </td>
+          </tr>
+         </c:if>
+         <tr>
+          <td>lab</td>
+          <td> <wiz:selectOneMenu id="lab#{procedureIndex.index}#{_specimenIndex.index}" value="#{_specimen.act.participation['lab'].role.player.name.originalText}">
+              <f:selectItem itemValue="UCSF" itemLabel="UCSF"/>
+              <f:selectItems value="#{trim.list['echr:admin:locations:all']}"/>
+             </wiz:selectOneMenu> 
+          </td>
+         </tr> 
+         <c:if test="#{_specimen.act.relationship['lymphNodeTissue'] != null}">
+          <tr>
+           <td>#{_specimen.act.relationship['lymphNodeTissue'].act.title.ST.value}</td>
+           <td> <h:selectBooleanCheckbox value="#{_specimen.act.relationship['lymphNodeTissue'].enableRelationship}" converter="javax.faces.Boolean"/> 
+           </td>
+          </tr>
+         </c:if>
+         <tr>
+          <td> <c:if test="#{_specimenIndex.last}"> <a href="javascript:addSpecimen('#{menu.element}',#{procedureIndex.index},'#{procedure.sourceTrim}','#{menu.elementLabel}')">add another specimen</a> </c:if></td> 
+          <td style="padding-left: 20px;"> <a href="javascript:removeSpecimen('#{menu.element}',#{procedureIndex.index},#{_specimenIndex.index},'#{menu.elementLabel}')">remove this specimen</a>
+          </td>
+         </tr>
+         </c:forEach>   
+        </table> 
+       </wiz:group> 
+      </c:if>
+     </c:forEach>
+    </wiz:step>
+ <!-- END: Specimen -->
+  <c:set var="hasRightProcedure" scope="session" value="false"/>
+  <c:set var="hasLeftProcedure" scope="session" value="false"/>
+  <c:set var="hasLeftLymphProcedure" scope="session" value="false"/>
+  <c:set var="hasRightLymphProcedure" scope="session" value="false"/>
+   
+  <c:forEach var="procedure" items="#{trim.trim.act.relationshipsList['procedure']}" varStatus="procedureIndex">
+    <c:if test="#{not empty procedure.act.relationship['laterality']}">
+     <c:if test="#{procedure.act.relationship['laterality'].act.observation.value.CE == 'Left'}">
+      <c:set var="hasLeftProcedure" scope="session" value="true"/>    
+     </c:if>
+     <c:if test="#{procedure.act.relationship['laterality'].act.observation.value.CE == 'Right'}">
+      <c:set var="hasRightProcedure" scope="session" value="true"/>
+     </c:if>
+     <c:if test="${fn:contains('79544006,234279002,29300007,307996001,396487001',procedure.act.code.CD.code )}">
+       <c:if test="#{procedure.act.relationship['laterality'].act.observation.value.CE == 'Left'}">
+        <c:set var="hasLeftLymphProcedure" scope="session" value="true"/>    
+       </c:if> 
+       <c:if test="#{procedure.act.relationship['laterality'].act.observation.value.CE == 'Right'}">
+        <c:set var="hasRightLymphProcedure" scope="session" value="true"/>    
+       </c:if>        
+     </c:if>     
+    </c:if>
+  </c:forEach>
+  
+  
+  
+ <!-- START: Lymph Nodes -->
+ <wiz:step title="Lymph nodes" style="width:50%;">
+  <span style="font-weight:bold;margin:10px;">lymph procedures performed on&#160; 
+    <trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" readonly="true"/> by 
+    &#160;<wiz:selectWithOther id="surgeon" role="#{trim.trim.act.participation['surgeon'].role}" readonly="true" otherText="Other - not on the list" />
+   </span>
+  <br clear="all"/>
+    <c:if test="#{!hasRightLymphProcedure and !hasLeftLymphProcedure}">
+     No lymph procedures were selected.     
+    </c:if>
+ 
+  <c:forEach var="laterality" items="${fn:split('Left,Right', ',')}" varStatus="lateralityIndex"> 
+    <c:if test="#{(laterality eq 'Left' and hasLeftProcedure and hasLeftLymphProcedure) or (laterality eq 'Right' and hasRightProcedure and hasRightLymphProcedure)}">
+     <c:set var="sentinalNode" value="#{laterality}SentinelLymphNodes"/>
+     <c:set var="addtNodes" value="#{laterality}AdditionalNodes"/>
+     <c:set var="totalPositiveNodes" value="#{laterality}TotalPositiveNodes"/>
+     <c:set var="totalExaminedNodes" value="#{laterality}TotalExaminedNodes"/>
+     <c:set var="largestTumorSize" value="#{laterality}LargestTumorSize"/>
+     <c:set var="extranodalExtnExist" value="#{laterality}ExtranodalExtnExist"/>
+     <wiz:group title="#{laterality}" style="padding-left:5px;width:70%;">
+      <c:if test="#{trim.trim.act.relationship[sentinalNode] != null}">
+	      <table style="width:100%;">
+	       <tr>
+	        <td style="width:20%;" evalFunc="wizDisableContainer('sentinel#{lateralityIndex.index}','table','#{menu.elementLabel}')">
+	         <h:selectBooleanCheckbox value="#{trim.trim.act.relationship[sentinalNode].enableRelationship}" id="sentinel#{lateralityIndex.index}" converter="javax.faces.Boolean"/>
+	          <b>Sentinel Nodes</b></td>
+	        <td style="width:30%;">Location
+	         <wiz:selectOneMenu id="#{sentinalNode}Location" value="#{trim.trim.act.relationship[sentinalNode].act.relationship['location'].act.observation.value.CE}" style="margin-left:20px;">
+	          <f:selectItems value="#{trim.valueSets[trim.trim.act.relationship[sentinalNode].act.relationship['location'].act.observation.value.valueSet]}"/>
+	          <f:converter converterId="DataTypeConverter"/>
+	         </wiz:selectOneMenu>
+	        </td>
+	        <td style="width:35%;" >
+	           <trim:valueSetMenu id="#{sentinalNode}Level" slot="#{trim.trim.act.relationship[sentinalNode].act.relationship['location'].act.observation.methodCode}"
+	           tvisible="$('#{menu.elementLabel}:#{sentinalNode}Location').selectedIndex ==1" />
+	        </td>
+	       </tr>
+	       
+	       <tr>
+	        <td style="padding-left:20px">
+	         <!-- positive nodes-->
+	         <h:inputText size="3" style="text-align:right" class="pNode#{lateralityIndex.index}" 
+	          value="#{trim.trim.act.relationship[sentinalNode].act.relationship['positiveNodes'].act.observation.value.INT.value}" id="sPNode#{lateralityIndex.index}" 
+	           onkeyup="javascript:calculateNodes('pNode#{lateralityIndex.index}','ttlPsveNodes#{lateralityIndex.index}','#{menu.elementLabel}')"
+	           tdisable="$('#{menu.elementLabel}:sentinel#{lateralityIndex.index}').checked == false"/>
+	       
+	         <!-- examined nodes-->  
+	         &#160;/&#160;
+	         <h:inputText size="3" style="text-align:right" class="eNode#{lateralityIndex.index}" 
+	          value="#{trim.trim.act.relationship[sentinalNode].act.relationship['examinedNodes'].act.observation.value.INT.value}" id="sENode#{lateralityIndex.index}" 
+	           onkeyup="javascript:calculateNodes('eNode#{lateralityIndex.index}','ttlExmNodes#{lateralityIndex.index}','#{menu.elementLabel}')"/>
+	         <br/>
+	        positive&#160;&#160;&#160;examined
+	        </td>
+	       </tr>
+	       <tr> <td colspan="2" style="padding-left:20px;"><b>Method of detection</b></td></tr>
+	       <c:forEach var="method" items="#{trim.trim.act.relationship[sentinalNode].act.relationshipsList['detectionMethod']}" varStatus="methodIndex"> 
+	        <tr>
+	         <td style="padding-left:20px;" evalFunc="wizDisableContainer('sentinelDM#{lateralityIndex.index}#{methodIndex.index}','tr','#{menu.elementLabel}')">
+	          <h:selectBooleanCheckbox value="#{method.enableRelationship}" id="sentinelDM#{lateralityIndex.index}#{methodIndex.index}" converter="javax.faces.Boolean"/>
+	            #{method.act.observation.value.label.value}
+	         </td>
+	         <td colspan="2">
+	          <wiz:selectOneMenu value="#{method.act.observation.value.CE}" id="method#{methodIndex.index}#{lateralityIndex.index}">
+	           <f:selectItems value="#{trim.valueSets[method.act.observation.value.valueSet]}"/>
+	           <f:converter converterId="DataTypeConverter"/>
+	          </wiz:selectOneMenu>
+	          <c:set var="tumorSize" value="#{trim.trim.act.relationship[sentinalNode].act.relationshipsList['detectionMethodSize'][methodIndex.index]}"/>
+	          &#160;&#160;&#160;
+	          <c:if test="#{tumorSize.enableRelationship != false}">
+	           #{tumorSize.act.observation.value.label.value} &#160;&#160;&#160;
+	           <trim:PQ id="tumor#{lateralityIndex.index}#{methodIndex.index}" value="#{tumorSize.act.observation.value}"/>
+	          </c:if>
+	         </td> 
+	        </tr>        
+	       </c:forEach>
+	       <tr>
+	        <td style="padding-top:10px;padding-left:20px;"><b>Extranodal extension</b></td>
+	        <td style="padding-top:10px;">
+	         <wiz:radio id="#{sentinalNode}extn" class="#{laterality}extrExtn" 
+	          value="#{trim.trim.act.relationship[sentinalNode].act.relationship['extention'].act.observation.value.CE}">
+	          <f:selectItems value="#{trim.valueSets['extranodalExtention']}"/>
+	          <f:converter converterId="DataTypeConverter"/>
+	         </wiz:radio> 
+	        </td>
+	       </tr>
+	      </table>   
+	      <hr/> 
+	      <br clear="all"/>
+      </c:if>    
+     <!-- START: Additional Nodes-->
+         <c:forEach var="addtNode" items="#{trim.trim.act.relationshipsList[addtNodes]}" varStatus="addtIndex">
+           <table style="width:100%;">
+            <tr>
+             <td style="width:20%;" evalFunc="wizDisableContainer('addtNode#{addtIndex.index}#{lateralityIndex.index}','table','#{menu.elementLabel}')">
+               <h:selectBooleanCheckbox value="#{addtNode.enableRelationship}" id="addtNode#{addtIndex.index}#{lateralityIndex.index}" converter="javax.faces.Boolean"/>
+                 <b>#{addtNode.act.title.ST.value}</b></td>
+             <td style="width:30%;">Location
+               <wiz:selectOneMenu id="addtNode#{addtIndex.index}#{lateralityIndex.index}Location" value="#{addtNode.act.relationship['location'].act.observation.value.CE}" style="margin-left:20px;">
+                 <f:selectItems value="#{trim.valueSets[addtNode.act.relationship['location'].act.observation.value.valueSet]}"/>
+                 <f:converter converterId="DataTypeConverter"/>
+               </wiz:selectOneMenu>
+             </td>
+             <td style="width:35%;" >
+                 <trim:valueSetMenu id="addtNode#{addtIndex.index}#{lateralityIndex.index}Level" slot="#{addtNode.act.relationship['location'].act.observation.methodCode}"
+                 tvisible="$('#{menu.elementLabel}:addtNode#{addtIndex.index}#{lateralityIndex.index}Location').selectedIndex ==1"/>                    
+             </td>
+            </tr>
+            <tr>
+             <td style="padding-left:20px">
+               <!-- positive nodes-->
+               <h:inputText size="3" style="text-align:right" class="pNode#{lateralityIndex.index}" 
+                 value="#{addtNode.act.relationship['positiveNodes'].act.observation.value.INT.value}" 
+                 onkeyup="javascript:calculateNodes('pNode#{lateralityIndex.index}','ttlPsveNodes#{lateralityIndex.index}','#{menu.elementLabel}')"/>
+           
+               <!-- examined nodes-->  
+               &#160;/&#160;
+               <h:inputText size="3" style="text-align:right" class="eNode#{lateralityIndex.index}" 
+                 value="#{addtNode.act.relationship['examinedNodes'].act.observation.value.INT.value}" 
+                   onkeyup="javascript:calculateNodes('eNode#{lateralityIndex.index}','ttlExmNodes#{lateralityIndex.index}','#{menu.elementLabel}')"/>
+               <br/>
+             positive&#160;&#160;&#160;examined
+             </td>
+            </tr>   
+            <tr>
+             <td style="padding-left:20px;">Size of largest tumor deposit </td>
+             <td colspan="2"> <trim:PQ id="lymphtumor#{addtIndex.index}#{lateralityIndex.index}" 
+                 value="#{addtNode.act.relationship['tumorSize'].act.observation.value}"/>
+             </td>
+            </tr>
+            <tr style="padding-top:10px;">
+             <td style="padding-left:20px;"><b>Extranodal extension</b></td>
+             <td>
+               <wiz:radio id="extn#{addtIndex.index}#{lateralityIndex.index}" class="#{laterality}extrExtn" value="#{addtNode.act.relationship['extention'].act.observation.value.CE}">
+                 <f:selectItems value="#{trim.valueSets['extranodalExtention']}"/>
+                 <f:converter converterId="DataTypeConverter"/>
+               </wiz:radio> 
+             </td>
+            </tr>
+           </table>
+           <hr/> 
+           <br clear="all"/>
+          </c:forEach> 
+     <!-- END: Additional Nodes-->     
+      <!-- Summary --> 
+       <table> 
+        <tr style="height:10px;"/>
+        <tr>
+         <td>Total nodes </td>
+         <td style="text-align:center"> 
+           <h:inputHidden id="ttlPsveNodes#{lateralityIndex.index}" value="#{trim.trim.act.relationship[totalPositiveNodes].act.observation.value.INT.value}" converter="javax.faces.Integer"/> 
+           <label id="ttlPsveNodes#{lateralityIndex.index}LBL">#{trim.trim.act.relationship[totalPositiveNodes].act.observation.value.INT.value}</label>
+          </td>
+          <td>/</td>
+          <td style="text-align:center">
+          <label id="ttlExmNodes#{lateralityIndex.index}LBL">#{trim.trim.act.relationship[totalExaminedNodes].act.observation.value.INT.value}</label>
+          <h:inputHidden id="ttlExmNodes#{lateralityIndex.index}" value="#{trim.trim.act.relationship[totalExaminedNodes].act.observation.value.INT.value}" converter="javax.faces.Integer"/> 
+          </td>   
+        </tr>
+        <tr>
+         <td/>
+         <td>postive</td> 
+         <td>/</td>
+         <td>examined</td>
+        </tr>
+      </table>   
+    </wiz:group>
+   </c:if>
+  </c:forEach>
+  </wiz:step> 
+ <!-- END LymphNodes -->     
+  <!-- START: Histology -->
+ <wiz:step title="Histology"  autoUpdate="false">
+  <br clear="all" />
+  <c:forEach var="laterality" items="${fn:split('Left,Right', ',')}" varStatus="lateralityIndex">
+   <c:if
+    test="#{(laterality eq 'Left' and hasLeftProcedure) or (laterality eq 'Right' and hasRightProcedure)}">
+    <c:set var="histologyBenign" value="#{laterality}HistologyBenign" />
+    <c:set var="histologyDCIS" value="#{laterality}HistologyDCIS" />
+    <c:set var="histologyDCISDetails" value="#{laterality}HistologyDCISDetails" />
+    <c:set var="histologyLCIS" value="#{laterality}HistologyLCIS" />
+    <c:set var="histologyLCISDetails" value="#{laterality}HistologyLCISDetails" />
+    <c:set var="histologyInvasiveTumor" value="#{laterality}HistologyInvasiveTumor" />
+    <c:set var="histologyInvasiveTumorDetails" value="#{laterality}HistologyInvasiveTumorDetails" />
+    <wiz:group title="#{laterality}" style="width:90%" prefix="Procedure(s)">
+     <table width="100%" id="#{laterality}Histology" evalFunc="wizHistologySelector('#{laterality}Histology','#{menu.elementLabel}')">
+           <!-- evalFunc="wizHistologySelector('#{laterality}Histology','#{menu.elementLabel}')" -->
+      <tr>
+       <td>
+ 		<table width="80%" class="result">
+        <tr>
+         <td width="60%"><h:outputText
+          value="#{trim.trim.act.relationship[histologyBenign].act.title.ST.value}" /></td>
+         <td width="40%">
+          <h:inputHidden id="histologyBenign#{lateralityIndex.index}" 
+         		value="#{trim.trim.act.relationship[histologyBenign].enableRelationship}" converter="javax.faces.Boolean"/>
+         	  <trim:CE id="histologyBenignID#{lateralityIndex.index}" valueSet="histologyResultsOptionsVS"
+         				 value="#{trim.trim.act.relationship[histologyBenign].act.observation.value}"
+         				 onclick="javascript:wizEnableHistologyBenign(this,'#{menu.elementLabel}:histologyBenign#{lateralityIndex.index}')"/>
+         </td>
+        </tr>
+       </table>
+       </td>
+      </tr>
+      <!-- DCIS -->
+      <tr>
+       <td>
+       <table width="80%" class="result">
+        <tr>
+         <td width="60%"><h:outputText
+          value="#{trim.trim.act.relationship[histologyDCIS].act.title.ST.value}" /></td>
+         <td width="40%"><wiz:enableMultipleRelationsRadio
+          id="histologyDCISID#{lateralityIndex.index}"
+          act="#{trim.trim.act}" valueSet="histologyResultsOptionsVS"
+          value="#{trim.trim.act.relationship[histologyDCIS].act.observation.value}"
+          valueSetDisplayNamesAndRelations="Yes=#{histologyDCISDetails}" />
+         </td>
+        </tr>
+       </table>
+       <!-- DCIS Details --> <wiz:enableMultipleRelationsRadioContent
+        valueSet="histologyResultsOptionsVS" ceDisplayName="Yes"
+        enableRadioId="histologyDCISID#{lateralityIndex.index}">
+        <wiz:group title="#{trim.trim.act.relationship[histologyDCISDetails].act.title.ST.value}" style="width:90%;">
+         <table>
+          <tr>
+           <td><h:outputText
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['dcis'].act.title.ST.value}" /></td>
+           <td><wiz:dataTypeAndUnknown
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['dcis'].act.observation.value}"
+            destination="trim.act.relationship['#{histologyDCISDetails}'].act.relationship['dcis'].act.observation.value"
+            valueSet="dcisValue" id="dcisTypeID#{lateralityIndex.index}"
+            compute="#{trim.trim.act.computes[0]}" nullFlavorIndex="1"
+            dataTypeIndex="0" readonly="false" /></td>
+           <td></td>
+           <td></td>
+          </tr>
+          <tr>
+           <td colspan="4"><br></br>
+           </td>
+          </tr>
+          <tr>
+           <td><h:outputText
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['tumorSize'].act.title.ST.value}" /></td>
+           <td><trim:PQ id="tumorSizeId#{lateralityIndex.index}"
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['tumorSize'].act.observation.value}"
+            readonly="false" /></td>
+           <td><wiz:checkAndEnableRelations
+            id="contiguousSectionsId#{lateralityIndex.index}"
+            act="#{trim.trim.act.relationship[histologyDCISDetails].act}"
+            itemLabel="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['contiguousSections'].act.title.ST.value}"
+            ownerRelation="contiguousSections"
+            relations="contiguousSections" /></td>
+           <td><trim:PQ
+            id="contiguousSectionsId2#{lateralityIndex.index}"
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['contiguousSections'].act.observation.value}"
+            readonly="false" /></td>
+          </tr>
+
+          <tr>
+           <td></td>
+           <td></td>
+           <td><wiz:checkAndEnableRelations
+            id="scatteredMicroscopicId#{lateralityIndex.index}"
+            act="#{trim.trim.act.relationship[histologyDCISDetails].act}"
+            itemLabel="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['scatteredMicroscopic'].act.title.ST.value}"
+            ownerRelation="scatteredMicroscopic"
+            relations="scatteredMicroscopic" /></td>
+           <td><trim:PQ
+            id="scatteredMicroscopicId2#{lateralityIndex.index}"
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['scatteredMicroscopic'].act.observation.value}"
+            readonly="false" /> <h:outputText value=" each, involving "/> <trim:PQ
+            id="actualInvolvedId#{lateralityIndex.index}"
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['scatteredMicroscopic'].act.relationship['actualInvolved'].act.observation.value}"
+            readonly="false" /> <h:outputText value=" of "/><trim:PQ
+            id="totalInvolvedId#{lateralityIndex.index}"
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['scatteredMicroscopic'].act.relationship['totalInvolved'].act.observation.value}"
+            readonly="false" /> slides </td>
+          </tr>
+
+          <tr>
+           <td colspan="4"><br></br>
+           </td>
+          </tr>
+          <tr>
+           <td colspan="4"><b>Margins</b></td>
+          </tr>
+
+          <tr>
+           <td></td>
+           <td colspan="3">
+           <table>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['deepMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="deepMarginID#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['deepMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="deepMarginSizeId#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['deepMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['medialMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="medialMarginID#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['medialMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="medialMarginSizeId#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['medialMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['lateralMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="lateralMarginID#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['lateralMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="lateralMarginId#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['lateralMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['anteriorSuperiorMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="anteriorSuperiorMarginID#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['anteriorSuperiorMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="anteriorSuperiorMarginId#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['anteriorSuperiorMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['anteriorInferiorMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="anteriorInferiorMarginID#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['anteriorInferiorMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="anteriorInferiorMarginId#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['anteriorInferiorMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+           </table>
+           </td>
+          </tr>
+
+          <tr>
+           <td colspan="4"><br></br>
+           </td>
+          </tr>
+          <tr>
+           <td colspan="4"><b>Histology type:</b></td>
+          </tr>
+
+          <tr>
+           <td></td>
+           <td colspan="3">
+           <table>
+            <tr>
+             <td><wiz:enableMultipleRelationsMultiCheckBox
+              id="histologicTypeID#{lateralityIndex.index}"
+              act="#{trim.trim.act.relationship[histologyDCISDetails].act}"
+              valueSet="histologicTypeVS"
+              value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['histologicType'].act.observation.value}"
+              valueSetDisplayNamesAndRelations="Other=histologicTypeOther" />
+             <trim:ST id="histologicTypeOtherID#{lateralityIndex.index}"
+              value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['histologicTypeOther'].act.observation.value}" />
+             </td>
+            </tr>
+           </table>
+           </td>
+          </tr>
+
+          <tr>
+           <td colspan="4"><br></br>
+           </td>
+          </tr>
+          <tr>
+           <td colspan="4"><b>Calcifications</b></td>
+          </tr>
+
+          <tr>
+           <td></td>
+           <td colspan="3">
+           <table>
+            <tr>
+             <td><wiz:enableMultipleRelationsRadio
+              id="calcificationID2#{lateralityIndex.index}"
+              act="#{trim.trim.act.relationship[histologyDCISDetails].act}"
+              valueSet="histologyResultsOptionsVS"
+              value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['calcification'].act.observation.value}"
+              valueSetDisplayNamesAndRelations="Yes=calcificationYes" />
+             </td>
+            </tr>
+           </table>
+           </td>
+          </tr>
+
+          <tr>
+           <td></td>
+           <td colspan="3"><wiz:enableMultipleRelationsRadioContent
+            valueSet="histologyResultsOptionsVS" ceDisplayName="Yes"
+            enableRadioId="calcificationID2#{lateralityIndex.index}">
+            <trim:valueSetMenu
+             id="calcificationsYesID2#{lateralityIndex.index}"
+             slot="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['calcificationYes'].act.observation.value}" />
+           </wiz:enableMultipleRelationsRadioContent></td>
+          </tr>
+
+          <tr>
+           <td colspan="4"><br></br>
+           </td>
+          </tr>
+          <tr>
+           <td colspan="4"><b><h:outputText
+            value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['nuclearGrade'].act.title.ST.value}" /></b></td>
+          </tr>
+
+          <tr>
+           <td></td>
+           <td colspan="3">
+           <table>
+            <tr>
+             <td><trim:CE
+              id="nuclearGradeID#{lateralityIndex.index}"
+              valueSet="histologyNuclearGradeVS"
+              value="#{trim.trim.act.relationship[histologyDCISDetails].act.relationship['nuclearGrade'].act.observation.value}" />
+             </td>
+            </tr>
+           </table>
+           </td>
+          </tr>
+
+         </table>
+
+        </wiz:group>
+       </wiz:enableMultipleRelationsRadioContent></td>
+      </tr>
+
+
+      <!-- LCIS -->
+             <tr>
+       <td>
+
+
+       <table width="80%" class="result">
+        <tr>
+         <td width="60%"><h:outputText
+          value="#{trim.trim.act.relationship[histologyLCIS].act.title.ST.value}" /></td>
+         <td width="40%"><wiz:enableMultipleRelationsRadio
+          id="histologyLCISID#{lateralityIndex.index}"
+          act="#{trim.trim.act}" valueSet="histologyResultsOptionsVS"
+          value="#{trim.trim.act.relationship[histologyLCIS].act.observation.value}"
+          valueSetDisplayNamesAndRelations="Yes=#{histologyLCISDetails}" />
+         </td>
+        </tr>
+       </table>
+
+       <!-- LCIS Details --> <wiz:enableMultipleRelationsRadioContent
+        valueSet="histologyResultsOptionsVS" ceDisplayName="Yes"
+        enableRadioId="histologyLCISID#{lateralityIndex.index}">
+        <wiz:group title="#{trim.trim.act.relationship[histologyLCISDetails].act.title.ST.value}" style="width:80%;">
+         <table>
+          <tr>
+           <td><h:outputText
+            value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['lcisType'].act.title.ST.value}" /></td>
+           <td colspan="3">
+           <table>
+            <tr>
+             <td>
+             
+             <wiz:enableMultipleRelationsRadio id="lcisTypeID#{lateralityIndex.index}" 
+                 act="#{trim.trim.act.relationship[histologyLCISDetails].act}" 
+                 valueSet="histologyLCISTypeVS"
+                 value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['lcisType'].act.observation.value}"
+                 valueSetDisplayNamesAndRelations="Pleomorphic=deepMargin,medialMargin,lateralMargin,anteriorSuperiorMargin,anteriorInferiorMargin" />
+             </td>
+            </tr>
+           </table>
+           </td>
+          </tr>
+
+          <tr>
+           <td colspan="4"></td>
+          </tr>
+          <tr>
+           <td colspan="4"></td>
+          </tr>
+          
+          
+          
+          
+          <tr>
+           <td colspan="4">
+           
+           <wiz:enableMultipleRelationsRadioContent valueSet="histologyLCISTypeVS" ceDisplayName="Pleomorphic" enableRadioId="lcisTypeID#{lateralityIndex.index}">
+            <b>Resection margins for plemorphic LCIS:</b>
+           </wiz:enableMultipleRelationsRadioContent >
+           </td>
+          </tr>
+
+          <tr>
+           <td></td>
+           <td colspan="3">
+           <wiz:enableMultipleRelationsRadioContent valueSet="histologyLCISTypeVS" ceDisplayName="Pleomorphic" enableRadioId="lcisTypeID#{lateralityIndex.index}">
+           
+           <table>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['deepMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="deepMarginID2#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['deepMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="deepMarginSizeId2#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['deepMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['medialMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="medialMarginID2#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['medialMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="medialMarginSizeId2#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['medialMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['lateralMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="lateralMarginID2#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['lateralMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="lateralMarginId2#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['lateralMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['anteriorSuperiorMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="anteriorSuperiorMarginID2#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['anteriorSuperiorMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="anteriorSuperiorMarginId2#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['anteriorSuperiorMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['anteriorInferiorMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="anteriorInferiorMarginID2#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['anteriorInferiorMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="anteriorInferiorMarginId2#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyLCISDetails].act.relationship['anteriorInferiorMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+           </table>
+           </wiz:enableMultipleRelationsRadioContent>
+           </td>
+          </tr>
+         
+          
+
+         </table>
+        </wiz:group>
+       </wiz:enableMultipleRelationsRadioContent></td>
+      </tr>
+      
+      
+    <!-- Invasive Tumor -->
+    <tr>
+     <td>
+     <table width="80%" class="result"><tr>
+     <td width="60%"><h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumor].act.title.ST.value}" /></td>
+     <td width="40%">
+      <wiz:enableMultipleRelationsRadio id="histologyInvasiveTumorID#{lateralityIndex.index}" 
+              act="#{trim.trim.act}"
+              valueSet="histologyResultsOptionsVS" 
+              value="#{trim.trim.act.relationship[histologyInvasiveTumor].act.observation.value}" 
+              valueSetDisplayNamesAndRelations="Yes=#{histologyInvasiveTumorDetails}" />
+     </td>
+     </tr></table>
+     
+     <wiz:enableMultipleRelationsRadioContent valueSet="histologyResultsOptionsVS" ceDisplayName="Yes" enableRadioId="histologyInvasiveTumorID#{lateralityIndex.index}" >
+      <wiz:group title="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.title.ST.value}" style="width:90%;">
+       <table>
+       
+       <tr>
+        <td><h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['tumorSize'].act.title.ST.value}" /></td>
+        <td><trim:PQ id="tumorSizeID#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['tumorSize'].act.observation.value}" readonly="false" /></td>
+        <td></td>
+        <td></td>
+       </tr>
+       
+       <tr><td colspan="4"><br></br></td></tr>
+       <tr><td colspan="4"><b>Invasive margins</b></td></tr>
+       
+       <tr>
+        <td></td>
+        <td colspan="3">
+         <table>
+           <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['deepMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="deepMarginID3#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['deepMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="deepMarginSizeId3#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['deepMarginSize'].act.observation.value}" readonly="false" /> 
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['medialMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="medialMarginID3#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['medialMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="medialMarginSizeId3#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['medialMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['lateralMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="lateralMarginID3#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['lateralMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="lateralMarginId3#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['lateralMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['anteriorSuperiorMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="anteriorSuperiorMarginID3#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['anteriorSuperiorMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="anteriorSuperiorMarginId3#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['anteriorSuperiorMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+            <tr>
+             <td>
+                <h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['anteriorInferiorMargin'].act.title.ST.value}" />
+             </td>
+             <td> 
+              <trim:CE id="anteriorInferiorMarginID3#{lateralityIndex.index}" valueSet="histologyMarginsVS" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['anteriorInferiorMargin'].act.observation.value}"/>
+             </td>
+             <td>
+              <trim:PQ id="anteriorInferiorMarginId3#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['anteriorInferiorMarginSize'].act.observation.value}" readonly="false" />
+             </td>
+            </tr>
+         </table>
+        </td>
+       </tr>          
+
+       <tr><td colspan="4"><br></br></td></tr>
+       <tr><td colspan="4"><b>Invasive histology:</b></td></tr>
+       
+       <tr>
+        <td></td>
+        <td colspan="3">
+         <table><tr><td>
+          <wiz:enableMultipleRelationsMultiCheckBox id="invasiveHistologyID#{lateralityIndex.index}" 
+              act="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act}"
+              valueSet="histologyInvasiveHistologyVS" 
+              value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['invasiveHistology'].act.observation.value}" 
+              valueSetDisplayNamesAndRelations="Other=invasiveHistologyOther" />          
+           <trim:ST id="invasiveHistologyOtherID#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['invasiveHistologyOther'].act.observation.value}" readonly="false" />
+         </td></tr></table>
+        </td>
+       </tr>        
+       
+
+       <tr><td colspan="4"><br></br></td></tr>
+       <tr><td colspan="4">
+         <wiz:checkAndEnableRelations id="signsOfTreatmentEffectId#{lateralityIndex.index}" act="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act}" 
+               itemLabel="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['signsOfTreatmentEffect'].act.title.ST.value}" 
+               ownerRelation="signsOfTreatmentEffect" 
+               relations="signsOfTreatmentEffect"/>
+       
+       </td></tr>
+
+       <tr><td colspan="4"><br></br></td></tr>       
+       <tr><td colspan="4"><b>Calcifications:</b></td></tr>
+       
+
+       <tr>
+       <td></td>
+       <td colspan="3">
+          <wiz:enableMultipleRelationsRadio id="calcificationsID#{lateralityIndex.index}" 
+              act="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act}"
+              valueSet="histologyResultsOptionsVS" 
+              value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['calcifications'].act.observation.value}" 
+              valueSetDisplayNamesAndRelations="Yes=calcificationsYes" />
+       </td></tr>       
+       <tr>
+       <td></td>
+       <td colspan="3">
+        <wiz:enableMultipleRelationsRadioContent valueSet="histologyResultsOptionsVS" ceDisplayName="Yes" enableRadioId="calcificationsID#{lateralityIndex.index}" >
+         <trim:valueSetMenu id="calcificationsYesID#{lateralityIndex.index}" slot="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['calcificationsYes'].act.observation.value}"/>
+        </wiz:enableMultipleRelationsRadioContent>
+       </td></tr>       
+       
+       <tr><td colspan="4"><br></br></td></tr>
+       <tr style="background-color:#eee"><td colspan="4"><b><h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['nuclearGrade'].act.title.ST.value}" />:</b></td></tr>
+       <tr style="background-color:#eee">
+        <td></td>
+        <td colspan="3">
+         <trim:CE id="invasiveNuclearGrade#{lateralityIndex.index}" valueSet="histologyNuclearGradeVS" 
+         value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['nuclearGrade'].act.observation.value}" readonly="false" 
+         onclick="javascript:wizCalculateInvasiveTumor('#{lateralityIndex.index}','#{menu.elementLabel}')" class="invasiveTumor#{lateralityIndex.index}"/>
+        </td>
+       </tr>        
+
+       <tr style="background-color:#eee"><td colspan="4"><br></br></td></tr>
+       <tr style="background-color:#eee"><td colspan="4"><b><h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['mitoticCount'].act.title.ST.value}" />:</b></td></tr>
+       <tr style="background-color:#eee">
+        <td></td>
+        <td colspan="3">
+         <trim:CE id="mitoticCountID#{lateralityIndex.index}" valueSet="histologyCountOptionsVS" 
+         value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['mitoticCount'].act.observation.value}" readonly="false"
+         onclick="javascript:wizCalculateInvasiveTumor('#{lateralityIndex.index}','#{menu.elementLabel}')" class="invasiveTumor#{lateralityIndex.index}"/>
+        </td>
+       </tr>        
+
+       <tr style="background-color:#eee"><td colspan="4"><br></br></td></tr>
+       <tr style="background-color:#eee"><td colspan="4"><b><h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['tubeleFormation'].act.title.ST.value}" />:</b></td></tr>
+       <tr style="background-color:#eee">
+        <td></td>
+        <td colspan="3">
+         <trim:CE id="tubeleFormationID#{lateralityIndex.index}" valueSet="histologyCountOptionsVS" 
+         value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['tubeleFormation'].act.observation.value}" readonly="false" 
+         onclick="javascript:wizCalculateInvasiveTumor('#{lateralityIndex.index}','#{menu.elementLabel}')" class="invasiveTumor#{lateralityIndex.index}"/>
+        </td>
+       </tr>        
+       <tr style="background-color:#eee"><td colspan="4"> <hr/></td></tr>
+       <tr style="background-color:#eee">
+        <td colspan="4">
+        <b> #{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['totalPoints'].act.title.ST}
+         <label id="invasiveTumorTotalLBL#{lateralityIndex.index}">
+         <h:outputText value=" #{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['totalPoints'].act.observation.value.originalText}"/> 
+         </label>
+         <h:inputHidden id="invasiveTumorTotal#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['totalPoints'].act.observation.value.originalText}"/>
+         
+         <h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['sbrGrade'].act.title.ST}" style="padding-left: 20px;"/>
+         <label id="invasiveTumorGradeLBL#{lateralityIndex.index}">
+         <h:outputText value=" #{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['sbrGrade'].act.observation.value.originalText}"/> 
+         </label></b>
+         <h:inputHidden id="invasiveTumorGrade#{lateralityIndex.index}" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['sbrGrade'].act.observation.value.originalText}"/>         
+        </td>
+       </tr>
+       <tr><td colspan="4"><br></br></td></tr>
+       <tr><td colspan="4"><b><h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['lymphaticVascularInvasion'].act.title.ST.value}" />:</b></td></tr>
+       <tr>
+        <td></td>
+        <td colspan="3">
+         <trim:CE id="lymphaticVascularInvasionID#{lateralityIndex.index}" valueSet="lymphaticVascularInvasionVS" value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['lymphaticVascularInvasion'].act.observation.value}" readonly="false" />
+        </td>
+       </tr>
+       
+       <tr><td colspan="4"><br></br></td></tr>
+       <tr><td colspan="4"><b><h:outputText value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['skinInvolvement'].act.title.ST.value}" />:</b></td></tr>
+       <tr>
+        <td></td>
+        <td colspan="3">
+         <wiz:enableMultipleRelationsRadio id="skinInvolvementID#{lateralityIndex.index}" 
+              act="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act}"
+              valueSet="skinInvolvementVS" 
+              value="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['skinInvolvement'].act.observation.value}" 
+              valueSetDisplayNamesAndRelations="Yes=skinInvolvementYes" />
+        </td>
+       </tr>
+       <tr>
+        <td></td>
+        <td colspan="3">
+         <wiz:enableMultipleRelationsRadioContent valueSet="skinInvolvementVS" ceDisplayName="Yes" enableRadioId="skinInvolvementID#{lateralityIndex.index}" >
+          <trim:selectManyCheck id="skinInvolvementYesId#{lateralityIndex.index}" slot="#{trim.trim.act.relationship[histologyInvasiveTumorDetails].act.relationship['skinInvolvementYes'].act.observation}" style="float:left;"/>
+         </wiz:enableMultipleRelationsRadioContent>
+        </td>
+       </tr>
+              
+       </table>
+      </wiz:group>
+     </wiz:enableMultipleRelationsRadioContent>
+     
+    
+    </td></tr>
+        
+      
+      
+      
+
+     </table>
+    </wiz:group>
+   </c:if>
+  </c:forEach>
+ </wiz:step>
+
+ <!-- END: Histology -->    
+      
+ <!-- START : Receptors -->
+ 
+  <wiz:step title="Receptors"> 
+  <c:forEach var="laterality" items="${fn:split('Left,Right', ',')}" varStatus="lateralityIndex"> 
+    <c:if test="#{(laterality eq 'Left' and hasLeftProcedure) or (laterality eq 'Right' and hasRightProcedure)}">
+     <wiz:group title="#{laterality}" prefix="Receptors:" style="width:70%;">
+     <c:set var="receptor" value="#{laterality}Receptor"/>
+     <c:set var="receptorMarker" value="#{laterality}ReceptorMarker"/>
+     <h:inputHidden id="receptorMarker#{lateralityIndex.index}" value="#{trim.trim.act.relationship[receptorMarker].enableRelationship}" converter="javax.faces.Boolean"/>
+     
+     <c:forEach var="receptorAct" items="#{trim.trim.act.relationshipsList[receptor]}" varStatus="receptorIndex">
+     <h:inputHidden id="receptorAct#{lateralityIndex.index}#{receptorIndex.index}" value="#{receptorAct.enableRelationship}" converter="javax.faces.Boolean"/>
+     <script language="JavaScript" type="text/javascript">
+     // <![CDATA[
+      $('#{menu.elementLabel}:receptorAct#{lateralityIndex.index}#{receptorIndex.index}').value = true;
+      $('#{menu.elementLabel}:receptorMarker#{lateralityIndex.index}').value = true;
+     // ]]>
+     </script>
+      <table style="padding-top:10px;margin-top:10px;margin-left:20px;width:80%">
+       <tr>
+        <th>#{receptorAct.act.title.ST}<br/><hr/></th>
+       </tr>
+       <tr>
+        <td style="padding-left:25px;">
+         <wiz:radio id="receptorStatus#{receptorIndex.index}#{lateralityIndex.index}" value="#{receptorAct.act.observation.value.CE}">
+          <f:selectItems value="#{trim.valueSets[receptorAct.act.observation.value.valueSet]}"/>
+          <f:converter converterId="DataTypeConverter"/>
+         </wiz:radio>
+        </td>
+       </tr>
+       <tr>
+        <td style="padding-left:25px;padding-top:5px;">
+         <table>
+          <c:forEach var="score" items="#{receptorAct.act.relationshipsList['score']}" varStatus="scoreIndex">
+           <tr>
+            <td><b>#{score.act.text.ST}</b> #{score.act.title.ST}</td>
+            <td>&#160;&#160;&#160;&#160;
+              <wiz:selectOneMenu value="#{score.act.observation.value.CE}" id="score#{scoreIndex.index}#{receptorIndex.index}#{lateralityIndex.index}" 
+              onchange="javascript:wizCalculateReceptorTotal('#{receptorIndex.index}#{lateralityIndex.index}','#{menu.elementLabel}')" 
+               class="rscore#{receptorIndex.index}#{lateralityIndex.index}">
+                <f:selectItems value="#{trim.valueSets[score.act.observation.value.valueSet]}"/>
+                <f:converter converterId="DataTypeConverter"/>
+              </wiz:selectOneMenu>  
+            </td>
+           </tr>
+          </c:forEach>
+         </table>
+        </td>
+       </tr>
+       <tr>
+        <td style="padding-left:25px;padding-top:5px;">
+         <b>#{receptorAct.act.relationship['total'].act.text.ST}</b> #{receptorAct.act.relationship['total'].act.title.ST}
+         <label id="TSLBL#{receptorIndex.index}#{lateralityIndex.index}" style="padding-left:20px;">#{receptorAct.act.relationship['total'].act.observation.value.INT.value}</label>
+         <h:inputHidden id="TS#{receptorIndex.index}#{lateralityIndex.index}" value="#{receptorAct.act.relationship['total'].act.observation.value.INT.value}"/>
+        </td>
+       </tr>
+      </table>      
+      <br clear="all"/>
+     </c:forEach>
+     
+     <table style="padding-top:10px;margin-top:10px;margin-left:20px;width:80%">
+      <tr>
+       <th colspan="2">#{trim.trim.act.relationship[receptorMarker].act.title.ST}<br/><hr/></th>
+      </tr>
+      <tr>
+       <td style="padding-left:25px;" colspan="2">
+        <wiz:radio id="receptorMarkerStatus#{lateralityIndex.index}" value="#{trim.trim.act.relationship[receptorMarker].act.observation.value.CE}">
+         <f:selectItems value="#{trim.valueSets[trim.trim.act.relationship[receptorMarker].act.observation.value.valueSet]}"/>
+         <f:converter converterId="DataTypeConverter"/>
+        </wiz:radio>
+       </td>
+      </tr>
+      <tr>
+       <td style="padding-left:25px;width:50%;">
+        <table>
+         <tr>
+          <th colspan="2">IHC<br/><hr/></th>
+         </tr>
+         <c:forEach var="iHCTest" items="#{trim.trim.act.relationship[receptorMarker].act.relationshipsList['IHCTest']}" varStatus="iHCTestIndex">
+          <tr>
+           <td evalFunc="wizDisableContainer('iHCTest#{iHCTestIndex.index}#{lateralityIndex.index}','tr','#{menu.elementLabel}')">
+            <h:selectBooleanCheckbox value="#{iHCTest.enableRelationship}" id="iHCTest#{iHCTestIndex.index}#{lateralityIndex.index}"/>              
+            <c:choose>
+             <c:when test="#{not empty iHCTest.act.observation.value.valueSet}">
+              #{iHCTest.act.title.ST.value}
+             </c:when>
+             <c:otherwise>
+              #{iHCTest.act.text.ST.value}<br/>
+              <h:inputText value="#{iHCTest.act.title.ST.value}" size="15" style="margin-left:25px;"/>
+             </c:otherwise>
+            </c:choose> 
+           </td>
+           <td>
+            <c:choose>
+             <c:when test="#{not empty iHCTest.act.observation.value.valueSet}">
+              <wiz:selectOneMenu value="#{iHCTest.act.observation.value.CE}" id="iHCTestObs#{iHCTestIndex.index}#{lateralityIndex.index}">
+                <f:selectItems value="#{trim.valueSets['IHCTestVS']}"/>
+                <f:converter converterId="DataTypeConverter"/>
+              </wiz:selectOneMenu>
+             </c:when>
+             <c:otherwise>
+              #{iHCTest.act.observation.value.label.value}<br/>
+              <h:inputText value="#{iHCTest.act.observation.value.originalText}" size="8"/>
+             </c:otherwise>
+            </c:choose>            
+           </td>
+          </tr>
+         </c:forEach> 
+         <tr>
+          <td>
+           <h:selectBooleanCheckbox value="#{trim.trim.act.relationship[receptorMarker].act.relationship['IHCTestDone'].enableRelationship}"/>
+           #{trim.trim.act.relationship[receptorMarker].act.relationship['IHCTestDone'].act.title.ST.value}
+          </td>
+         </tr>
+        </table>
+       </td>
+       <td style="padding-left:5px;width:50%;vertical-align:top">
+        <table>
+         <tr>
+          <th colspan="2">FISH<br/><hr/></th>
+         </tr>
+         <c:forEach var="fISHTest" items="#{trim.trim.act.relationship[receptorMarker].act.relationshipsList['FISHTest']}" varStatus="fISHTestIndex">
+          <tr>
+           <td evalFunc="wizDisableContainer('fISHTest#{fISHTestIndex.index}#{lateralityIndex.index}','tr','#{menu.elementLabel}')">
+            <h:selectBooleanCheckbox value="#{fISHTest.enableRelationship}" id="fISHTest#{fISHTestIndex.index}#{lateralityIndex.index}"/>              
+            <c:choose>
+             <c:when test="#{not empty fISHTest.act.observation.value.valueSet}">
+              #{fISHTest.act.title.ST.value}
+             </c:when>
+             <c:otherwise>
+              #{fISHTest.act.text.ST.value}<br/>
+              <h:inputText value="#{fISHTest.act.title.ST.value}" size="15" style="margin-left:25px;"/>
+             </c:otherwise>
+            </c:choose> 
+           </td>
+           <td>
+            <c:choose>
+             <c:when test="#{not empty fISHTest.act.observation.value.valueSet}">
+              <wiz:selectOneMenu value="#{fISHTest.act.observation.value.CE}" id="fISHTestObs#{fISHTestIndex.index}#{lateralityIndex.index}">
+                <f:selectItems value="#{trim.valueSets['IHCTestVS']}"/>
+                <f:converter converterId="DataTypeConverter"/>
+              </wiz:selectOneMenu>
+             </c:when>
+             <c:otherwise>
+              #{fISHTest.act.observation.value.label.value}<br/>
+              <h:inputText value="#{fISHTest.act.observation.value.originalText}" size="8"/>
+             </c:otherwise>
+            </c:choose>            
+           </td>
+          </tr>
+         </c:forEach> 
+         <tr>
+          <td>
+           <h:selectBooleanCheckbox value="#{trim.trim.act.relationship[receptorMarker].act.relationship['FISHTestDone'].enableRelationship}"/>
+           #{trim.trim.act.relationship[receptorMarker].act.relationship['FISHTestDone'].act.title.ST.value}
+          </td>
+         </tr>
+        </table>
+       </td>
+      </tr>
+     </table>
+    </wiz:group>
+   </c:if>
+  </c:forEach> <!-- #{lateralityIndex.index} -->
+ </wiz:step> 
+ <!-- END : Receptors -->
+ 
+ <!-- Start Staging -->
+ <wiz:step title="Staging">
+
+   <c:forEach var="laterality" items="${fn:split('Left,Right', ',')}" varStatus="lateralityIndex">
+    <c:if test="#{(laterality eq 'Left' and hasLeftProcedure) or (laterality eq 'Right' and hasRightProcedure)}">
+     <c:set var="stgNodeName" value="#{laterality}Staging" />
+     <c:set var="stgNode" value="#{trim.trim.act.relationship[stgNodeName]}" />
+     <h:inputHidden id="stgNode#{lateralityIndex.index}" value="#{stgNode.enableRelationship}" converter="javax.faces.Boolean"/>
+     <script language="JavaScript" type="text/javascript">
+     // <![CDATA[
+      $('#{menu.elementLabel}:stgNode#{lateralityIndex.index}').value = true;      
+     // ]]>
+     </script>
+     <wiz:group title="#{laterality} breast" prefix="Staging : " style="width:95%;vertical-align:top;" class="staging">
+     <table>
+      <tr>
+       <td style="width:50%">
+	      <wiz:group title="Tumor" prefix="">
+	      <wiz:radio id="stagingTumor#{lateralityIndex.index}" value="#{stgNode.act.relationship['tumor'].act.observation.value.CE}" onclick="javascript:calulateStaging('#{lateralityIndex.index}','#{menu.elementLabel}')">
+	       <f:selectItems value="#{trim.valueSets[stgNode.act.relationship['tumor'].act.observation.value.valueSet]}"/>
+	       <f:converter converterId="DataTypeConverter"/>
+	      </wiz:radio> 
+	      </wiz:group>
+	      <wiz:group title="Node" prefix="">
+	      <wiz:radio id="stagingNode#{lateralityIndex.index}" value="#{stgNode.act.relationship['node'].act.observation.value.CE}" onclick="javascript:calulateStaging('#{lateralityIndex.index}','#{menu.elementLabel}')">
+	       <f:selectItems value="#{trim.valueSets[stgNode.act.relationship['node'].act.observation.value.valueSet]}"/>
+	       <f:converter converterId="DataTypeConverter"/>
+	      </wiz:radio> 
+	      </wiz:group>
+	      <wiz:group title="Metastasis" prefix="">
+	      <wiz:radio id="stagingMetastasis#{lateralityIndex.index}" value="#{stgNode.act.relationship['metastasis'].act.observation.value.CE}" onclick="javascript:calulateStaging('#{lateralityIndex.index}','#{menu.elementLabel}')">
+	       <f:selectItems value="#{trim.valueSets[stgNode.act.relationship['metastasis'].act.observation.value.valueSet]}"/>
+	       <f:converter converterId="DataTypeConverter"/>
+	      </wiz:radio> 
+	      </wiz:group>
+	     </td>
+	     <td style="width:50%;vertical-align:top;">
+	      <wiz:group title="Staging Modifiers" prefix="">
+	      <wiz:radio id="stagingModifiers#{lateralityIndex.index}" value="#{stgNode.act.relationship['modifiers'].act.observation.value.CE}" onclick="javascript:calulateStaging('#{lateralityIndex.index}','#{menu.elementLabel}')">
+	       <f:selectItems value="#{trim.valueSets[stgNode.act.relationship['modifiers'].act.observation.value.valueSet]}"/>
+	       <f:converter converterId="DataTypeConverter"/>
+	      </wiz:radio>
+	      <br/>
+	      <h:selectManyCheckbox id="stgDesr#{lateralityIndex.index}" value="#{stgNode.act.relationship['options'].act.observation.value.CEValues}" layout="pageDirection" onclick="javascript:calulateStaging('#{lateralityIndex.index}','#{menu.elementLabel}')">
+	       <f:selectItems value="#{trim.valueSets['stagingOpts']}"/>
+	       <f:converter converterId="DataTypeConverter"/>
+	      </h:selectManyCheckbox>
+	      </wiz:group>
+	     </td>
+	     </tr>
+	     <tr>
+	      <td colspan="2">
+	      <table>
+	       <tr style="line-height:20px;vertical-align:top;">
+	       <td><b>#{stgNode.act.relationship['calculatedStaging'].act.title.ST}</b></td>
+	       <td>
+	        <label id="CalStgLBL#{lateralityIndex.index}">#{stgNode.act.relationship['calculatedStaging'].act.observation.value.originalText}</label>
+	        <h:inputHidden id="CalStg#{lateralityIndex.index}" value="#{stgNode.act.relationship['calculatedStaging'].act.observation.value.originalText}"/>
+	       </td>
+	       <td colspan="2">
+	        <label id="StgCodeLBL#{lateralityIndex.index}" style="padding-left:15px;">#{stgNode.act.relationship['code'].act.observation.value.originalText}</label>
+	        <h:inputHidden id="StgCode#{lateralityIndex.index}" value="#{stgNode.act.relationship['code'].act.observation.value.originalText}"/>
+	       </td>
+	       </tr>
+	       <tr style="line-height:20px;vertical-align:top;">
+	       <td><b>#{stgNode.act.relationship['adjucatedStging'].act.title.ST}</b></td>
+	       <td>
+	        <wiz:selectOneMenu id="AdjStg#{lateralityIndex.index}" value="#{stgNode.act.relationship['adjucatedStging'].act.observation.value.CE}">
+	        <f:selectItems value="#{trim.valueSets[stgNode.act.relationship['adjucatedStging'].act.observation.value.valueSet]}"/>
+	        <f:converter converterId="DataTypeConverter"/>
+	        </wiz:selectOneMenu> 
+	       </td>
+	       <td style="padding-left:10px;"><b>#{stgNode.act.relationship['surgeon'].act.title.ST}</b></td>
+	       <td>
+	        <wiz:selectWithOther id="StgSurgeon#{lateralityIndex.index}" role="#{stgNode.act.relationship['surgeon'].act.participation['surgeon'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" />
+	       </td>
+	       </tr>
+	      </table>
+	      </td>
+      </tr>
+     </table>
+     </wiz:group>
+    </c:if>
+   </c:forEach> <!-- END: Staging -->
+   
+ </wiz:step> 
+ </ui:composition>
+
+</body>
+</html>

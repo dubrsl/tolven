@@ -1,0 +1,13 @@
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/calendar.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/calendar-setup.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/I18n/calendar-#{top.locale.language}.js">
+</script>
+<c:if test="#{top.locale.language != 'en'}">
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/I18n/calendar-en.js"></script>
+</c:if>

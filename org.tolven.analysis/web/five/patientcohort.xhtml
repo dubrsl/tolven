@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>PatientCohort bar context</title>
+</head>
+<body>
+<ui:composition>
+	<c:if test="#{menu.menuDataItem.status=='NEW'}">
+		<ui:include src="/wizard/wizard.xhtml" />
+	</c:if>
+	<c:if test="#{menu.menuDataItem.status!='NEW'}">
+		<div class="info">
+		<div class="allergies">
+		<div id="#{param.element}_wip" class="wip"
+			enableOverFlowListener="true">
+		<ul defaultSelection="#{menu.defaultPathSuffix}">
+			<c:forEach var="item" items="#{menu.thisMenu.sortedChildren}">
+				<c:if
+					test="#{(item.role!='placeholder' and item.role!='event') and item.visible=='true' and item.sequence lt 0}">
+					<li id="#{param.element}:#{item.node}:sel"><a
+						href="javascript:showPane('#{param.element}:#{item.node}');">
+					#{item.localeText[top.appBundle]}</a></li>
+				</c:if>
+				<c:if
+					test="#{(item.role=='placeholder' or item.role=='event') and item.sequence lt 0 }">
+					<li id="#{param.element}:#{item.node}:sel" style="display: none"></li>
+				</c:if>
+			</c:forEach>
+		</ul>
+		</div>
+		</div>
+		</div>
+		<ui:include src="bar1.xhtml" />
+	</c:if>
+</ui:composition>
+</body>
+</html>

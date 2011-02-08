@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>tumorReceptors</name>
+	<description>Tumor Receptors</description>
+	<author>Tolven</author>
+	<page>tumorReceptors.xhtml</page>
+	<drilldown>tumorReceptorsDD.xhtml</drilldown>
+	<menu>global:resultMenu</menu>
+	<application name="echr">
+		<instance>echr:patient:result</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<application name="ephr">
+		<instance>ephr:patient:result</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="create">
+				<path>echr:patient:result</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="create">
+				<path>ephr:patient:result</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Tumor Receptors</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now" />
+		</effectiveTime>
+		<relationship typeCode="PERT" direction="OUT" name="erStatus">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Final ER Status</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Final ER Status</label>
+						<valueSet>finalERStatus</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="erStrength">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Strength</ST>
+				</title>
+				
+				<observation>
+					<value>
+						<label>Strength</label>
+						<valueSet>finalERStatusStrength</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="erPrevalence">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Prevalence</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Strength</label>
+						<valueSet>finalERStatusPrevalence</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="PERT" direction="OUT" name="prStatus">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Final PR Status</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Final PR Status</label>
+						<valueSet>finalPRStatus</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="prStrength">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Strength</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Strength</label>
+						<valueSet>finalERStatusStrength</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="prPrevalence">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Prevalence</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Strength</label>
+						<valueSet>finalERStatusPrevalence</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		
+
+		<relationship typeCode="PERT" direction="OUT" name="HER2NeuScore">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>HER2/neu score</ST>
+				</title>
+				<observation>
+					<value>
+						<label>HER2/neu score</label>
+						<valueSet>HER2NeuScoreVS</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="PERT" direction="OUT" name="fishResult">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>FISH result</ST>
+				</title>
+				<observation>
+					<value>
+						<label>FISH result</label>
+						<valueSet>fishResultVS</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="PERT" direction="OUT" name="HER2NeuStatus">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Final HER2/neu Status</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Final HER2/neu Status</label>
+						<valueSet>HER2NeuStatusVS</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>		
+		
+	</act>
+	<valueSet name="finalERStatus">
+		<CE>
+			<displayName>Positive</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Negative</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Indeterminate</displayName>
+			<code>C0183113</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="finalERStatusStrength">
+		<CE>
+			<displayName>Weakly Positive</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Strongly Positive</displayName>
+			<code>C0183109</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="finalERStatusPrevalence">
+		<CE>
+			<displayName>Many Cells</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Few Cells</displayName>
+			<code>C0183109</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="finalPRStatus">
+		<CE>
+			<displayName>Positive</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Negative</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Indeterminate</displayName>
+			<code>C0183113</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="finalPRStatusStrength">
+		<CE>
+			<displayName>Weakly Positive</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Strongly Positive</displayName>
+			<code>C0183109</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="finalPRStatusPrevalence">
+		<CE>
+			<displayName>Many Cells</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Few Cells</displayName>
+			<code>C0183109</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="HER2NeuScoreVS">
+		<CE>
+			<displayName>0</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1+</displayName>
+			<code>C0183109</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2+</displayName>
+			<code>C0183111</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3+</displayName>
+			<code>C0183112</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="fishResultVS">
+		<CE>
+			<displayName>Pending</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Amplified</displayName>
+			<code>C0183109</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Not Amplified</displayName>
+			<code>C0183110</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Not Specified</displayName>
+			<code>C0183111</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="HER2NeuStatusVS">
+		<CE>
+			<displayName>Positive</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Negative</displayName>
+			<code>C0183109</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Indeterminate</displayName>
+			<code>C0183111</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>	
+</trim>

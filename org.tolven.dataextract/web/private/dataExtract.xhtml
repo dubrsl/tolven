@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core">
+<head>
+    <title>Data Extract</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="Data Extract"/>
+        <ui:define name="body">
+			<h:form id="dataExtractForm">
+				<div class="breadcrumbs">
+					<h:commandLink value="Application" action="dispatch" immediate="true" />
+					<h:outputText value="&nbsp; &gt; &nbsp;" escape="false" />
+					<h:commandLink value="Preferences" action="preferences" immediate="true" />
+					<h:outputText value="&nbsp; &gt; &nbsp;" escape="false" />
+					<h:commandLink value="Customize Menus" action="customizeMenu" immediate="true" />
+					<h:outputText value="&nbsp; &gt; &nbsp;" escape="false" />
+					<h:outputText value="Data Extract" /><br />
+				</div>
+				<fieldset>
+					<legend>Data Extract</legend>
+					<h:inputText value="#{de.menuPath}" size="50" readonly="true" />
+					<fieldset>
+						<legend>Columns</legend>
+						<h:selectManyCheckbox value="#{de.selectedColumnHeadings}" layout="pageDirection">
+							<f:selectItems value="#{de.availableColumnHeadings}" />
+						</h:selectManyCheckbox>
+					</fieldset>
+		           <h:panelGrid columns="2" cellpadding="5">
+						<h:commandLink action="#{de.csvDataExtract}">
+							<h:outputText value="Download CSV" />
+							<f:param name="menuPath" value="#{de.menuPath}" />
+						</h:commandLink>
+						<h:commandLink action="#{de.xmlDataExtract}">
+							<h:outputText value="Download XML" />
+							<f:param name="menuPath" value="#{de.menuPath}" />
+						</h:commandLink>
+					</h:panelGrid>
+					<fieldset>
+						<legend>SQL</legend>
+		           		<h:panelGrid>
+			            	<h:outputText value="Table Name" />
+			            	<h:inputText id="tableName" value="#{de.tableName}" size="50" />
+			            	<h:message for="tableName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
+			            </h:panelGrid>
+		           		<h:panelGrid>
+							<h:outputText value="What to extract" />
+							<h:selectOneRadio id="whatToExtract"  value="#{de.whatToExtract}">
+								<f:selectItem itemLabel="Table and Data" itemValue="both" />
+								<f:selectItem itemLabel="Table only" itemValue="table" />
+								<f:selectItem itemLabel="Data only" itemValue="data" />
+								<f:selectItem itemLabel="View" itemValue="view" />
+							</h:selectOneRadio>
+			            </h:panelGrid>
+		           		<h:panelGrid>
+							<h:outputText value="SQL Dialect" />
+							<h:selectOneRadio id="selectedSQLDialect"  value="#{de.selectedSQLDialect}">
+								<f:selectItems value="#{de.availableSQLDialects}" />
+							</h:selectOneRadio>
+			            	<h:message for="selectedSQLDialect" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
+			       		</h:panelGrid>
+		           		<h:panelGrid>
+							<h:commandLink action="#{de.sqlDataExtract}">
+								<h:outputText value="Download SQL" />
+								<f:param name="menuPath" value="#{de.menuPath}" />
+							</h:commandLink>
+						</h:panelGrid>
+					</fieldset>
+				</fieldset>
+			</h:form>
+      </ui:define>
+    </ui:composition>
+</body>
+</html>

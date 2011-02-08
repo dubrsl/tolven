@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://tolven.org/xsd/trim4">
+	<name>docclin/evn/sharePatient</name>
+	<description>Share Patient Data</description>
+	<page>sharePatient.xhtml</page>
+	<drilldown>sharePatientDD.xhtml</drilldown>
+	<menu>global:shareMenu</menu>
+	<application name="ephr">
+		<instance>ephr:patient:outShare</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:outShare</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<message>
+		<sender>
+			<comment/>
+			<status></status>
+			<accountId>#{accountUser.account.id}</accountId>
+			<accountName>#{accountUser.account.title}</accountName>
+		</sender>
+		<receiver>
+			<comment/>
+			<status></status>
+		</receiver>
+	</message>
+	<act classCode="DOCCLIN" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:outShare</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:outShare</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>clinicaldocument</code>
+				<codeSystemName>TOLVEN</codeSystemName>
+				<codeSystemVersion>4.0</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Share patient data</ST>
+		</title>
+		<effectiveTime>
+			<label>Effective time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr">
+					<placeholder>
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr">
+					<placeholder>
+						<path>ephr:patient</path>
+					</placeholder>
+				</bind>
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{patient.path}</extension>
+					</II>
+				</id>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Patient Name</label>
+						<EN>
+							<label>Legal Name</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{patient.firstName}</ST>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{patient.middleName}</ST>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{patient.lastName}</ST>
+							</part>
+							<part>
+								<label>Suffix</label>
+								<type>SFX</type>
+								<ST/>
+							</part>
+						</EN>
+					</name>
+					<telecom>
+						<label>Telecom</label>
+						<TEL>
+							<label>Home Phone</label>
+							<use>H</use>
+							<value>#{patient.homeTelecom}</value>
+						</TEL>
+					</telecom>
+					<livingSubject>
+						<administrativeGenderCode>
+							<label>Gender</label>
+							<new><encoded>#{encode(patient.gender)}</encoded></new>
+							<valueSet>genders</valueSet>
+						</administrativeGenderCode>
+						<birthTime>
+							<label>Date of Birth</label>
+							<TS><value>#{TS(patient.dob)}</value></TS>
+						</birthTime>
+					</livingSubject>
+					<person>
+						<addr>
+							<label>Address</label>
+							<AD>
+								<label>Home Address</label>
+								<use>H</use>
+								<part>
+									<label>Address Line 1</label>
+									<type>AL</type>
+									<ST>#{patient.homeAddr1}</ST>
+								</part>
+								<part>
+									<label>Address Line 2</label>
+									<type>AL</type>
+									<ST>#{patient.homeAddr2}</ST>
+								</part>
+								<part>
+									<label>City</label>
+									<type>CTY</type>
+									<ST>#{patient.homeCity}</ST>
+								</part>
+								<part>
+									<label>State</label>
+									<type>STA</type>
+									<ST>#{patient.homeState}</ST>
+								</part>
+								<part>
+									<label>Zip</label>
+									<type>ZIP</type>
+									<ST>#{patient.homeZip}</ST>
+								</part>
+								<part>
+									<label>Country</label>
+									<type>CNT</type>
+									<ST>#{patient.homeCountry}</ST>
+								</part>
+							</AD>
+						</addr>
+					</person>
+				</player>
+			</role>
+		</participation>
+		<compute forTrimName="docclin/evn/sharePatient">
+			<type>org.tolven.process.ShareSetup</type>
+		</compute>
+		<compute forTrimName="docclin/evn/sharePatient">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Personal Events</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:personalEvents:all</value>
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/personalEvent</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">personalEvent</value>
+			</property>
+		</compute>
+		<compute forTrimName="docclin/evn/sharePatient">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Allergies</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:allergies:current</value>
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/allergy</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">allergy</value>
+			</property>
+		</compute>
+		<compute forTrimName="docclin/evn/sharePatient" forAccountType="ephr">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Procedures</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:procedures:active</value>
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/procedure</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">procedure</value>
+			</property>
+		</compute>
+		<compute forTrimName="docclin/evn/sharePatient" forAccountType="echr">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Procedures</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:procedures:pxList</value>
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/procedure</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">procedure</value>
+			</property>
+		</compute>
+		<compute forTrimName="docclin/evn/sharePatient">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Medications</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:medications:current</value>
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/medication</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">medication</value>
+			</property>
+		</compute>
+	</act>
+    <field name="plans">
+        <value xsi:type="xs:boolean">true</value>
+    </field>
+    <field name="observations">
+        <value xsi:type="xs:boolean">true</value>
+    </field>
+    <field name="medications">
+        <value xsi:type="xs:boolean">true</value>
+    </field>
+</trim>

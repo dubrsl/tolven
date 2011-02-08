@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>Observation Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="wizTemplate.xhtml">
+		<ui:param name="title" value="#{trim.trim.act.title.ST.value}"/>
+		<ui:param name="author" value="Tolven"/>
+		<ui:param name="subject" value="#{menu.menuDataItem.parent01.string02} #{menu.menuDataItem.parent01.string01}"/>
+		<ui:define name="steps">
+			<ui:include src="/wizard/#{trim.trim.page}"/>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

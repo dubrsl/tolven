@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.assembler.glassfish3" version="2.0.3" class="org.tolven.assembler.glassfish3.GlassFish3Assembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<attributes>
+		<attribute id="libDir" value="glassfish/domains/tolven/lib" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.assembler" />
+		<import plugin-id="org.tolven.assembler.ear" />
+		<import plugin-id="org.tolven.library.tolvencommon" />
+		<import plugin-id="org.tolven.config.appserver" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="tpfclasses/" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension id="execute" plugin-id="org.tolven.assembler" point-id="execute">
+		<parameter id="args" value="" />
+	</extension>
+	<extension-point extension-multiplicity="one" id="databasePlugin" />
+	<extension-point id="libJar" parent-plugin-id="org.tolven.config.appserver" parent-point-id="libJar" />
+	<extension-point id="classes">
+		<parameter-def id="dir" />
+	</extension-point>
+</plugin>

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+<head>
+    <title>Location wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+		<wiz:step title="#{msg.GettingStarted}">
+			<wiz:body>
+				<p>Create a #{trim.trim.act.title.ST.value}</p>
+				<p>Click Next to start.</p>
+			</wiz:body>
+			<wiz:help>
+				<p>Help provides additional information about each page</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Description of the location">
+			<wiz:body>
+				<trim:ENSlot id="loc" slot="#{trim.trim.act.participation['subject'].role.player.name}" readonly="false"/>
+			</wiz:body>
+			<wiz:help>
+				<p>Name of the location.</p>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>
+

@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+<head>
+    <title>Sample Wizard Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition >
+		<wiz:step title="Enter Sample Data" >
+			<wiz:body>
+				<wiz:group title="#{trim.trim.act.effectiveTime.IVLTS.low.label.value}">
+					<trim:TS id="effectiveTimeLow" value="#{trim.trim.act.effectiveTime.IVLTS.low.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+				<wiz:group title="#{trim.trim.act.effectiveTime.IVLTS.high.label.value}">
+					<trim:TS id="effectiveTimeHigh" value="#{trim.trim.act.effectiveTime.IVLTS.high.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+				<ui:include src="samplePerson.xhtml">
+ 						<ui:param name="entity" value="#{trim.trim.act.participation['subject'].role.player}"/>
+ 					</ui:include>
+			</wiz:body>
+			<wiz:help>
+				<p>This should be helpful.</p>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>
+

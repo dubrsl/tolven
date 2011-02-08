@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>My Providers</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="My Providers for #{reg.account.id} - #{reg.account.title}"/>
+        <ui:define name="body">
+        <h:form id="myProvidersForm" >
+        	<div class="breadcrumbs">
+				<h:commandLink value="Application" action="dispatch" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+				<h:commandLink value="Preferences" action="preferences" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+				<h:outputText value="My Providers"/><br/>
+			</div>
+			<p>The following is a list of my providers:</p>
+		    <h:dataTable value="#{prov.myProviders}" var="mp" styleClass="general">
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Id"/>
+	                </f:facet>
+	                <h:outputText value="#{mp.id}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Provider Name"/>
+	                </f:facet>
+	                <h:outputText value="#{mp.provider.name}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Status"/>
+	                </f:facet>
+	                <h:outputText value="#{mp.status}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Action"/>
+	                </f:facet>
+					<h:commandLink action="#{prov.viewMyProvider}"  >
+						<h:outputText value="View"/>
+					</h:commandLink>
+	           </h:column>
+	        </h:dataTable>
+			<h:commandLink value="Search for a provider" action="search" immediate="true"/>
+        </h:form>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

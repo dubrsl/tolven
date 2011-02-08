@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>pxDoc</name>
+	<page>pxDoc.xhtml</page>
+	<drilldown>pxDocDD.xhtml</drilldown>
+	<menu>global:pxDocMenu</menu>
+	<reference>http://wikihit.org/wiki/index.php/Procedure</reference>
+	<application name="ephr">
+		<instance>ephr:patient:px</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:px</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New Patient</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="nullified">
+			<label language="en">Inactive</label>
+		</transition>
+	</transitions>	
+	<act classCode="DOCCLIN" moodCode="EVN">
+		<statusCode>active</statusCode>		
+		<title>
+			<ST>Procedure</ST>
+		</title>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<relationship name="type" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Procedure</ST>
+				</title>
+				<text>
+					<ST>pxList</ST>					
+				</text>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.InsertAct</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="arName">
+		        <value xsi:type="xs:string">entry</value>
+			</property>
+			<property name="arDirection">
+				<value xsi:type="xs:string">OUT</value>
+			</property>
+			<property name="arTypeCode">
+		        <value xsi:type="xs:string">COMP</value>
+			</property>
+			<property name="template">
+		       <value xsi:type="xs:string"></value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">add</value>
+			</property>
+			<property name="position">
+		        <value xsi:type="xs:string">0</value>
+			</property>
+		</compute>		
+	</act>
+</trim>

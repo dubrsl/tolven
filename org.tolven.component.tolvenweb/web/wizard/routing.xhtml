@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:wiz="http://www.tolven.org/jsf/wizard"
+    xmlns:trim="http://www.tolven.org/jsf/trim">
+
+<body>
+  	<ui:composition>
+		<wiz:step title="Routing">
+			<wiz:body>
+				<wiz:radioGeneric id="routeType" layout="pageDirection">
+					<f:selectItem itemLabel="Send this to the patient's Tolven account" itemValue="patient"/>
+					<f:selectItem itemLabel="Send this to an established provider" itemValue="provider"/>
+					<f:selectItem itemLabel="Send this to another Tolven account" itemValue="account"/>
+					<f:selectItem itemLabel="Send this to someone via email" itemValue="email"/>
+					<f:selectItem itemLabel="Send this to the printer" itemValue="print"/>
+				</wiz:radioGeneric>
+				<wiz:group title="Select Provider(s)" visible="$('#{menu.elementLabel}:routeType').is('provider');">
+	    			<p>Route a copy of this to the following:</p>
+	                   <h:dataTable value="#{trim.routing}" var="ct">
+			            <h:column>
+			                <f:facet name="header">
+			                    <h:outputText value="Send a Copy?"/>
+			                </f:facet>
+		                	<h:outputText value="pending" rendered="#{ct.patientLink.providerPatient==null}"/>
+			                <h:selectBooleanCheckbox value="#{ct.copy}" rendered="#{ct.patientLink.providerPatient!=null}"/>
+			            </h:column>
+			            <h:column>
+			                <f:facet name="header">
+			                    <h:outputText value="Account Id"/>
+			                </f:facet>
+			                <h:outputText value="#{ct.accountId}"/>
+			            </h:column>
+			            <h:column>
+			                <f:facet name="header">
+			                    <h:outputText value="Account Name"/>
+			                </f:facet>
+			                <h:outputText value="#{ct.accountName}"/>
+			            </h:column>
+			            <h:column>
+			                <f:facet name="header">
+			                    <h:outputText value="Provider Name"/>
+			                </f:facet>
+			                <h:outputText value="#{ct.patientLink.provider.name}"/>
+			            </h:column>
+			            <h:column>
+			                <f:facet name="header">
+			                    <h:outputText value="Comment"/>
+			                </f:facet>
+			                <h:inputText value="#{ct.comment}" size="60"/>
+			            </h:column>
+	                   </h:dataTable>
+	              </wiz:group>
+				<wiz:group title="Send this to someone via email" visible="$('#{menu.elementLabel}:routeType').is('email');">
+					<wiz:textGeneric id="emailAddress" >
+						Email address
+					</wiz:textGeneric>
+	            </wiz:group>
+				<wiz:group title="Share with another Tolven account" visible="$('#{menu.elementLabel}:routeType').is('account');">
+					<wiz:integerGeneric id="accountNumber" min="0" max="99999999999">
+						Account number
+					</wiz:integerGeneric>
+	            </wiz:group>
+            </wiz:body>
+			<wiz:help>
+				<h1>Routing</h1>
+				<p>This observation will be kept in the #{top.accountUser.account.title} account.</p>
+				<p>You may also route this observation to another account. 
+				For a clinical account, this usually means
+				routing to the patient and/or perhaps a consultant. 
+				For the patient, routing is usually to one or more providers
+				that maintain a patient record. In either case, observations can also be routed 
+				to research projects and public health departments if the patient agrees.</p>
+			</wiz:help>
+		</wiz:step>
+    </ui:composition>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/bodyMassIndex</name>
+	<page>bodyMassIndex.xhtml</page>
+	<drilldown>bodyMassIndexDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Body_Mass_Index</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C1305855</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2006AC</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Body Mass Index</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<label>Body Mass Index</label>
+				<PQ>
+					<value>0.0</value>
+					<unit>BMI</unit>
+				</PQ>
+			</value>
+		</observation>
+		<relationship name="weight" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C1265588</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<title>
+					<ST>Weight</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Weight</label>
+						<PQ>
+							<value>0</value>
+							<unit>kg</unit>
+						</PQ>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="height" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C0436618</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<title>
+					<ST>Height</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Height</label>
+						<PQ>
+							<value>0.0</value>
+							<unit>cm</unit>
+						</PQ>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+</trim>

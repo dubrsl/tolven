@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.config.ldapclientkeystorecredentials" version="0.0.1" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.assembler.admin" />
+	</requires>
+	<extension id="ldapClient" plugin-id="org.tolven.assembler.admin" point-id="ldapClient">
+		<parameter id="ldapClient.groupId" value="#{pluginProperty['ldapClient.groupId']}" />
+		<parameter id="ldapClientSSL.passwordProtected" value="#{pluginProperty['ldapClientSSL.passwordProtected']}" />
+		<parameter id="keyStore">
+			<parameter id="ldapClientSSL.keyStoreFile" value="#{pluginProperty['ldapClientSSL.keyStoreFile']}" />
+			<parameter id="ldapClientSSL.keyStoreType" value="#{pluginProperty['ldapClientSSL.keyStoreType']}" />
+		</parameter>
+		<parameter id="ldapClient.credentialDir" value="#{pluginProperty['ldapClient.credentialDir']}" />
+	</extension>
+</plugin>

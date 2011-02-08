@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:wiz="http://www.tolven.org/jsf/wizard"
+	xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>#{pageTitle}</title>
+<link 
+	href="#{facesContext.externalContext.request.contextPath}/styles/tolven.css"
+	type="text/css" rel="stylesheet" />
+<link 
+	href="#{facesContext.externalContext.request.contextPath}/styles/wizard.css"
+	type="text/css" rel="stylesheet" />
+<link 
+	href="#{facesContext.externalContext.request.contextPath}/styles/calendar.css"
+	type="text/css" rel="stylesheet" />
+<link 
+	href="#{facesContext.externalContext.request.contextPath}/styles/userpreferences.css"
+	type="text/css" rel="stylesheet" />
+<link 
+	href="#{facesContext.externalContext.request.contextPath}/styles/calendarUtil.css"
+	type="text/css" rel="stylesheet" />
+	
+<link 
+	href="#{facesContext.externalContext.request.contextPath}/styles/bundle.css"
+	type="text/css" rel="stylesheet" />
+<c:if test="#{top.accountUser==null}">
+<link 
+	href="#{facesContext.externalContext.request.contextPath}/styles/generic.css"
+	type="text/css" rel="stylesheet" />
+</c:if>
+<c:if test="#{top.accountUser!=null}">
+<link 
+	href="#{facesContext.externalContext.request.contextPath}#{top.accountUser.account.accountType.CSS}"
+	type="text/css" rel="stylesheet" />
+</c:if>
+<!-- TOLVEN__CSS -->
+
+<!-- TOLVEN__SCRIPT -->
+
+<c:if test="#{!staticPage}">
+	<script language="JavaScript" type="text/javascript">
+	 // <![CDATA[
+	        window.onload=function() {
+		   	userLocale = '#{top.locale.language}';
+   			serverContext = '#{facesContext.externalContext.request.contextPath}/';
+	        titlePrefix = '[#{top.getTolvenPersonString('givenName')} #{top.getTolvenPersonString('sn')}]'; 
+	        initialPage = '#{top.accountUser.openMeFirst==null ? top.accountType : top.accountUser.openMeFirst}';
+	        contextPath = '#{facesContext.externalContext.request.contextPath}';
+	        if( "#{top.accountUser.account.isEnableBackButton()}" == "true" ){
+			  	initHistory( contextPath + "/scripts/blank.html" );
+	        }
+	        initPages(#{top.accountUserId});
+			};
+			
+	  // ]]>
+	</script>
+
+</c:if>
+</head>
+<body>
+<c:set var="msg" value="#{top.appBundle}" />
+<h:form id="hform" styleClass="#{top.tp==null?'':'header'}">
+	<table width="100%">
+		<tr >
+			<td >
+				<h:outputText value="#{msg.Welcome} #{top.getTolvenPersonString('givenName')} #{top.getTolvenPersonString('sn')} " rendered="#{top.getTolvenPersonString('uid')!=null}"/>
+				<h:commandLink id="logout" action="#{top.logout}">
+					<h:outputText value="[#{msg.SignOut}]" rendered="#{top.tp!=null}"/>
+				</h:commandLink>
+			</td>
+			<td > 
+				<h:panelGroup rendered="#{top.tp!=null}">
+					<h:panelGroup rendered="#{top.accountUserId!=0}">
+						<h:outputText value="#{top.accountTitle} "/> 
+						<h:commandLink action="switch">
+							<h:outputText value="[#{msg.SwitchAccount}]"/>
+						</h:commandLink>
+					</h:panelGroup>
+				</h:panelGroup>
+			</td>
+			<td >
+				<h:panelGroup rendered="#{top.tp!=null}">
+					<h:commandLink action="preferences">
+						<h:outputText value="#{msg.Preferences}"/>
+					</h:commandLink>
+				</h:panelGroup>
+			</td>
+		</tr>
+	</table>
+</h:form>
+<div class="wholePage" >
+	<div id="pageContent" style="display:block">	
+		<ui:insert name="content">
+				Content goes here
+		</ui:insert>
+		<div class="footer">
+			<table style="width:100%">
+			<tr>
+				<td>
+					<h:panelGroup rendered="#{!staticPage}">
+						<a id="debugInfoMore" href="#" onclick="$('debugInfo').show();$('debugInfoLess').toggle();$('debugInfoMore').toggle();" style="#{top.properties['tolven.web.showMore']=='true'?'':'display:none'}">#{msg.More}</a>
+						<a id="debugInfoLess" href="#" onclick="$('debugInfo').hide();$('debugInfoLess').toggle();$('debugInfoMore').toggle();" style="display:none">#{msg.Less}</a>
+						<table id="debugInfo" style="display:none">
+							<h:panelGroup rendered="#{top.accountUserId!=0}">
+								<tr><td><a href="javascript:getRemoteContent(visiblePage);">[Pane Refresh]</a></td></tr>
+							</h:panelGroup>
+							<tr><td><div id="visiblePaneStatus"/></td></tr>
+							<tr><td><div id="refreshStatus"/></td></tr>
+							<tr><td><div id="downloadStatus"/></td></tr>
+							<tr><td><div id="stepStatus"/></td></tr>
+							<tr><td><div id="uploadStatus"/></td></tr>
+							<tr><td><div id="listStatus"/></td></tr>
+						</table>
+					</h:panelGroup>
+				</td>
+				<td style="text-align:right">
+				  <a href="mailto:#{top.properties['tolven.web.info']}">#{msg.Feedback}</a>
+				</td>
+			</tr>
+			</table>
+		</div>
+		<div id="textSizeDetector" class="grid" style="visibility:hidden;">textSize</div>
+		<span id="testFontSize" class="grid" style="visibility:hidden;" >&nbsp;</span>
+	</div>
+	<div id="idlePage" style="display:none">
+		<h3>You will automatically be signed out in <span id="logoutIn"/> seconds.</h3>
+		<a href="javascript:restoreApplication();" >Click to restore your session</a>
+	</div>
+	<div id="serverUnAvailablePage" style="display:none;">
+		  It does not appear that the server is available for this application.<br/>
+		  Please standby. <br/>
+		  The application will be restored once the server comes online.
+	</div>
+</div>
+<div id="historyDiv"></div>
+<div id="graphDiv" style="display:none;
+	z-index:20;
+	position:absolute;
+	top: 50px;
+	left:200px;
+	background-color:#BBD3F2;
+	width:600px;
+	border:5px solid #000000;
+	padding:0 0 6px;
+	FONT: 1em/1.4em Geneva, Arial, Helvetica, sans-serif; 
+	text-align: center;"/>
+<div id="errorDiv" style="display:none;
+	z-index:20;
+	position:absolute;
+	top: 50px;
+	left:50px;
+	background-color:#FFBBBB;
+	width:1100px;
+	border:3px solid #000000;
+	padding: 5px;
+	FONT: 1em/1.4em Geneva, Arial, Helvetica, sans-serif; 
+	text-align: left"/>
+<div id="userprefDiv" class="userprefbox"></div>
+<div id="faderPane" style="display: none; top: 0px;"></div>
+<div name="abcd" id="_drpDwn" style="position: absolute;display:none;z-index: 500;" class="drpDwn"> </div>
+</body>
+</html>

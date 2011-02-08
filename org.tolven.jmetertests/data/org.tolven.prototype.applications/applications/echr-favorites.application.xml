@@ -1,0 +1,114 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<property accountType="echr" name="favoritePath">echr:admin:lists:accountLists,echr:assigned:lists:personalLists</property>
+	<property accountType="echr"  name="favoritePrefPath">favorite.preferences</property>
+	<!-- Add Account list category to admin menu -->
+	<extends path="echr:admin">
+		<menu name="lists" title="Lists" page="/five/bar2.xhtml" visible="true"/>
+	</extends>
+	<!-- Add Account favorites list Account list tab -->
+	<extends path="echr:admin:lists" >
+		<list name="accountLists" title="AccountLists" page="/five/list.xhtml" visible="true" drilldown="echr:accountList">
+			<column name="Title" internal="string01" width="15.0">
+				<from>#{accountList.name}</from>
+			</column>
+			<column name="DisplayName" internal="string02" width="20.0" reference="true">
+				<from>#{accountList.displayName}</from>
+			</column>
+			<column name="Type" internal="string04" width="20.0">
+				<from>#{accountList.type}</from>
+			</column>
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:accountListsMenu">
+				<column name="Name" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</list>
+	</extends>
+	<!-- Add Personal list category to assigned (staff) menu -->
+	<extends path="echr:assigned">
+		<menu name="lists" title="Lists" page="/five/bar2.xhtml" visible="true"/>
+	</extends>
+	<!-- Add Personal favorites list to assigned (staff) menu -->
+	<extends path="echr:assigned:lists">	
+		<list name="personalLists" title="PersonalLists" page="/five/list.xhtml" visible="true" drilldown="echr:personalList">
+			<column name="Title" internal="string01" width="15.0">
+				<from>#{personalList.name}</from>
+			</column>
+			<column name="DisplayName" internal="string02" width="20.0" reference="true">
+				<from>#{personalList.displayName}</from>
+			</column>
+			<column name="Type" internal="string04" width="20.0">
+				<from>#{personalList.type}</from>
+			</column>
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:personalListsMenu">
+				<column name="Name" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</list>
+	</extends>
+	<!-- Account favorites list placeholder -->
+	<extends path="echr" >
+		<placeholder name="accountList" title="AccountList" eventInstance="echr:admin:wip" page="/five/location.xhtml" heading="/five/locationLink.xhtml">
+			<field name="name" internal="string01">
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="displayName" internal="string02">
+				<from>#{act.relationship['displayName'].act.title.ST.value}</from>
+			</field>
+			<field name="type" internal="string04">
+				<from>#{act.relationship['type'].act.title.ST.value}</from>
+			</field>
+			<list name="favorites" title="Favorites" page="/five/list.xhtml" visible="true" drilldown=":favorite">
+				<column name="Name" internal="string01" width="40.0">
+					<from>#{favorite.name}</from>
+				</column>
+				<column name="Original" visible="false" internal="string02">
+					<from>#{favorite.original}</from>
+				</column>
+			</list>
+			<placeholder name="favorite" title="Favorite" eventInstance="echr:admin:wip" page="/five/location.xhtml" heading="/five/locationLink.xhtml">
+				<field name="name" internal="string01">
+					<from>#{act.title.ST.value}</from>
+				</field>
+				<field name="original" internal="string02">
+					<from>#{act.relationship['path'].act.title.ST.value}</from>
+				</field>
+				<field name="parent" internal="parent01">
+					<from>#{accountList}</from>
+				</field>
+			</placeholder>
+		</placeholder>
+	</extends>
+	<!-- Personal favorites list placeholder -->
+	<extends path="echr:assigned">
+		<placeholder name="personalList" title="Personal List" eventInstance="echr:admin:wip" page="/five/location.xhtml" heading="/five/locationLink.xhtml">
+			<field name="name" internal="string01">
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="displayName" internal="string02">
+				<from>#{act.relationship['displayName'].act.title.ST.value}</from>
+			</field>
+			<field name="type" internal="string04">
+				<from>#{act.relationship['type'].act.title.ST.value}</from>
+			</field>
+			<list name="favorites" title="Favorites" page="/five/list.xhtml" visible="true" drilldown=":personalFavorite">
+				<column name="Name" internal="string01" width="40.0">
+					<from>#{favorite.name}</from>
+				</column>
+				<column name="Original" visible="false" internal="string02">
+					<from>#{favorite.original}</from>
+				</column>
+			</list>
+			<placeholder name="pfavorite" title="Favorite" eventInstance="echr:admin:wip" page="/five/location.xhtml" heading="/five/locationLink.xhtml">
+				<field name="name" internal="string01">
+					<from>#{act.title.ST.value}</from>
+				</field>
+				<field name="original" internal="string02">
+					<from>#{act.relationship['path'].act.title.ST.value}</from>
+				</field>
+				<field name="parent" internal="parent01">
+					<from>#{accountList}</from>
+				</field>
+			</placeholder>
+		</placeholder>
+	</extends>
+
+</application>

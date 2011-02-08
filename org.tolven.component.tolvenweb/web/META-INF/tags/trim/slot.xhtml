@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Handle any slot</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+    	<c:if test="#{slot.valueSet}!=null}">
+    		<trim:slotValueSet id="#{id}vs" valueSet="#{slot.valueSet}"/>
+    	</c:if>
+    	<c:if test="#{slot.valueSet}==null}">
+    	</c:if>
+    	<wiz:group title="#{slot.label.value}" rendered="#{slot.label.value!=null}">
+			<ui:insert name="content">
+			      		Slot content goes here.
+			</ui:insert>
+    	</wiz:group>
+	</ui:composition>
+</body>
+</html>

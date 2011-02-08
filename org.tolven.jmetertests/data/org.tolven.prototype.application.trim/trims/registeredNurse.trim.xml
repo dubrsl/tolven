@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<name>reg/evn/assigned/rn</name>
+	<page>assigned.xhtml</page>
+	<drilldown>assignedDD.xhtml</drilldown>
+	<menu>global:assignedMenu</menu>
+	<application name="echr">
+		<instance>echr:assigned</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="REG" moodCode="EVN">
+		<code>
+			<CD>
+				<code>rn</code>
+				<codeSystemName>tolven</codeSystemName>
+				<codeSystemVersion>4.0</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Registered Nurse</ST>
+		</title>
+		<effectiveTime>
+			<label>Effective time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="create">
+					<placeholder bindAction="merge">
+						<path>echr:assigned</path>
+					</placeholder>
+				</bind>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<EN>
+							<label>Legal Name of Staff Member</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST/>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST/>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST/>
+							</part>
+							<part>
+								<label>Suffix</label>
+								<type>SFX</type>
+								<ST/>
+							</part>
+						</EN>
+					</name>
+					<livingSubject>
+						<administrativeGenderCode>
+							<label>Gender</label>
+							<valueSet>genders</valueSet>
+						</administrativeGenderCode>
+						<birthTime>
+							<label>Date of Birth</label>
+							<TS/>
+						</birthTime>
+					</livingSubject>
+					<person>
+						<addr>
+							<label>Home Address</label>
+							<use>H</use>
+							<AD>
+							<part>
+								<label>Street Address</label>
+								<type>SAL</type>
+								<ST/>
+							</part>
+							<part>
+								<label>City</label>
+								<type>CTY</type>
+								<ST/>
+							</part>
+							<part>
+								<label>State</label>
+								<type>STA</type>
+								<ST/>
+							</part>
+							<part>
+								<label>Zip</label>
+								<type>ZIP</type>
+								<ST/>
+							</part>
+							</AD>
+						</addr>
+					</person>
+				</player>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+	</act>
+	<valueSet name="genders">
+		<CE>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Male</displayName>
+		</CE>
+		<CE>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+			<displayName>Female</displayName>
+		</CE>
+	</valueSet>
+</trim>

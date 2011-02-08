@@ -1,0 +1,68 @@
+package test.rules
+ 
+import java.util.*;
+import org.tolven.trim.*;
+import java.lang.Integer;
+import test.rules.RuleBaseTests.Counter;
+
+global RuleBaseTests.Counter counter;
+global java.io.PrintStream out;
+
+/**
+ * See what we can do with a TRIM object
+ */
+rule "trim"
+	when
+		$trim: Trim()
+	then
+		insert( $trim.getAct() );
+		counter.bump();
+end
+
+rule "act is event rule"
+	when
+		$act: Act( moodCode == ActMood.EVN )
+	then
+		out.println( "Act: " + $act.getClassCode() + "-" + $act.getMoodCode() + " is in event mood" ); 
+		counter.bump();
+		for (ActParticipation part : $act.getParticipations() ) {
+			insert ( part );
+		}
+end
+
+/**
+ * Match a subject participation.
+ * There may be more than one subject. If it results in the same patient, then that gets reduced to
+ * a single facts since we manage facts by equality (not identity).
+ */
+rule "Extract roles from participation"
+	when
+		$part: ActParticipation(  )
+	then
+		insert( $part.getRole() );
+		counter.bump();
+		out.println( "Got a participation: " + $part.getTypeCode() ); 
+end
+
+/**
+ * Show all roles asserted regardless of participation
+ */
+rule "Trace roles"
+	when
+		$role: Role(  )
+	then
+		counter.bump();
+		out.println( "Got a role: " + $role.getClassCode() ); 
+end
+
+/**
+ * Show all roles asserted regardless of participation
+ */
+rule "Trace roles with participation"
+	when
+		$role: Role(  )
+		$part: ActParticipation( role == $role )
+	then
+		counter.bump();
+		out.println( "Got a role+participation: " + $role.getClassCode() + " "+ $part.getTypeCode() ); 
+end

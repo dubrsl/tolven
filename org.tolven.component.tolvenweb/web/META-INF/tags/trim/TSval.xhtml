@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>A point in time</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+    	<wiz:question id="#{id}" >
+    		<h:panelGroup rendered="#{readonly!='true'}">
+				<h:inputText id="#{id}Field" value="#{value}" >
+					<trim:convertTS timeStyle="#{timeStyle}" dateStyle="#{dateStyle}" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+					<c:if test="#{validate=='past'}">
+						<trim:validatePast/>
+					</c:if>
+					<c:if test="#{validate=='future'}">
+						<trim:validateFuture/>
+					</c:if>
+				</h:inputText>
+				<h:graphicImage id="#{id}Button" value="/images/cal-image.png" style="cursor:pointer; margin-left:5px"/>
+<c:if test="${timeStyle!=null}">
+<script type="text/javascript">
+// <![CDATA[
+Calendar.setup({
+inputField   : "#{menu.elementLabel}:#{id}Field",
+ifFormat     : Calendar.getTTString(DEF_DATE_FORMAT) + " " + Calendar.getTTString(DEF_TIME_FORMAT),
+showsTime    : true,
+button       : "#{menu.elementLabel}:#{id}Button",
+electric	 : true,
+weekNumbers  : false,
+timeFormat   : "12"
+    });
+  // ]]>
+</script>
+</c:if>
+<c:if test="${timeStyle==null}">
+<script type="text/javascript">
+// <![CDATA[
+Calendar.setup({
+inputField   : "#{menu.elementLabel}:#{id}Field",
+ifFormat     : Calendar.getTTString(DEF_DATE_FORMAT),
+showsTime    : false,
+button       : "#{menu.elementLabel}:#{id}Button",
+electric	 : true,
+weekNumbers  : false,
+timeFormat   : "12"
+    });
+  // ]]>
+</script>
+</c:if>
+			</h:panelGroup>
+			<h:outputText value="#{value}" rendered="#{readonly=='true'}">
+				<trim:convertTS timeStyle="#{timeStyle}" dateStyle="#{dateStyle}" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+			</h:outputText>
+    	</wiz:question>
+	</ui:composition>
+</body>
+</html>

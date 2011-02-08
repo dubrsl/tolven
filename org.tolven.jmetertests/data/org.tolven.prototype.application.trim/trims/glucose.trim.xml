@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/glucose</name>
+	<page>glucose.xhtml</page>
+	<drilldown>glucoseDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Blood_Glucose</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+                <code>33747003</code>
+                <codeSystem>2.16.840.1.113883.6.96</codeSystem>
+                <codeSystemName>SCT</codeSystemName>
+			</CD>
+		</code>
+		<title>
+			<ST>Blood Glucose</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<PQ>
+					<value>0</value>
+					<unit>mg/dL</unit>
+				</PQ>
+			</value>
+		</observation>
+	</act>
+</trim>

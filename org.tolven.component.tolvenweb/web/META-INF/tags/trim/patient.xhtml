@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>TRIM Patient Role</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+		<wiz:group title="Patient Identifier">
+			<h:dataTable value="#{role.id.displayableIDs}" var="id">
+				<h:column>
+					<h:outputText value="#{id.label.value}"/>
+				</h:column>
+				<h:column>
+					<trim:II value="#{id}"/>
+				</h:column>
+			</h:dataTable>
+		</wiz:group>
+		<wiz:group title="#{role.patient.veryImportantPersonCode.label.value}">
+			<trim:valueSetMenu id="vip" slot="#{role.patient.veryImportantPersonCode}" />
+		</wiz:group>
+	</ui:composition>
+</body>
+</html>

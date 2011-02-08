@@ -1,0 +1,15 @@
+package test.rules
+ 
+import java.util.*;
+
+global java.io.PrintStream out;
+
+/**
+ * Simple rules used for unit tests
+ */
+rule "Simple test to make sure rules are working"
+	when
+		$string: String()
+	then
+		out.println( $string ); 
+end

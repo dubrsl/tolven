@@ -1,0 +1,277 @@
+.wizard {
+	BORDER: #333333 1px solid; PADDING: 0px; DISPLAY: block; BACKGROUND: #ffffff; MARGIN: 4px; FONT-FAMILY: 'Lucide Grande', Verdana, Arial, sans-serif
+}
+
+form {
+	PADDING: 0px; MARGIN: 0px
+}
+
+.titlebar {
+	PADDING-RIGHT: 6px; PADDING-LEFT: 10px; BACKGROUND: url(../images/bkgd_wizardtitle.jpg) #333333 repeat-x left center; PADDING-BOTTOM: 4px; MARGIN: 0px; COLOR: #ffffff; PADDING-TOP: 4px; BORDER-BOTTOM: #333333 1px solid
+}
+.titlebar TABLE {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 100%; PADDING-TOP: 0px; BORDER-COLLAPSE: collapse
+}
+.titlebar TD.closewindow {
+	VERTICAL-ALIGN: middle; TEXT-ALIGN: right
+}
+.titlebar H1 {
+	PADDING-RIGHT: 6px; PADDING-LEFT: 6px; FONT-WEIGHT: normal; FONT-SIZE: 1em; PADDING-BOTTOM: 3px; MARGIN: 0px; PADDING-TOP: 3px
+}
+.wizard IMG {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-TOP-STYLE: none; PADDING-TOP: 0px; BORDER-RIGHT-STYLE: none; BORDER-LEFT-STYLE: none; BORDER-BOTTOM-STYLE: none
+}
+.infobar {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; BACKGROUND: #e6e6e6; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px; BORDER-BOTTOM: #666666 1px solid
+}
+
+.infobar .infotitle {
+	text-align: left;
+	float:left;
+	padding-top: 0.1em;
+	margin-right: 0.5em;
+	margin-bottom: 0.2em
+}
+
+.infobar .infotitle .name {
+	font-size: 1.50em; 
+	font-weight: bold;
+}
+
+.infobar .infotitle .status {
+	font-size: 1.00em; 
+}
+
+.infobar .author {
+	font-size: 1.00em;
+	padding-top: 0.1em;
+	float:right;
+}
+
+.steps {
+	BACKGROUND: #99ccff; BORDER-BOTTOM: #6896c5 1px solid;
+	width: 100%;
+	height: 100%;
+	padding: 0px;
+	display:block;
+}
+.steps .heading {
+	float:left;
+	padding: 0.5em;
+}
+.steps .help {
+	float:right;
+	padding: 0.5em;
+}
+
+.steps li {
+    border: 1px;
+	padding-left: 3px;
+	display: block;
+	float: left;
+	text-align: center;
+}
+.steps li img{
+  border:0;
+  height: 15px;
+  width: 15px;
+}
+.steps li a{
+	text-decoration:none;
+}
+.steps li a div{
+	border: 1px solid #AAAAAA;
+}
+.steps li a:hover div{
+	background: #FFFFFF;
+}
+
+.steps li a.active div{
+	background: #FFFFFF;
+}
+
+.steps li a.disabled {
+	text-decoration:none;
+	background: url(../images/bkgd_stepdisabled.jpg) no-repeat center center;
+	COLOR: #666666;
+}
+
+.navbar {
+	PADDING-RIGHT: 10px; BORDER-TOP: #999999 1px solid; PADDING-LEFT: 10px; BACKGROUND: url(../images/bkgd_navbar.jpg) #f1f1f1 repeat-y center top; PADDING-BOTTOM: 10px; MARGIN: 0px; PADDING-TOP: 10px
+}
+.navbar TABLE {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; WIDTH: 100%; PADDING-TOP: 0px; BORDER-COLLAPSE: collapse
+}
+.navbar TD {
+	TEXT-ALIGN: center
+}
+.navbar INPUT {
+	MARGIN-LEFT: 5px; MARGIN-RIGHT: 5px
+}
+.wizard .page {
+	PADDING-RIGHT: 10px; PADDING-LEFT: 10px; PADDING-BOTTOM: 10px; PADDING-TOP: 10px
+}
+.step {
+	width: 100%;
+	margin-bottom: 0px;
+}
+
+.step .pagesm {
+	WIDTH: 95%; 
+	PADDING-TOP: 10px; PADDING-BOTTOM: 10px;
+	PADDING-RIGHT: 0.5em; PADDING-LEFT: 0.5em; 
+}
+.step .pagesm .addnew{
+	float: right; 
+}
+
+.add {
+	BORDER-RIGHT: #999900 1px solid; PADDING-RIGHT: 0px; BORDER-TOP: #999900 1px solid; PADDING-LEFT: 0px; BACKGROUND: #ffffee; PADDING-BOTTOM: 0px; MARGIN: 0px; BORDER-LEFT: #999900 1px solid; PADDING-TOP: 0px; BORDER-BOTTOM: #999900 1px solid
+}
+.add LEGEND {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; FONT-WEIGHT: bold; FONT-SIZE: 1.2em; PADDING-BOTTOM: 0px; MARGIN: 0px; COLOR: #333333; PADDING-TOP: 10px
+}
+
+P {
+	PADDING-BOTTOM: 0.5em; PADDING-TOP: 0.5em
+}
+#clear {
+	clear: both;
+	height: 0.1px;
+	margin: 0px;
+	padding: 0px;
+	width: auto;
+	font-size: 0.1px;
+}
+
+fieldset {
+	margin-top:20px;
+}
+
+.specimen{
+	margin-top:0px;
+}
+
+fieldset p {
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+fieldset legend {
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+fieldset.attention {
+	border: 3px solid #FF00FF; 
+	padding: 4px;
+}
+
+fieldset.plain {
+}
+
+label {
+	padding-top: 4px; padding-bottom: 2px
+}
+
+.messages th {
+	border: 1px solid #666666;
+	FONT-WEIGHT: bold;
+}
+
+.messages td {
+	padding: 3px;
+	border: 1px solid #666666;
+}
+
+.title {
+	font-size: 0.95em; display: block; float: left; width: 29%; COLOR: #333333
+}
+
+.selError {
+	border: 1px solid #FF0000;
+}
+.selOK {
+}
+
+.transition {
+	width: 100%;
+	text-align: center;
+	
+}
+.transition input {
+	margin-right: 1em;
+}
+
+.submit {
+	width: 100%;
+	padding-top: 1em;
+	text-align: center;
+}
+
+.submit input {
+	margin-right: 1em;
+}
+
+.signature {
+	width: 100%;
+	padding-top: 1em;
+	text-align: center;
+	font-style: italic;
+}
+.signature input {
+	margin-right: 1em;
+}
+
+.planWizard table{
+float: left;
+}
+
+.popupgrid{
+	display:none;
+	z-index:20;
+	position:absolute;
+	top:50px;
+	left:250px;
+	background-color:#fff;
+	border:1px solid #7AA5D6;
+	padding:0 0 6px;
+	FONT: 1em/1.4em Geneva, Arial, Helvetica, sans-serif; 
+}
+.popupgrid .paneBody{
+	padding: 0;
+}
+.popupgridheader img{
+	float: right;
+}
+.popupgridtitle{
+	font-weight:bold;
+	padding-left:0.25em;
+	background-color:#BBD3F2;
+	color:#0E4380;
+	text-align: right;
+}
+
+.popupgridheader{
+	width:auto;
+	height: 15px;
+	text-align: right;
+	padding-top: 4px;	
+	padding-right: 4px;	
+	background-color:#b8dcff;
+}
+.savedProc:hover {
+	BACKGROUND-color: #99CCFF;
+	text-decoration:underline;
+	cursor: pointer;
+}
+.editProc{
+	background:#E6E6E6;
+	border-bottom: 1px #FFFFFF solid;
+}
+.staging fieldset{
+	margin: 0;
+}
+div.help{
+	display:none;
+}

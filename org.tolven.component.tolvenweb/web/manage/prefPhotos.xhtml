@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>User Photos</title>
+</head>
+
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="Upload and select a photo to be used as your likeness"/>
+        <ui:define name="body">
+	        <h:form id="photoSel">
+        	<div class="breadcrumbs">
+				<h:commandLink value="Application" action="dispatch" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+				<h:commandLink value="Preferences" action="preferences" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+				<h:commandLink value="Edit User Preferences" action="userPreferences" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+	            <h:outputText value="User Photo" /><br/>
+			</div>
+            <p>You may upload as many pictures as you want. Each one is encrypted and stored privately in your account. 
+            Other users of your account, if any, will be able to see your list of uploaded photos but no one else.</p>
+            <p>From among those uploaded, you may choose one picture to represent your likeness (or choose "No Photo"). 
+            The picture you choose, if any, can be seen by others when you send them a link to your data; 
+            it is not publicly available. Click the picture of your choice as your likeness, or click the link 
+            <u>"No Photo"</u> below if you don't want to choose a likeness at this time. 
+            All photos in this list remain private to your account until you chhose to send the picture to another account.</p>
+			<h:panelGroup  rendered="#{doc.photoCount gt 0}">
+	        	<hr/>
+				<h3>Select a likeness</h3>
+	                <h:dataTable value="#{doc.photosModel}" var="p" >
+	                    <h:column>
+	                        <f:facet name="header">
+	                            <h:outputText value="id"/>
+	                        </f:facet>
+	                        <h:outputText value="#{p.id}"/>
+	                    </h:column>
+	                    <h:column>
+	                        <f:facet name="header">
+	                            <h:outputText value="Photo"/>
+	                        </f:facet>
+	                        <img src="xxx.tdoc?docId=#{p.id}&amp;width=100&amp;height=100" />
+	                    </h:column>
+	                    <h:column>
+	                        <f:facet name="header">
+	                            <h:outputText value="Select"/>
+	                        </f:facet>
+	                            <h:commandButton action="#{doc.selectUserLikeness}" value="Select" />
+	                    </h:column>
+	                </h:dataTable>
+					<br/>
+	               <h:commandButton action="#{doc.selectNoUserLikeness}" value="No photo"/>
+               </h:panelGroup>
+            </h:form>
+            <hr/>
+			<h3>Upload a Photo</h3>
+            <form id="uploadForm" method="post" enctype="multipart/form-data" 
+                action="likeness.tdoc?userId=#{top.accountUser.user.id}">
+                File to upload: <input type="file" name="upfile" />
+                <input type="hidden" name="returnTo" value="prefPhotos.jsf"/>
+                <input type="submit" value="Upload Now" />
+            </form>
+       </ui:define>
+   </ui:composition>
+</body>
+</html>

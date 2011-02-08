@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>Pane dispatch</title>
+</head>
+
+<body>
+<ui:composition>
+	<c:catch var="e">
+		<c:set var="msg" value="#{top.appBundle}" />
+		<c:if test="#{menu.menuDataVersion!=null}">
+			<div id="#{menu.element}-ver"
+				localVersion="#{menu.menuDataVersion.version}" />
+		</c:if>
+		<c:if test="#{menu.menuDataVersion==null}">
+			<div id="#{menu.element}-ver" localVersion="0" />
+		</c:if>
+		<!-- Facelets can be directly included -->
+		<c:if test="#{menu.thisMenu.templateType=='xhtml'}">
+			<ui:include src="#{menu.thisMenu.template}" />
+		</c:if>
+		<!-- All other types should be pulled from the browser -->
+		<c:if test="#{menu.thisMenu.templateType!='xhtml'}">
+			<div id="#{menu.element}ext">Loading #{menu.thisMenu.template}</div>
+			<script language="JavaScript" type="text/javascript">
+				// <![CDATA[
+						new Ajax.Updater("#{menu.element}ext", 
+							"#{facesContext.externalContext.request.contextPath}#{menu.thisMenu.template}",
+							 { parameters: 'element=#{menu.element}'});
+				// ]]>
+				</script>
+		</c:if>
+	</c:catch>
+	<c:if test="#{e!=null}">
+		<div class="errorPane">
+			<h3>Error detected in pane</h3> 
+			<p>Element: #{menu.element}<br/>
+			Version: #{menu.menuDataVersion.version}<br/>
+			Error: #{top.exceptionFormatter[e]}<br/>
+			Page: #{menu.thisMenu.template}<br/>
+			Type: #{menu.thisMenu.templateType}</p>
+		</div>
+	</c:if>
+
+</ui:composition>
+</body>
+</html>

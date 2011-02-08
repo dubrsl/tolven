@@ -1,0 +1,218 @@
+<application name="global" creatable="false" title="Global Menus" 
+	xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure ">
+	<trimMenu name="global:allergyMenu">
+		<field name="allergy" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:appointmentMenu">
+		<field name="appointment" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:assignedMenu">
+		<field name="assigned" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:dxMenu"/>	
+	<trimMenu name="global:diagnosisMenu">
+		<field name="diagnosis" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:breastDiagnosisMenu">
+		<field name="diagnosis" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:documentMenu"/>
+	<trimMenu name="global:accountListsMenu">
+		<field name="description" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:personalListsMenu">
+		<field name="description" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:patientMenu">
+		<field name="patient" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:encounterMenu">
+		<field name="encounter" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:locationMenu">
+		<field name="location" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:medicationMenu">
+		<field name="medication" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:immunizationMenu">
+		<field name="immunization" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>	
+	<trimMenu name="global:observationGraphMenu">
+		<field name="graph" internal="string02" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string01" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:observationMenu" initialSort="name ASC">
+		<field name="name" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:problemDocMenu">
+		<field name="name" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:medicationDocMenu">
+		<field name="name" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:allergyDocMenu">
+		<field name="name" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:problemMenu">
+		<field name="name" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:pxMenu">
+		<field name="description" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>	
+	<trimMenu name="global:pxDocMenu" initialSort="description ASC">
+		<field name="name" internal="string01" >
+			<from>#{trim.name}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.description}</from>
+		</field>
+	</trimMenu>	
+	<trimMenu name="global:reminderMenu"/>
+	<trimMenu name="global:resultMenu">
+		<field name="name" internal="string01" >
+			<from>#{trim.name}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.description}</from>
+		</field>	
+	</trimMenu>
+	<trimMenu name="global:sampleMenu"/>
+	<trimMenu name="global:shareMenu">
+		<field name="share" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:treatmentPlanMenu">
+		<field name="treatmentPlan" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:planActionMenu">
+		<field name="planAction" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:providerMenu">
+		<field name="provider" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:trialFormMenu">
+		<field name="trialForm" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+
+
+</application>

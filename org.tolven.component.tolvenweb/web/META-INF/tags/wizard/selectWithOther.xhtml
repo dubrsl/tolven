@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard">
+<head>
+    <title>DropDown with "Other" option</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+    	<c:if test="#{readonly!='true'}">
+			<h:selectOneMenu id="#{id}" value="#{role.id.for[top.accountUser.account].extension}" onchange="{
+					if($('#{menu.elementLabel}:#{id}').selectedIndex + 1 != $('#{menu.elementLabel}:#{id}').childElements().size())
+					{
+						$('#{menu.elementLabel}:#{id}selectWithOtherTextId').value='';
+					}
+        		}" >
+				<f:selectItem itemLabel="Select" itemValue=""/>
+				<f:selectItems value="#{list}"/>
+				<f:selectItem itemLabel="Other - not on the list" itemValue=""/>
+			</h:selectOneMenu>
+			<br/><br/>
+	    	<div tvisible="$('#{menu.elementLabel}:#{id}').selectedIndex + 1 == $('#{menu.elementLabel}:#{id}').childElements().size()">
+				<h:outputText value="#{role.player.name.ENS[0].parts[0].label.value}: " />
+				<h:inputText id="#{id}selectWithOtherTextId" value="#{role.player.name.ENS[0].parts[0].ST.value}" />
+			</div>
+		</c:if>
+    	<c:if test="#{readonly=='true'}">
+    		<c:if test="#{role.id.for[top.accountUser.account].extension!=null}">				
+	    		<h:outputText value="#{menu.item[role.id.for[top.accountUser.account].extension].string01}"/>		
+	    	</c:if>	
+	    	<c:if test="#{role.id.for[top.accountUser.account].extension==null}">						    		
+	    		<h:outputText value="#{role.player.name.EN['L'].formatted}" />		
+	    	</c:if>			
+		</c:if>
+		
+	</ui:composition>
+</body>
+</html>

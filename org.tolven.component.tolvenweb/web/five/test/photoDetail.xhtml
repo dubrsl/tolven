@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+        <title>Photo Detail</title>
+    </head>
+    <body>
+        <ui:composition>
+  			<hr/>
+		<h:graphicImage value="xxx.tdoc?docId=#{menu.targetMenuPath.nodeValues['photoDetail']}&amp;width=100&amp;height=100"/>
+          <h:panelGrid columns="2">
+               <h:outputText value="Id"/>
+               <h:inputText id="id" value="#{menu.targetMenuPath.nodeValues['photoDetail']}" readonly="true"/>
+               <h:outputText value="Media Type"/>
+               <h:inputText id="mediaType" value="#{doc.photo.mediaType}" readonly="true"/>
+               <h:outputText value="Author"/>
+               <h:inputText id="author" value="#{doc.photo.author.ldapUID}" readonly="true"/>
+          </h:panelGrid>
+		</ui:composition>
+	</body>
+</html>
+

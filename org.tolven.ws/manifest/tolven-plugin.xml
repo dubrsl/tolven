@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.ws" version="2.0.5" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.tolvenear" />
+		<import plugin-id="org.tolven.component.war" />
+	</requires>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="warModule" plugin-id="org.tolven.component.tolvenear" point-id="warModule">
+		<parameter id="web-uri" value="tolvenWS.war" />
+		<parameter id="context-root" value="/ws" />
+	</extension>
+
+	<!-- Classes ExtensionPoint -->
+	<extension-point id="classes" parent-plugin-id="org.tolven.assembler.war" parent-point-id="classes">
+		<parameter-def id="dir" />
+	</extension-point>
+
+	<!-- Filters -->
+	<extension id="org.tolven.api-AgentFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="AgentFilter" />
+		<parameter id="filter-class" value="com.sun.identity.agents.filter.AmAgentFilter" />
+		<parameter id="filter-sequence" value="50" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="org.tolven.api-AgentFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="AgentFilter" />
+		<parameter id="url-pattern" value="/*" />
+		<parameter id="dispatchers" value="REQUEST,INCLUDE,FORWARD,ERROR" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<!-- End Filters -->
+
+	<!-- Servlets -->
+	<extension id="echo" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="echo" />
+		<parameter id="servlet-class" value="com.sun.xml.ws.transport.http.servlet.WSServlet" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="echo-ws-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="echo" />
+		<parameter id="url-pattern" value="/echo" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="document" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="document" />
+		<parameter id="servlet-class" value="com.sun.xml.ws.transport.http.servlet.WSServlet" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="document-ws-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="document" />
+		<parameter id="url-pattern" value="/document" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="generator" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="generator" />
+		<parameter id="servlet-class" value="com.sun.xml.ws.transport.http.servlet.WSServlet" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="generator-ws-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="generator" />
+		<parameter id="url-pattern" value="/generator" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="trim" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="trim" />
+		<parameter id="servlet-class" value="com.sun.xml.ws.transport.http.servlet.WSServlet" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="trim-ws-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="trim" />
+		<parameter id="url-pattern" value="/trim" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<!-- End Servlets -->
+
+	<!-- Security -->
+	<extension id="Secure Area-security-constraint" plugin-id="org.tolven.component.war" point-id="security-constraint">
+		<parameter id="web-resource-collection">
+			<parameter id="web-resource-name" value="Secure pages" />
+			<parameter id="url-pattern" value="/*" />
+			<parameter id="http-method" value="POST" />
+		</parameter>
+		<parameter id="transport-guarantee" value="CONFIDENTIAL" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="security-role" plugin-id="org.tolven.component.war" point-id="security-role">
+		<parameter id="role-name" value="*" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<!-- End Security -->
+
+</plugin>

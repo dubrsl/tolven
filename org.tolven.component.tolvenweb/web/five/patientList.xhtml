@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:md="http://www.tolven.org/jsf/menuData">
+<head>
+<title>A generic list of menuData using metadata from MenuStructure</title>
+</head>
+<body>
+<ui:composition>
+	<div id="#{menu.element}:menu" class="popupgrid"/>
+	<div id="#{menu.element}-pane" class="paneBody"><f:verbatim>#{menu.gridControl}</f:verbatim></div>
+	<br/>
+	<a href="../report/?reportName=patientList&amp;reportType=jrxml&amp;tolvenQuery=echr:patients:all&amp;tolvenQueryParameter=#{menu.drilldownItem.path}&amp;sortOrder=Name">Download Patient List</a>
+</ui:composition>
+</body>
+</html>

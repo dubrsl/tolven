@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tolven-config xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:tolven-org:tolven-config:1.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="1.0" targetNamespace="urn:tolven-org:tolven-config:1.0" elementFormDefault="qualified">
+	<admin />
+	<ldap />
+	<db />
+	<appServer />
+	<passwordServer />
+	<webServer />
+</tolven-config>

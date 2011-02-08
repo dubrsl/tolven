@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>User Preferences</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta http-equiv="Content-Script-Type" content="text/javascript" /> 
+</head>
+
+<body>
+    <ui:composition template="../templates/portalTemplate.xhtml">
+		<ui:param name="skin" value="echr"/>
+        <ui:define name="content">
+	       
+	      <script language="JavaScript" type="text/javascript">
+		// <![CDATA[
+			var checkedIndex; 
+			var totalCheckboxes;
+			
+			function getCheckboxStatus() {
+				var dLForm = document.forms['defaultLogin'];
+				var cb = new Array(50);
+				var cbIndex = 0;
+				checkedIndex = null;
+				totalCheckboxes = 0;
+
+				//Identify checkboxes in the form and form an array of boolean values of checkboxes
+				for (var i = 0; i < dLForm.length; i++) {
+					if(dLForm.elements[i].type == 'checkbox') {  
+						cb[cbIndex] = dLForm.elements[i].checked;
+						cbIndex++;
+  					}
+  				}
+  				
+  				totalCheckboxes = cbIndex;
+  				
+				//Identify the particular checked box
+				for (var j=0; j < totalCheckboxes; j++) {
+					if (cb[j] == true) {
+						checkedIndex = j;
+					}
+				}
+			}
+			
+			function uncheckOthers() {
+				//Uncheck all other boxes except the recently checked one			
+				var dLForm = document.forms['defaultLogin'];
+				for (var k=0; k < totalCheckboxes; k++) {
+					if (k != checkedIndex && dLForm.elements[k].checked == true) {
+						dLForm.elements[checkedIndex].checked = false;
+			  			checkedIndex = k;
+			  		}
+				}
+				dLForm.elements[checkedIndex] = true;
+			}	
+		// ]]>
+	</script>
+
+	      <h3>All accounts you are a member of</h3>
+	       <h:form id="defaultLogin">
+           	<h:dataTable value="#{reg.userAccounts}" var="au" onmouseover="javascript:getCheckboxStatus();" >
+             <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Account Id"/>
+                </f:facet>
+                <h:outputText value="#{au.account.id}"/>
+             </h:column>
+             <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Account Type"/>
+                </f:facet>
+                <h:outputText value="#{au.account.accountType.knownType}"/>
+             </h:column>
+             <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Title"/>
+                </f:facet>
+                <h:outputText value="#{au.account.title}"/>
+             </h:column>
+             <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Default Login"/>
+                </f:facet>
+				<h:selectBooleanCheckbox id="defaultLogin" value="#{au.defaultAccount}" onclick="javascript:uncheckOthers();" />
+             </h:column>
+             <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Permission"/>
+                </f:facet>
+                <h:outputText value="admin" rendered="#{au.accountPermission}"/>
+             </h:column>
+            </h:dataTable>
+            <br/><br/>
+            <h:outputText value="[Id: #{reg.user.id}]"/> 
+			<br/><br/>
+            <h:commandLink action="#{reg.updateAccount}" value="Update Default Login" />
+            <h:outputText value=" | | " />
+            <h:outputLink value="deleteUser.jsf" rendered="#{top.properties['tolven.ldap.deleteUser']}">
+	    		<h:outputText value="Delete User" />
+	        </h:outputLink>
+          </h:form>
+        </ui:define>
+    </ui:composition>
+  </body>
+</html>

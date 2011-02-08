@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<name>valueSet/doseVS</name>
+	<description />
+	<author>Tolven</author>
+	<reference />
+	<valueSet name="dosage">
+		<PQ>
+			<label>Dose in milligrams</label>
+			<value>00</value>
+			<unit>mg</unit>
+		</PQ>
+		<PQ>
+			<label>Dose in grams</label>
+			<value>00.0</value>
+			<unit>gm</unit>
+		</PQ>
+		<PQ>
+			<label>Dose in micrograms</label>
+			<value>00</value>
+			<unit>mcg</unit>
+		</PQ>
+		<PQ>
+			<label>Dose in cubic mililiters</label>
+			<value>00</value>
+			<unit>ml</unit>
+		</PQ>
+		<PQ>
+			<label>Dose in capsules</label>
+			<value>00</value>
+			<unit>caps</unit>
+		</PQ>
+		<PQ>
+			<label>Dose in ounces</label>
+			<value>00</value>
+			<unit>oz</unit>
+		</PQ>
+	</valueSet>
+</trim>

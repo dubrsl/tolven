@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="loginSC" enabled="true"/>
+    <hashTree>
+      <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+        <collectionProp name="UserParameters.names">
+          <stringProp name="2614219">USER</stringProp>
+          <stringProp name="-1915155313">USER_PASSWORD</stringProp>
+          <stringProp name="-960305925">USER_REALM</stringProp>
+        </collectionProp>
+        <collectionProp name="UserParameters.thread_values">
+          <collectionProp name="825211695">
+            <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+            <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+            <stringProp name="-568193752">${TOLVEN_REALM}</stringProp>
+          </collectionProp>
+        </collectionProp>
+        <boolProp name="UserParameters.per_iteration">true</boolProp>
+      </UserParameters>
+      <hashTree/>
+      <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="logionIC" enabled="true">
+        <stringProp name="IncludeController.includepath">controller-components/loginSCC.jmx</stringProp>
+      </IncludeController>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

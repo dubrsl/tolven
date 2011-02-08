@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+        <title>Uploaded Photos</title>
+    </head>
+    <body>
+        <ui:composition>
+<script language="JavaScript" type="text/javascript">
+// <![CDATA[
+	personGrid = new Rico.LiveGrid( 'personGenGrid', 15, #{gen.personCount}, 
+				'personList.ajax', 
+				{prefetchBuffer: true, 
+				tableClass: 'dataGrid', 
+				largeBufferSize: 4.0,
+				nearLimitFactor: 0.7,
+				loadingClass: 'dataGridLoading',
+				sortAscendImg: '../images/sort_asc.gif', 
+				sortDescendImg:'../images/sort_desc.gif'});  
+
+	prevPersonFilterValue = '';
+	personFilterChange = function (element, value) {
+		if (prevPersonFilterValue==value) return; 
+		prevPersonFilterValue = value;
+		personGrid.setRequestParams( {name: 'nameFilter', value: prevPersonFilterValue} );
+		personGrid.resetContents();
+		personGrid.requestContentRefresh(0);	
+	};
+	personGridEventFilter = new Form.Element.Observer( "personFilter", 1, personFilterChange );
+// ]]>
+</script>
+	<div id="genPatDiv">
+			<form action="#" onsubmit="return false;">
+				Filter (last,first): <input name="personFilter" type="text" id="personFilter" />
+			</form>
+			<div id="personDG" style="border: 1px solid #E1E1E1;width:546px">
+				<table id="personGenGrid_header" >
+				  <thead>
+					  <tr>
+						  <th align="right" width="50px" >ID</th>
+						  <th align="left" width="80px">Last</th>
+						  <th align="left" width="150px">First</th>
+						  <th align="left" width="100px">DOB</th>
+						  <th align="left" width="90px">Age</th>
+						  <th align="center" width="40px">Sex</th>
+					  </tr>
+				  </thead>
+				</table> 
+				<table id="personGenGrid" >
+				  <tbody>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+					<tr><td  align="right" width="50px">-</td><td width="80px">-</td><td width="150px">-</td><td width="100px">-</td><td width="90px">-</td><td align="center" width="40px">-</td></tr>
+				  </tbody>
+				</table>
+			</div> 
+			<p>Generating people also generates families based on the people generated. The family generator starts with
+			adult females, finds them a mate if possible, gives them the same last name, and then looks for children. Select the Family menu to see 
+			resulting menus. Click the [refresh] link below to refresh just this panewithout disturbing other panes/tabs.</p>
+			<p>This is a global list of people not associated with a particular user or account. It is used to demonstrate scrolling performance and to show what 
+			people created by the generator look like.
+			There are currently #{gen.personCount} people in the list.</p>
+			<p>People are generated while you wait but you can do other things while it is working.</p>
+	        <h:form id="genPeople" onsubmit="return ajaxSubmit2(this);">
+	           <h:panelGrid columns="3">
+	                <h:outputText value="Number to create"/>
+	                <h:inputText id="count" value="#{gen.numberToGenerate}" />
+		            <h:commandButton id="gp1" action="#{gen.generatePeople}" value="Generate People"/>
+	            </h:panelGrid>
+			</h:form>
+	        <h:messages errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		</div>
+		</ui:composition>
+	</body>
+</html>

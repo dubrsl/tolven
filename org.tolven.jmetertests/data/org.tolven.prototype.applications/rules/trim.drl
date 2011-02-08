@@ -1,0 +1,24 @@
+package trim
+ /* Tolven trim rules */
+import java.util.*;
+import org.tolven.app.bean.Mode;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.trim.process.ProcessTrim;
+global org.tolven.app.AppEvalAdaptor app;
+
+/**
+ *
+ * The contents of all placeholders with matching bind instructions in the trim document  
+ * are asserted.
+ */
+rule "Assert trim placeholders"
+salience 10
+	when
+		Mode( direction == "local" )
+		$trim: Trim( )
+		$tp: ProcessTrim( )
+	then
+//		app.createPlaceholders( $trim, BindPhase.CREATE );
+		$tp.insertPlaceholders($trim, BindPhase.CREATE);
+end

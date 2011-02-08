@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="createPlaceholderSCConfig" enabled="true">
+      <stringProp name="TestPlan.comments">Returns ${PLACEHOLDER_MENUPATH},${PLACEHOLDER_LOCATION}</stringProp>
+    </GenericController>
+    <hashTree>
+      <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="false">
+        <collectionProp name="UserParameters.names">
+          <stringProp name="-1246958089">PLACEHOLDER_NAME</stringProp>
+          <stringProp name="43829469">KNOWNTYPE</stringProp>
+          <stringProp name="-318209907">ACCOUNT_ID</stringProp>
+        </collectionProp>
+        <collectionProp name="UserParameters.thread_values">
+          <collectionProp name="24903448">
+            <stringProp name="0"></stringProp>
+            <stringProp name="0"></stringProp>
+            <stringProp name="0"></stringProp>
+          </collectionProp>
+        </collectionProp>
+        <boolProp name="UserParameters.per_iteration">true</boolProp>
+      </UserParameters>
+      <hashTree/>
+      <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="createPlaceholderIC" enabled="true">
+        <stringProp name="IncludeController.includepath">simple-controllers/createPlaceholderSC.jmx</stringProp>
+      </IncludeController>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

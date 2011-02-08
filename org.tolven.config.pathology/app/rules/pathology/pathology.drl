@@ -1,0 +1,133 @@
+package pathology
+ /* Tolven */
+import java.util.*;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.doc.entity.*;
+import java.lang.Integer;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.app.bean.Mode;
+import org.tolven.app.bean.Plan;
+import org.tolven.core.entity.Status;
+import org.tolven.logging.TolvenLogger;
+global org.tolven.app.AppEvalAdaptor app;
+global Date now;
+
+global org.tolven.app.AppEvalAdaptor app;
+global Date now;
+
+rule "Place ProcedureGroup on ProcedureGroups list"
+	when
+		$msList: MenuStructure( path == "echr:patient:procedureGroups:active" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup" )
+		$md: MenuData( menuStructure == $ms)
+	then
+		app.createReferenceMD( $md, $msList );
+//		app.info( "Place ProcedureGroup on ProcedureGroup list"); 
+end
+
+rule "Add planned procedure to timeline"
+	when
+		$msPlan: MenuStructure( role == "placeholder", path == "echr:patient:plan" )
+		$mdPlan: MenuData( menuStructure == $msPlan, string02 == "Proposed" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:procedure" )
+		$md: MenuData( menuStructure == $ms, string04 == "INT" )
+		Plan( $plan : path )
+		$msPlanProcSum: MenuStructure( path == $plan )
+	then
+		MenuData md = app.createReferenceMD( $md, $msPlanProcSum );
+//		app.info( "Place planned procedure on timeline: " + md.getString01()); 
+end
+
+rule "Add active procedure to summaries"
+	when
+		$msList: MenuStructure( path == "echr:patient:summary:procsum" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:procedure" )
+		$md: MenuData( menuStructure == $ms )		
+	then
+		MenuData md = app.createReferenceMD( $md, $msList );
+//		app.info( "Place active procedure on timeline: " + md.getString01()); 
+end
+
+rule "Place Procedure on Procedure list"
+	when
+		$msList: MenuStructure( path == "echr:patient:procedures:active" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:procedure" )
+		$md: MenuData( menuStructure == $ms)
+	then
+		app.createReferenceMD( $md, $msList );
+//		app.info( "Place Procedure on Procedure list"); 
+end
+
+rule "Add active specimen to summaries"
+	when
+		$msList: MenuStructure( path == "echr:patient:summary:specsum" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:procedure:specimen" )
+		$md: MenuData( menuStructure == $ms )		
+	then
+		MenuData md = app.createReferenceMD( $md, $msList );
+//		app.info( "Place active speicmen on summary: " + md.getString01()); 
+end
+
+rule "Place Specimen on Specimen list"
+	when
+		$msList: MenuStructure( path == "echr:patient:specimens:active" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:procedure:specimen" )
+		$md: MenuData( menuStructure == $ms)
+	then
+		app.createReferenceMD( $md, $msList );
+//		app.info( "Place Specimen on Specimen list"); 
+end
+
+
+rule "Place Node on Nodes list"
+  when
+    $msList: MenuStructure( path == "echr:patient:nodes:active" )
+    $ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:node" )
+    $md: MenuData( menuStructure == $ms)
+  then
+    app.createReferenceMD( $md, $msList );
+//    app.info( "Place Node on Nodes list"); 
+end
+
+rule "Place SentinelNode on SentinelNodes list"
+  when
+    $msList: MenuStructure( path == "echr:patient:sentinelNodes:active" )
+    $ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:sentinelNode" )
+    $md: MenuData( menuStructure == $ms)
+  then
+    app.createReferenceMD( $md, $msList );
+//    app.info( "Place SentinelNode on SentinelNodes list"); 
+end
+
+rule "Place Histology on Histology list"
+  when
+    $msList: MenuStructure( path == "echr:patient:histologies:active" )
+    $ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:histology" )
+    $md: MenuData( menuStructure == $ms)
+  then
+    app.createReferenceMD( $md, $msList );
+//    app.info( "Place Histology on Histology list"); 
+end
+
+rule "Place Receptor on Receptors list"
+  when
+    $msList: MenuStructure( path == "echr:patient:receptors:active" )
+    $ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:receptor" )
+    $md: MenuData( menuStructure == $ms)
+  then
+    app.createReferenceMD( $md, $msList );
+//    app.info( "Place Receptor on Receptors list"); 
+end
+
+rule "Place StagingNode on Staging list"
+  when
+    $msList: MenuStructure( path == "echr:patient:stagingNodes:active" )
+    $ms: MenuStructure( role == "placeholder", path == "echr:patient:procedureGroup:stagingNode" )
+    $md: MenuData( menuStructure == $ms)
+  then
+    app.createReferenceMD( $md, $msList );
+//    app.info( "Place StagingNode on Staging list"); 
+end
+

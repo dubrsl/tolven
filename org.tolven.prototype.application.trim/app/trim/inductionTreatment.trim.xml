@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>trial/inductionTreatment</name>
+	<description>Induction Treatment</description>
+	<author>Tolven</author>
+	<page>trial/inductionTreatment.xhtml</page>
+	<drilldown>trial/inductionTreatmentDD.xhtml</drilldown>
+	<menu>global:trialFormMenu</menu>
+	<reference>HOVON_43_AML</reference>
+	<application name="echr">
+		<instance>echr:patient:trialForm</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="queryActive" from="active" to="active">
+			<label language="en">Query</label>
+		</transition>
+		<transition name="eie" from="active" to="nullified">
+			<label language="en">Entered in Error</label>
+		</transition>
+	</transitions>
+	<act classCode="ORGANIZER" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:trialForm</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CE>
+				<displayName>Induction Treatment Form</displayName>
+				<code>XXXXXX</code>
+				<codeSystemName>XXXXXX</codeSystemName>
+				<codeSystemVersion>XXXXXX</codeSystemVersion>
+			</CE>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Induction Treatment Form</ST>
+		</title>
+		<effectiveTime>
+			<label>Date of form</label>
+			<TS>
+				<value>#{TS(now)}</value>
+			</TS>
+		</effectiveTime>
+		<relationship name="relatedToCycle" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Related to Cycle</ST>
+				</title>
+				<effectiveTime>
+					<label>Date start of this cycle</label>
+					<TS>
+						<value>#{TS(now)}</value>
+					</TS>
+				</effectiveTime>
+				<observation>
+					<value>
+						<label>Related to Cycle</label>
+						<valueSet>relatedToCycle</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>		
+		<relationship name="lastChemoTime" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Last Chemo Time</ST>
+				</title>
+				<effectiveTime>
+					<label>Date last chemotherapy given this cycle</label>
+					<TS/>
+				</effectiveTime>
+			</act>
+		</relationship>		
+		<relationship name="surfaceArea" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C0005902</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<title>
+					<ST>Surface Area</ST>
+				</title>
+				<effectiveTime>
+					<label>Time of observation</label>
+					<TS>
+						<value>#{TS(now)}</value>
+					</TS>
+				</effectiveTime>
+				<observation>
+					<value>
+						<label>Surface Area</label>
+						<PQ>
+							<value>0.0</value>
+							<unit>m2</unit>
+						</PQ>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="treatment" direction="OUT" typeCode="COMP">
+			<act classCode="SBADM" moodCode="RQO">
+				<substanceAdministration>
+					<doseQuantity>
+						<label>Dose</label>
+						<PQ>
+							<value>1</value>
+							<unit>mg</unit>
+						</PQ>
+					</doseQuantity>
+				</substanceAdministration>
+			</act>
+		</relationship>	
+		<relationship name="reasonIfDosageLessThan1" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<label>Reason If Dosage &gt; 1</label>
+					<valueSet>dosage</valueSet>
+				</code>
+				<title>
+					<ST>Reason If Dosage >1</ST>
+				</title>
+			</act>
+		</relationship>
+		<relationship name="specifyReason" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<label>Specify Reason</label>
+					<valueSet>reasonIfDosageLessThan1</valueSet>
+				</code>
+				<title>
+					<ST>Specify Reason</ST>
+				</title>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="relatedToCycle">
+		<CE>
+			<displayName>Cycle 1</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cycle 2</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="dosage">
+		<CE>
+			<displayName>full dosage according to schedule</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>full dosage given but delayed</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>dose reduced >10%</displayName>
+			<code>3</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Dose reduced and delayed</displayName>
+			<code>4</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>Not given</displayName>
+			<code>5</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Interrupted and resumed</displayName>
+			<code>6</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Stopped early</displayName>
+			<code>7</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		<CE>
+			<displayName>Other (Specify)</displayName>
+			<code>8</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+	</valueSet>	
+	<valueSet name="reasonIfDosageLessThan1">
+		<CE>
+			<displayName>Objective toxicity</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Subject toxicity</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>both (1+2) (specify)(</displayName>
+			<code>3</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Not related to drug (specify)</displayName>
+			<code>4</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>Refusal</displayName>
+			<code>5</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Other (specify)</displayName>
+			<code>8</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

@@ -1,0 +1,1114 @@
+GR001,Salmonella infections,Under 1 Year,2,2076969
+GR001,Salmonella infections,15-19 years,1,10391004
+GR001,Salmonella infections,25-34 years,1,20120529
+GR001,Salmonella infections,45-54 years,2,18497230
+GR001,Salmonella infections,55-64 years,2,11645356
+GR001,Salmonella infections,65-74 years,5,8303274
+GR001,Salmonella infections,75-84 years,1,4879353
+GR001,Salmonella infections,85 years and over,1,1226998
+GR002,Shigellosis and amebiasis,35-44 years,1,22447798
+GR002,Shigellosis and amebiasis,55-64 years,1,11645356
+GR002,Shigellosis and amebiasis,75-84 years,3,4879353
+GR003,Certain other intestinal infections,Under 1 Year,10,2076969
+GR003,Certain other intestinal infections,1- 4 years,6,7861716
+GR003,Certain other intestinal infections,25-34 years,3,20120529
+GR003,Certain other intestinal infections,35-44 years,10,22447798
+GR003,Certain other intestinal infections,45-54 years,16,18497230
+GR003,Certain other intestinal infections,55-64 years,39,11645356
+GR003,Certain other intestinal infections,65-74 years,105,8303274
+GR003,Certain other intestinal infections,75-84 years,195,4879353
+GR003,Certain other intestinal infections,85 years and over,140,1226998
+GR004,Respiratory tuberculosis,1- 4 years,1,7861716
+GR004,Respiratory tuberculosis,15-19 years,2,10391004
+GR004,Respiratory tuberculosis,20-24 years,2,9687814
+GR004,Respiratory tuberculosis,25-34 years,8,20120529
+GR004,Respiratory tuberculosis,35-44 years,26,22447798
+GR004,Respiratory tuberculosis,45-54 years,64,18497230
+GR004,Respiratory tuberculosis,55-64 years,50,11645356
+GR004,Respiratory tuberculosis,65-74 years,73,8303274
+GR004,Respiratory tuberculosis,75-84 years,116,4879353
+GR004,Respiratory tuberculosis,85 years and over,50,1226998
+GR005,Other tuberculosis,20-24 years,3,9687814
+GR005,Other tuberculosis,25-34 years,6,20120529
+GR005,Other tuberculosis,35-44 years,2,22447798
+GR005,Other tuberculosis,45-54 years,12,18497230
+GR005,Other tuberculosis,55-64 years,9,11645356
+GR005,Other tuberculosis,65-74 years,14,8303274
+GR005,Other tuberculosis,75-84 years,23,4879353
+GR005,Other tuberculosis,85 years and over,6,1226998
+GR006,Whooping cough,Under 1 Year,5,2076969
+GR007,Scarlet fever and erysipelas,75-84 years,1,4879353
+GR008,Meningococcal infection,Under 1 Year,14,2076969
+GR008,Meningococcal infection,1- 4 years,12,7861716
+GR008,Meningococcal infection,5- 9 years,5,10523277
+GR008,Meningococcal infection,10-14 years,2,10520197
+GR008,Meningococcal infection,15-19 years,24,10391004
+GR008,Meningococcal infection,20-24 years,11,9687814
+GR008,Meningococcal infection,25-34 years,6,20120529
+GR008,Meningococcal infection,35-44 years,9,22447798
+GR008,Meningococcal infection,45-54 years,11,18497230
+GR008,Meningococcal infection,55-64 years,2,11645356
+GR008,Meningococcal infection,65-74 years,2,8303274
+GR008,Meningococcal infection,75-84 years,7,4879353
+GR008,Meningococcal infection,85 years and over,1,1226998
+GR009,Septicemia,Under 1 Year,139,2076969
+GR009,Septicemia,1- 4 years,53,7861716
+GR009,Septicemia,5- 9 years,24,10523277
+GR009,Septicemia,10-14 years,14,10520197
+GR009,Septicemia,15-19 years,23,10391004
+GR009,Septicemia,20-24 years,37,9687814
+GR009,Septicemia,25-34 years,158,20120529
+GR009,Septicemia,35-44 years,451,22447798
+GR009,Septicemia,45-54 years,1039,18497230
+GR009,Septicemia,55-64 years,1513,11645356
+GR009,Septicemia,65-74 years,2867,8303274
+GR009,Septicemia,75-84 years,4482,4879353
+GR009,Septicemia,85 years and over,2736,1226998
+GR010,Syphilis,Under 1 Year,1,2076969
+GR010,Syphilis,25-34 years,1,20120529
+GR010,Syphilis,45-54 years,5,18497230
+GR010,Syphilis,55-64 years,3,11645356
+GR010,Syphilis,65-74 years,2,8303274
+GR010,Syphilis,75-84 years,7,4879353
+GR010,Syphilis,85 years and over,5,1226998
+GR012,Arthropod-borne viral encephalitis,35-44 years,1,22447798
+GR012,Arthropod-borne viral encephalitis,75-84 years,1,4879353
+GR014,Viral hepatitis,Under 1 Year,2,2076969
+GR014,Viral hepatitis,1- 4 years,1,7861716
+GR014,Viral hepatitis,5- 9 years,1,10523277
+GR014,Viral hepatitis,15-19 years,2,10391004
+GR014,Viral hepatitis,20-24 years,9,9687814
+GR014,Viral hepatitis,25-34 years,46,20120529
+GR014,Viral hepatitis,35-44 years,540,22447798
+GR014,Viral hepatitis,45-54 years,1425,18497230
+GR014,Viral hepatitis,55-64 years,577,11645356
+GR014,Viral hepatitis,65-74 years,396,8303274
+GR014,Viral hepatitis,75-84 years,311,4879353
+GR014,Viral hepatitis,85 years and over,70,1226998
+GR015,Human immunodeficiency virus (HIV) disease,Under 1 Year,8,2076969
+GR015,Human immunodeficiency virus (HIV) disease,1- 4 years,6,7861716
+GR015,Human immunodeficiency virus (HIV) disease,5- 9 years,9,10523277
+GR015,Human immunodeficiency virus (HIV) disease,10-14 years,13,10520197
+GR015,Human immunodeficiency virus (HIV) disease,15-19 years,19,10391004
+GR015,Human immunodeficiency virus (HIV) disease,20-24 years,80,9687814
+GR015,Human immunodeficiency virus (HIV) disease,25-34 years,1602,20120529
+GR015,Human immunodeficiency virus (HIV) disease,35-44 years,4441,22447798
+GR015,Human immunodeficiency virus (HIV) disease,45-54 years,3296,18497230
+GR015,Human immunodeficiency virus (HIV) disease,55-64 years,1013,11645356
+GR015,Human immunodeficiency virus (HIV) disease,65-74 years,313,8303274
+GR015,Human immunodeficiency virus (HIV) disease,75-84 years,65,4879353
+GR015,Human immunodeficiency virus (HIV) disease,85 years and over,2,1226998
+GR016,Malaria,45-54 years,1,18497230
+GR016,Malaria,75-84 years,1,4879353
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,Under 1 Year,94,2076969
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,1- 4 years,41,7861716
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,5- 9 years,16,10523277
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,10-14 years,19,10520197
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,15-19 years,25,10391004
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,20-24 years,29,9687814
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,25-34 years,75,20120529
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,35-44 years,220,22447798
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,45-54 years,358,18497230
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,55-64 years,383,11645356
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,65-74 years,597,8303274
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,75-84 years,665,4879353
+GR017,Other and unspecified infectious and parasitic diseases and their sequelae,85 years and over,339,1226998
+GR018,Malignant neoplasms of lip oral cavity and pharynx,10-14 years,4,10520197
+GR018,Malignant neoplasms of lip oral cavity and pharynx,15-19 years,6,10391004
+GR018,Malignant neoplasms of lip oral cavity and pharynx,20-24 years,7,9687814
+GR018,Malignant neoplasms of lip oral cavity and pharynx,25-34 years,28,20120529
+GR018,Malignant neoplasms of lip oral cavity and pharynx,35-44 years,215,22447798
+GR018,Malignant neoplasms of lip oral cavity and pharynx,45-54 years,825,18497230
+GR018,Malignant neoplasms of lip oral cavity and pharynx,55-64 years,1270,11645356
+GR018,Malignant neoplasms of lip oral cavity and pharynx,65-74 years,1326,8303274
+GR018,Malignant neoplasms of lip oral cavity and pharynx,75-84 years,939,4879353
+GR018,Malignant neoplasms of lip oral cavity and pharynx,85 years and over,332,1226998
+GR019,Malignant neoplasm of esophagus,Under 1 Year,1,2076969
+GR019,Malignant neoplasm of esophagus,20-24 years,2,9687814
+GR019,Malignant neoplasm of esophagus,25-34 years,31,20120529
+GR019,Malignant neoplasm of esophagus,35-44 years,265,22447798
+GR019,Malignant neoplasm of esophagus,45-54 years,1161,18497230
+GR019,Malignant neoplasm of esophagus,55-64 years,2169,11645356
+GR019,Malignant neoplasm of esophagus,65-74 years,2831,8303274
+GR019,Malignant neoplasm of esophagus,75-84 years,2233,4879353
+GR019,Malignant neoplasm of esophagus,85 years and over,586,1226998
+GR020,Malignant neoplasm of stomach,20-24 years,6,9687814
+GR020,Malignant neoplasm of stomach,25-34 years,69,20120529
+GR020,Malignant neoplasm of stomach,35-44 years,284,22447798
+GR020,Malignant neoplasm of stomach,45-54 years,703,18497230
+GR020,Malignant neoplasm of stomach,55-64 years,1228,11645356
+GR020,Malignant neoplasm of stomach,65-74 years,1966,8303274
+GR020,Malignant neoplasm of stomach,75-84 years,2144,4879353
+GR020,Malignant neoplasm of stomach,85 years and over,928,1226998
+GR021,Malignant neoplasms of colon rectum and anus,10-14 years,2,10520197
+GR021,Malignant neoplasms of colon rectum and anus,15-19 years,8,10391004
+GR021,Malignant neoplasms of colon rectum and anus,20-24 years,16,9687814
+GR021,Malignant neoplasms of colon rectum and anus,25-34 years,153,20120529
+GR021,Malignant neoplasms of colon rectum and anus,35-44 years,759,22447798
+GR021,Malignant neoplasms of colon rectum and anus,45-54 years,2359,18497230
+GR021,Malignant neoplasms of colon rectum and anus,55-64 years,4608,11645356
+GR021,Malignant neoplasms of colon rectum and anus,65-74 years,7924,8303274
+GR021,Malignant neoplasms of colon rectum and anus,75-84 years,8760,4879353
+GR021,Malignant neoplasms of colon rectum and anus,85 years and over,3873,1226998
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,Under 1 Year,1,2076969
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,1- 4 years,14,7861716
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,5- 9 years,6,10523277
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,10-14 years,2,10520197
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,15-19 years,11,10391004
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,20-24 years,9,9687814
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,25-34 years,59,20120529
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,35-44 years,297,22447798
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,45-54 years,1324,18497230
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,55-64 years,1607,11645356
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,65-74 years,2246,8303274
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,75-84 years,2052,4879353
+GR022,Malignant neoplasms of liver and intrahepatic bile ducts,85 years and over,548,1226998
+GR023,Malignant neoplasm of pancreas,Under 1 Year,1,2076969
+GR023,Malignant neoplasm of pancreas,1- 4 years,1,7861716
+GR023,Malignant neoplasm of pancreas,15-19 years,1,10391004
+GR023,Malignant neoplasm of pancreas,20-24 years,2,9687814
+GR023,Malignant neoplasm of pancreas,25-34 years,33,20120529
+GR023,Malignant neoplasm of pancreas,35-44 years,324,22447798
+GR023,Malignant neoplasm of pancreas,45-54 years,1486,18497230
+GR023,Malignant neoplasm of pancreas,55-64 years,2749,11645356
+GR023,Malignant neoplasm of pancreas,65-74 years,4189,8303274
+GR023,Malignant neoplasm of pancreas,75-84 years,4189,4879353
+GR023,Malignant neoplasm of pancreas,85 years and over,1262,1226998
+GR024,Malignant neoplasm of larynx,25-34 years,2,20120529
+GR024,Malignant neoplasm of larynx,35-44 years,49,22447798
+GR024,Malignant neoplasm of larynx,45-54 years,340,18497230
+GR024,Malignant neoplasm of larynx,55-64 years,726,11645356
+GR024,Malignant neoplasm of larynx,65-74 years,945,8303274
+GR024,Malignant neoplasm of larynx,75-84 years,765,4879353
+GR024,Malignant neoplasm of larynx,85 years and over,214,1226998
+GR025,Malignant neoplasms of trachea bronchus and lung,Under 1 Year,2,2076969
+GR025,Malignant neoplasms of trachea bronchus and lung,1- 4 years,1,7861716
+GR025,Malignant neoplasms of trachea bronchus and lung,15-19 years,3,10391004
+GR025,Malignant neoplasms of trachea bronchus and lung,20-24 years,11,9687814
+GR025,Malignant neoplasms of trachea bronchus and lung,25-34 years,102,20120529
+GR025,Malignant neoplasms of trachea bronchus and lung,35-44 years,1542,22447798
+GR025,Malignant neoplasms of trachea bronchus and lung,45-54 years,7123,18497230
+GR025,Malignant neoplasms of trachea bronchus and lung,55-64 years,17937,11645356
+GR025,Malignant neoplasms of trachea bronchus and lung,65-74 years,31382,8303274
+GR025,Malignant neoplasms of trachea bronchus and lung,75-84 years,25966,4879353
+GR025,Malignant neoplasms of trachea bronchus and lung,85 years and over,6395,1226998
+GR026,Malignant melanoma of skin,10-14 years,1,10520197
+GR026,Malignant melanoma of skin,15-19 years,4,10391004
+GR026,Malignant melanoma of skin,20-24 years,17,9687814
+GR026,Malignant melanoma of skin,25-34 years,110,20120529
+GR026,Malignant melanoma of skin,35-44 years,355,22447798
+GR026,Malignant melanoma of skin,45-54 years,769,18497230
+GR026,Malignant melanoma of skin,55-64 years,866,11645356
+GR026,Malignant melanoma of skin,65-74 years,1067,8303274
+GR026,Malignant melanoma of skin,75-84 years,1013,4879353
+GR026,Malignant melanoma of skin,85 years and over,390,1226998
+GR027,Malignant neoplasm of breast,25-34 years,3,20120529
+GR027,Malignant neoplasm of breast,35-44 years,19,22447798
+GR027,Malignant neoplasm of breast,45-54 years,46,18497230
+GR027,Malignant neoplasm of breast,55-64 years,85,11645356
+GR027,Malignant neoplasm of breast,65-74 years,115,8303274
+GR027,Malignant neoplasm of breast,75-84 years,109,4879353
+GR027,Malignant neoplasm of breast,85 years and over,51,1226998
+GR031,Malignant neoplasm of prostate,25-34 years,1,20120529
+GR031,Malignant neoplasm of prostate,35-44 years,25,22447798
+GR031,Malignant neoplasm of prostate,45-54 years,371,18497230
+GR031,Malignant neoplasm of prostate,55-64 years,1929,11645356
+GR031,Malignant neoplasm of prostate,65-74 years,6808,8303274
+GR031,Malignant neoplasm of prostate,75-84 years,13071,4879353
+GR031,Malignant neoplasm of prostate,85 years and over,8873,1226998
+GR032,Malignant neoplasms of kidney and renal pelvis,Under 1 Year,1,2076969
+GR032,Malignant neoplasms of kidney and renal pelvis,1- 4 years,8,7861716
+GR032,Malignant neoplasms of kidney and renal pelvis,5- 9 years,12,10523277
+GR032,Malignant neoplasms of kidney and renal pelvis,10-14 years,3,10520197
+GR032,Malignant neoplasms of kidney and renal pelvis,15-19 years,4,10391004
+GR032,Malignant neoplasms of kidney and renal pelvis,20-24 years,6,9687814
+GR032,Malignant neoplasms of kidney and renal pelvis,25-34 years,26,20120529
+GR032,Malignant neoplasms of kidney and renal pelvis,35-44 years,228,22447798
+GR032,Malignant neoplasms of kidney and renal pelvis,45-54 years,880,18497230
+GR032,Malignant neoplasms of kidney and renal pelvis,55-64 years,1530,11645356
+GR032,Malignant neoplasms of kidney and renal pelvis,65-74 years,2010,8303274
+GR032,Malignant neoplasms of kidney and renal pelvis,75-84 years,1865,4879353
+GR032,Malignant neoplasms of kidney and renal pelvis,85 years and over,676,1226998
+GR033,Malignant neoplasm of bladder,15-19 years,2,10391004
+GR033,Malignant neoplasm of bladder,20-24 years,1,9687814
+GR033,Malignant neoplasm of bladder,25-34 years,2,20120529
+GR033,Malignant neoplasm of bladder,35-44 years,62,22447798
+GR033,Malignant neoplasm of bladder,45-54 years,322,18497230
+GR033,Malignant neoplasm of bladder,55-64 years,916,11645356
+GR033,Malignant neoplasm of bladder,65-74 years,2094,8303274
+GR033,Malignant neoplasm of bladder,75-84 years,3054,4879353
+GR033,Malignant neoplasm of bladder,85 years and over,1710,1226998
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,Under 1 Year,10,2076969
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,1- 4 years,58,7861716
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,5- 9 years,89,10523277
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,10-14 years,87,10520197
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,15-19 years,63,10391004
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,20-24 years,69,9687814
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,25-34 years,264,20120529
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,35-44 years,704,22447798
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,45-54 years,1148,18497230
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,55-64 years,1379,11645356
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,65-74 years,1678,8303274
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,75-84 years,1187,4879353
+GR034,Malignant neoplasms of meninges brain and other parts of central nervous system,85 years and over,275,1226998
+GR035,Hodgkins disease,5- 9 years,1,10523277
+GR035,Hodgkins disease,10-14 years,3,10520197
+GR035,Hodgkins disease,15-19 years,6,10391004
+GR035,Hodgkins disease,20-24 years,29,9687814
+GR035,Hodgkins disease,25-34 years,79,20120529
+GR035,Hodgkins disease,35-44 years,82,22447798
+GR035,Hodgkins disease,45-54 years,99,18497230
+GR035,Hodgkins disease,55-64 years,87,11645356
+GR035,Hodgkins disease,65-74 years,134,8303274
+GR035,Hodgkins disease,75-84 years,121,4879353
+GR035,Hodgkins disease,85 years and over,45,1226998
+GR036,Non-Hodgkins lymphoma,1- 4 years,5,7861716
+GR036,Non-Hodgkins lymphoma,5- 9 years,16,10523277
+GR036,Non-Hodgkins lymphoma,10-14 years,12,10520197
+GR036,Non-Hodgkins lymphoma,15-19 years,46,10391004
+GR036,Non-Hodgkins lymphoma,20-24 years,80,9687814
+GR036,Non-Hodgkins lymphoma,25-34 years,172,20120529
+GR036,Non-Hodgkins lymphoma,35-44 years,482,22447798
+GR036,Non-Hodgkins lymphoma,45-54 years,1112,18497230
+GR036,Non-Hodgkins lymphoma,55-64 years,1849,11645356
+GR036,Non-Hodgkins lymphoma,65-74 years,3105,8303274
+GR036,Non-Hodgkins lymphoma,75-84 years,3634,4879353
+GR036,Non-Hodgkins lymphoma,85 years and over,1299,1226998
+GR037,Leukemia,Under 1 Year,21,2076969
+GR037,Leukemia,1- 4 years,69,7861716
+GR037,Leukemia,5- 9 years,81,10523277
+GR037,Leukemia,10-14 years,109,10520197
+GR037,Leukemia,15-19 years,150,10391004
+GR037,Leukemia,20-24 years,143,9687814
+GR037,Leukemia,25-34 years,283,20120529
+GR037,Leukemia,35-44 years,423,22447798
+GR037,Leukemia,45-54 years,791,18497230
+GR037,Leukemia,55-64 years,1452,11645356
+GR037,Leukemia,65-74 years,3090,8303274
+GR037,Leukemia,75-84 years,3695,4879353
+GR037,Leukemia,85 years and over,1470,1226998
+GR038,Multiple myeloma and immunoproliferative neoplasms,25-34 years,5,20120529
+GR038,Multiple myeloma and immunoproliferative neoplasms,35-44 years,85,22447798
+GR038,Multiple myeloma and immunoproliferative neoplasms,45-54 years,391,18497230
+GR038,Multiple myeloma and immunoproliferative neoplasms,55-64 years,808,11645356
+GR038,Multiple myeloma and immunoproliferative neoplasms,65-74 years,1697,8303274
+GR038,Multiple myeloma and immunoproliferative neoplasms,75-84 years,1932,4879353
+GR038,Multiple myeloma and immunoproliferative neoplasms,85 years and over,635,1226998
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,1- 4 years,2,7861716
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,10-14 years,1,10520197
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,20-24 years,1,9687814
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,35-44 years,3,22447798
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,45-54 years,6,18497230
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,55-64 years,9,11645356
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,65-74 years,12,8303274
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,75-84 years,17,4879353
+GR039,Other and unspecified malignant neoplasms of lymphoid hematopoietic and related tissue,85 years and over,9,1226998
+GR040,All other and unspecified malignant neoplasms,Under 1 Year,13,2076969
+GR040,All other and unspecified malignant neoplasms,1- 4 years,75,7861716
+GR040,All other and unspecified malignant neoplasms,5- 9 years,64,10523277
+GR040,All other and unspecified malignant neoplasms,10-14 years,76,10520197
+GR040,All other and unspecified malignant neoplasms,15-19 years,142,10391004
+GR040,All other and unspecified malignant neoplasms,20-24 years,177,9687814
+GR040,All other and unspecified malignant neoplasms,25-34 years,432,20120529
+GR040,All other and unspecified malignant neoplasms,35-44 years,1141,22447798
+GR040,All other and unspecified malignant neoplasms,45-54 years,2959,18497230
+GR040,All other and unspecified malignant neoplasms,55-64 years,5223,11645356
+GR040,All other and unspecified malignant neoplasms,65-74 years,8572,8303274
+GR040,All other and unspecified malignant neoplasms,75-84 years,9161,4879353
+GR040,All other and unspecified malignant neoplasms,85 years and over,3689,1226998
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,Under 1 Year,32,2076969
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,1- 4 years,33,7861716
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,5- 9 years,32,10523277
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,10-14 years,17,10520197
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,15-19 years,27,10391004
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,20-24 years,35,9687814
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,25-34 years,82,20120529
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,35-44 years,188,22447798
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,45-54 years,385,18497230
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,55-64 years,657,11645356
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,65-74 years,1415,8303274
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,75-84 years,2319,4879353
+GR041,In situ neoplasms benign neoplasms and neoplasms of uncertain or unknown behavior,85 years and over,1336,1226998
+GR042,Anemias,Under 1 Year,6,2076969
+GR042,Anemias,1- 4 years,16,7861716
+GR042,Anemias,5- 9 years,17,10523277
+GR042,Anemias,10-14 years,12,10520197
+GR042,Anemias,15-19 years,9,10391004
+GR042,Anemias,20-24 years,30,9687814
+GR042,Anemias,25-34 years,70,20120529
+GR042,Anemias,35-44 years,78,22447798
+GR042,Anemias,45-54 years,108,18497230
+GR042,Anemias,55-64 years,130,11645356
+GR042,Anemias,65-74 years,236,8303274
+GR042,Anemias,75-84 years,465,4879353
+GR042,Anemias,85 years and over,492,1226998
+GR043,Diabetes mellitus,Under 1 Year,4,2076969
+GR043,Diabetes mellitus,1- 4 years,2,7861716
+GR043,Diabetes mellitus,5- 9 years,5,10523277
+GR043,Diabetes mellitus,10-14 years,8,10520197
+GR043,Diabetes mellitus,15-19 years,31,10391004
+GR043,Diabetes mellitus,20-24 years,63,9687814
+GR043,Diabetes mellitus,25-34 years,376,20120529
+GR043,Diabetes mellitus,35-44 years,1151,22447798
+GR043,Diabetes mellitus,45-54 years,2821,18497230
+GR043,Diabetes mellitus,55-64 years,4943,11645356
+GR043,Diabetes mellitus,65-74 years,8226,8303274
+GR043,Diabetes mellitus,75-84 years,9738,4879353
+GR043,Diabetes mellitus,85 years and over,4234,1226998
+GR044,Malnutrition,Under 1 Year,8,2076969
+GR044,Malnutrition,1- 4 years,1,7861716
+GR044,Malnutrition,10-14 years,1,10520197
+GR044,Malnutrition,15-19 years,1,10391004
+GR044,Malnutrition,20-24 years,1,9687814
+GR044,Malnutrition,25-34 years,8,20120529
+GR044,Malnutrition,35-44 years,15,22447798
+GR044,Malnutrition,45-54 years,41,18497230
+GR044,Malnutrition,55-64 years,86,11645356
+GR044,Malnutrition,65-74 years,207,8303274
+GR044,Malnutrition,75-84 years,434,4879353
+GR044,Malnutrition,85 years and over,499,1226998
+GR045,Other nutritional deficiencies,Under 1 Year,2,2076969
+GR045,Other nutritional deficiencies,1- 4 years,1,7861716
+GR045,Other nutritional deficiencies,10-14 years,1,10520197
+GR045,Other nutritional deficiencies,25-34 years,1,20120529
+GR045,Other nutritional deficiencies,35-44 years,1,22447798
+GR045,Other nutritional deficiencies,45-54 years,5,18497230
+GR045,Other nutritional deficiencies,55-64 years,11,11645356
+GR045,Other nutritional deficiencies,65-74 years,14,8303274
+GR045,Other nutritional deficiencies,75-84 years,37,4879353
+GR045,Other nutritional deficiencies,85 years and over,37,1226998
+GR046,Meningitis,Under 1 Year,48,2076969
+GR046,Meningitis,1- 4 years,20,7861716
+GR046,Meningitis,5- 9 years,6,10523277
+GR046,Meningitis,10-14 years,10,10520197
+GR046,Meningitis,15-19 years,2,10391004
+GR046,Meningitis,20-24 years,2,9687814
+GR046,Meningitis,25-34 years,20,20120529
+GR046,Meningitis,35-44 years,46,22447798
+GR046,Meningitis,45-54 years,56,18497230
+GR046,Meningitis,55-64 years,54,11645356
+GR046,Meningitis,65-74 years,60,8303274
+GR046,Meningitis,75-84 years,62,4879353
+GR046,Meningitis,85 years and over,19,1226998
+GR047,Parkinsons disease,25-34 years,3,20120529
+GR047,Parkinsons disease,35-44 years,5,22447798
+GR047,Parkinsons disease,45-54 years,29,18497230
+GR047,Parkinsons disease,55-64 years,170,11645356
+GR047,Parkinsons disease,65-74 years,1338,8303274
+GR047,Parkinsons disease,75-84 years,4530,4879353
+GR047,Parkinsons disease,85 years and over,2728,1226998
+GR048,Alzheimers disease,25-34 years,1,20120529
+GR048,Alzheimers disease,35-44 years,4,22447798
+GR048,Alzheimers disease,45-54 years,34,18497230
+GR048,Alzheimers disease,55-64 years,210,11645356
+GR048,Alzheimers disease,65-74 years,1554,8303274
+GR048,Alzheimers disease,75-84 years,6228,4879353
+GR048,Alzheimers disease,85 years and over,6406,1226998
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,Under 1 Year,5,2076969
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,1- 4 years,2,7861716
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,5- 9 years,1,10523277
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,10-14 years,2,10520197
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,15-19 years,5,10391004
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,20-24 years,6,9687814
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,25-34 years,12,20120529
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,35-44 years,61,22447798
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,45-54 years,104,18497230
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,55-64 years,166,11645356
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,65-74 years,237,8303274
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,75-84 years,321,4879353
+GR049,Acute rheumatic fever and chronic rheumatic heart diseases,85 years and over,150,1226998
+GR050,Hypertensive heart disease,10-14 years,1,10520197
+GR050,Hypertensive heart disease,15-19 years,3,10391004
+GR050,Hypertensive heart disease,20-24 years,21,9687814
+GR050,Hypertensive heart disease,25-34 years,139,20120529
+GR050,Hypertensive heart disease,35-44 years,643,22447798
+GR050,Hypertensive heart disease,45-54 years,1436,18497230
+GR050,Hypertensive heart disease,55-64 years,1684,11645356
+GR050,Hypertensive heart disease,65-74 years,1971,8303274
+GR050,Hypertensive heart disease,75-84 years,2269,4879353
+GR050,Hypertensive heart disease,85 years and over,1707,1226998
+GR051,Hypertensive heart and renal disease,15-19 years,1,10391004
+GR051,Hypertensive heart and renal disease,20-24 years,3,9687814
+GR051,Hypertensive heart and renal disease,25-34 years,18,20120529
+GR051,Hypertensive heart and renal disease,35-44 years,49,22447798
+GR051,Hypertensive heart and renal disease,45-54 years,87,18497230
+GR051,Hypertensive heart and renal disease,55-64 years,108,11645356
+GR051,Hypertensive heart and renal disease,65-74 years,206,8303274
+GR051,Hypertensive heart and renal disease,75-84 years,350,4879353
+GR051,Hypertensive heart and renal disease,85 years and over,341,1226998
+GR052,Acute myocardial infarction,Under 1 Year,10,2076969
+GR052,Acute myocardial infarction,1- 4 years,1,7861716
+GR052,Acute myocardial infarction,5- 9 years,3,10523277
+GR052,Acute myocardial infarction,10-14 years,1,10520197
+GR052,Acute myocardial infarction,15-19 years,8,10391004
+GR052,Acute myocardial infarction,20-24 years,22,9687814
+GR052,Acute myocardial infarction,25-34 years,269,20120529
+GR052,Acute myocardial infarction,35-44 years,2387,22447798
+GR052,Acute myocardial infarction,45-54 years,8265,18497230
+GR052,Acute myocardial infarction,55-64 years,14638,11645356
+GR052,Acute myocardial infarction,65-74 years,23823,8303274
+GR052,Acute myocardial infarction,75-84 years,31631,4879353
+GR052,Acute myocardial infarction,85 years and over,19243,1226998
+GR053,Other acute ischemic heart diseases,Under 1 Year,1,2076969
+GR053,Other acute ischemic heart diseases,1- 4 years,1,7861716
+GR053,Other acute ischemic heart diseases,15-19 years,3,10391004
+GR053,Other acute ischemic heart diseases,20-24 years,3,9687814
+GR053,Other acute ischemic heart diseases,25-34 years,13,20120529
+GR053,Other acute ischemic heart diseases,35-44 years,71,22447798
+GR053,Other acute ischemic heart diseases,45-54 years,217,18497230
+GR053,Other acute ischemic heart diseases,55-64 years,341,11645356
+GR053,Other acute ischemic heart diseases,65-74 years,398,8303274
+GR053,Other acute ischemic heart diseases,75-84 years,446,4879353
+GR053,Other acute ischemic heart diseases,85 years and over,254,1226998
+GR054,Atherosclerotic cardiovascular disease so described,10-14 years,1,10520197
+GR054,Atherosclerotic cardiovascular disease so described,20-24 years,12,9687814
+GR054,Atherosclerotic cardiovascular disease so described,25-34 years,115,20120529
+GR054,Atherosclerotic cardiovascular disease so described,35-44 years,1099,22447798
+GR054,Atherosclerotic cardiovascular disease so described,45-54 years,3977,18497230
+GR054,Atherosclerotic cardiovascular disease so described,55-64 years,6125,11645356
+GR054,Atherosclerotic cardiovascular disease so described,65-74 years,8069,8303274
+GR054,Atherosclerotic cardiovascular disease so described,75-84 years,9725,4879353
+GR054,Atherosclerotic cardiovascular disease so described,85 years and over,6758,1226998
+GR055,All other forms of chronic ischemic heart disease,Under 1 Year,6,2076969
+GR055,All other forms of chronic ischemic heart disease,1- 4 years,5,7861716
+GR055,All other forms of chronic ischemic heart disease,5- 9 years,2,10523277
+GR055,All other forms of chronic ischemic heart disease,10-14 years,2,10520197
+GR055,All other forms of chronic ischemic heart disease,15-19 years,10,10391004
+GR055,All other forms of chronic ischemic heart disease,20-24 years,23,9687814
+GR055,All other forms of chronic ischemic heart disease,25-34 years,307,20120529
+GR055,All other forms of chronic ischemic heart disease,35-44 years,2230,22447798
+GR055,All other forms of chronic ischemic heart disease,45-54 years,6690,18497230
+GR055,All other forms of chronic ischemic heart disease,55-64 years,12691,11645356
+GR055,All other forms of chronic ischemic heart disease,65-74 years,26264,8303274
+GR055,All other forms of chronic ischemic heart disease,75-84 years,42945,4879353
+GR055,All other forms of chronic ischemic heart disease,85 years and over,31435,1226998
+GR056,Acute and subacute endocarditis,Under 1 Year,2,2076969
+GR056,Acute and subacute endocarditis,5- 9 years,1,10523277
+GR056,Acute and subacute endocarditis,15-19 years,1,10391004
+GR056,Acute and subacute endocarditis,20-24 years,6,9687814
+GR056,Acute and subacute endocarditis,25-34 years,24,20120529
+GR056,Acute and subacute endocarditis,35-44 years,73,22447798
+GR056,Acute and subacute endocarditis,45-54 years,120,18497230
+GR056,Acute and subacute endocarditis,55-64 years,96,11645356
+GR056,Acute and subacute endocarditis,65-74 years,122,8303274
+GR056,Acute and subacute endocarditis,75-84 years,169,4879353
+GR056,Acute and subacute endocarditis,85 years and over,51,1226998
+GR057,Diseases of pericardium and acute myocarditis,Under 1 Year,10,2076969
+GR057,Diseases of pericardium and acute myocarditis,1- 4 years,13,7861716
+GR057,Diseases of pericardium and acute myocarditis,5- 9 years,4,10523277
+GR057,Diseases of pericardium and acute myocarditis,10-14 years,5,10520197
+GR057,Diseases of pericardium and acute myocarditis,15-19 years,10,10391004
+GR057,Diseases of pericardium and acute myocarditis,20-24 years,11,9687814
+GR057,Diseases of pericardium and acute myocarditis,25-34 years,29,20120529
+GR057,Diseases of pericardium and acute myocarditis,35-44 years,58,22447798
+GR057,Diseases of pericardium and acute myocarditis,45-54 years,46,18497230
+GR057,Diseases of pericardium and acute myocarditis,55-64 years,52,11645356
+GR057,Diseases of pericardium and acute myocarditis,65-74 years,67,8303274
+GR057,Diseases of pericardium and acute myocarditis,75-84 years,73,4879353
+GR057,Diseases of pericardium and acute myocarditis,85 years and over,26,1226998
+GR058,Heart failure,Under 1 Year,22,2076969
+GR058,Heart failure,1- 4 years,7,7861716
+GR058,Heart failure,5- 9 years,4,10523277
+GR058,Heart failure,10-14 years,5,10520197
+GR058,Heart failure,15-19 years,11,10391004
+GR058,Heart failure,20-24 years,9,9687814
+GR058,Heart failure,25-34 years,36,20120529
+GR058,Heart failure,35-44 years,159,22447798
+GR058,Heart failure,45-54 years,496,18497230
+GR058,Heart failure,55-64 years,1264,11645356
+GR058,Heart failure,65-74 years,3414,8303274
+GR058,Heart failure,75-84 years,7498,4879353
+GR058,Heart failure,85 years and over,8248,1226998
+GR059,All other forms of heart disease,Under 1 Year,204,2076969
+GR059,All other forms of heart disease,1- 4 years,78,7861716
+GR059,All other forms of heart disease,5- 9 years,49,10523277
+GR059,All other forms of heart disease,10-14 years,82,10520197
+GR059,All other forms of heart disease,15-19 years,196,10391004
+GR059,All other forms of heart disease,20-24 years,274,9687814
+GR059,All other forms of heart disease,25-34 years,960,20120529
+GR059,All other forms of heart disease,35-44 years,2456,22447798
+GR059,All other forms of heart disease,45-54 years,4489,18497230
+GR059,All other forms of heart disease,55-64 years,6120,11645356
+GR059,All other forms of heart disease,65-74 years,10018,8303274
+GR059,All other forms of heart disease,75-84 years,14266,4879353
+GR059,All other forms of heart disease,85 years and over,10683,1226998
+GR060,Essential (primary) hypertension and hypertensive renal disease,Under 1 Year,1,2076969
+GR060,Essential (primary) hypertension and hypertensive renal disease,5- 9 years,1,10523277
+GR060,Essential (primary) hypertension and hypertensive renal disease,10-14 years,2,10520197
+GR060,Essential (primary) hypertension and hypertensive renal disease,20-24 years,4,9687814
+GR060,Essential (primary) hypertension and hypertensive renal disease,25-34 years,39,20120529
+GR060,Essential (primary) hypertension and hypertensive renal disease,35-44 years,216,22447798
+GR060,Essential (primary) hypertension and hypertensive renal disease,45-54 years,555,18497230
+GR060,Essential (primary) hypertension and hypertensive renal disease,55-64 years,818,11645356
+GR060,Essential (primary) hypertension and hypertensive renal disease,65-74 years,1308,8303274
+GR060,Essential (primary) hypertension and hypertensive renal disease,75-84 years,2204,4879353
+GR060,Essential (primary) hypertension and hypertensive renal disease,85 years and over,1747,1226998
+GR061,Cerebrovascular diseases,Under 1 Year,74,2076969
+GR061,Cerebrovascular diseases,1- 4 years,19,7861716
+GR061,Cerebrovascular diseases,5- 9 years,12,10523277
+GR061,Cerebrovascular diseases,10-14 years,21,10520197
+GR061,Cerebrovascular diseases,15-19 years,38,10391004
+GR061,Cerebrovascular diseases,20-24 years,68,9687814
+GR061,Cerebrovascular diseases,25-34 years,308,20120529
+GR061,Cerebrovascular diseases,35-44 years,1297,22447798
+GR061,Cerebrovascular diseases,45-54 years,3235,18497230
+GR061,Cerebrovascular diseases,55-64 years,5496,11645356
+GR061,Cerebrovascular diseases,65-74 years,12042,8303274
+GR061,Cerebrovascular diseases,75-84 years,23946,4879353
+GR061,Cerebrovascular diseases,85 years and over,18212,1226998
+GR062,Atherosclerosis,20-24 years,2,9687814
+GR062,Atherosclerosis,25-34 years,6,20120529
+GR062,Atherosclerosis,35-44 years,35,22447798
+GR062,Atherosclerosis,45-54 years,119,18497230
+GR062,Atherosclerosis,55-64 years,294,11645356
+GR062,Atherosclerosis,65-74 years,800,8303274
+GR062,Atherosclerosis,75-84 years,1935,4879353
+GR062,Atherosclerosis,85 years and over,2166,1226998
+GR063,Aortic aneurysm and dissection,10-14 years,3,10520197
+GR063,Aortic aneurysm and dissection,15-19 years,7,10391004
+GR063,Aortic aneurysm and dissection,20-24 years,16,9687814
+GR063,Aortic aneurysm and dissection,25-34 years,78,20120529
+GR063,Aortic aneurysm and dissection,35-44 years,219,22447798
+GR063,Aortic aneurysm and dissection,45-54 years,492,18497230
+GR063,Aortic aneurysm and dissection,55-64 years,1111,11645356
+GR063,Aortic aneurysm and dissection,65-74 years,2730,8303274
+GR063,Aortic aneurysm and dissection,75-84 years,3443,4879353
+GR063,Aortic aneurysm and dissection,85 years and over,1562,1226998
+GR064,Other diseases of arteries arterioles and capillaries,Under 1 Year,6,2076969
+GR064,Other diseases of arteries arterioles and capillaries,1- 4 years,2,7861716
+GR064,Other diseases of arteries arterioles and capillaries,5- 9 years,1,10523277
+GR064,Other diseases of arteries arterioles and capillaries,10-14 years,3,10520197
+GR064,Other diseases of arteries arterioles and capillaries,15-19 years,2,10391004
+GR064,Other diseases of arteries arterioles and capillaries,20-24 years,8,9687814
+GR064,Other diseases of arteries arterioles and capillaries,25-34 years,25,20120529
+GR064,Other diseases of arteries arterioles and capillaries,35-44 years,57,22447798
+GR064,Other diseases of arteries arterioles and capillaries,45-54 years,207,18497230
+GR064,Other diseases of arteries arterioles and capillaries,55-64 years,419,11645356
+GR064,Other diseases of arteries arterioles and capillaries,65-74 years,1041,8303274
+GR064,Other diseases of arteries arterioles and capillaries,75-84 years,1576,4879353
+GR064,Other diseases of arteries arterioles and capillaries,85 years and over,1075,1226998
+GR065,Other disorders of circulatory system,Under 1 Year,16,2076969
+GR065,Other disorders of circulatory system,1- 4 years,2,7861716
+GR065,Other disorders of circulatory system,5- 9 years,3,10523277
+GR065,Other disorders of circulatory system,10-14 years,3,10520197
+GR065,Other disorders of circulatory system,15-19 years,6,10391004
+GR065,Other disorders of circulatory system,20-24 years,10,9687814
+GR065,Other disorders of circulatory system,25-34 years,57,20120529
+GR065,Other disorders of circulatory system,35-44 years,190,22447798
+GR065,Other disorders of circulatory system,45-54 years,295,18497230
+GR065,Other disorders of circulatory system,55-64 years,264,11645356
+GR065,Other disorders of circulatory system,65-74 years,390,8303274
+GR065,Other disorders of circulatory system,75-84 years,472,4879353
+GR065,Other disorders of circulatory system,85 years and over,273,1226998
+GR066,Influenza,Under 1 Year,5,2076969
+GR066,Influenza,1- 4 years,4,7861716
+GR066,Influenza,5- 9 years,1,10523277
+GR066,Influenza,10-14 years,4,10520197
+GR066,Influenza,15-19 years,3,10391004
+GR066,Influenza,20-24 years,3,9687814
+GR066,Influenza,25-34 years,5,20120529
+GR066,Influenza,35-44 years,14,22447798
+GR066,Influenza,45-54 years,25,18497230
+GR066,Influenza,55-64 years,44,11645356
+GR066,Influenza,65-74 years,106,8303274
+GR066,Influenza,75-84 years,196,4879353
+GR066,Influenza,85 years and over,254,1226998
+GR067,Pneumonia,Under 1 Year,158,2076969
+GR067,Pneumonia,1- 4 years,50,7861716
+GR067,Pneumonia,5- 9 years,26,10523277
+GR067,Pneumonia,10-14 years,17,10520197
+GR067,Pneumonia,15-19 years,32,10391004
+GR067,Pneumonia,20-24 years,64,9687814
+GR067,Pneumonia,25-34 years,199,20120529
+GR067,Pneumonia,35-44 years,616,22447798
+GR067,Pneumonia,45-54 years,1041,18497230
+GR067,Pneumonia,55-64 years,1636,11645356
+GR067,Pneumonia,65-74 years,3907,8303274
+GR067,Pneumonia,75-84 years,9555,4879353
+GR067,Pneumonia,85 years and over,10691,1226998
+GR068,Acute bronchitis and bronchiolitis,Under 1 Year,24,2076969
+GR068,Acute bronchitis and bronchiolitis,1- 4 years,4,7861716
+GR068,Acute bronchitis and bronchiolitis,5- 9 years,1,10523277
+GR068,Acute bronchitis and bronchiolitis,10-14 years,1,10520197
+GR068,Acute bronchitis and bronchiolitis,15-19 years,3,10391004
+GR068,Acute bronchitis and bronchiolitis,25-34 years,4,20120529
+GR068,Acute bronchitis and bronchiolitis,35-44 years,6,22447798
+GR068,Acute bronchitis and bronchiolitis,45-54 years,3,18497230
+GR068,Acute bronchitis and bronchiolitis,55-64 years,3,11645356
+GR068,Acute bronchitis and bronchiolitis,65-74 years,14,8303274
+GR068,Acute bronchitis and bronchiolitis,75-84 years,27,4879353
+GR068,Acute bronchitis and bronchiolitis,85 years and over,29,1226998
+GR069,Unspecified acute lower respiratory infection,Under 1 Year,1,2076969
+GR069,Unspecified acute lower respiratory infection,5- 9 years,1,10523277
+GR069,Unspecified acute lower respiratory infection,15-19 years,1,10391004
+GR069,Unspecified acute lower respiratory infection,25-34 years,2,20120529
+GR069,Unspecified acute lower respiratory infection,35-44 years,1,22447798
+GR069,Unspecified acute lower respiratory infection,45-54 years,1,18497230
+GR069,Unspecified acute lower respiratory infection,65-74 years,8,8303274
+GR069,Unspecified acute lower respiratory infection,75-84 years,8,4879353
+GR069,Unspecified acute lower respiratory infection,85 years and over,18,1226998
+GR070,Bronchitis chronic and unspecified,Under 1 Year,9,2076969
+GR070,Bronchitis chronic and unspecified,1- 4 years,7,7861716
+GR070,Bronchitis chronic and unspecified,5- 9 years,2,10523277
+GR070,Bronchitis chronic and unspecified,10-14 years,1,10520197
+GR070,Bronchitis chronic and unspecified,15-19 years,2,10391004
+GR070,Bronchitis chronic and unspecified,20-24 years,2,9687814
+GR070,Bronchitis chronic and unspecified,25-34 years,7,20120529
+GR070,Bronchitis chronic and unspecified,35-44 years,14,22447798
+GR070,Bronchitis chronic and unspecified,45-54 years,16,18497230
+GR070,Bronchitis chronic and unspecified,55-64 years,32,11645356
+GR070,Bronchitis chronic and unspecified,65-74 years,79,8303274
+GR070,Bronchitis chronic and unspecified,75-84 years,174,4879353
+GR070,Bronchitis chronic and unspecified,85 years and over,158,1226998
+GR071,Emphysema,Under 1 Year,3,2076969
+GR071,Emphysema,15-19 years,1,10391004
+GR071,Emphysema,20-24 years,4,9687814
+GR071,Emphysema,25-34 years,5,20120529
+GR071,Emphysema,35-44 years,46,22447798
+GR071,Emphysema,45-54 years,280,18497230
+GR071,Emphysema,55-64 years,943,11645356
+GR071,Emphysema,65-74 years,2738,8303274
+GR071,Emphysema,75-84 years,3373,4879353
+GR071,Emphysema,85 years and over,1278,1226998
+GR072,Asthma,Under 1 Year,6,2076969
+GR072,Asthma,1- 4 years,20,7861716
+GR072,Asthma,5- 9 years,22,10523277
+GR072,Asthma,10-14 years,52,10520197
+GR072,Asthma,15-19 years,52,10391004
+GR072,Asthma,20-24 years,50,9687814
+GR072,Asthma,25-34 years,142,20120529
+GR072,Asthma,35-44 years,196,22447798
+GR072,Asthma,45-54 years,238,18497230
+GR072,Asthma,55-64 years,200,11645356
+GR072,Asthma,65-74 years,253,8303274
+GR072,Asthma,75-84 years,243,4879353
+GR072,Asthma,85 years and over,158,1226998
+GR073,Other chronic lower respiratory diseases,Under 1 Year,5,2076969
+GR073,Other chronic lower respiratory diseases,1- 4 years,1,7861716
+GR073,Other chronic lower respiratory diseases,5- 9 years,2,10523277
+GR073,Other chronic lower respiratory diseases,10-14 years,1,10520197
+GR073,Other chronic lower respiratory diseases,15-19 years,3,10391004
+GR073,Other chronic lower respiratory diseases,20-24 years,6,9687814
+GR073,Other chronic lower respiratory diseases,25-34 years,11,20120529
+GR073,Other chronic lower respiratory diseases,35-44 years,181,22447798
+GR073,Other chronic lower respiratory diseases,45-54 years,1127,18497230
+GR073,Other chronic lower respiratory diseases,55-64 years,4389,11645356
+GR073,Other chronic lower respiratory diseases,65-74 years,13140,8303274
+GR073,Other chronic lower respiratory diseases,75-84 years,20048,4879353
+GR073,Other chronic lower respiratory diseases,85 years and over,10282,1226998
+GR074,Pneumoconioses and chemical effects,25-34 years,3,20120529
+GR074,Pneumoconioses and chemical effects,35-44 years,6,22447798
+GR074,Pneumoconioses and chemical effects,45-54 years,12,18497230
+GR074,Pneumoconioses and chemical effects,55-64 years,54,11645356
+GR074,Pneumoconioses and chemical effects,65-74 years,265,8303274
+GR074,Pneumoconioses and chemical effects,75-84 years,467,4879353
+GR074,Pneumoconioses and chemical effects,85 years and over,306,1226998
+GR075,Pneumonitis due to solids and liquids,Under 1 Year,4,2076969
+GR075,Pneumonitis due to solids and liquids,1- 4 years,5,7861716
+GR075,Pneumonitis due to solids and liquids,5- 9 years,5,10523277
+GR075,Pneumonitis due to solids and liquids,10-14 years,4,10520197
+GR075,Pneumonitis due to solids and liquids,15-19 years,8,10391004
+GR075,Pneumonitis due to solids and liquids,20-24 years,15,9687814
+GR075,Pneumonitis due to solids and liquids,25-34 years,35,20120529
+GR075,Pneumonitis due to solids and liquids,35-44 years,115,22447798
+GR075,Pneumonitis due to solids and liquids,45-54 years,225,18497230
+GR075,Pneumonitis due to solids and liquids,55-64 years,354,11645356
+GR075,Pneumonitis due to solids and liquids,65-74 years,1195,8303274
+GR075,Pneumonitis due to solids and liquids,75-84 years,3038,4879353
+GR075,Pneumonitis due to solids and liquids,85 years and over,3387,1226998
+GR076,Other diseases of respiratory system,Under 1 Year,154,2076969
+GR076,Other diseases of respiratory system,1- 4 years,45,7861716
+GR076,Other diseases of respiratory system,5- 9 years,21,10523277
+GR076,Other diseases of respiratory system,10-14 years,17,10520197
+GR076,Other diseases of respiratory system,15-19 years,30,10391004
+GR076,Other diseases of respiratory system,20-24 years,43,9687814
+GR076,Other diseases of respiratory system,25-34 years,127,20120529
+GR076,Other diseases of respiratory system,35-44 years,335,22447798
+GR076,Other diseases of respiratory system,45-54 years,712,18497230
+GR076,Other diseases of respiratory system,55-64 years,1324,11645356
+GR076,Other diseases of respiratory system,65-74 years,2961,8303274
+GR076,Other diseases of respiratory system,75-84 years,4415,4879353
+GR076,Other diseases of respiratory system,85 years and over,2205,1226998
+GR077,Peptic ulcer,15-19 years,3,10391004
+GR077,Peptic ulcer,20-24 years,4,9687814
+GR077,Peptic ulcer,25-34 years,6,20120529
+GR077,Peptic ulcer,35-44 years,79,22447798
+GR077,Peptic ulcer,45-54 years,217,18497230
+GR077,Peptic ulcer,55-64 years,284,11645356
+GR077,Peptic ulcer,65-74 years,442,8303274
+GR077,Peptic ulcer,75-84 years,667,4879353
+GR077,Peptic ulcer,85 years and over,499,1226998
+GR078,Diseases of appendix,Under 1 Year,2,2076969
+GR078,Diseases of appendix,1- 4 years,2,7861716
+GR078,Diseases of appendix,5- 9 years,1,10523277
+GR078,Diseases of appendix,10-14 years,3,10520197
+GR078,Diseases of appendix,15-19 years,2,10391004
+GR078,Diseases of appendix,20-24 years,5,9687814
+GR078,Diseases of appendix,25-34 years,10,20120529
+GR078,Diseases of appendix,35-44 years,16,22447798
+GR078,Diseases of appendix,45-54 years,29,18497230
+GR078,Diseases of appendix,55-64 years,43,11645356
+GR078,Diseases of appendix,65-74 years,40,8303274
+GR078,Diseases of appendix,75-84 years,60,4879353
+GR078,Diseases of appendix,85 years and over,24,1226998
+GR079,Hernia,Under 1 Year,28,2076969
+GR079,Hernia,1- 4 years,3,7861716
+GR079,Hernia,5- 9 years,1,10523277
+GR079,Hernia,10-14 years,2,10520197
+GR079,Hernia,15-19 years,1,10391004
+GR079,Hernia,20-24 years,2,9687814
+GR079,Hernia,25-34 years,1,20120529
+GR079,Hernia,35-44 years,13,22447798
+GR079,Hernia,45-54 years,45,18497230
+GR079,Hernia,55-64 years,49,11645356
+GR079,Hernia,65-74 years,92,8303274
+GR079,Hernia,75-84 years,195,4879353
+GR079,Hernia,85 years and over,154,1226998
+GR080,Alcoholic liver disease,20-24 years,5,9687814
+GR080,Alcoholic liver disease,25-34 years,202,20120529
+GR080,Alcoholic liver disease,35-44 years,1533,22447798
+GR080,Alcoholic liver disease,45-54 years,2968,18497230
+GR080,Alcoholic liver disease,55-64 years,2216,11645356
+GR080,Alcoholic liver disease,65-74 years,1433,8303274
+GR080,Alcoholic liver disease,75-84 years,561,4879353
+GR080,Alcoholic liver disease,85 years and over,65,1226998
+GR081,Other chronic liver disease and cirrhosis,Under 1 Year,3,2076969
+GR081,Other chronic liver disease and cirrhosis,1- 4 years,1,7861716
+GR081,Other chronic liver disease and cirrhosis,10-14 years,2,10520197
+GR081,Other chronic liver disease and cirrhosis,15-19 years,3,10391004
+GR081,Other chronic liver disease and cirrhosis,20-24 years,11,9687814
+GR081,Other chronic liver disease and cirrhosis,25-34 years,78,20120529
+GR081,Other chronic liver disease and cirrhosis,35-44 years,781,22447798
+GR081,Other chronic liver disease and cirrhosis,45-54 years,2007,18497230
+GR081,Other chronic liver disease and cirrhosis,55-64 years,1789,11645356
+GR081,Other chronic liver disease and cirrhosis,65-74 years,1884,8303274
+GR081,Other chronic liver disease and cirrhosis,75-84 years,1313,4879353
+GR081,Other chronic liver disease and cirrhosis,85 years and over,356,1226998
+GR082,Cholelithiasis and other disorders of gallbladder,10-14 years,1,10520197
+GR082,Cholelithiasis and other disorders of gallbladder,15-19 years,1,10391004
+GR082,Cholelithiasis and other disorders of gallbladder,20-24 years,3,9687814
+GR082,Cholelithiasis and other disorders of gallbladder,25-34 years,7,20120529
+GR082,Cholelithiasis and other disorders of gallbladder,35-44 years,27,22447798
+GR082,Cholelithiasis and other disorders of gallbladder,45-54 years,53,18497230
+GR082,Cholelithiasis and other disorders of gallbladder,55-64 years,110,11645356
+GR082,Cholelithiasis and other disorders of gallbladder,65-74 years,242,8303274
+GR082,Cholelithiasis and other disorders of gallbladder,75-84 years,461,4879353
+GR082,Cholelithiasis and other disorders of gallbladder,85 years and over,339,1226998
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,Under 1 Year,3,2076969
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,1- 4 years,2,7861716
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,5- 9 years,1,10523277
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,10-14 years,1,10520197
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,20-24 years,1,9687814
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,25-34 years,3,20120529
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,35-44 years,1,22447798
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,45-54 years,11,18497230
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,55-64 years,8,11645356
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,65-74 years,12,8303274
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,75-84 years,26,4879353
+GR083,Acute and rapidly progressive nephritic and nephrotic syndrome,85 years and over,22,1226998
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,10-14 years,1,10520197
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,20-24 years,2,9687814
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,25-34 years,11,20120529
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,35-44 years,20,22447798
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,45-54 years,27,18497230
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,55-64 years,31,11645356
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,65-74 years,54,8303274
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,75-84 years,83,4879353
+GR084,Chronic glomerulonephritis nephritis and nephropathy not specified as acute or chronicand renal sclerosis unspecified,85 years and over,55,1226998
+GR085,Renal failure,Under 1 Year,100,2076969
+GR085,Renal failure,1- 4 years,5,7861716
+GR085,Renal failure,5- 9 years,6,10523277
+GR085,Renal failure,10-14 years,8,10520197
+GR085,Renal failure,15-19 years,18,10391004
+GR085,Renal failure,20-24 years,22,9687814
+GR085,Renal failure,25-34 years,115,20120529
+GR085,Renal failure,35-44 years,407,22447798
+GR085,Renal failure,45-54 years,941,18497230
+GR085,Renal failure,55-64 years,1607,11645356
+GR085,Renal failure,65-74 years,3492,8303274
+GR085,Renal failure,75-84 years,6102,4879353
+GR085,Renal failure,85 years and over,4591,1226998
+GR086,Other disorders of kidney,35-44 years,1,22447798
+GR086,Other disorders of kidney,45-54 years,3,18497230
+GR086,Other disorders of kidney,55-64 years,5,11645356
+GR086,Other disorders of kidney,65-74 years,6,8303274
+GR086,Other disorders of kidney,75-84 years,2,4879353
+GR086,Other disorders of kidney,85 years and over,3,1226998
+GR087,Infections of kidney,Under 1 Year,3,2076969
+GR087,Infections of kidney,15-19 years,1,10391004
+GR087,Infections of kidney,25-34 years,3,20120529
+GR087,Infections of kidney,35-44 years,8,22447798
+GR087,Infections of kidney,45-54 years,15,18497230
+GR087,Infections of kidney,55-64 years,15,11645356
+GR087,Infections of kidney,65-74 years,26,8303274
+GR087,Infections of kidney,75-84 years,74,4879353
+GR087,Infections of kidney,85 years and over,69,1226998
+GR088,Hyperplasia of prostate,35-44 years,1,22447798
+GR088,Hyperplasia of prostate,45-54 years,1,18497230
+GR088,Hyperplasia of prostate,55-64 years,11,11645356
+GR088,Hyperplasia of prostate,65-74 years,38,8303274
+GR088,Hyperplasia of prostate,75-84 years,159,4879353
+GR088,Hyperplasia of prostate,85 years and over,222,1226998
+GR092,Certain conditions originating in the perinatal period,Under 1 Year,7872,2076969
+GR092,Certain conditions originating in the perinatal period,1- 4 years,52,7861716
+GR092,Certain conditions originating in the perinatal period,5- 9 years,13,10523277
+GR092,Certain conditions originating in the perinatal period,10-14 years,10,10520197
+GR092,Certain conditions originating in the perinatal period,15-19 years,9,10391004
+GR092,Certain conditions originating in the perinatal period,20-24 years,2,9687814
+GR092,Certain conditions originating in the perinatal period,25-34 years,6,20120529
+GR092,Certain conditions originating in the perinatal period,35-44 years,2,22447798
+GR092,Certain conditions originating in the perinatal period,45-54 years,2,18497230
+GR093,Congenital malformations deformations and chromosomal abnormalities,Under 1 Year,3028,2076969
+GR093,Congenital malformations deformations and chromosomal abnormalities,1- 4 years,259,7861716
+GR093,Congenital malformations deformations and chromosomal abnormalities,5- 9 years,105,10523277
+GR093,Congenital malformations deformations and chromosomal abnormalities,10-14 years,102,10520197
+GR093,Congenital malformations deformations and chromosomal abnormalities,15-19 years,137,10391004
+GR093,Congenital malformations deformations and chromosomal abnormalities,20-24 years,131,9687814
+GR093,Congenital malformations deformations and chromosomal abnormalities,25-34 years,279,20120529
+GR093,Congenital malformations deformations and chromosomal abnormalities,35-44 years,316,22447798
+GR093,Congenital malformations deformations and chromosomal abnormalities,45-54 years,347,18497230
+GR093,Congenital malformations deformations and chromosomal abnormalities,55-64 years,264,11645356
+GR093,Congenital malformations deformations and chromosomal abnormalities,65-74 years,222,8303274
+GR093,Congenital malformations deformations and chromosomal abnormalities,75-84 years,197,4879353
+GR093,Congenital malformations deformations and chromosomal abnormalities,85 years and over,130,1226998
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,Under 1 Year,2156,2076969
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,1- 4 years,137,7861716
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,5- 9 years,48,10523277
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,10-14 years,51,10520197
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,15-19 years,196,10391004
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,20-24 years,385,9687814
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,25-34 years,1060,20120529
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,35-44 years,1994,22447798
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,45-54 years,2123,18497230
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,55-64 years,1429,11645356
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,65-74 years,1708,8303274
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,75-84 years,2244,4879353
+GR094,Symptoms signs and abnormal clinical and laboratory findings not elsewhere classified,85 years and over,2242,1226998
+GR095,All other diseases (Residual),Under 1 Year,629,2076969
+GR095,All other diseases (Residual),1- 4 years,338,7861716
+GR095,All other diseases (Residual),5- 9 years,198,10523277
+GR095,All other diseases (Residual),10-14 years,276,10520197
+GR095,All other diseases (Residual),15-19 years,432,10391004
+GR095,All other diseases (Residual),20-24 years,625,9687814
+GR095,All other diseases (Residual),25-34 years,1811,20120529
+GR095,All other diseases (Residual),35-44 years,4801,22447798
+GR095,All other diseases (Residual),45-54 years,7911,18497230
+GR095,All other diseases (Residual),55-64 years,8236,11645356
+GR095,All other diseases (Residual),65-74 years,12321,8303274
+GR095,All other diseases (Residual),75-84 years,19102,4879353
+GR095,All other diseases (Residual),85 years and over,15536,1226998
+GR096,Motor vehicle accidents,Under 1 Year,90,2076969
+GR096,Motor vehicle accidents,1- 4 years,368,7861716
+GR096,Motor vehicle accidents,5- 9 years,429,10523277
+GR096,Motor vehicle accidents,10-14 years,614,10520197
+GR096,Motor vehicle accidents,15-19 years,3527,10391004
+GR096,Motor vehicle accidents,20-24 years,3989,9687814
+GR096,Motor vehicle accidents,25-34 years,5135,20120529
+GR096,Motor vehicle accidents,35-44 years,4940,22447798
+GR096,Motor vehicle accidents,45-54 years,3780,18497230
+GR096,Motor vehicle accidents,55-64 years,2306,11645356
+GR096,Motor vehicle accidents,65-74 years,1802,8303274
+GR096,Motor vehicle accidents,75-84 years,1739,4879353
+GR096,Motor vehicle accidents,85 years and over,706,1226998
+GR097,Other land transport accidents,Under 1 Year,2,2076969
+GR097,Other land transport accidents,1- 4 years,17,7861716
+GR097,Other land transport accidents,5- 9 years,21,10523277
+GR097,Other land transport accidents,10-14 years,40,10520197
+GR097,Other land transport accidents,15-19 years,99,10391004
+GR097,Other land transport accidents,20-24 years,95,9687814
+GR097,Other land transport accidents,25-34 years,171,20120529
+GR097,Other land transport accidents,35-44 years,258,22447798
+GR097,Other land transport accidents,45-54 years,166,18497230
+GR097,Other land transport accidents,55-64 years,98,11645356
+GR097,Other land transport accidents,65-74 years,75,8303274
+GR097,Other land transport accidents,75-84 years,57,4879353
+GR097,Other land transport accidents,85 years and over,19,1226998
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,Under 1 Year,2,2076969
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,1- 4 years,6,7861716
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,5- 9 years,14,10523277
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,10-14 years,20,10520197
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,15-19 years,67,10391004
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,20-24 years,113,9687814
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,25-34 years,264,20120529
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,35-44 years,362,22447798
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,45-54 years,314,18497230
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,55-64 years,213,11645356
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,65-74 years,144,8303274
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,75-84 years,62,4879353
+GR098,Water air and space and other and unspecified transport accidents and their sequelae,85 years and over,9,1226998
+GR099,Falls,Under 1 Year,6,2076969
+GR099,Falls,1- 4 years,23,7861716
+GR099,Falls,5- 9 years,14,10523277
+GR099,Falls,10-14 years,16,10520197
+GR099,Falls,15-19 years,88,10391004
+GR099,Falls,20-24 years,115,9687814
+GR099,Falls,25-34 years,272,20120529
+GR099,Falls,35-44 years,496,22447798
+GR099,Falls,45-54 years,690,18497230
+GR099,Falls,55-64 years,680,11645356
+GR099,Falls,65-74 years,991,8303274
+GR099,Falls,75-84 years,1947,4879353
+GR099,Falls,85 years and over,1784,1226998
+GR100,Accidental discharge of firearms,1- 4 years,11,7861716
+GR100,Accidental discharge of firearms,5- 9 years,16,10523277
+GR100,Accidental discharge of firearms,10-14 years,46,10520197
+GR100,Accidental discharge of firearms,15-19 years,97,10391004
+GR100,Accidental discharge of firearms,20-24 years,86,9687814
+GR100,Accidental discharge of firearms,25-34 years,109,20120529
+GR100,Accidental discharge of firearms,35-44 years,125,22447798
+GR100,Accidental discharge of firearms,45-54 years,69,18497230
+GR100,Accidental discharge of firearms,55-64 years,44,11645356
+GR100,Accidental discharge of firearms,65-74 years,34,8303274
+GR100,Accidental discharge of firearms,75-84 years,23,4879353
+GR100,Accidental discharge of firearms,85 years and over,11,1226998
+GR101,Accidental drowning and submersion,Under 1 Year,43,2076969
+GR101,Accidental drowning and submersion,1- 4 years,316,7861716
+GR101,Accidental drowning and submersion,5- 9 years,137,10523277
+GR101,Accidental drowning and submersion,10-14 years,130,10520197
+GR101,Accidental drowning and submersion,15-19 years,339,10391004
+GR101,Accidental drowning and submersion,20-24 years,244,9687814
+GR101,Accidental drowning and submersion,25-34 years,364,20120529
+GR101,Accidental drowning and submersion,35-44 years,406,22447798
+GR101,Accidental drowning and submersion,45-54 years,299,18497230
+GR101,Accidental drowning and submersion,55-64 years,179,11645356
+GR101,Accidental drowning and submersion,65-74 years,133,8303274
+GR101,Accidental drowning and submersion,75-84 years,88,4879353
+GR101,Accidental drowning and submersion,85 years and over,34,1226998
+GR102,Accidental exposure to smoke fire and flames,Under 1 Year,20,2076969
+GR102,Accidental exposure to smoke fire and flames,1- 4 years,174,7861716
+GR102,Accidental exposure to smoke fire and flames,5- 9 years,109,10523277
+GR102,Accidental exposure to smoke fire and flames,10-14 years,36,10520197
+GR102,Accidental exposure to smoke fire and flames,15-19 years,44,10391004
+GR102,Accidental exposure to smoke fire and flames,20-24 years,77,9687814
+GR102,Accidental exposure to smoke fire and flames,25-34 years,157,20120529
+GR102,Accidental exposure to smoke fire and flames,35-44 years,268,22447798
+GR102,Accidental exposure to smoke fire and flames,45-54 years,303,18497230
+GR102,Accidental exposure to smoke fire and flames,55-64 years,241,11645356
+GR102,Accidental exposure to smoke fire and flames,65-74 years,232,8303274
+GR102,Accidental exposure to smoke fire and flames,75-84 years,244,4879353
+GR102,Accidental exposure to smoke fire and flames,85 years and over,115,1226998
+GR103,Accidental poisoning and exposure to noxious substances,Under 1 Year,11,2076969
+GR103,Accidental poisoning and exposure to noxious substances,1- 4 years,21,7861716
+GR103,Accidental poisoning and exposure to noxious substances,5- 9 years,12,10523277
+GR103,Accidental poisoning and exposure to noxious substances,10-14 years,15,10520197
+GR103,Accidental poisoning and exposure to noxious substances,15-19 years,273,10391004
+GR103,Accidental poisoning and exposure to noxious substances,20-24 years,647,9687814
+GR103,Accidental poisoning and exposure to noxious substances,25-34 years,1820,20120529
+GR103,Accidental poisoning and exposure to noxious substances,35-44 years,3384,22447798
+GR103,Accidental poisoning and exposure to noxious substances,45-54 years,2223,18497230
+GR103,Accidental poisoning and exposure to noxious substances,55-64 years,401,11645356
+GR103,Accidental poisoning and exposure to noxious substances,65-74 years,147,8303274
+GR103,Accidental poisoning and exposure to noxious substances,75-84 years,102,4879353
+GR103,Accidental poisoning and exposure to noxious substances,85 years and over,76,1226998
+GR104,Other and unspecified nontransport accidents and their sequelae,Under 1 Year,327,2076969
+GR104,Other and unspecified nontransport accidents and their sequelae,1- 4 years,162,7861716
+GR104,Other and unspecified nontransport accidents and their sequelae,5- 9 years,72,10523277
+GR104,Other and unspecified nontransport accidents and their sequelae,10-14 years,120,10520197
+GR104,Other and unspecified nontransport accidents and their sequelae,15-19 years,223,10391004
+GR104,Other and unspecified nontransport accidents and their sequelae,20-24 years,337,9687814
+GR104,Other and unspecified nontransport accidents and their sequelae,25-34 years,767,20120529
+GR104,Other and unspecified nontransport accidents and their sequelae,35-44 years,1205,22447798
+GR104,Other and unspecified nontransport accidents and their sequelae,45-54 years,1219,18497230
+GR104,Other and unspecified nontransport accidents and their sequelae,55-64 years,971,11645356
+GR104,Other and unspecified nontransport accidents and their sequelae,65-74 years,1081,8303274
+GR104,Other and unspecified nontransport accidents and their sequelae,75-84 years,1801,4879353
+GR104,Other and unspecified nontransport accidents and their sequelae,85 years and over,1659,1226998
+GR105,Intentional self-harm (suicide) by discharge of firearms,10-14 years,90,10520197
+GR105,Intentional self-harm (suicide) by discharge of firearms,15-19 years,793,10391004
+GR105,Intentional self-harm (suicide) by discharge of firearms,20-24 years,1250,9687814
+GR105,Intentional self-harm (suicide) by discharge of firearms,25-34 years,2123,20120529
+GR105,Intentional self-harm (suicide) by discharge of firearms,35-44 years,2657,22447798
+GR105,Intentional self-harm (suicide) by discharge of firearms,45-54 years,2409,18497230
+GR105,Intentional self-harm (suicide) by discharge of firearms,55-64 years,1568,11645356
+GR105,Intentional self-harm (suicide) by discharge of firearms,65-74 years,1528,8303274
+GR105,Intentional self-harm (suicide) by discharge of firearms,75-84 years,1505,4879353
+GR105,Intentional self-harm (suicide) by discharge of firearms,85 years and over,526,1226998
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,5- 9 years,6,10523277
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,10-14 years,148,10520197
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,15-19 years,558,10391004
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,20-24 years,823,9687814
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,25-34 years,1815,20120529
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,35-44 years,2457,22447798
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,45-54 years,1740,18497230
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,55-64 years,697,11645356
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,65-74 years,360,8303274
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,75-84 years,379,4879353
+GR106,Intentional self-harm (suicide) by other and unspecified means and their sequelae,85 years and over,179,1226998
+GR107,Assault (homicide) by discharge of firearms,Under 1 Year,9,2076969
+GR107,Assault (homicide) by discharge of firearms,1- 4 years,17,7861716
+GR107,Assault (homicide) by discharge of firearms,5- 9 years,28,10523277
+GR107,Assault (homicide) by discharge of firearms,10-14 years,110,10520197
+GR107,Assault (homicide) by discharge of firearms,15-19 years,1381,10391004
+GR107,Assault (homicide) by discharge of firearms,20-24 years,2167,9687814
+GR107,Assault (homicide) by discharge of firearms,25-34 years,2650,20120529
+GR107,Assault (homicide) by discharge of firearms,35-44 years,1487,22447798
+GR107,Assault (homicide) by discharge of firearms,45-54 years,730,18497230
+GR107,Assault (homicide) by discharge of firearms,55-64 years,266,11645356
+GR107,Assault (homicide) by discharge of firearms,65-74 years,108,8303274
+GR107,Assault (homicide) by discharge of firearms,75-84 years,37,4879353
+GR107,Assault (homicide) by discharge of firearms,85 years and over,9,1226998
+GR108,Assault (homicide) by other and unspecified means and their sequelae,Under 1 Year,194,2076969
+GR108,Assault (homicide) by other and unspecified means and their sequelae,1- 4 years,181,7861716
+GR108,Assault (homicide) by other and unspecified means and their sequelae,5- 9 years,49,10523277
+GR108,Assault (homicide) by other and unspecified means and their sequelae,10-14 years,40,10520197
+GR108,Assault (homicide) by other and unspecified means and their sequelae,15-19 years,232,10391004
+GR108,Assault (homicide) by other and unspecified means and their sequelae,20-24 years,423,9687814
+GR108,Assault (homicide) by other and unspecified means and their sequelae,25-34 years,711,20120529
+GR108,Assault (homicide) by other and unspecified means and their sequelae,35-44 years,832,22447798
+GR108,Assault (homicide) by other and unspecified means and their sequelae,45-54 years,554,18497230
+GR108,Assault (homicide) by other and unspecified means and their sequelae,55-64 years,271,11645356
+GR108,Assault (homicide) by other and unspecified means and their sequelae,65-74 years,171,8303274
+GR108,Assault (homicide) by other and unspecified means and their sequelae,75-84 years,117,4879353
+GR108,Assault (homicide) by other and unspecified means and their sequelae,85 years and over,31,1226998
+GR109,Legal intervention,10-14 years,3,10520197
+GR109,Legal intervention,15-19 years,27,10391004
+GR109,Legal intervention,20-24 years,44,9687814
+GR109,Legal intervention,25-34 years,108,20120529
+GR109,Legal intervention,35-44 years,96,22447798
+GR109,Legal intervention,45-54 years,54,18497230
+GR109,Legal intervention,55-64 years,9,11645356
+GR109,Legal intervention,65-74 years,5,8303274
+GR109,Legal intervention,75-84 years,1,4879353
+GR109,Legal intervention,85 years and over,1,1226998
+GR110,Discharge of firearms undetermined intent,5- 9 years,2,10523277
+GR110,Discharge of firearms undetermined intent,10-14 years,7,10520197
+GR110,Discharge of firearms undetermined intent,15-19 years,25,10391004
+GR110,Discharge of firearms undetermined intent,20-24 years,37,9687814
+GR110,Discharge of firearms undetermined intent,25-34 years,43,20120529
+GR110,Discharge of firearms undetermined intent,35-44 years,30,22447798
+GR110,Discharge of firearms undetermined intent,45-54 years,18,18497230
+GR110,Discharge of firearms undetermined intent,55-64 years,11,11645356
+GR110,Discharge of firearms undetermined intent,65-74 years,9,8303274
+GR110,Discharge of firearms undetermined intent,75-84 years,5,4879353
+GR110,Discharge of firearms undetermined intent,85 years and over,2,1226998
+GR111,Other and unspecified events of undetermined intent and their sequelae,Under 1 Year,27,2076969
+GR111,Other and unspecified events of undetermined intent and their sequelae,1- 4 years,26,7861716
+GR111,Other and unspecified events of undetermined intent and their sequelae,5- 9 years,11,10523277
+GR111,Other and unspecified events of undetermined intent and their sequelae,10-14 years,30,10520197
+GR111,Other and unspecified events of undetermined intent and their sequelae,15-19 years,68,10391004
+GR111,Other and unspecified events of undetermined intent and their sequelae,20-24 years,155,9687814
+GR111,Other and unspecified events of undetermined intent and their sequelae,25-34 years,446,20120529
+GR111,Other and unspecified events of undetermined intent and their sequelae,35-44 years,855,22447798
+GR111,Other and unspecified events of undetermined intent and their sequelae,45-54 years,552,18497230
+GR111,Other and unspecified events of undetermined intent and their sequelae,55-64 years,141,11645356
+GR111,Other and unspecified events of undetermined intent and their sequelae,65-74 years,61,8303274
+GR111,Other and unspecified events of undetermined intent and their sequelae,75-84 years,44,4879353
+GR111,Other and unspecified events of undetermined intent and their sequelae,85 years and over,19,1226998
+GR112,Operations of war and their sequelae,45-54 years,2,18497230
+GR112,Operations of war and their sequelae,55-64 years,1,11645356
+GR112,Operations of war and their sequelae,65-74 years,3,8303274
+GR112,Operations of war and their sequelae,75-84 years,9,4879353
+GR112,Operations of war and their sequelae,85 years and over,1,1226998
+GR113,Complications of medical and surgical care,Under 1 Year,12,2076969
+GR113,Complications of medical and surgical care,1- 4 years,11,7861716
+GR113,Complications of medical and surgical care,5- 9 years,11,10523277
+GR113,Complications of medical and surgical care,10-14 years,4,10520197
+GR113,Complications of medical and surgical care,15-19 years,5,10391004
+GR113,Complications of medical and surgical care,20-24 years,11,9687814
+GR113,Complications of medical and surgical care,25-34 years,47,20120529
+GR113,Complications of medical and surgical care,35-44 years,76,22447798
+GR113,Complications of medical and surgical care,45-54 years,143,18497230
+GR113,Complications of medical and surgical care,55-64 years,181,11645356
+GR113,Complications of medical and surgical care,65-74 years,331,8303274
+GR113,Complications of medical and surgical care,75-84 years,402,4879353
+GR113,Complications of medical and surgical care,85 years and over,196,1226998

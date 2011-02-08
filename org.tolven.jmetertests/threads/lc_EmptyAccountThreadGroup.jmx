@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="lc_EmptyAccountThreadGroup" enabled="false">
+      <stringProp name="ThreadGroup.on_sample_error">stopthread</stringProp>
+      <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+        <boolProp name="LoopController.continue_forever">false</boolProp>
+        <stringProp name="LoopController.loops">1</stringProp>
+      </elementProp>
+      <stringProp name="ThreadGroup.num_threads">1</stringProp>
+      <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+      <longProp name="ThreadGroup.start_time">1289602698000</longProp>
+      <longProp name="ThreadGroup.end_time">1289602698000</longProp>
+      <boolProp name="ThreadGroup.scheduler">false</boolProp>
+      <stringProp name="ThreadGroup.duration"></stringProp>
+      <stringProp name="ThreadGroup.delay"></stringProp>
+    </ThreadGroup>
+    <hashTree>
+      <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+        <collectionProp name="CookieManager.cookies"/>
+        <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+        <stringProp name="CookieManager.policy">rfc2109</stringProp>
+      </CookieManager>
+      <hashTree/>
+      <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+        <collectionProp name="UserParameters.names">
+          <stringProp name="43829469">KNOWNTYPE</stringProp>
+          <stringProp name="-1246958089">PLACEHOLDER_NAME</stringProp>
+        </collectionProp>
+        <collectionProp name="UserParameters.thread_values">
+          <collectionProp name="734701091">
+            <stringProp name="-1879678976">${KNOWNTYPE_PREFIX}${TS}${CNT}</stringProp>
+            <stringProp name="1959011850">${PLACEHOLDER_PREFIX}${TS}${CNT}</stringProp>
+          </collectionProp>
+        </collectionProp>
+        <boolProp name="UserParameters.per_iteration">true</boolProp>
+      </UserParameters>
+      <hashTree/>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="createUserSCConfig_tolvenAdmin_tolvenSSO" enabled="true">
+        <stringProp name="TestPlan.comments">Create user with tolvenAdmin and tolvenSSO roles</stringProp>
+      </GenericController>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="2614219">USER</stringProp>
+            <stringProp name="-1915155313">USER_PASSWORD</stringProp>
+            <stringProp name="570880847">USER_SN</stringProp>
+            <stringProp name="570880351">USER_CN</stringProp>
+            <stringProp name="-959997655">USER_ROLES</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="-306223483">
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1989362610">tolvenAdmin(tolvenAdmin)|id=tolvenAdmin,${ROLE_BASE_DN}|tolvenSSO(tolvenSSO)|id=tolvenSSO,${ROLE_BASE_DN}</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="createUserIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/createUserSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="loginSCConfig" enabled="true"/>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="2614219">USER</stringProp>
+            <stringProp name="-1915155313">USER_PASSWORD</stringProp>
+            <stringProp name="-960305925">USER_REALM</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="825211695">
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="-568193752">${TOLVEN_REALM}</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="logionIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/loginSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="createAccountTypeSCConfig" enabled="true">
+        <stringProp name="TestPlan.comments">Returns ${LOCATION}</stringProp>
+      </GenericController>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="false">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="1551248669">knownType</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="25080">
+              <stringProp name="0"></stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">false</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="1344398795">ACCOUNTTYPE_CREATABLE</stringProp>
+            <stringProp name="1158432875">ACCOUNTTYPE_CSS</stringProp>
+            <stringProp name="-1401186697">ACCOUNTTYPE_HOME_PAGE</stringProp>
+            <stringProp name="1551944739">ACCOUNTTYPE_LOGO</stringProp>
+            <stringProp name="872868544">ACCOUNTTYPE_TITLE</stringProp>
+            <stringProp name="-285426068">ACCOUNTTYPE_CREATE_ACCOUNT_PAGE</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="-403094908">
+              <stringProp name="97196323">false</stringProp>
+              <stringProp name="1741906794">/styles/${KNOWNTYPE}.css</stringProp>
+              <stringProp name="-227811020">homePage${KNOWNTYPE}.jsf</stringProp>
+              <stringProp name="532367546">/images/${KNOWNTYPE}.png</stringProp>
+              <stringProp name="-1862263130">TemplateFor${KNOWNTYPE}</stringProp>
+              <stringProp name="-968602394">createAccountPage${KNOWNTYPE}.jsf</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">false</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="createAccountTypeIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/createAccountTypeSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="accountTypeGETHTTPRequest" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${APP_HOST}</stringProp>
+        <stringProp name="HTTPSampler.port">${APP_PORT}</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+        <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        <stringProp name="HTTPSampler.protocol"></stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+        <stringProp name="HTTPSampler.path">${APP_RESTFUL_INTERFACE}/accountTypes/${KNOWNTYPE}</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+      </HTTPSampler>
+      <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="200 Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="49586">200</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+          <boolProp name="Assertion.assume_success">true</boolProp>
+          <intProp name="Assertion.test_type">8</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Values Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="1107130921">creatable=false</stringProp>
+            <stringProp name="978602628">css=%2Fstyles%2F${KNOWNTYPE}.css</stringProp>
+            <stringProp name="-1136524765">homePage=homePage${KNOWNTYPE}.jsf</stringProp>
+            <stringProp name="-1324454903">createAccountPage=createAccountPage${KNOWNTYPE}.jsf</stringProp>
+            <stringProp name="46646305">title=TemplateFor${KNOWNTYPE}</stringProp>
+            <stringProp name="525504497">logo=%2Fimages%2F${KNOWNTYPE}</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+      </hashTree>
+      <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="createTemplateAccountPOSTHTTPRequest" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="knownType" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">true</boolProp>
+              <stringProp name="Argument.value">${KNOWNTYPE}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+              <stringProp name="Argument.name">knownType</stringProp>
+            </elementProp>
+            <elementProp name="template" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">false</boolProp>
+              <stringProp name="Argument.value">true</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+              <boolProp name="HTTPArgument.use_equals">true</boolProp>
+              <stringProp name="Argument.name">template</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${APP_HOST}</stringProp>
+        <stringProp name="HTTPSampler.port">${APP_PORT}</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+        <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        <stringProp name="HTTPSampler.protocol"></stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+        <stringProp name="HTTPSampler.path">${APP_RESTFUL_INTERFACE}/accounts</stringProp>
+        <stringProp name="HTTPSampler.method">POST</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+      </HTTPSampler>
+      <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="201 Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="49587">201</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+          <boolProp name="Assertion.assume_success">true</boolProp>
+          <intProp name="Assertion.test_type">8</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+        <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="ACCOUNT_ID Regular Expression Extractor" enabled="true">
+          <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+          <stringProp name="RegexExtractor.refname">ACCOUNT_ID</stringProp>
+          <stringProp name="RegexExtractor.regex">(.+)</stringProp>
+          <stringProp name="RegexExtractor.template">$1$</stringProp>
+          <stringProp name="RegexExtractor.default"></stringProp>
+          <stringProp name="RegexExtractor.match_number">1</stringProp>
+        </RegexExtractor>
+        <hashTree/>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="headerLocation Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="-150654510">https://${APP_HOST}:${APP_PORT}${APP_RESTFUL_INTERFACE}/accounts/${ACCOUNT_ID}</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_headers</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+      </hashTree>
+      <HTTPSampler guiclass="HttpTestSampleGui" testclass="HTTPSampler" testname="templateAccountGetHTTPRequest" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain">${APP_HOST}</stringProp>
+        <stringProp name="HTTPSampler.port">${APP_PORT}</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+        <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        <stringProp name="HTTPSampler.protocol"></stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+        <stringProp name="HTTPSampler.path">${APP_RESTFUL_INTERFACE}/accounts/${ACCOUNT_ID}</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+      </HTTPSampler>
+      <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="200 Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="49586">200</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+          <boolProp name="Assertion.assume_success">true</boolProp>
+          <intProp name="Assertion.test_type">8</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Values Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="1793904151">knownType=${KNOWNTYPE}</stringProp>
+            <stringProp name="46646305">title=TemplateFor${KNOWNTYPE}</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+      </hashTree>
+      <JavaSampler guiclass="JavaTestSamplerGui" testclass="JavaSampler" testname="updateTemplateAccountKnownTypeTolvenPUTRequest" enabled="true">
+        <elementProp name="arguments" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" enabled="true">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="protocol" elementType="Argument">
+              <stringProp name="Argument.name">protocol</stringProp>
+              <stringProp name="Argument.value">https</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="serverNameOrIP" elementType="Argument">
+              <stringProp name="Argument.name">serverNameOrIP</stringProp>
+              <stringProp name="Argument.value">${APP_HOST}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="port" elementType="Argument">
+              <stringProp name="Argument.name">port</stringProp>
+              <stringProp name="Argument.value">${APP_PORT}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="resourcePath" elementType="Argument">
+              <stringProp name="Argument.name">resourcePath</stringProp>
+              <stringProp name="Argument.value">${APP_RESTFUL_INTERFACE}/accountTypes/${KNOWNTYPE}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="formParamsXML" elementType="Argument">
+              <stringProp name="Argument.name">formParamsXML</stringProp>
+              <stringProp name="Argument.value">&lt;!DOCTYPE properties SYSTEM &quot;http://java.sun.com/dtd/properties.dtd&quot;&gt;&lt;properties&gt;&lt;entry key=&quot;accountId&quot;&gt;${ACCOUNT_ID}&lt;/entry&gt;&lt;entry key=&quot;creatable&quot;&gt;true&lt;/entry&gt;&lt;/properties&gt;</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="sampleLabel" elementType="Argument">
+              <stringProp name="Argument.name">sampleLabel</stringProp>
+              <stringProp name="Argument.value">TolvenPUTRequest</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="ssoTokenName" elementType="Argument">
+              <stringProp name="Argument.name">ssoTokenName</stringProp>
+              <stringProp name="Argument.value">iPlanetDirectoryPro</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+            <elementProp name="ssoTokenId" elementType="Argument">
+              <stringProp name="Argument.name">ssoTokenId</stringProp>
+              <stringProp name="Argument.value">${SSOTOKEN}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="classname">org.tolven.test.jmeter.TolvenPUTRequest</stringProp>
+      </JavaSampler>
+      <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="204 Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="49590">204</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">8</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="createAccountSCConfig_CUSTOM" enabled="true"/>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="-805828995">ACCOUNT_ADMIN</stringProp>
+            <stringProp name="-856692180">ACCOUNT_TYPE</stringProp>
+            <stringProp name="-788126330">ACCOUNT_TITLE</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="248846554">
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="408778450">${KNOWNTYPE}</stringProp>
+              <stringProp name="-1405858160">${ACCOUNT_PREFIX}${TS}${CNT}</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="createAccountIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/createAccountSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="logoutSCConfig" enabled="true"/>
+      <hashTree>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="logoutIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/tolvenLogoutSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

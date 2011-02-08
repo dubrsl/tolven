@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Request - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+	  	   <h:panelGrid columns="2" >
+	            <h:outputText value="#{msg.Date}:"/>
+	            <h:outputText value="#{menu.menuDataItem.effectiveTime}"/>
+	            <h:outputText value="Test:"/>
+	            <h:outputText value="#{menu.menuDataItem.title}"/>
+	            <h:outputText value="#{msg.Source}:"/>
+	            <h:outputText value="#{menu.menuDataItem.source}"/>
+	            <h:outputText value="#{msg.Status}:"/>
+	            <h:outputText value="#{menu.menuDataItem.status}"/>
+	            <h:outputText value="Type:"/>
+	            <h:outputText value="#{menu.menuDataItem.type}"/>
+	        </h:panelGrid>
+			<ui:include src="/drilldown/attachments.xhtml"/>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

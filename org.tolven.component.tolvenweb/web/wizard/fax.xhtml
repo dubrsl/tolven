@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+<head>
+    <title>A generic document owned by this account</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+     <div id="popupGrids">
+  			<div id="#{menu.elementLabel}:patients:all" class="popupgrid"/>          
+      </div>
+
+		<wiz:uploadStep title="Attach a fax document">
+			TBD.
+		</wiz:uploadStep>
+		<wiz:step title="Routing" >
+			<wiz:body>
+				<p>Specify how this FAX should be routed.</p>
+			</wiz:body>
+			<wiz:help>
+				<h1>Routing</h1>
+				<p>An uploaded document is always stored </p>
+			</wiz:help>
+		</wiz:step>
+   		<wiz:step title="Add patient" >
+			<wiz:body>
+      <h:inputHidden id="patientPath" value="#{trim.trim.act.participation['subject'].role.id.for[top.accountUser.account].extension}"/>
+     	<wiz:group title="Patients">
+          <table>
+            <c:if test="#{not empty trim.trim.act.relationshipsList['entry']}">
+              <tr>
+                <th><u>Name</u></th>
+                <th></th>
+              </tr>
+            </c:if>
+            <c:forEach items="#{trim.trim.act.relationshipsList['entry']}" var="item" varStatus="itemIndex">
+              <tr>
+                <td>#{item.act.observation.value.CE.displayName}</td>
+                <td><a href="javascript:removeTemplate('#{menu.elementLabel}',#{item.sequenceNumber})">delete</a> </td>
+              </tr>              
+            </c:forEach>
+          </table>
+		<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:patients:all','#{menu.elementLabel}:patients:all', 'addPatientToDocument', '#{menu.elementLabel}', 0)">Add patient</a>
+		</wiz:group>
+		</wiz:body>			
+	  </wiz:step>
+	</ui:composition>
+</body>
+</html>
+

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>User Preferences</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+	    <ui:composition template="/templates/simplePage.xhtml">
+	        <ui:param name="pageTitle" value="Users sponsored by Account #{reg.account.id} #{reg.account.title}"/>
+	        <ui:define name="body">
+   		      <h:dataTable value="#{reg.sponsoredUsers}" var="su" styleClass="general">
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Reference Code"/>
+	                </f:facet>
+	                <h:outputText value="#{su.referenceCode}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="UID"/>
+	                </f:facet>
+	                <h:outputText value="#{su.uid}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Created"/>
+	                </f:facet>
+	                <h:outputText value="#{su.created}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Last Login"/>
+	                </f:facet>
+	                <h:outputText value="#{su.lastLogin}"/>
+	            </h:column>
+	          </h:dataTable>
+			<h:form>
+   	           <h:commandButton action="close" value="Close"/>
+			</h:form>
+        </ui:define>
+    </ui:composition>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard">
+<head>
+    <title>Enable Relationship</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+
+		<c:forEach var="ce" items="#{trim.trim.valueSet[valueSet].values}" varStatus="vsIndex" >
+			<c:if test="#{ce.displayName == ceDisplayName}" >
+				<c:set var="valueSetIndex" value="#{vsIndex.index}" />			
+			</c:if>
+				
+		</c:forEach> 
+
+		<div tvisible="$('#{menu.elementLabel}:#{enableRadioId}:#{valueSetIndex}').checked" >
+			<ui:insert />
+		</div>
+
+
+    </ui:composition>
+</body>
+</html>

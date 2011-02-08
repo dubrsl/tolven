@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>org.tolven.cohort.inflnz.inflnzvccnsnapshot Analysis Admin</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<ui:composition template="/templates/simplePage.xhtml">
+	<ui:define name="body" rendered="#{top.accountAdmin}">
+		<h:form id="breadcrumbsForm">
+			<div class="breadcrumbs">
+				<h:commandLink value="Application" action="dispatch" immediate="true" />
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false" />
+				<h:commandLink value="Preferences" action="preferences" immediate="true" />
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false" />
+				<h:commandLink value="Analysis Admin" action="analysisAdmin" immediate="true" />
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false" />
+				<h:outputText value="Influenza Vaccine Recorded" /><br />
+			</div>
+		</h:form>
+		<ui:include src="snapshotPanel.xhtml">
+			<ui:param name="cohortType" value="org.tolven.cohort.inflnz" />
+			<ui:param name="snapshotType" value="inflnzvccnsnapshot" />
+			<ui:param name="intervalValueProperty" value="#{cohortType}.#{snapshotType}.intervalValue" />
+			<ui:param name="intervalUnitProperty" value="#{cohortType}.#{snapshotType}.intervalUnit" />
+			<ui:param name="chartRangeProperty" value="#{cohortType}.#{snapshotType}.chartRange" />
+		</ui:include>
+		<ui:include src="inflnzinflnzvccnPanel.xhtml">
+			<ui:param name="inflnzinflnzvccnTargetProperty" value="org.tolven.cohort.inflnz.inflnzvccnsnapshot.target" />
+		</ui:include>
+	</ui:define>
+</ui:composition>
+
+</body>
+</html>

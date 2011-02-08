@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Diagnosis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<ui:composition>
+	<wiz:step title="#{rel.act.observation.value.CE.displayName}" >
+		<wiz:body>	
+			<div class="delete"> 
+				<a href="javascript:removeTemplate('#{menu.elementLabel}',#{rel.sequenceNumber})">Remove this Diagnosis</a>
+        <a class="addnew" href="javascript:openTemplate('#{menu.menuDataItem.parent01.path}:diagnoses:breastMenu','#{menu.menuDataItem.parent01.path}:diagnoses:breastMenu', 'addTemplate', '#{menu.elementLabel}', 0)">Add Additional Diagnosis</a>
+			</div>
+			<wiz:group title="#{rel.act.observation.value.CE.displayName}">
+				<wiz:group title="Diagnosis">
+					<h:outputText value="#{rel.act.observation.value.CE.displayName}"/>
+				</wiz:group>
+			
+				<wiz:group title="Location">
+					<trim:selectManyCheck id="diagLocation#{rel.sequenceNumber}" valueSet="diagnosisLocationVS" slot="#{rel.act.relationship['diagnosisLocation'].act.observation}" readonly="false"/>
+				</wiz:group>				
+			
+				<wiz:group title="Date of diagnosis">
+					<wiz:dataTypeSelect value="#{rel.act.effectiveTime}" destination="trim.act.relationships[#{diagnosis.index}].act.effectiveTime" valueSet="timeValueSet" id="effectiveTime#{rel.sequenceNumber}" compute="#{rel.act.computes[1]}" />
+				</wiz:group>
+			
+				<wiz:group title="Metastatic">
+					<wiz:enableMultipleRelationsRadio id="metastaticRadio#{rel.sequenceNumber}" 
+							act="#{rel.act}"
+							valueSet="isMetastaticVS" 
+							value="#{rel.act.relationship['isMetastatic'].act.observation.value}" 
+					 />
+					
+				<wiz:enableMultipleRelationsRadioContent valueSet="isMetastaticVS"  ceDisplayName="Yes" enableRadioId="metastaticRadio#{rel.sequenceNumber}" >
+					<wiz:group title="Locations">
+						<wiz:checkAndEnableRelations id="location1#{rel.sequenceNumber}" act="#{rel.act}" itemLabel="#{rel.act.relationship['metastaticLocation_1'].act.title.ST.value}" ownerRelation="metastaticLocation_1" relations="metastaticLocation_1" />
+						<wiz:checkAndEnableRelations id="location2#{rel.sequenceNumber}" act="#{rel.act}" itemLabel="#{rel.act.relationship['metastaticLocation_2'].act.title.ST.value}" ownerRelation="metastaticLocation_2" relations="metastaticLocation_2" />
+						<wiz:checkAndEnableRelations id="location3#{rel.sequenceNumber}" act="#{rel.act}" itemLabel="#{rel.act.relationship['metastaticLocation_3'].act.title.ST.value}" ownerRelation="metastaticLocation_3" relations="metastaticLocation_3" />
+						<wiz:checkAndEnableRelations id="location4#{rel.sequenceNumber}" act="#{rel.act}" itemLabel="#{rel.act.relationship['metastaticLocation_4'].act.title.ST.value}" ownerRelation="metastaticLocation_4" relations="metastaticLocation_4" />
+						
+					<wiz:group title="Other " visible="$('#{menu.elementLabel}:location4#{rel.sequenceNumber}').checked">
+							<trim:ED id="otherMetastaticL#{rel.sequenceNumber}" value="#{rel.act.relationship['metastaticLocation_4'].act.relationship['otherMetastaticLocation'].act.observation.value}"  readonly="false" />
+					</wiz:group>
+
+						
+					</wiz:group>
+						
+				</wiz:enableMultipleRelationsRadioContent>	
+				</wiz:group>
+			
+				<wiz:group title="Other Diagnosis">
+					<trim:ED id="otherDiagnosis#{rel.sequenceNumber}" value="#{rel.act.relationship['otherDiagnosis'].act.observation.value}"  readonly="false" />
+				</wiz:group>				
+				
+				<wiz:group title="Current Status" >
+					<trim:CE id="currentStatus#{rel.sequenceNumber}" valueSet="currentStatusVS" value="#{rel.act.relationship['currentStatus'].act.observation.value}" readonly="false"/>
+				</wiz:group>
+				
+			</wiz:group>
+		</wiz:body>
+		<wiz:help>
+			<h1>Diagnosis</h1>
+			<p>TBD</p>
+		</wiz:help>
+	</wiz:step>
+</ui:composition>
+
+</body>
+</html>

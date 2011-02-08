@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<f:attribute name="contentType" value="text/html"/>
+	<f:attribute name="charset" value="UTF-8"/>
+<head>
+<style>
+<!--
+body {
+	margin:0px;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #666666;
+	font-size: 12px;
+	}
+p {
+	padding-left: 6px;
+	padding-top: 0.6em;
+	margin: 0.6em 0em 0em;
+	padding-right: 6px;
+}
+
+#tabBarBG {
+	BORDER-TOP: #6699cc 6px solid;
+	BORDER-LEFT: #6699cc 6px solid;
+	margin: 0px;
+	padding: 0.5em;
+}
+
+.message {  font-family: Arial, Helvetica, sans-serif;  font-size: 9px; } 
+.address {  font-size: 9px;  font-weight: bold;  font-family: Verdana, Arial, Helvetica, sans-serif; }
+-->
+</style>
+</head>
+<body>
+	<img src="http://#{top.properties['tolven.invitation.host']}:#{top.properties['tolven.invitation.port']}#{top.properties['tolven.invitation.root']}#{top.properties['tolven.web.defaultLogo']}"/>
+	<div id="tabBarBG">
+    <ui:insert name="body"><p>Message Body Goes Here</p></ui:insert>
+    <hr/>
+    <div class="message" title="The purpose of this request is to help ensure that your notifications(s) will not be mistaken for spam.">
+	    To ensure that this and subsequent notifications are delivered to your inbox, please add 
+    	<span class="address">#{top.properties['tolven.mail.from']}</span> to your email address book. 
+    </div>
+	</div>
+</body>
+</html>

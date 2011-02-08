@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>reg/evn/patient</name>
+	<description>New Person</description>
+	<page>newPatient.xhtml</page>
+	<drilldown>patientDD.xhtml</drilldown>
+	<menu>global:patientMenu</menu>
+ 	<tolvenId application="#{knownType}" accountId="#{account.id}"/>
+ 	<application name="ephr">
+		<instance>ephr:patients:wip</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patients:wip</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.participation['subject'].role.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New Patient</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="reviseTerminated" from="terminated" to="terminated">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="terminateActive" from="active" to="terminated">
+			<label language="en">Terminate</label>
+		</transition>
+		<transition name="reactivate" from="terminated" to="active">
+			<label language="en">Reactivate</label>
+		</transition>
+	</transitions>
+	<act classCode="REG" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Person</ST>
+		</title>
+		<effectiveTime>
+			<label>Effective time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr" phase="create">
+					<placeholder bindAction="merge">
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr" phase="create">
+					<placeholder bindAction="merge">
+						<path>ephr:patient</path>
+					</placeholder>
+				</bind>
+				<id>
+					<II>
+						<label>Medical Record Number</label>
+						<root>MRN</root>
+						<extension>#{patient.placeholderID['MRN'].extension}</extension>
+					</II>
+					<II>
+						<label>Internal ID (do not change)</label>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{patient.path}</extension>
+						<displayable>false</displayable>
+					</II>
+				</id>
+				<statusCode>#{patient.actStatus}</statusCode>
+				<patient>
+					<veryImportantPersonCode>
+						<label>VIP</label>
+						<new><encoded>#{encode(knownType=='echr'?patient.vip: null)}</encoded></new>
+						<valueSet>patientImportance</valueSet>
+					</veryImportantPersonCode>
+				</patient>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Patient Name</label>
+						<EN>
+							<label>Legal Name</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{from(source.firstName,patient.firstName)}</ST>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{from(source.middleName,patient.middleName)}</ST>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{from(source.lastName,patient.lastName)}</ST>
+							</part>
+							<part>
+								<label>Suffix</label>
+								<type>SFX</type>
+								<ST/>
+							</part>
+						</EN>
+					</name>
+					<telecom>
+						<label>Telecom</label>
+						<TEL>
+							<label>Home Phone</label>
+							<use>H</use>
+							<value>#{from(source.homeTelecom,patient.homeTelecom)}</value>
+						</TEL>
+					</telecom>
+					<livingSubject>
+						<administrativeGenderCode>
+							<label>Gender</label>
+							<new><encoded>#{encode(from(source.gender,patient.gender))}</encoded></new>
+							<valueSet>genders</valueSet>
+						</administrativeGenderCode>
+						<birthTime>
+							<label>Date of Birth</label>
+							<TS><value>#{TS(from(source.dob,patient.dob))}</value></TS>
+						</birthTime>
+					</livingSubject>
+					<person>
+						<addr>
+							<label>Address</label>
+							<AD>
+								<label>Home Address</label>
+								<use>H</use>
+								<part>
+									<label>Address Line 1</label>
+									<type>AL</type>
+									<ST>#{from(source.homeAddr1,patient.homeAddr1)}</ST>
+								</part>
+								<part>
+									<label>Address Line 2</label>
+									<type>AL</type>
+									<ST>#{from(source.homeAddr2,patient.homeAddr2)}</ST>
+								</part>
+								<part>
+									<label>City</label>
+									<type>CTY</type>
+									<ST>#{from(source.homeCity,patient.homeCity)}</ST>
+								</part>
+								<part>
+									<label>State</label>
+									<type>STA</type>
+									<ST>#{from(source.homeState,patient.homeState)}</ST>
+								</part>
+								<part>
+									<label>Zip</label>
+									<type>ZIP</type>
+									<ST>#{from(source.homeZip,patient.homeZip)}</ST>
+								</part>
+								<part>
+									<label>Country</label>
+									<type>CNT</type>
+									<ST>#{from(source.homeCountry,patient.homeCountry)}</ST>
+								</part>
+							</AD>
+						</addr>
+					</person>
+				</player>
+				<participation name="subject" typeCode="SBJ">
+					<act moodCode="EVN" classCode="PCPR">
+						<participation name="primary" typeCode="ATND">
+							<role classCode="ASSIGNED">
+								<bind application="echr" phase="request">
+									<list cardinality="multiple">
+										<path>echr:admin:staff:all</path>
+									</list>
+								</bind>
+								<bind application="ephr" phase="request">
+									<list cardinality="multiple">
+										<path>ephr:admin:staff:all</path>
+									</list>
+								</bind>
+								<id>
+									<II>
+										<label>Internal ID (do not change)</label>
+										<root>#{computeIDRoot(account)}</root>
+										<extension>#{patient.primary}</extension>
+									</II>
+								</id>
+								<player classCode="PSN" determinerCode="INSTANCE">
+									<name>
+										<label/>
+										<EN>
+											<label/>
+											<use>L</use>
+											<part>
+												<label>Other Primary MD</label>
+												<ST/>
+											</part>
+										</EN>
+									</name>
+								</player>				
+							</role>
+						</participation>
+						<participation name="surgeon" typeCode="ATND">
+							<role classCode="ASSIGNED">
+								<bind application="echr" phase="request">
+									<list cardinality="multiple">
+										<path>echr:admin:staff:all</path>
+									</list>
+								</bind>
+								<bind application="ephr" phase="request">
+									<list cardinality="multiple">
+										<path>ephr:admin:staff:all</path>
+									</list>
+								</bind>
+								<id>
+									<II>
+										<label>Internal ID (do not change)</label>
+										<root>#{computeIDRoot(account)}</root>
+										<extension>#{patient.surgeon}</extension>
+									</II>
+								</id>
+								<player classCode="PSN" determinerCode="INSTANCE">
+									<name>
+										<label/>
+										<EN>
+											<label/>
+											<use>L</use>
+											<part>
+												<label>Other Surgeon</label>
+												<ST/>
+											</part>
+										</EN>
+									</name>
+								</player>
+							</role>
+						</participation>
+					</act>
+				</participation>
+				<compute>
+					<type>org.tolven.process.DupeCheck</type>
+					<property name="root">
+				        <value xsi:type="xs:string">MRN</value>
+					</property>
+				</compute>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+	</act>
+	<valueSet name="patientImportance">
+		<null type="NI">
+			<label>Normal</label>
+		</null>
+		<CE>
+			<displayName>Board Member</displayName>
+			<code>BM</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Physician Family Member</displayName>
+			<code>DFM</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Staff Physician</displayName>
+			<code>DR</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Financial Donor</displayName>
+			<code>FD</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Foreign Dignitary</displayName>
+			<code>FOR</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Government Dignitary</displayName>
+			<code>GOVT</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Staff Family Member</displayName>
+			<code>SFM</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Staff Member</displayName>
+			<code>STF</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Very Important Person</displayName>
+			<code>VIP</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+	</valueSet>
+	<valueSet name="genders">
+		<CE>
+			<displayName>Male</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Female</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+    <field name="race">
+        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        	xsi:type="xs:string">#{from(source.race,patient.race)}</value>
+    </field>
+</trim>

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/pulse</name>
+	<description>Pulse Rate</description>
+	<page>pulse.xhtml</page>
+	<drilldown>pulseDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Pulse</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0587143</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Pulse</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<PQ>
+					<label>Rate</label>
+					<value>0.0</value>
+					<unit>/min</unit>
+				</PQ>
+			</value>
+		</observation>
+		<relationship name="rhythm" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Rhythm</label>
+						<valueSet>rhythm</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="site" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Site</label>
+						<valueSet>site</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="laterality" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Laterality</label>
+						<valueSet>laterality</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="comment" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Comment</label>
+						<ED/>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="laterality">
+		<CE>
+			<displayName>Right</displayName>
+			<code>C0205090</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Left</displayName>
+			<code>C0205091</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Right and Left</displayName>
+			<code>C0238767</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown</displayName>
+			<code>C1609613</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Not Specified</displayName>
+			<code>X1</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>	
+	<valueSet name="rhythm">
+		<CE>
+			<displayName>Regular</displayName>
+			<code>C0425565</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Irregular</displayName>
+			<code>C0392684</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Irregularly Irregular</displayName>
+			<code>C0425567</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>	
+	<valueSet name="site">
+		<CE>
+			<displayName>Radial Artery</displayName>
+			<code>C0232142</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Ulnar Artery</displayName>
+			<code>C0232145</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Carotid Artery</displayName>
+			<code>C1096529</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Brachial Artery</displayName>
+			<code>C1096531</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Femoral Artery</displayName>
+			<code>C0232148</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Popliteal Artery</displayName>
+			<code>C0232151</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Dorsalis Pedis Artery</displayName>
+			<code>C1706488</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Posterior Tibial Artery</displayName>
+			<code>C1720310</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Temporal Artery</displayName>
+			<code>C1720212</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>	
+</trim>

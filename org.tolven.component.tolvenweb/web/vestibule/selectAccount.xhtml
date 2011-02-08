@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="Select account"/>
+        <ui:define name="body">
+	 	<h:form id="accountForm" >
+		   <h:panelGroup rendered="#{invitation.openInvitationCount!=0}">
+			<h2>You have the following Invitations</h2>
+			<h:dataTable styleClass="general" id="invites" value="#{invitation.openInvitations}" 
+				var="item" border="0" cellspacing="0" cellpadding="0">
+				<f:facet name="header">
+					<h:outputText value="Invitations"/>
+				</f:facet>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="InvitationId"/>
+					</f:facet>
+					<h:outputText value="#{item.id}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Purpose"/>
+					</f:facet>
+					<h:commandLink action="#{invitation.executeInvitation}" >
+						<f:param name="invitationId" value="${item.id}"/>
+						<h:outputText value="#{item.title}"/>
+					</h:commandLink>
+				</h:column>
+			</h:dataTable>
+		  </h:panelGroup>
+ 		  <h:panelGroup rendered="#{acc.accountUserCount!=0}">
+				<p>#{msg.selectAccount_SelectLoginAccount}</p>
+				<h:selectBooleanCheckbox value="#{acc.rememberDefault}"/> 
+				<h:outputText value="#{msg.selectAccount_RememberSelectedAccount}"/>
+				<br/>
+				<h:message for="accountForm:accounts" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+				<h:dataTable styleClass="general" id="accounts" value="#{acc.accountUsersModel}"
+						var="item" border="0" cellspacing="0" cellpadding="0">
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msg.AccountId}"/>
+						</f:facet>
+						<h:outputText value="#{item.accountId}"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msg.AccountType}"/>
+						</f:facet>
+						<h:outputText value="#{item.accountType}"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msg.Title}"/>
+						</f:facet>
+						<h:outputText value="#{item.title}"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msg.Action}"/>
+						</f:facet>
+						<h:commandLink id="account" action="#{acc.login}" value="#{msg.Login}"/>
+					</h:column>
+					<!-- 
+						<h:column>
+							<f:facet name="header">
+								<h:outputText value="Status"/>
+							</f:facet>
+							<h:outputText value="Update available" rendered="#{item.account.outOfDate}"/>
+						</h:column>
+					 -->
+					<h:column>
+						<f:facet name="header">
+							<h:outputText value="#{msg.LastLogin}"/>
+						</f:facet>
+						<h:outputText value="#{item.lastLoginTime}">
+							<!-- f:convertDateTime type="both" dateStyle="medium" timeStyle="medium" 
+							locale="#{top.locale}" timeZone="#{top.timeZone}"/-->
+						</h:outputText>
+					</h:column>
+				</h:dataTable>
+		  </h:panelGroup>
+		<br/>
+		<h:commandLink action="createAccount" rendered="#{top.properties['tolven.web.createAccount']!='false'}">
+			<h:outputText value="#{msg.selectAccount_CreateAccount}"/>
+		</h:commandLink>
+		<h:commandLink action="administration" rendered="#{top.permission['tolvenAdminConsole']}">
+			<br/><h:outputText value="#{msg.selectAccount_Admin}"/>
+		</h:commandLink>
+		</h:form>
+	</ui:define>
+	</ui:composition>
+  </body>
+</html>

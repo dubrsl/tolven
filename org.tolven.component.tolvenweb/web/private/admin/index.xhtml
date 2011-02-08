@@ -1,0 +1,24 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>System Administration Home Page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="../../templates/portalTemplate.xhtml">
+		<ui:param name="skin" value="echr"/>
+        <ui:define name="content">
+        <h2>System Administration</h2>
+        	<h:commandLink action="sysAdmin">
+				<h:outputText value="System administration"/>
+			</h:commandLink>
+		</ui:define>
+    	</ui:composition>
+  </body>
+</html>
+

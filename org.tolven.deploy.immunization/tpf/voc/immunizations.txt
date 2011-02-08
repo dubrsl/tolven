@@ -1,0 +1,127 @@
+Description|Code
+Anthrax|Anthrax vaccination|49598002
+Anthrax |First Anthrax vaccination|170338000
+Anthrax |Second Anthrax vaccination|170339008
+Anthrax |Third Anthrax vaccination|170340005
+Anthrax |Fourth Anthrax vaccination|170341009
+Anthrax |Booster Anthrax vaccination|170342002
+BCG |BCG vaccination|42284007
+Bordetella |Immunisation for bordetella|8605003
+Borrelia|Borrelia Burgdorferi vaccination|396455004
+Brucellosis|Brucellosis Vaccination|7141001
+Cholera|Cholera vaccination|28877009
+Cholera|First Cholera vaccination|170311007
+Cholera|Second Cholera vaccination|170312000
+Cholera|Booster Cholera vaccination|170313005
+Diphtheria|Diphtheria Vaccination|76668005
+Diphtheria|Booster Diphtheria Vaccination|170323001
+Diphtheria|Low Dose Diphtheria Vaccination|170324007
+Diphtheria|First Diphtheria Vaccination|170320003
+Diphtheria|Second Diphtheria Vaccination|170321004
+Diphtheria|Third Diphtheria Vaccination|170322006
+Diphtheria|Diphtheria, acellular pertussis, hepatitis B and inactivated polio vaccination|396456003
+Diphtheria|Booster Diphtheria and tetanus double Vaccination|170408005
+Diphtheria|First Diphtheria and tetanus double Vaccination|170405008
+Diphtheria|Second Diphtheria and tetanus double Vaccination|170406009
+Diphtheria|Third Diphtheria and tetanus double Vaccination|170407000
+Diphtheria|Pre School Diphtheria and tetanus double Vaccination|275841003
+Diphtheria|Diphtheria and tetanus double and polio vaccination|270898008
+Diphtheria|Diphtheria, pertussis  and tetanus triple and polio vaccination|170399005
+Diphtheria|First booster low dose Diphtheria, tetanus and inactivated polio vaccination|417211006
+Diphtheria|Second booster low dose Diphtheria, tetanus and inactivated polio vaccination|417384007
+Diphtheria|First low dose Diphtheria, tetanus and inactivated polio vaccination|416591003
+Diphtheria|Second low dose Diphtheria, tetanus and inactivated polio vaccination|417615007
+Encephalitis|Japanese encephalitis vaccination|314759000
+Encephalitis|1rst Japanese encephalitis vaccination|314761009
+Encephalitis|2nd Japanese encephalitis vaccination|314762002
+Encephalitis|3rd Japanese encephalitis vaccination|314763007
+Encephalitis|Booster Japanese encephalitis vaccination|315335004
+Haemophilus|Haemophilus influenzae type b vaccination|127787002
+Haemophilus|First Haemophilus b vaccination|170343007
+Haemophilus|Second Haemophilus b vaccination|170344001
+Haemophilus|Third Haemophilus b vaccination|170345000
+Haemophilus|Haemophilus influezae b, diphtheria, tetanus, and polio vaccination|312869001
+Heaptitis A|Hepatitis A immunization |243789007
+Heaptitis A|Booster Hepatitis A vaccination|170381002
+Heaptitis A|First Hepatitis A vaccination|170378007
+Heaptitis A|Second Hepatitis A vaccination|170379004
+Heaptitis A|Third Hepatitis A vaccination|170380001
+Heaptitis A|Hepatitis A and Typhoid vaccination|314177003
+HepA, HepB|Combined Hepatitis A and B Vaccination|312868009
+HepA, HepB|First Combined Hepatitis A and B Vaccination|170434002
+HepA, HepB|Second Combined Hepatitis A and B Vaccination|170435001
+HepA, HepB|Third Combined Hepatitis A and B Vaccination|170436000
+HepA, HepB|Booster Combined Hepatitis A and B Vaccination|170437009
+Hepatitis B|Hepatitis B Vaccination|16584000
+Hepatitis B|Booster Hepatitis B Vaccination|170373003
+Hepatitis B|First Hepatitis B Vaccination|170370000
+Hepatitis B|Second Hepatitis B Vaccination|170371001
+Hepatitis B|Third Hepatitis B Vaccination|170372008
+Hepatitis B|Fourth Hepatitis B Vaccination|170374009
+Hepatitis B|Fifth Hepatitis B Vaccination|170375005
+Hepatitis B|Sixth Hepatitis B Vaccination|416923003
+Hepatitis B|Intramuscular injection of Hepatitis B Virus immune globulin, human|116802006
+Influenza|Influenza vaccination|8619006
+Measles|Measles vaccination|47435007
+Meningitis|Meningococcus vaccination|41088001
+Meningitis|Single meningitis C vaccination|314450000
+Meningitis|Second meningitis C vaccination|314415008
+Meningitis|Third meningitis C vaccination|314416009
+Meningitis|Meningitis A&C vaccination |314417000
+Meningitis|Meningitis ACW&Y vaccination|390892002
+MMR|Measles-mumps-rubella vaccination |38598009
+MMR|Measles mumps and rubella vaccination - second dose|170433008
+Mumps|Mumps vaccination|50583002
+Paratyphoid|Paratyphoid fever vaccination|83798008
+Pertussis|Petussis vaccination|39343008
+Pertussis|Petussis booster vaccination|30038004
+Pertussis|First Petussis vaccination|170326009
+Pertussis|Second Petussis vaccination|170327000
+Pertussis|Third Petussis vaccination|170328005
+Plague|Plague vaccination|50069008
+Pneumococcus|Pneumococcal Vaccination |12866006
+Pneumococcus|Booster pneumococcal vaccination|394678003
+Polio|Poliomelitis vaccination |72093006
+Polio|Booster Polio vaccination |170356000
+Polio|First polio vaccination|170353008
+Polio|Second polio vaccination|170354002
+Polio|Third polio vaccination|170355001
+Rabies|Rabies vaccination|34631000
+Rabies|First Rabies vaccination|170365007
+Rabies|Second Rabies vaccination|170366008
+Rabies|Third Rabies vaccination|170367004
+Rabies|Rabies booster vaccination|416059007
+Rocky Mountain Spotted Fever|Rocky Mountian Spotted Fever vaccination|11842003
+Rotavirus|Rotavirus vaccination|415354003
+Rubella|Rubella Vaccination|82314000
+Smallbox|Smallpox vaccination|40001004
+Smallbox|First Smallpox vaccination|307416007
+Smallbox|Second Smallpox vaccination|170360002
+Smallbox|Third Smallpox vaccination|170361003
+Staphylococcus|Staphylococcus vaccination|44004000
+Streptococcus|Streptococcus vaccination|3509001
+Tetanus|Tetanus Diphtheria Vaccination|73152006
+Tetanus|Tetanus and low dose diphtheria double vaccination |170409002
+Tetanus|Tetanus and polio vaccination |268499008
+Tetanus|Booster Tetanus and polio vaccination |170421003
+Tetanus|First Tetanus and polio vaccination |170418000
+Tetanus|Second Tetanus and polio vaccination |170419008
+Tetanus|Third Tetanus and polio vaccination |170420002
+Tetanus|Post School Tetanus and polio vaccination |281039000
+Tetanus|Tetanus vaccination|127786006
+Tetanus|First Tetanus vaccination|170330007
+Tetanus|Second Tetanus vaccination|170331006
+Tetanus|Third tetanus vaccination|170332004
+Tetanus|Final Tetanus vaccination|170334003
+Tularaemia|Tularaemia vaccination |9856004
+Typhoid|Typhoid vaccination |15483003
+Typhoid|First typhoid vaccination|170316002
+Typhoid|Second typhoid vaccination|170317006
+Typhoid|Single dose typhoid vaccination|395665009
+Typhoid|Booster typhoid vaccination|170318001
+Typhoid|Typhoid and paratyphoid vaccination|312867004
+Typhoid|Typhoid and paratyphoid first dose|170425007
+Typhoid|Typhoid and paratyphoid second dose|170426008
+Typhoid|Typhoid and paratyphoid reinforcing dose|170427004
+Typhus|Typhus vaccination|30338008
+Yellow fever|Yellow fever vaccination|67308009

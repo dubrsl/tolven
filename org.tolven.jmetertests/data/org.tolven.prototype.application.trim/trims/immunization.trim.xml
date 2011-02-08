@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<abstract>true</abstract>
+	<name>sbadm/rqo/immunization</name>
+	<page>immunization.xhtml</page>
+	<drilldown>immunizationDD.xhtml</drilldown>
+	<menu>global:immunizationMenu</menu>
+	<reference>http://www.wikihit.org/wiki/index.php/Medication</reference>
+	<application name="ephr">
+		<instance>ephr:patient:immunization</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:immunization</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="SBADM" moodCode="RQO">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:immunization</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:immunization</path>
+			</placeholder>
+		</bind>
+		<text>
+			<label>Instructions</label>
+			<ED/>
+		</text>
+		<effectiveTime>
+			<label>Start time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<repeatNumber>
+			<label>Number of refills</label>
+			<INT>
+				<value>0</value>
+			</INT>
+		</repeatNumber>
+		<substanceAdministration>
+			<doseQuantity>
+				<label>Dose</label>
+				<PQ>
+					<value>1</value>
+					<unit>1</unit>
+				</PQ>
+			</doseQuantity>
+		</substanceAdministration>					
+		<participation name="consumable" typeCode="CSM">
+			<role classCode="ADMM">
+				<player classCode="MMAT" determinerCode="KIND">
+					<code>
+						<valueSet>material</valueSet>
+					</code>
+					<quantity>
+						<PQ>
+							<value>0.0</value>
+							<unit>tablets</unit>
+						</PQ>
+					</quantity>
+				</player>
+			</role>
+		</participation>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+	</act>
+</trim>

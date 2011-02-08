@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Tumor Receptor - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+				<p>
+				<b><h:outputText value="#{trim.trim.act.relationship['erStatus'].act.title.ST.value}: "/></b> <trim:CE id="erStatus" valueSet="finalERStatus" value="#{trim.trim.act.relationship['erStatus'].act.observation.value}"  readonly="true"/>
+					<h:panelGrid columns="2" >
+						<h:outputText value="#{trim.trim.act.relationship['erStrength'].act.title.ST.value} :" />
+						<trim:CE id="finalERStatusStrengthCE" valueSet="finalERStatusStrength" value="#{trim.trim.act.relationship['erStrength'].act.observation.value}" readonly="true" />
+						<h:outputText value="#{trim.trim.act.relationship['erPrevalence'].act.title.ST.value} :" />
+						<trim:CE id="finalERStatusPrevalenceCE" valueSet="finalERStatusPrevalence" value="#{trim.trim.act.relationship['erPrevalence'].act.observation.value}" readonly="true" />
+					</h:panelGrid>			
+				</p>
+				
+				<p>
+				
+				<b><h:outputText value="#{trim.trim.act.relationship['prStatus'].act.title.ST.value}: "/></b> <trim:CE id="prStatus" valueSet="finalPRStatus" value="#{trim.trim.act.relationship['prStatus'].act.observation.value}"  readonly="true"/>
+					<h:panelGrid columns="2" >
+						<h:outputText value="#{trim.trim.act.relationship['prStrength'].act.title.ST.value} :" />
+						<trim:CE id="finalPRStatusStrengthCE" valueSet="finalPRStatusStrength" value="#{trim.trim.act.relationship['prStrength'].act.observation.value}" readonly="true" />
+						<h:outputText value="#{trim.trim.act.relationship['prPrevalence'].act.title.ST.value} :" />
+						<trim:CE id="finalPRStatusPrevalenceCE" valueSet="finalPRStatusPrevalence" value="#{trim.trim.act.relationship['prPrevalence'].act.observation.value}" readonly="true" />
+					</h:panelGrid>					
+				</p>
+				
+				<p>
+				<b><h:outputText value="#{trim.trim.act.relationship['HER2NeuScore'].act.title.ST.value}: "/></b>
+				<trim:CE id="HER2NeuScoreCE"  valueSet="HER2NeuScoreVS" value="#{trim.trim.act.relationship['HER2NeuScore'].act.observation.value}" readonly="true" />
+				</p>
+				
+				<p>
+				<b><h:outputText value="#{trim.trim.act.relationship['fishResult'].act.title.ST.value}: "/></b>
+				<trim:CE id="fishResultCE" valueSet="fishResultVS" value="#{trim.trim.act.relationship['fishResult'].act.observation.value}" readonly="true" />
+				</p>
+				
+				<p>
+				<b><h:outputText value="#{trim.trim.act.relationship['HER2NeuStatus'].act.title.ST.value}: "/></b>
+				<trim:CE id="HER2NeuStatusCE"  valueSet="HER2NeuStatusVS" value="#{trim.trim.act.relationship['HER2NeuStatus'].act.observation.value}" readonly="true" />
+				</p>
+
+
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

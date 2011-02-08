@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>base/observation</extends>
+	<name>Observations/breast/breastContour</name>
+	<description>Breast Contour</description>
+	<author>Tolven</author>
+	<page>breastContour.xhtml</page>
+	<drilldown>breastContourDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php?title=Breast_Contour&amp;oldid=14301</reference>
+	<application name="echr">
+		<instance>echr:patient:observation</instance>
+		<wip>echr:activity:all</wip>
+		<menu>echr:observationMenu</menu>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0425786</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2006AC</codeSystemVersion>
+				<translation />
+			</CD>
+		</code>
+		<title>
+			<ST>Breast Contour</ST>
+		</title>
+		<observation>
+			<value>
+				<label>Contour</label>
+				<valueSet>breastContour</valueSet>
+			</value>
+		</observation>
+		<relationship name="breastLocation" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Location</label>
+						<valueSet>breastLocation</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="comment" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Comment</label>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="breastContour">
+		<CE>
+			<displayName>Normal</displayName>
+			<code>C0567476</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Pendulous</displayName>
+			<code>C0425784</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<null type="NI">
+			<label>No information</label>
+		</null>
+	</valueSet>
+	<!--  We leave off the left breast and add it through an include -->
+	<valueSet name="breastLocation">
+		<CE>
+			<displayName>Both breasts</displayName>
+			<code>C0222605</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<bind>
+			<include>vsInclude.trim.xml</include>
+		</bind>
+		<CE>
+			<displayName>Right breast</displayName>
+			<code>C0222600</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

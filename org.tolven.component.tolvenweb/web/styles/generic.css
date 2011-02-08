@@ -1,0 +1,18 @@
+.header {
+	color: #D9ECFF;
+	background: #6699cc;
+}
+
+.header a {
+	color: #EEEEFF;
+}
+
+.header a:hover {
+	color: #ffffff; 
+}
+
+.pane {
+	BORDER-TOP: #6699cc 6px solid;
+	BACKGROUND: #ffffff;
+	BORDER-LEFT: #6699cc 6px solid;
+}

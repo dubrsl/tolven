@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>report/graph/lipids</name>
+	<description>Graph Lipids</description>
+	<page>graphLipids.xhtml</page>
+	<drilldown>graphLipidsDD.xhtml</drilldown>
+	<menu>global:observationGraphMenu</menu>
+	<application name="ephr">
+		<instance>ephr:patient:graph</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:graph</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:graph</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:graph</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				 <code>GRAPH</code>
+				 <codeSystemName>UMLS</codeSystemName>
+				 <codeSystemVersion>2006AC</codeSystemVersion>
+			 </CD>
+		</code>
+		<title>
+			<ST>Lipids Graph</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<ED/>
+			</value>
+		</observation>
+	</act>
+</trim>

@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Breast Radiation Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+	
+<body>
+    <ui:composition>
+		<wiz:step title="Surgery" >
+			<wiz:body>
+				<wiz:group title="Procedure">
+					<trim:valueSetMenu id="proc#{stepNo}" slot="#{treatment.code}"/>
+					<trim:valueSetMenu id="surgProcLat#{stepNo}" slot="#{treatment.procedure.targetSiteCode}"/>
+				</wiz:group>
+				<wiz:group title="Axillary Surgery">
+					<trim:valueSetMenu id="axillary#{stepNo}" slot="#{treatment.relationship['axillary'].act.code}"/>
+					<trim:valueSetMenu id="axillaryLat#{stepNo}" slot="#{treatment.relationship['axillary'].act.procedure.targetSiteCode}"/>
+				</wiz:group>
+				<wiz:group title="Surgeon">
+	                <h:selectOneMenu id="performer#{stepNo}" value="#{treatment.participation['performer'].role.id.for[top.accountUser.account].extension}">
+	                   	<f:selectItem itemValue="#{null}" itemLabel="None"/>
+	                	<f:selectItems value="#{trim.list['echr:admin:staff:all']}"/>
+	                </h:selectOneMenu>
+				</wiz:group>
+ 			</wiz:body>
+			<wiz:help>
+				<h1>Breast Surgery</h1>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>

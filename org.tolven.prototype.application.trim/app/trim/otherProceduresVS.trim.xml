@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<name>valueSet/otherProceduresVS</name>
+	<description />
+	<author>Tolven</author>
+	<reference/>
+	<valueSet name="otherProcedures">
+     	<CE>
+            <label>FNA</label>
+            <displayName>FNA</displayName>
+            <code>C0589496</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+     	<CE>
+            <label>CRB</label>
+            <displayName>core biopsy</displayName>
+            <code>C0589497</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+    </valueSet>
+    </trim>

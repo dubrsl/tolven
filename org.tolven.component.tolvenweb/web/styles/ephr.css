@@ -1,0 +1,122 @@
+.header {
+	color: #ffffff;
+	background: #CC6600;
+}
+
+.header a {
+	color: #EEEEFF;
+}
+
+.header a:hover {
+	color: #ffffff; 
+}
+
+.pane {
+	BORDER-TOP: #CC6600 6px solid;
+	BACKGROUND: #ffffff;
+	BORDER-LEFT: #CC6600 6px solid;
+}
+
+.tabs li a {
+	BACKGROUND:#CCCCCC no-repeat left top; 
+	COLOR: #314552; 
+}
+
+.tabs li.active a {
+	BACKGROUND: #CC6600 no-repeat left top; COLOR: #ffffff; 
+}
+
+.tabs li.active a:hover {
+	BACKGROUND:#CC6600 no-repeat left top; COLOR: #ffffff; 
+}
+
+.tabs li a:hover {
+	BACKGROUND:#D68A42 no-repeat left top; COLOR: #ffffff; 
+}
+
+.bar1 {
+	BACKGROUND: #CC6600;
+	COLOR: #ffffff;
+}
+.bar1 li a {
+	COLOR: #ffffff; 
+}
+.bar1 li a:hover {
+	BACKGROUND: #D18A43;
+}
+.bar1 a sup{
+	color:#ffffff;
+}
+
+.bar1 li a:hover {
+	COLOR: #ffffff; 
+}
+
+.bar2 {
+	COLOR: #4D4D4D;
+	BACKGROUND: #ffffff;
+	BORDER-BOTTOM: 4px solid #666666;
+}
+
+.bar2 li a {
+	COLOR: #4D4D4D;
+}
+
+.bar2 li a:hover {
+	BACKGROUND: #cccccc; 
+	COLOR: #4D4D4D; 
+}
+
+.bar2 li.active a {
+	COLOR: #191919
+}
+.bar2 a sup{
+	color:#CC6600;
+}
+
+.info {
+	BACKGROUND: #CC6600;
+}
+
+.allergies {
+	BACKGROUND: #DC9650;
+}
+.wip {
+	color: #000000;
+}
+.wip li a {
+	COLOR: #CC6600; 
+}
+.wip li a:hover {
+	BACKGROUND: #D18A43; 
+}
+
+
+.bar3 {
+	COLOR: #333333;
+	BACKGROUND: #ffffff;
+}
+
+.bar3 li a {
+	COLOR: #333333;
+}
+
+.bar3 li.active a:hover {
+	COLOR: #191919
+}
+.bar3 li a:hover {
+	BACKGROUND: #cccccc; 
+	COLOR: #4D4D4D;
+}
+
+.bar3 li.active a {
+	COLOR: #333333;
+}
+
+.bar3 a sup{
+	color:#CC6600;
+}
+
+
+
+

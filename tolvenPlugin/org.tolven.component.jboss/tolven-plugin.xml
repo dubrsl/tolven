@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.jboss" version="0.0.5" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.assembler.jboss" />
+		<import plugin-id="org.tolven.assembler.jboss.tomcatserver" />
+		<import plugin-id="org.tolven.assembler.ear" />
+		<import plugin-id="org.tolven.library.jboss" />
+		<import plugin-id="org.tolven.library.jdbcdriver" />
+	</requires>
+	<extension id="jbossComponent" plugin-id="org.tolven.assembler.jboss" point-id="jbossComponent" />
+	<extension id="earProductDefinition" plugin-id="org.tolven.assembler.jboss" point-id="earProductDefinition">
+		<parameter id="extensionPointId" value="earProduct" />
+		<parameter id="deployDir" value="tolven-jboss-4.2.2.GA/server/tolven/deploy" />
+	</extension>
+	<extension id="earConsumer" plugin-id="org.tolven.assembler.ear" point-id="earConsumer">
+		<parameter id="ear" value="tolven-jboss-4.2.2.GA/server/tolven/deploy/tolven.ear" />
+	</extension>
+	<extension id="serverxmlConsumer" plugin-id="org.tolven.assembler.jboss.tomcatserver" point-id="serverxmlConsumer">
+		<parameter id="serverxml" value="tolven-jboss-4.2.2.GA/server/tolven/deploy/jboss-web.deployer/server.xml" />
+	</extension>
+	<extension-point id="tolvenDSProvider" extension-multiplicity="one">
+		<parameter-def id="tolvenDS" />
+	</extension-point>
+	<extension-point id="tolvenJMSProvider" extension-multiplicity="one">
+		<parameter-def id="tolvenJMS" />
+	</extension-point>
+	<extension id="tolvenLDAPProductDefinition" plugin-id="org.tolven.assembler.jboss" point-id="tolvenLDAPProductDefinition">
+		<parameter id="extensionPointId" value="tolvenLDAP" />
+		<parameter id="sourceTolvenLDAP" value="tolven-ldap-service.xml" />
+		<parameter id="connectionString" value="ldap.java.naming.provider.url" />
+		<parameter id="destinationTolvenLDAP" value="tolven-jboss-4.2.2.GA/server/tolven/deploy/tolven-ldap-service.xml" />
+	</extension>
+	<extension id="serverSecurityProductDefinition" plugin-id="org.tolven.assembler.jboss" point-id="serverSecurityProductDefinition">
+		<parameter id="extensionPointId" value="serverSecurityProduct" />
+		<parameter id="default-passwordPrompt" value="Please Enter Tolven AppServer Password" />
+		<parameter id="credentialDir" value="server/tolven/conf" />
+		<parameter id="sourceTolvenInit" value="tolven-init-service.xml" />
+		<parameter id="destinationTolvenInit" value="tolven-jboss-4.2.2.GA/server/tolven/deploy/tolven-init-service.xml" />
+	</extension>
+	<extension-point id="serverSecurityProduct">
+		<parameter-def id="passwordPrompt" multiplicity="none-or-one" />
+		<parameter-def id="promptForPassword" />
+	</extension-point>
+	<extension id="deploy" plugin-id="org.tolven.assembler.jboss" point-id="deploy">
+		<parameter id="stageDir" value="tolven-jboss-4.2.2.GA" />
+	</extension>
+</plugin>

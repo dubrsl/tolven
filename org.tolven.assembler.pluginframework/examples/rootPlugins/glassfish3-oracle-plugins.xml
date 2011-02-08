@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugins xmlns="urn:tolven-org:plugins:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:plugins:1.0 http://tolven.org/xsd/plugins.xsd">
+
+	<!-- TPF Plugins -->
+	<plugin id="org.tolven.command">
+		<root />
+		<property name="download.web.hostname" value="#{globalProperty['client.web.hostname']}" />
+		<property name="download.web.http.port" value="#{globalProperty['client.web.http.port']}" />
+	</plugin>
+	<plugin id="org.tolven.assembler.pluginframework">
+		<root />
+	</plugin>
+	<!-- End TPF Plugins -->
+
+	<!-- Application Server Plugins -->
+	<plugin id="org.tolven.assembler.glassfish3.oracle">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.deploy.glassfish">
+		<root />
+	</plugin>
+	<!-- End Server Plugins -->
+
+	<!-- Core Plugins -->
+	<plugin id="org.tolven.openam">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.api">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.appserverproperties">
+		<root />
+		<property name="appserver.default.propertiesFile" value="server-default-config.properties.xml" />
+	</plugin>
+	<plugin id="org.tolven.component.application">
+		<root />
+		<property name="authRestful.url" value="https://dev.able.com:8444/openam/identity" />
+		<property name="appRestful.url" value="https://dev.able.com:8443/api" />
+	</plugin>
+	<plugin id="org.tolven.component.tolvenlocale">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.component.tolvenlocale_en">
+		<root />
+	</plugin>
+	<!-- End Core Plugins -->
+
+	<!-- Application Plugins -->
+	
+	<plugin id="org.tolven.component.tolvenweb">
+		<root />
+		<property name="appRestful.url" value="https://dev.able.com:8443/api" />
+	</plugin>
+	<plugin id="org.tolven.ccr">
+		<root />
+	</plugin>
+	
+	<!-- End Application Plugins -->
+	
+	<!-- Main properties -->
+	<property name="installation.dir" value="your-installationDir" />
+	<property name="config.dir" value="your-tolven-configDir" />
+	<property name="appserver.home" value="your-appserver-homeDir" />
+	<property name="client.web.hostname" value="localhost" />
+	<property name="client.web.http.port" value="8080" />
+	<property name="client.web.https.port" value="8443" />
+	<property name="repositoryLibrary">
+		<property name="v0">
+			<property name="trunkMetadata" value="http://tolven.org/download/plugins.xml" />
+			<property name="snapshotMetadata" value="file:///#{globalProperty['installation.dir']}/repositorySnapshot/v0/plugins.xml" />
+			<property name="useSnapshot" value="false" />
+			<property name="overwriteSnapshot" value="false" />
+		</property>
+		<property name="v2">
+			<property name="trunkMetadata" value="http://tolven.org/download/v2/catalog/plugins.xml" />
+			<property name="snapshotMetadata" value="file:///#{globalProperty['installation.dir']}/repositorySnapshot/v2/plugins.xml" />
+			<property name="useSnapshot" value="false" />
+			<property name="overwriteSnapshot" value="false" />
+		</property>
+		<property name="repositoryLocal">
+			<property name="trunkMetadata" value="file:///#{globalProperty['config.dir']}/repositoryLocal/plugins.xml" />
+		</property>
+	</property>
+	<!-- End Main properties -->
+
+	<!-- Auxillary properties -->
+	<property name="repositoryRuntime" value="#{globalProperty['config.dir']}/repositoryRuntime" />
+	<property name="repositoryDevLib" value="#{globalProperty['config.dir']}/devLib" />
+	<property name="repositoryStage" value="#{globalProperty['config.dir']}/build/repositoryStage" />
+	<property name="repositoryTmp" value="#{globalProperty['config.dir']}/build/repositoryTmp" />
+	<property name="repositoryRuntimeUnpacked" value="#{globalProperty['config.dir']}/build/temp/.jpf-shadow" />
+	<property name="log4JConfiguration" value="#{globalProperty['installation.dir']}/bin/tolven-log4j.xml" />
+	<property name="logFile" value="#{globalProperty['installation.dir']}/log/tolven.log" />
+	<!-- End Auxillary properties -->
+</plugins>
