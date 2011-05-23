@@ -32,7 +32,6 @@ import org.tolven.app.entity.MDQueryResults;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
 import org.tolven.core.entity.AccountUser;
-import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.web.MenuAction;
 import org.tolven.web.security.GeneralSecurityFilter;
@@ -78,8 +77,7 @@ public class FavoritesServlet extends HttpServlet {
     			ctrl.setSortOrder( "" );
     			// Get the number of rows
     			Long menuDataCount = new Long(menuBean.countMenuData( ctrl ) );
-    			TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
-    			GridBuilder grid = new GridBuilder(ctrl, menuDataCount, tolvenResourceBundle);
+    			GridBuilder grid = new GridBuilder(ctrl, menuDataCount);
     			menuBean.prepareMQC( ctrl );
     			if(gridId != null)
     				grid.setGridId(gridId);

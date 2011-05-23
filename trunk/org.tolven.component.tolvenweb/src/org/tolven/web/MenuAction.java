@@ -660,7 +660,7 @@ public class MenuAction extends TolvenAction {
 			ctrl.setSortOrder( "" );
 			// Get the number of rows
 			menuDataCount = new Long( getMenuLocal().countMenuData( ctrl ) );
-			grid = new GridBuilder(ctrl, menuDataCount, getTop().getTolvenResourceBundle());
+			grid = new GridBuilder(ctrl, menuDataCount);
 			grid.createGrid(scriptMethodName, scriptMethodArgs );			
 //			TolvenLogger.info( grid.toString(), MenuAction.class);
 		}

@@ -269,19 +269,8 @@
 		<guide-echo args="Configure Tolven Glassfish" />
 		<guide-echo args="" />
 
-		<guide-echo args="Check that agentapp.war is deployed i.e. the following file exists: ${glassfish.dir}/glassfish/domains/tolven/autodeploy/agentapp.war_deployed" />
-		<echo message="Waiting for agentapp.war to deploy..." />
-		<waitfor maxwait="60" maxwaitunit="second" timeoutproperty="timed.out">
-			<available file="${glassfish.dir}/glassfish/domains/tolven/autodeploy/agentapp.war_deployed" />
-		</waitfor>
-		<guide-echo args="" />
-		<fail message="agentapp.war failed to deploy">
-			<condition>
-				<available file="${glassfish.dir}/glassfish/domains/tolven/autodeploy/agentapp.war_failed" />
-			</condition>
-		</fail>
-		<echo message="Done" />
-
+		<antcall target="include-config-policyagent" />
+		
 		<guide-echo args="Create Resource Adaptor Configuration" />
 		<asadmin args="create-resource-adapter-config --property keyStoreURL=file\:///${com.sun.aas.instanceRoot}/config/${mdbuser.keystore.filename}:keyStoreType=${mdbuser.keystore.type}:keyStorePassword=${mdbuser.password}:defaultAlias=${mdbuser.defaultAlias} --threadpoolid thread-pool-1 mqKeyStore" />
 		<guide-echo args="" />
@@ -383,6 +372,22 @@
 			</condition>
 		</fail>
 		<echo message="Done" />
+	</target>
+
+	<target name="include-config-policyagent" unless="exclude.policyagent">
+		<guide-echo args="Check that agentapp.war is deployed i.e. the following file exists: ${glassfish.dir}/glassfish/domains/tolven/autodeploy/agentapp.war_deployed" />
+		<echo message="Waiting for agentapp.war to deploy..." />
+		<waitfor maxwait="60" maxwaitunit="second" timeoutproperty="timed.out">
+			<available file="${glassfish.dir}/glassfish/domains/tolven/autodeploy/agentapp.war_deployed" />
+		</waitfor>
+		<guide-echo args="" />
+		<fail message="agentapp.war failed to deploy">
+			<condition>
+				<available file="${glassfish.dir}/glassfish/domains/tolven/autodeploy/agentapp.war_failed" />
+			</condition>
+		</fail>
+		<echo message="Done" />
+
 	</target>
 
 	<target name="create-jmsdest-adminApp" description="create-jmsdest-adminApp" unless="jmsdest.adminApp.exists">

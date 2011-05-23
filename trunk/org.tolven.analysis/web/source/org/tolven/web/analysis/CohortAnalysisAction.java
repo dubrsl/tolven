@@ -15,20 +15,16 @@ package org.tolven.web.analysis;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.tolven.analysis.CohortAnalysisLocal;
-import org.tolven.util.TolvenPropertiesMap;
+import org.tolven.core.AccountDAOLocal;
 import org.tolven.web.TolvenAction;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
  * Faces Action bean for handling analysis requests
@@ -40,6 +36,9 @@ public class CohortAnalysisAction extends TolvenAction {
     @EJB
     private CohortAnalysisLocal cohortAnalysisBean;
 
+    @EJB
+    private AccountDAOLocal accountBean;
+
     private String cohortType;
 
     private Double lowAge;
@@ -49,8 +48,8 @@ public class CohortAnalysisAction extends TolvenAction {
 
     private String includeCode;
     private String excludeCode;
-    
-    private TolvenPropertiesMap propertiesMap;
+
+    private Map<String, String> accountProperties;
 
     public CohortAnalysisAction() {
     }
@@ -116,23 +115,19 @@ public class CohortAnalysisAction extends TolvenAction {
     }
 
     public String updateProperties() {
-        WebResource webResource = getAppWebResource().path("account/properties/set");
-        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        for (String name : getProperties().getMap().keySet()) {
-            formData.putSingle(name, (String) getProperties().get(name));
+        Properties properties = new Properties();
+        for (String name : getProperties().keySet()) {
+            properties.setProperty(name, (String) getProperties().get(name));
         }
-        ClientResponse response = webResource.type(MediaType.APPLICATION_FORM_URLENCODED).cookie(getSSOCookie()).accept(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class, formData);
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Error: " + response.getStatus() + " POST " + getRequest().getUserPrincipal() + " " + webResource.getURI() + " " + response.getEntity(String.class));
-        }
+        accountBean.putAccountProperties(getAccountUser().getAccount().getId(), properties);
         return "success";
     }
 
-    public TolvenPropertiesMap getProperties() {
-        if (propertiesMap == null) {
-            propertiesMap = new TolvenPropertiesMap(getTolvenResourceBundle().getMap());
+    public Map<String, String> getProperties() {
+        if (accountProperties == null) {
+            accountProperties = getAccountUser().getProperty();
         }
-        return propertiesMap;
+        return accountProperties;
     }
 
     public List<String> getAgeRanges() {

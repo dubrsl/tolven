@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.component.tolvenweb" version="2.0.117" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.component.tolvenweb" version="2.0.118" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.component.war" />
 		<import plugin-id="org.tolven.component.faces" />
@@ -49,6 +49,27 @@
 		</parameter-def>
 	</extension-point>
 	<!-- End Remote Client -->
+
+	<!-- Gauntlet Security -->
+	<extension id="org.tolven.web.security.VestibuleProcessor-propertySequence" plugin-id="org.tolven.component.war" point-id="propertySequence">
+		<parameter id="class" value="org.tolven.web.security.VestibuleProcessor" />
+		<parameter id="name" value="vestibuleJNDINames" />
+		<parameter id="defaultSequence" value="java:global/tolven/tolvenWEB/org.tolven.web.vestibule.QuestionAnswerVestibule,java:global/tolven/tolvenWEB/org.tolven.web.vestibule.SelectAccountVestibule" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.web.vestibule.QuestionAnswerVestibule" plugin-id="org.tolven.component.war" point-id="property">
+		<parameter id="class" value="org.tolven.web.security.VestibuleProcessor" />
+		<parameter id="name" value="vestibuleJNDINames" />
+		<parameter id="value" value="java:global/tolven/tolvenWEB/org.tolven.web.vestibule.QuestionAnswerVestibule" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.web.vestibule.SelectAccountVestibule" plugin-id="org.tolven.component.war" point-id="property">
+		<parameter id="class" value="org.tolven.web.security.VestibuleProcessor" />
+		<parameter id="name" value="vestibuleJNDINames" />
+		<parameter id="value" value="java:global/tolven/tolvenWEB/org.tolven.web.vestibule.SelectAccountVestibule" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Gauntlet Security -->
 
 	<!-- General Web -->
 	<extension id="com.sun.faces.validateXml-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
@@ -318,7 +339,7 @@
 		<parameter id="description" value="Session-level bean, used by all pages" />
 		<parameter id="managed-bean-name" value="top" />
 		<parameter id="managed-bean-class" value="org.tolven.web.TopAction" />
-		<parameter id="managed-bean-scope" value="session" />
+		<parameter id="managed-bean-scope" value="request" />
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
 	</extension>
 	<extension id="reg-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">

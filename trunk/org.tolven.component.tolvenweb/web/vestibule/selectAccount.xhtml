@@ -49,19 +49,19 @@
 						<f:facet name="header">
 							<h:outputText value="#{msg.AccountId}"/>
 						</f:facet>
-						<h:outputText value="#{item.accountId}"/>
+						<h:outputText value="#{item.id}"/>
 					</h:column>
 					<h:column>
 						<f:facet name="header">
 							<h:outputText value="#{msg.AccountType}"/>
 						</f:facet>
-						<h:outputText value="#{item.accountType}"/>
+						<h:outputText value="#{item.account.accountType.knownType}"/>
 					</h:column>
 					<h:column>
 						<f:facet name="header">
 							<h:outputText value="#{msg.Title}"/>
 						</f:facet>
-						<h:outputText value="#{item.title}"/>
+						<h:outputText value="#{item.account.title}"/>
 					</h:column>
 					<h:column>
 						<f:facet name="header">

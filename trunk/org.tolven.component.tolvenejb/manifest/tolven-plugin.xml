@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.component.tolvenejb" version="2.0.93" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.component.tolvenejb" version="2.0.94" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.assembler.ejbmodule" />
 		<import plugin-id="org.tolven.component.tolvenear" />
@@ -3392,6 +3392,28 @@
 				<parameter id="column">
 					<parameter id="length" value="10" />
 				</parameter>
+			</parameter>
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
+	</extension>
+	<extension id="oracle-org.tolven.core.entity.AccountProperty-entity" plugin-id="org.tolven.component.tolvenejb" point-id="entity">
+		<parameter id="ormId" value="oracle" />
+		<parameter id="class" value="org.tolven.core.entity.AccountProperty" />
+		<parameter id="attributes">
+			<parameter id="basic">
+				<parameter id="name" value="longStringValue" />
+				<parameter id="lob" />
+			</parameter>
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
+	</extension>
+	<extension id="oracle-org.tolven.core.entity.AccountUserProperty-entity" plugin-id="org.tolven.component.tolvenejb" point-id="entity">
+		<parameter id="ormId" value="oracle" />
+		<parameter id="class" value="org.tolven.core.entity.AccountUserProperty" />
+		<parameter id="attributes">
+			<parameter id="basic">
+				<parameter id="name" value="longStringValue" />
+				<parameter id="lob" />
 			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />

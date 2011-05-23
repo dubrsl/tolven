@@ -16,9 +16,10 @@
  */
 package org.tolven.locale;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -30,20 +31,25 @@ import java.util.Vector;
  */
 public class TolvenResourceBundle extends ResourceBundle {
 
-    private Map<String, String> map;
+    private String baseName;
     private Locale locale;
 
-    public TolvenResourceBundle(Map<String, String> map, Locale locale) {
-        this.map = map;
+    public TolvenResourceBundle(String baseName, Locale locale) {
+        this(locale, new ArrayList<TolvenResourceBundle>());
+        this.baseName = baseName;
+    }
+
+    public TolvenResourceBundle(Locale locale, List<TolvenResourceBundle> parentBundles) {
         this.locale = locale;
+        TolvenResourceBundle bundle = this;
+        for (TolvenResourceBundle b : parentBundles) {
+            bundle.setParent(b);
+            bundle = b;
+        }
     }
 
-    public Map<String, String> getMap() {
-        return map;
-    }
-
-    public void setMap(Map<String, String> map) {
-        this.map = map;
+    private String getBaseName() {
+        return baseName;
     }
 
     public String getString(String key, String defaultValue) {
@@ -61,12 +67,24 @@ public class TolvenResourceBundle extends ResourceBundle {
 
     @Override
     protected Object handleGetObject(String key) {
-        return getMap().get(key);
+        if (getBaseName() == null) {
+            return null;
+        } else {
+            try {
+                return ResourceBundle.getBundle(getBaseName(), getLocale()).getString(key);
+            } catch (MissingResourceException ex) {
+                return null;
+            }
+        }
     }
 
     @Override
     public Enumeration<String> getKeys() {
-        return new Vector<String>(getMap().keySet()).elements();
+        Vector<String> keys = new Vector<String>();
+        if (getBaseName() != null) {
+            keys.addAll(ResourceBundle.getBundle(getBaseName(), getLocale()).keySet());
+        }
+        return keys.elements();
     }
 
 }

@@ -8,11 +8,11 @@ import java.util.List;
 import org.tolven.app.MenuEventHandler;
 import org.tolven.app.bean.MenuPath;
 import org.tolven.app.entity.MSAction;
-import org.tolven.locale.TolvenResourceBundle;
+import org.tolven.locale.SessionResourceBundleFactory;
 
 public class MiscUtils {
     
-    public static String createActionButtons(List<MSAction> actions, String element, TolvenResourceBundle appBundle) {
+    public static String createActionButtons(List<MSAction> actions, String element) {
         /*
          * Use a Writer which more closely matches the writer on a servlet response (which does not make it to this method yet)
          */
@@ -21,9 +21,9 @@ public class MiscUtils {
             writer = new StringWriter();
             for (MSAction action : actions) {
                 if (action.getMenuEventHandlerFactory() == null) {
-                    createActionButtons(action, element, appBundle, writer);
+                    createActionButtons(action, element, writer);
                 } else {
-                    createHandlerActionButtons(action, element, appBundle, writer);
+                    createHandlerActionButtons(action, element, writer);
                 }
             }
         } catch (IOException ex) {
@@ -33,7 +33,7 @@ public class MiscUtils {
         return writer.toString();
     }
 
-    public static void createActionButtons(MSAction action, String element, TolvenResourceBundle appBundle, Writer writer) throws IOException {
+    public static void createActionButtons(MSAction action, String element, Writer writer) throws IOException {
         MenuPath menuPath = new MenuPath(action.getPath(), new MenuPath(element));
         String path = menuPath.getPathString();
         writer.write("<button id='showDropDown' onclick=\"javascript:showActionOptions('");
@@ -41,7 +41,7 @@ public class MiscUtils {
         writer.write("_dropdown_loc','");
         writer.write(path);
         writer.write("_drpDwn')\">");
-        writer.write(action.getLocaleText(appBundle));
+        writer.write(action.getLocaleText(SessionResourceBundleFactory.getBundle()));
         writer.write("</button>");
         writer.write("<element id='");
         writer.write(path);
@@ -52,7 +52,7 @@ public class MiscUtils {
         writer.write("</div>");
     }
 
-    public static void createHandlerActionButtons(MSAction action, String element, TolvenResourceBundle appBundle, Writer writer) {
+    public static void createHandlerActionButtons(MSAction action, String element, Writer writer) {
         String menuEventHandlerFactoryClassname = action.getMenuEventHandlerFactory();
         Class<?> menuEventHandlerFactoryClass = null;
         try {
@@ -65,7 +65,7 @@ public class MiscUtils {
         try {
             MenuEventHandler menuEventHandler = MenuEventHandler.createMenuEventHandler(menuEventHandlerFactoryClass, action);
             menuEventHandler.setElement(element);
-            menuEventHandler.setResourceBundle(appBundle);
+            menuEventHandler.setResourceBundle(SessionResourceBundleFactory.getBundle());
             menuEventHandler.setWriter(writer);
             menuEventHandler.initializeAction();
         } catch (Exception ex) {

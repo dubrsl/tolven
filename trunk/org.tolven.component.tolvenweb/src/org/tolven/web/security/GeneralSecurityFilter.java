@@ -41,7 +41,6 @@ public class GeneralSecurityFilter implements Filter {
     public static final String TOLVENUSER = "tolvenUser";
     public static final String ACCOUNTUSER = "accountUser";
     public static final String ACCOUNTUSERS = "accountUsers";
-    public static final String ACCOUNTUSER_TIMESTAMP = "accountUserTimestamp";
     public static final String ACCOUNTUSER_ID = "accountUserId";
     public static final String PROPOSED_ACCOUNTUSER_ID = "proposedAccountUserId";
     public static final String PROPOSED_DEFAULT_ACCOUNT = "proposedDefaultAccount"; // true | false
@@ -70,7 +69,8 @@ public class GeneralSecurityFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         try {
-            boolean inVestibule = "vestibule".equals(TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.USER_CONTEXT, request));
+            String userContext = TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.USER_CONTEXT, request);
+            boolean inVestibule = userContext == null || "vestibule".equals(userContext);
             if (inVestibule) {
                 boolean hasVestibulePass = "true".equals(TolvenSSO.getInstance().getSessionProperty(VESTIBULE_PASS, request));
                 if (hasVestibulePass) {

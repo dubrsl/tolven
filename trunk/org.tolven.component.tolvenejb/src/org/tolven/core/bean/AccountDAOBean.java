@@ -604,6 +604,9 @@ public class AccountDAOBean implements AccountDAOLocal {
         // TODO: Note that the invitation supplied here by the method
         // inviteAccountUser, is not fully implemented, until this todo is
         // removed, and it may also be null.
+        if(user == null) {
+            throw new RuntimeException("The TolvenUser to add to Account is null");
+        }
         AccountUser au = null;
         if(invitedAccountUser == null) {
             au = new AccountUser();

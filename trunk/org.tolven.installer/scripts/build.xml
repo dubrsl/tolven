@@ -180,6 +180,10 @@
 
 	<target name="include-appserver-install" unless="exclude.appserver">
 		<ant antfile="build-v2-glassfish.xml" target="install" />
+		<antcall target="include-policyagent-install" />
+	</target>
+
+	<target name="include-policyagent-install" unless="exclude.policyagent">
 		<ant antfile="build-v2-policyagent.xml" target="install" />
 	</target>
 
@@ -201,7 +205,7 @@
 	</target>
 
 	<target name="include-config-appserver" unless="exclude.appserver">
-		<ant antfile="build-v2-policyagent.xml" target="config-policyagent" />
+		<antcall target="include-config-policyagent" />
 		<ant antfile="build-v2-glassfish.xml" target="update-glassfish-keystore" />
 		<ant antfile="build-v2-glassfish.xml" target="start-glassfish" />
 		<ant antfile="build-v2-glassfish.xml" target="config-glassfish" />
@@ -209,6 +213,14 @@
 		<ant antfile="build-v2-glassfish.xml" target="prepare-tolven-glassfish" />
 		<ant antfile="build-v2-glassfish.xml" target="start-glassfish" />
 		<ant antfile="build-v2-glassfish.xml" target="config-tolven-glassfish" />
+		<antcall target="include-appserver-upload" />
+	</target>
+
+	<target name="include-config-policyagent" unless="exclude.policyagent">
+		<ant antfile="build-v2-policyagent.xml" target="config-policyagent" />
+	</target>
+
+	<target name="include-appserver-upload" unless="exclude.appserver.upload">
 		<ant antfile="build-v2-kit.xml" target="tolven-post-installation" />
 	</target>
 

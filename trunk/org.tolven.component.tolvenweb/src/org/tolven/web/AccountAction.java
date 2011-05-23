@@ -26,13 +26,12 @@ import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 
 import org.apache.log4j.Logger;
-import org.tolven.api.facade.accountuser.XFacadeAccountUser;
-import org.tolven.api.facade.accountuser.XFacadeAccountUsers;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountExchange;
 import org.tolven.core.entity.AccountRole;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.AccountUserRole;
+import org.tolven.core.entity.TolvenUser;
 import org.tolven.util.ExceptionFormatter;
 import org.tolven.web.security.GeneralSecurityFilter;
 import org.tolven.web.security.VestibuleProcessor;
@@ -41,8 +40,8 @@ public class AccountAction extends TolvenAction {
 
     @Resource
     private VestibuleProcessor vestibuleProcessor;
-    
-	private List<XFacadeAccountUser> facadeAccountUsers = null;
+
+    private List<AccountUser> accountUsers = null;
 
 	private DataModel accountUsersModel;
 	private List<AccountExchange> accountExchangeSend;
@@ -73,12 +72,13 @@ public class AccountAction extends TolvenAction {
      * has not selected one as a default. It is also used when the user wants to change
      * accounts. </p>
      */
-    public List<XFacadeAccountUser> getAccountUsers() {
-        if (facadeAccountUsers == null) {
-            XFacadeAccountUsers uas = (XFacadeAccountUsers) getRequest().getSession(false).getAttribute(GeneralSecurityFilter.ACCOUNTUSERS);
-            facadeAccountUsers = uas.getXFacadeAccountUsers();
+    public List<AccountUser> getAccountUsers() {
+        if (accountUsers==null) {
+            //TODO: This could be more efficient
+            TolvenUser user = getActivationBean().findTolvenUser(getSessionTolvenUserId());
+            accountUsers = getActivationBean().findUserAccounts(user); 
         }
-        return facadeAccountUsers;
+        return accountUsers;
     }
     
 	public DataModel getAccountUsersModel() {
@@ -136,10 +136,10 @@ public class AccountAction extends TolvenAction {
 	 * @return
 	 */
     public String login() {
-        XFacadeAccountUser facadeAccountUser = (XFacadeAccountUser) accountUsersModel.getRowData();
+        AccountUser accountUser = (AccountUser) accountUsersModel.getRowData();
         // Remember default
         // Save accountUserId in session for subsequent request so the security filters can intercept appropriately
-        String accountUserIdString = String.valueOf(facadeAccountUser.getAccountUserId());
+        String accountUserIdString = String.valueOf(accountUser.getId());
         try {
             setSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, accountUserIdString);
             if (isRememberDefault()) {

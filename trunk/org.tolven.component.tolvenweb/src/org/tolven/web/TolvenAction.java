@@ -29,6 +29,7 @@ import org.tolven.core.TolvenPropertiesLocal;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.locale.ResourceBundleHelper;
+import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.security.key.UserPrivateKey;
 import org.tolven.sso.TolvenSSO;
@@ -99,7 +100,11 @@ public abstract class TolvenAction extends TolvenBean {
     }
     
     protected TopAction getTop() {
-        TopAction top = (TopAction) getSessionAttribute( "top");
+        TopAction top = (TopAction) getRequestAttribute( "top");
+        if(top == null) {
+            top = new TopAction();
+            setRequestAttribute("top", top);
+        }
         return top;
     }
 
@@ -228,7 +233,7 @@ public abstract class TolvenAction extends TolvenBean {
      * @return
      */
     public TolvenResourceBundle getTolvenResourceBundle() {
-        return (TolvenResourceBundle) getSessionAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+        return SessionResourceBundleFactory.getBundle();
     }
 
     public String getTolvenPersonString(String name) {
