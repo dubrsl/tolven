@@ -26,8 +26,8 @@ Download and unzip JMeter
 *****************
 GUI Configuration
 *****************
-Open pluginJMeterTests/defaultTestPlan.jmx
-Save as pluginJMeterTests/myTestPlan.jmx
+Open org.tolven.jmetertests/defaultTestPlan.jmx
+Save as org.tolven.jmetertests/myTestPlan.jmx
 Select root node called defaultTestPlan
 	Change root node name from defaultTestPlan to myTestPlan
 Select globalVariables node. It is recommended not to change these, but override as per next steps
@@ -36,8 +36,8 @@ Right click: Add/ConfigElement/UserDefinedVariables
 	Click the new node and change its name to myVariables
 	This are added to end of the node tree, where it works fine (it can be dragged and dropped after globleVariables for ease of view)
 Add variables to myVaribles to override the ones in globleVariables...check all, but in particular:
-	DATA_DIR: Absolute path to pluginJMeterTests/data
-	RESULTS_DIR: Absolute path to pluginJMeterTests/results
+	DATA_DIR: Absolute path to org.tolven.jmetertests/data
+	RESULTS_DIR: Absolute path to org.tolven.jmetertests/results
 		Create the directory in the filesystem
 SAVE myTestPlan
 In addition save myVariables separately

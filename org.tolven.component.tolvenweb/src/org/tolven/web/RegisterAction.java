@@ -39,8 +39,6 @@ import javax.security.jacc.PolicyContext;
 import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
@@ -61,10 +59,6 @@ import org.tolven.util.ExceptionFormatter;
 import org.tolven.web.security.GeneralSecurityFilter;
 import org.tolven.web.util.AccountProperties;
 import org.tolven.web.util.AccountUserProperties;
-
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 /**
  * Faces Action bean concerned with the user and account registration process.
@@ -490,7 +484,7 @@ public class RegisterAction extends TolvenAction {
         // Send it to LDAP
         //getLDAPLocal().updatePerson( getTp() );
         // And update the user object now, too
-        if (user != null) {
+        if (getUser() != null) {
             getActivationBean().updateUser(getUser());
         }
         // Reset tolven person (so it picks up the new LDAP changes)
@@ -502,12 +496,9 @@ public class RegisterAction extends TolvenAction {
         }
         // See if defaultAccount needs to be cleared.
         if (isClearRememberDefault()) {
-            WebResource webResource = getAppWebResource().path("account/default");
-            MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-            formData.putSingle("defaulted", String.valueOf(true));
-            ClientResponse response = webResource.cookie(getSSOCookie()).type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class, formData);
-            if(response.getStatus() != 200) {
-                throw new RuntimeException("Could not clear remembering default account flag for: " + getRequest().getUserPrincipal());
+            AccountUser au = getActivationBean().findDefaultAccountUser(getUser());
+            if (au!=null) {
+                au.setDefaultAccount(false);
             }
         }
         return "success";

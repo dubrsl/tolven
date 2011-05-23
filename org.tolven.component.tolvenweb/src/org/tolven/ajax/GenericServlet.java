@@ -26,6 +26,7 @@ import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuStructure;
 import org.tolven.app.entity.UMSDataTransferObject;
 import org.tolven.core.entity.AccountUser;
+import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.provider.ProviderLocal;
@@ -94,7 +95,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    	AccountMenuStructure ams = menuBean.findAccountMenuStructure(activeAccountUser.getAccount().getId(), path );
 	    	// get its preferred children
 	    	List<MenuStructure> children = menuBean.findSortedChildren(activeAccountUser, ams);
-            TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+	    	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
 
 
     		writer.write("<div id=\"prefBox\" class=\"\" style=\"width:100%;display:block;\">");
@@ -170,7 +171,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    	
 	    	// get its preferred children
 	    	List<MenuStructure> children = menuBean.findSortedChildren(activeAccountUser, ams);
-            TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+	    	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
 	    	String title = tolvenResourceBundle.getString("UserPreferencesTitle");
 	    	
 	    	// prepare xml
@@ -241,7 +242,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
         					UMSDataTransferObject dto = new UMSDataTransferObject();
         					dto.setVisible( visibility );
                 			menuBean.updateUserMenuStructure(activeAccountUser, path, dto );
-                            TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+                			TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
                 	    	
                 			writer.write( "<undo>" + tolvenResourceBundle.getString( "Undo") +  "</undo>");
         				}
@@ -276,7 +277,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    	// get its preferred children
 	    	List<MenuStructure> children = menuBean.findSortedChildren(activeAccountUser, ams);
 
-            TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+	    	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
 	    	
 	    	writer.write("<ajax-response>");
 	    	writer.write("<head>" + tolvenResourceBundle.getString("UserPreferencesTitle") + "</head>");
@@ -337,7 +338,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
                 menuEventHandler.setElement(element);
                 menuEventHandler.setAccountUser(activeAccountUser);
                 menuEventHandler.setTolvenNow(tolvenNow);
-                TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+                TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
                 menuEventHandler.setResourceBundle(tolvenResourceBundle);
                 menuEventHandler.setWriter(writer);
                 Method method = menuEventHandler.getClass().getDeclaredMethod(command, new Class[] {});
@@ -383,8 +384,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 			MenuPath path = new MenuPath( element );
 			AccountMenuStructure ms = menuBean.findAccountMenuStructure(activeAccountUser.getAccount().getId(), path.getPath() );
 			List<MSAction> actions = ms.getActions();
-            TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
-			writer.write(MiscUtils.createActionButtons(actions, element, tolvenResourceBundle));
+			writer.write(MiscUtils.createActionButtons(actions, element));
 			
 		}else if( uri.endsWith( "updateMenuColumnSequence.ajaxc" )) {
 			// sequence=heading:2;heading:1;heading:3

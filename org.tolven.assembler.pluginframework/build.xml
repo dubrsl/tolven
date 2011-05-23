@@ -150,7 +150,7 @@
 		</tstamp>
 		<property name="tolven.impl.version" value="tolven${TSTAMP}" />
 		<java classname="org.tolven.plugin.repository.TolvenManifestParser" failonerror="true" outputproperty="plugin.version">
-			<arg line="-url file:///${tolven.home}/org.tolven.assembler.pluginframework/manifest/tolven-plugin.xml -pluginVersion" />
+			<arg line="-url file:///${basedir}/manifest/tolven-plugin.xml -pluginVersion" />
 			<classpath refid="plugin.classpath" />
 			<classpath refid="project.classpath" />
 		</java>

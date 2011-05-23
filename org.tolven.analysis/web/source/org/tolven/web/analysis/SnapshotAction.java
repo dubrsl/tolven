@@ -22,7 +22,6 @@ import javax.ejb.EJB;
 import org.tolven.analysis.SnapshotLocal;
 import org.tolven.app.MenuLocal;
 import org.tolven.app.entity.MenuDataVersion;
-import org.tolven.util.TolvenPropertiesMap;
 import org.tolven.web.TolvenAction;
 
 /**
@@ -41,7 +40,7 @@ public class SnapshotAction extends TolvenAction {
     private String cohortType;
     private String snapshotType;
 
-    private TolvenPropertiesMap propertiesMap;
+    private Map<String, String> accountProperties;
     
     public SnapshotAction() {
     }
@@ -72,11 +71,11 @@ public class SnapshotAction extends TolvenAction {
         this.snapshotType = snapshotType;
     }
 
-    public TolvenPropertiesMap getProperties() {
-        if (propertiesMap == null) {
-            propertiesMap = new TolvenPropertiesMap(getTolvenResourceBundle().getMap());
+    public Map<String, String> getProperties() {
+        if (accountProperties == null) {
+            accountProperties = getAccountUser().getProperty();
         }
-        return propertiesMap;
+        return accountProperties;
     }
 
     public String snapshotNow() {

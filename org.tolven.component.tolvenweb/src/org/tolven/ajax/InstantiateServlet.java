@@ -37,7 +37,6 @@ import org.tolven.doc.DocumentLocal;
 import org.tolven.doc.XMLLocal;
 import org.tolven.doc.entity.DocBase;
 import org.tolven.doc.entity.DocXML;
-import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.security.DocProtectionLocal;
 import org.tolven.security.hash.SSHA;
@@ -258,8 +257,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 				String scriptMethodName = req.getParameter("method");
 				// Form id for .   
 				String scriptMethodArgs = req.getParameter("methodArgs");
-                TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
-				GridBuilder grid = new GridBuilder(ctrl, menuDataSize, tolvenResourceBundle);
+				GridBuilder grid = new GridBuilder(ctrl, menuDataSize);
 				menuBean.prepareMQC( ctrl );
 				if(gridId != null)
 					grid.setGridId(gridId);

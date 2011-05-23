@@ -14,7 +14,7 @@ import org.tolven.app.entity.MSAction;
 import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.locale.ResourceBundleHelper;
-import org.tolven.locale.TolvenResourceBundle;
+import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.web.util.MiscUtils;
 
 
@@ -31,7 +31,6 @@ public class GridBuilder {
 	private long rowCount;
 	private MenuQueryControl ctrl;
 	private Writer writer;
-    private TolvenResourceBundle tolvenResourceBundle;
 	private List<Map<String, Object>> favorites;
 	private String jsMethodName;
 	private String jsMethodArgs;
@@ -45,11 +44,10 @@ public class GridBuilder {
 	 * for a single request for a menu structure entry. 
 	 * @param ms
 	 */
-	public GridBuilder(MenuQueryControl ctrl, long rowCount, TolvenResourceBundle tolvenResourceBundle) {
+	public GridBuilder(MenuQueryControl ctrl, long rowCount) {
 		this.ctrl = ctrl;
 		this.rowCount = rowCount;
 		this.writer = new StringWriter();
-		this.tolvenResourceBundle = tolvenResourceBundle;
 		
 	}
 
@@ -69,18 +67,6 @@ public class GridBuilder {
 	public String getMenuPath(String suffix) {
 		return ctrl.getOriginalTargetPath().getPathString() + suffix;
 	}
-
-    public TolvenResourceBundle getAppBundle() {
-        return getTolvenResourceBundle();
-    }
-
-    public TolvenResourceBundle getGlobalBundle() {
-        return getTolvenResourceBundle();
-    }
-
-    public TolvenResourceBundle getTolvenResourceBundle() {
-        return tolvenResourceBundle;
-    }
 
     public void setupGrid() throws IOException {
 		String[] initialSort = getInitialSort();
@@ -209,7 +195,7 @@ public class GridBuilder {
 			String align = col.getAlign();
 			if (align==null) align="left";
 			writer.write(String.format(Locale.US, "<th style=\"text-align:%s;width:%.1fem\">%s</th>", 
-					align, width+0.5, col.getLocaleText(getTolvenResourceBundle())));
+					align, width+0.5, col.getLocaleText(SessionResourceBundleFactory.getBundle())));
 		}
 //		writer.write("\n<th> </th>\n");
 		writer.write("\n</tr>\n</thead>\n</table>\n");
@@ -221,9 +207,9 @@ public class GridBuilder {
 	 * @throws IOException 
 	 */
 	public  void createFilter( ) throws IOException {
-	   writer.write(String.format(Locale.US,"<table class=\"filter\"><tr><td class=\"menuActions\" >"+ MiscUtils.createActionButtons(getActions(),getId(""), getTolvenResourceBundle())+" "));
+	   writer.write(String.format(Locale.US,"<table class=\"filter\"><tr><td class=\"menuActions\" >"+ MiscUtils.createActionButtons(getActions(),getId(""))+" "));
 	   String filterLabel = null;
-	   filterLabel = ResourceBundleHelper.getString(getTolvenResourceBundle(), "Filter");
+	   filterLabel = ResourceBundleHelper.getString(SessionResourceBundleFactory.getBundle(), "Filter");
 	   writer.write(filterLabel);
 	   writer.write(String.format(Locale.US,
 		" <input id=\"%s\" name=\"%s\" type=\"text\"/></td>"+addFavoritesTabs()+"</tr></table>\n", 
@@ -280,11 +266,11 @@ public class GridBuilder {
         String formattedString = null;
         String pattern = null;
         if (rowCount == 1) {
-            pattern = ResourceBundleHelper.getString(getTolvenResourceBundle(), "item1");
+            pattern = ResourceBundleHelper.getString(SessionResourceBundleFactory.getBundle(), "item1");
         } else {
-            pattern = ResourceBundleHelper.getString(getTolvenResourceBundle(), "itemsN");
+            pattern = ResourceBundleHelper.getString(SessionResourceBundleFactory.getBundle(), "itemsN");
         }
-        MessageFormat formatter = new MessageFormat(pattern, getTolvenResourceBundle().getLocale());
+        MessageFormat formatter = new MessageFormat(pattern, SessionResourceBundleFactory.getBundle().getLocale());
         Object[] messageArgs = { rowCount };
         formattedString = formatter.format(messageArgs);
         writer.write(String.format(Locale.US, "<div class=\"foot\">" + formattedString + "<span id=\"%s\"> </span></div>\n", getId("-foot")));

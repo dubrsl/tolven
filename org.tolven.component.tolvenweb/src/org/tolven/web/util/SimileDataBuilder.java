@@ -33,6 +33,7 @@ import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.locale.ResourceBundleHelper;
+import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.util.DateExtent;
@@ -122,7 +123,7 @@ public class SimileDataBuilder {
 					}
 				writer.write(String.format(Locale.US, "{barPath:'%s',barColor:'%s'",path+":"+band.getNode(),getBarColor(band)));
 				writer.write(String.format(Locale.US, ",repeating:'%s',dataVersion:'%s'",band.getRepeating(),((mdv== null)?0:mdv.getVersion())));
-                TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+				TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
 				writer.write(String.format(Locale.US, ",interval:'%s',barName:'%s'", interval,ResourceBundleHelper.getString(tolvenResourceBundle, band.getRepeating().replaceAll(":","."))));
 				if(_thisChildCount > 0 && mdv != null) {// check dates only if the band has data
 					dateExtent.applyDate(mdv.getMinDate());
@@ -246,7 +247,7 @@ public class SimileDataBuilder {
 			int interval = intervalCodeFromString(band.getInterval());
 			if(bandCount > 0)
 				writer.write(",");
-            TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+			TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
 			writer.write(String.format(Locale.US, "{barName:'%s',barPath:'%s',",ResourceBundleHelper.getString(tolvenResourceBundle, band.getRepeating().replaceAll(":",".")),band.getNode()));
 			writer.write(String.format(Locale.US, "barColor:'%s',visible:'%s',interval:'%s'}",getBarColor(band),band.getVisible(),interval));
 			bandCount++;
@@ -276,7 +277,7 @@ public class SimileDataBuilder {
 				} else {
 					writer.write(String.format(Locale.US, "{dateTimeFormat:'iso8601',barPath:'%s',barColor:'%s'",path+":"+bandMS.getNode(),getBarColor(bandMS)));
 					writer.write(String.format(Locale.US, ",repeating:'%s'",bandMS.getRepeating()));
-		            TolvenResourceBundle tolvenResourceBundle = (TolvenResourceBundle) req.getSession(false).getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
+					TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
 					writer.write(String.format(Locale.US, ",barName:'%s'", ResourceBundleHelper.getString(tolvenResourceBundle, bandMS.getRepeating())));
 					writer.write(String.format(Locale.US, ",minDate:'%s',maxDate:'%s'",
 							simpleDateFormat.format(currentExtent.getMinDate()),

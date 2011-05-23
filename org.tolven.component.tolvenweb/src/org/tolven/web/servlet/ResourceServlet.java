@@ -12,8 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.tolven.locale.TolvenResourceBundle;
-import org.tolven.web.security.GeneralSecurityFilter;
+import org.tolven.web.TopAction;
 import org.tolven.web.util.FileInfo;
 import org.tolven.web.util.JSMin;
 
@@ -160,8 +159,9 @@ public class ResourceServlet extends TolvenServlet {
 	 * Based on the system property, we determine if the file should be compressed or not.
 	 */
     protected boolean isJSDebugEnabled(HttpServletRequest request) {
-        TolvenResourceBundle resourceBundle = (TolvenResourceBundle) request.getSession().getAttribute(GeneralSecurityFilter.TOLVEN_RESOURCEBUNDLE);
-        String jsDebug = (String) resourceBundle.getString("tolven.web.javascript.debug");
+        TopAction top = (TopAction)  request.getSession().getAttribute("top" );
+        if (top==null) return false;
+        String jsDebug = (String)top.getProperties().get( "tolven.web.javascript.debug");
         return "true".equals(jsDebug);
     }
 	

@@ -24,12 +24,15 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import javax.faces.context.FacesContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.Logger;
 import org.tolven.app.GlobalLocaleText;
 import org.tolven.app.el.GlobalLocaleMap;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
+import org.tolven.core.util.TolvenPropertiesMap;
 import org.tolven.locale.ResourceBundleHelper;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.security.TolvenPerson;
@@ -47,6 +50,7 @@ public class TopAction extends TolvenAction implements GlobalLocaleText {
 	private String startPage;
 	private TolvenPerson tp;
 	private boolean showProviderInactive = false;
+    private TolvenPropertiesMap tolvenPropertiesMap;
 	private PermissionMap PermissionMap;
 
 	private TSDateFormatList tsFormatList;
@@ -81,10 +85,25 @@ public class TopAction extends TolvenAction implements GlobalLocaleText {
 		return getNow().toString();
 	}
 
-    public TolvenResourceBundle getProperties() {
-        return getTolvenResourceBundle();
-    }
+    /**
+     * A simple method that returns the map of system properties to make them available to
+     * EL expressions.
+     * @return
+     */
+    public TolvenPropertiesMap getProperties( ) {
+        FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+        return getProperties( ((ServletRequest)fc.getExternalContext().getRequest()) );
+    }   
 
+    public TolvenPropertiesMap getProperties( ServletRequest req) {
+        if (tolvenPropertiesMap==null) {
+            String localAddr = req.getLocalAddr();
+            String remoteAddr = req.getRemoteAddr();
+            Logger.getLogger(TopAction.class).info("Contact: local=" + localAddr + " remote=" + remoteAddr);
+            tolvenPropertiesMap = new TolvenPropertiesMap(localAddr, getTolvenPropertiesBean());
+        }
+        return tolvenPropertiesMap;
+    }
 	public ExceptionFormatterMap getExceptionFormatter() {
 		return new ExceptionFormatterMap();
 	}
@@ -96,10 +115,10 @@ public class TopAction extends TolvenAction implements GlobalLocaleText {
         // If no AccountType known yet, return the default logo.
         AccountUser accountUser = getAccountUser();
         if (accountUser == null) {
-            return getTolvenResourceBundle().getString("tolven.web.defaultLogo", null);
+            return getProperties().get("tolven.web.defaultLogo");
         }
         // See if there is an override in properties
-        String logo = getTolvenResourceBundle().getString("tolven.application." + getAccountType() + ".logo", null);
+        String logo = getProperties().get("tolven.application." + getAccountType() + ".logo");
         if (logo == null) {
             // Otherwise, the pre-configured logo should be used.
             logo = accountUser.getLogo();
