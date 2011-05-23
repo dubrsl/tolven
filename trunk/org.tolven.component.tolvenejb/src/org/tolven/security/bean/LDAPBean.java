@@ -400,6 +400,8 @@ public class LDAPBean implements LDAPLocal {
     }
     
     static {
+        //OPENAM IS USED IN COMMUNICATION WITH LDAP
+        /*
         String propertyFileName = LDAPBean.class.getSimpleName() + ".properties";
         try {
             ldapProperties = new Properties();
@@ -422,6 +424,7 @@ public class LDAPBean implements LDAPLocal {
         if (ldapProperties.getProperty(PRINCIPAL_DN_SUFFIX_PROPERTY) == null) {
             throw new RuntimeException("Could not find property: " + PRINCIPAL_DN_SUFFIX_PROPERTY + " in " + propertyFileName);
         }
+        */
     }
 
 }

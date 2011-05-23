@@ -3,10 +3,6 @@ set-appl -e / -m iPlanetAMWebAgentService -a "actions=GET" "actions=POST" "actio
 create-realm -e tolven
 delete-datastores -e tolven -m embedded
 create-datastore -e tolven -m tolven -t LDAPv3ForOpenDS -D ../../../openam-conf/tolven-datastore-attributes.txt
-create-identity -e / -i agentadmingroup -t Group
-add-privileges -e / -i agentadmingroup -t Group -g AgentAdmin
-create-identity -e / -i agentadmin -t User -a "givenname=agentadmin" "cn=agentadmin" "sn=agentadmin" "userpassword=sysadmin"
-add-member -e / -m agentadmin -y User -i agentadmingroup -t Group
 delete-identities -e / -i anonymous -t User
 delete-identities -e / -i demo -t User
 create-policies -e / -X ../../../openam-conf/tolven-referrals.xml
@@ -14,3 +10,5 @@ create-policies -e tolven -X ../../../openam-conf/tolven-policies.xml
 set-attr-defs -s iPlanetAMSessionService -t Global -D ../../../openam-conf/tolven-global-attributes.txt
 set-attr-defs -s iPlanetAMAdminConsoleService -t Organization -a "iplanet-am-admin-console-password-reset-enabled=true"
 set-svc-attrs -e tolven -s iPlanetAMAuthService -a iplanet-am-auth-post-login-process-class=org.tolven.identity.authentication.spi.TolvenAMPostAuthProcess
+create-identity -e / -i tolvenWS -t Group
+create-policies -e / -X ../../../openam-conf/tolven-ws-policies.xml

@@ -8,5 +8,3 @@ export TOLVEN_PASSWORD=sysadmin
 echo TOLVEN_PASSWORD=xxxxxxxx
 export TOLVEN_CONFIG_DIR=$TOLVEN_CONFIG
 echo TOLVEN_CONFIG=$TOLVEN_CONFIG
-
-./tpf.sh -version

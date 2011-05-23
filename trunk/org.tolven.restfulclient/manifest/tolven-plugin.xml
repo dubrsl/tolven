@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.restfulclient" version="2.0.7" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.restfulclient" version="2.0.8" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<extension-point extension-multiplicity="none" id="devLib">
 		<parameter-def default-value="devLib.jar" id="jar" />
 		<parameter-def id="jersey-client" default-value="client/lib/jersey-client-1.3.jar" multiplicity="none-or-one" />
 		<parameter-def id="jersey-core" default-value="client/lib/jersey-core-1.3.jar" multiplicity="none-or-one" />
 		<parameter-def id="jsr311" default-value="client/lib/jsr311-api-1.1.1.jar" multiplicity="none-or-one" />
+		<parameter-def id="jersey-multipart" default-value="client/lib/jersey-multipart-1.3.jar" multiplicity="none-or-one" />
+		<parameter-def id="mimepull" default-value="client/lib/mimepull-1.3.jar" multiplicity="none-or-one" />
 	</extension-point>
 	<extension-point id="runtimeLib" extension-multiplicity="none">
 		<parameter-def id="tolven-restful-client" default-value="tolven-restful-client.jar" multiplicity="none-or-one" />
 		<parameter-def id="jersey-client" default-value="client/lib/jersey-client-1.3.jar" multiplicity="none-or-one" />
 		<parameter-def id="jersey-core" default-value="client/lib/jersey-core-1.3.jar" multiplicity="none-or-one" />
 		<parameter-def id="jsr311" default-value="client/lib/jsr311-api-1.1.1.jar" multiplicity="none-or-one" />
+		<parameter-def id="jersey-multipart" default-value="client/lib/jersey-multipart-1.3.jar" multiplicity="none-or-one" />
+		<parameter-def id="mimepull" default-value="client/lib/mimepull-1.3.jar" multiplicity="none-or-one" />
 	</extension-point>
 </plugin>

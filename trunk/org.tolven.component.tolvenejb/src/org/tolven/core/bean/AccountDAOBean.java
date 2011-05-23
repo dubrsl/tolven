@@ -119,7 +119,7 @@ public class AccountDAOBean implements AccountDAOLocal {
      * @param account
      */
     public void updateAccount(Account account) {
-        //    	TolvenLogger.info( "disableAutoRefresh: " + account.getDisableAutoRefresh(), AccountDAOBean.class );
+        //      TolvenLogger.info( "disableAutoRefresh: " + account.getDisableAutoRefresh(), AccountDAOBean.class );
         em.merge(account);
     }
 
@@ -295,7 +295,7 @@ public class AccountDAOBean implements AccountDAOLocal {
     public Account findTemplateAccount(long accountId) {
         Query q = em.createQuery("SELECT a FROM Account a " + 
                 "WHERE a.id = :accountId " + 
-                "AND a.accountTemplate = null");
+                "AND a.accountTemplate IS NULL");
         q.setParameter("accountId", accountId);
         List<Account> rslt = q.getResultList();
         if (rslt.size() == 1) {
@@ -387,20 +387,20 @@ public class AccountDAOBean implements AccountDAOLocal {
         query.setParameter("status", status);
         List<TolvenUser> results = query.getResultList();
         if (results.size()>0) {
-        	return results.get(0);
+            return results.get(0);
         } else {
             return null;
         }
     }
     
     public TolvenUser createSystemUser( String principal, String status, Date now) {
-    	TolvenUser tolvenUser = new TolvenUser();
-    	tolvenUser.setCreation(now);
-    	tolvenUser.setDemoUser(false);
-    	tolvenUser.setLdapUID(principal.toLowerCase());
-    	tolvenUser.setStatus(status);
-    	em.persist(tolvenUser);
-    	return tolvenUser;
+        TolvenUser tolvenUser = new TolvenUser();
+        tolvenUser.setCreation(now);
+        tolvenUser.setDemoUser(false);
+        tolvenUser.setLdapUID(principal.toLowerCase());
+        tolvenUser.setStatus(status);
+        em.persist(tolvenUser);
+        return tolvenUser;
     }
     
     public AccountUser findSystemAccountUser(TolvenUser user, Account account, String status) {
@@ -411,7 +411,7 @@ public class AccountDAOBean implements AccountDAOLocal {
         query.setParameter("status", status);
         List<AccountUser> results = query.getResultList();
         if (results.size()>0) {
-        	return results.get(0);
+            return results.get(0);
         } else {
             return null;
         }
@@ -426,16 +426,16 @@ public class AccountDAOBean implements AccountDAOLocal {
      * @return
      */
     public AccountUser createSystemAccountUser(TolvenUser user, Account account, String status, Date now) {
-    	AccountUser accountUser = new AccountUser();
-    	accountUser.setAccount(account);
-    	accountUser.setUser(user);
-    	accountUser.setEffectiveDate(now);
+        AccountUser accountUser = new AccountUser();
+        accountUser.setAccount(account);
+        accountUser.setUser(user);
+        accountUser.setEffectiveDate(now);
         accountUser.setStatus(status);
         // Don't make this the default account until asked, even if we only have one account for the user.
         accountUser.setDefaultAccount(false);
         accountUser.setAccountPermission(false);
         em.persist(accountUser);
-    	return accountUser;
+        return accountUser;
     }
 
     /**
@@ -542,29 +542,29 @@ public class AccountDAOBean implements AccountDAOLocal {
      * @param createIf If true, the user and/or account user will be created if they do not exist
      * @return The AccountUser
      */
-	public AccountUser getSystemAccountUser(Account account, boolean createIf, Date now ) {
-		String principal = ejbContext.getCallerPrincipal().getName();
-		String status = "system";
+    public AccountUser getSystemAccountUser(Account account, boolean createIf, Date now ) {
+        String principal = ejbContext.getCallerPrincipal().getName();
+        String status = "system";
         propertyBean.setAllProperties();
         TolvenUser tolvenUser = findSystemUser( principal, status);
         if (tolvenUser==null) {
-        	if (createIf) {
-            	tolvenUser = createSystemUser( principal, status, now );
-        	} else {
-        		throw new RuntimeException( "No tolvenUser entry for " + principal + " in getSystemAccountUser");
-        	}
+            if (createIf) {
+                tolvenUser = createSystemUser( principal, status, now );
+            } else {
+                throw new RuntimeException( "No tolvenUser entry for " + principal + " in getSystemAccountUser");
+            }
         }
         AccountUser accountUser = findSystemAccountUser(tolvenUser, account, status);
         if (accountUser==null) {
-        	if (createIf) {
-        		accountUser = createSystemAccountUser(tolvenUser, account, status, now);
-        	} else {
-        		throw new RuntimeException( "No accountUser entry for " + principal + " and account " + account.getId() + " in getSystemAccountUser");
-        	}
+            if (createIf) {
+                accountUser = createSystemAccountUser(tolvenUser, account, status, now);
+            } else {
+                throw new RuntimeException( "No accountUser entry for " + principal + " and account " + account.getId() + " in getSystemAccountUser");
+            }
         }
         return accountUser;
-		
-	}
+        
+    }
 
     /**
      * Find an accountUser given the username and account id. 
@@ -573,12 +573,12 @@ public class AccountDAOBean implements AccountDAOLocal {
         propertyBean.setAllProperties();
         // Example of using traditional-style SQL joins
         Query q = em.createQuery("SELECT au FROM AccountUser au, TolvenUser u, Account a " + 
-        		"WHERE au.account = a " + 
-        		"AND a.id = :accountId " + 
-        		"AND au.user = u " + 
-        		"AND u.ldapUID = :username " + 
-        		"AND u.status = 'active' " + 
-        		"AND au.status = 'active' ");
+                "WHERE au.account = a " + 
+                "AND a.id = :accountId " + 
+                "AND au.user = u " + 
+                "AND u.ldapUID = :username " + 
+                "AND u.status = 'active' " + 
+                "AND au.status = 'active' ");
         q.setParameter("accountId", accountId);
         q.setParameter("username", username.toLowerCase());
         List<AccountUser> rslt = q.getResultList();
@@ -708,8 +708,8 @@ public class AccountDAOBean implements AccountDAOLocal {
      */
     public List<SponsoredUser> findSponsoredUsersForAccount(Account account) {
         Query q = em.createQuery("SELECT new org.tolven.core.SponsoredUser(s.referenceCode, u.ldapUID, u.creation, u.lastLogin) " +
-        		"FROM TolvenUser u, Sponsorship s " +
-        		"WHERE u.sponsorship = s and s.account = :account");
+                "FROM TolvenUser u, Sponsorship s " +
+                "WHERE u.sponsorship = s and s.account = :account");
         q.setParameter("account", account);
         return q.getResultList();
     }
@@ -851,13 +851,13 @@ public class AccountDAOBean implements AccountDAOLocal {
         if (complete) {
             // Both ends must agree
             q = em.createQuery("SELECT ae " +
-            		"FROM AccountExchange ae, AccountExchange aeo " + 
-            		"WHERE ae.account = :account " + 
-            		"AND aeo.account = ae.otherAccount " + 
-            		"AND aeo.status = :status " + 
-            		"AND aeo.direction = :otherDirection " + 
-            		"AND ae.direction = :direction " + 
-            		"AND ae.status = :status ");
+                    "FROM AccountExchange ae, AccountExchange aeo " + 
+                    "WHERE ae.account = :account " + 
+                    "AND aeo.account = ae.otherAccount " + 
+                    "AND aeo.status = :status " + 
+                    "AND aeo.direction = :otherDirection " + 
+                    "AND ae.direction = :direction " + 
+                    "AND ae.status = :status ");
             if (direction.equals(AccountExchange.Direction.SEND)) {
                 q.setParameter("otherDirection", AccountExchange.Direction.RECEIVE);
             } else {
@@ -865,10 +865,10 @@ public class AccountDAOBean implements AccountDAOLocal {
             }
         } else {
             q = em.createQuery("SELECT ae " +
-            		"FROM AccountExchange ae " + 
-            		"WHERE ae.account = :account " + 
-            		"AND ae.direction = :direction " + 
-            		"AND ae.status = :status");
+                    "FROM AccountExchange ae " + 
+                    "WHERE ae.account = :account " + 
+                    "AND ae.direction = :direction " + 
+                    "AND ae.status = :status");
         }
         q.setParameter("account", account);
         q.setParameter("direction", direction);

@@ -16,7 +16,6 @@
  */
 package org.tolven.web.security;
 
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -41,7 +40,6 @@ import org.tolven.locale.ResourceBundleHelper;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.sso.TolvenSSO;
 
-import com.iplanet.sso.SSOToken;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
@@ -167,8 +165,7 @@ public class VestibuleProcessor {
             String appRestfulURL = (String) request.getSession(false).getServletContext().getInitParameter("appRestful.url");
             Client client = (Client) request.getSession().getServletContext().getAttribute("restfulClient");
             webResource = client.resource(appRestfulURL).path(vestibuleURL);
-            SSOToken ssoToken = TolvenSSO.getInstance().getSSOToken((HttpServletRequest) request);
-            NewCookie ssoCookie = new NewCookie("iPlanetDirectoryPro", URLEncoder.encode(ssoToken.getTokenID().toString(), "UTF-8"));
+            NewCookie ssoCookie = TolvenSSO.getInstance().getSSOCookie((HttpServletRequest) request);
             clientResponse = webResource.cookie(ssoCookie).accept(MediaType.APPLICATION_FORM_URLENCODED).get(ClientResponse.class);
         } catch (Exception ex) {
             throw new RuntimeException("Failed while getting Vestibule response", ex);

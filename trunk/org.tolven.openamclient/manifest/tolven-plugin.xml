@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.openamclient" version="2.0.6" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.openamclient" version="2.0.7" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.config.appserver" />
+		<import plugin-id="org.tolven.component.war" />
+		<import plugin-id="org.tolven.ws" />
 	</requires>
 	<extension-point id="devLib" extension-multiplicity="none">
 		<parameter-def id="jar" default-value="devLib.jar" />
 	</extension-point>
 	<extension id="tolven-openamclient.jar" plugin-id="org.tolven.config.appserver" point-id="libJar">
 		<parameter id="jar" value="tolven-openamclient.jar" />
+	</extension>
+	<!-- Filters -->
+	<extension id="org.tolven.api-AgentFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="AgentFilter" />
+		<parameter id="filter-class" value="com.sun.identity.agents.filter.AmAgentFilter" />
+		<parameter id="filter-sequence" value="50" />
+		<parameter id="target-plugin-id" value="org.tolven.api" />
+	</extension>
+	<extension id="org.tolven.api-AgentFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="AgentFilter" />
+		<parameter id="url-pattern" value="/*" />
+		<parameter id="dispatchers" value="REQUEST,INCLUDE,FORWARD,ERROR" />
+		<parameter id="target-plugin-id" value="org.tolven.api" />
+	</extension>
+	<extension id="org.tolven.component.tolvenweb-AgentFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="AgentFilter" />
+		<parameter id="filter-class" value="com.sun.identity.agents.filter.AmAgentFilter" />
+		<parameter id="filter-sequence" value="50" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.component.tolvenweb-AgentFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="AgentFilter" />
+		<parameter id="url-pattern" value="/*" />
+		<parameter id="dispatchers" value="REQUEST,INCLUDE,FORWARD,ERROR" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.ws-TolvenWSAgentFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="TolvenWSAgentFilter" />
+		<parameter id="filter-class" value="org.tolven.openamclient.TolvenWSAgentFilter" />
+		<parameter id="filter-sequence" value="50" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
+	</extension>
+	<extension id="org.tolven.ws-TolvenWSAgentFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="TolvenWSAgentFilter" />
+		<parameter id="url-pattern" value="/*" />
+		<parameter id="dispatchers" value="REQUEST,INCLUDE,FORWARD,ERROR" />
+		<parameter id="target-plugin-id" value="org.tolven.ws" />
 	</extension>
 </plugin>

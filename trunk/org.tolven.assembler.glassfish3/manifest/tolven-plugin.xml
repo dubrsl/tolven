@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.assembler.glassfish3" version="2.0.3" class="org.tolven.assembler.glassfish3.GlassFish3Assembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.assembler.glassfish3" version="2.0.4" class="org.tolven.assembler.glassfish3.GlassFish3Assembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<attributes>
 		<attribute id="libDir" value="glassfish/domains/tolven/lib" />
+		<attribute id="configDir" value="glassfish/domains/tolven/config" />
 	</attributes>
 	<requires>
 		<import plugin-id="org.tolven.assembler" />
@@ -20,7 +21,25 @@
 	</extension>
 	<extension-point extension-multiplicity="one" id="databasePlugin" />
 	<extension-point id="libJar" parent-plugin-id="org.tolven.config.appserver" parent-point-id="libJar" />
+	<extension-point id="configFile" parent-plugin-id="org.tolven.config.appserver" parent-point-id="configFile" />
 	<extension-point id="classes">
 		<parameter-def id="dir" />
 	</extension-point>
+	<extension id="hibernate-jars" plugin-id="org.tolven.config.appserver" point-id="libJar">
+		<parameter id="jar" value="hibernate/antlr-2.7.6.jar" />
+		<parameter id="jar" value="hibernate/dom4j-1.6.1.jar" />
+		<parameter id="jar" value="hibernate/hibernate3.jar" />
+		<parameter id="jar" value="hibernate/javassist-3.12.0.GA.jar" />
+		<parameter id="jar" value="hibernate/slf4j-api-1.6.1.jar" />
+	</extension>
+	<extension id="commons" plugin-id="org.tolven.config.appserver" point-id="libJar">
+		<parameter id="jar" value="commons/commons-collections-3.1.jar" />
+		<parameter id="jar" value="commons/commons-logging-1.0.4.jar" />
+	</extension>
+	<extension id="log4j" plugin-id="org.tolven.config.appserver" point-id="libJar">
+		<parameter id="jar" value="log4j/log4j-1.2.15.jar" />
+	</extension>
+	<extension id="log4jXML" plugin-id="org.tolven.config.appserver" point-id="configFile">
+		<parameter id="file" value="config/log4j.xml" />
+	</extension>
 </plugin>

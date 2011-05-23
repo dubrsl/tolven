@@ -241,6 +241,10 @@ public class Account implements Serializable {
         return accountPublicKey;
     }
 
+    public void setAccountPublicKey(AccountPublicKey accountPublicKey) {
+        this.accountPublicKey = accountPublicKey;
+    }
+
     public PublicKey getPublicKey() throws GeneralSecurityException {
         return accountPublicKey == null ? null : accountPublicKey.getPublicKey();
     }
@@ -256,6 +260,10 @@ public class Account implements Serializable {
     
     public AccountProcessingPublicKey getAccountProcessingPublicKey() {
         return accountProcessingPublicKey;
+    }
+
+    public void setAccountProcessingPublicKey(AccountProcessingPublicKey accountProcessingPublicKey) {
+        this.accountProcessingPublicKey = accountProcessingPublicKey;
     }
 
     public AccountProcessingPrivateKey getAccountProcessingPrivateKey() {

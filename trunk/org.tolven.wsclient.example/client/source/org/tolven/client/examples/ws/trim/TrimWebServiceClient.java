@@ -5,8 +5,10 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.GregorianCalendar;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
 
 import org.tolven.client.examples.ws.common.HeaderHandlerResolver;
 import org.tolven.client.examples.ws.trim.jaxws.Trim;
@@ -42,6 +44,7 @@ public class TrimWebServiceClient {
     private char[] password;
     private String wsdl;
     private int expiresInSeconds;
+    private Trim trimPort;
 
     public TrimWebServiceClient() {
     }
@@ -106,17 +109,25 @@ public class TrimWebServiceClient {
         cal.set(1957, 07, 23, 0, 0, 0);
         field.setValue(cal.getTime());
         webServiceTrim.getFields().add(field);
-        URL url = null;
-        try {
-            url = new URL(getWsdl());
-        } catch (MalformedURLException ex) {
-            throw new RuntimeException("Could not convert to URL: " + getWsdl(), ex);
+        getTrimPort().submitTrim(webServiceTrim);
+    }
+
+    public Trim getTrimPort() {
+        if (trimPort == null) {
+            URL url = null;
+            try {
+                url = new URL(getWsdl());
+            } catch (MalformedURLException ex) {
+                throw new RuntimeException("Could not convert to URL: " + getWsdl(), ex);
+            }
+            TrimService service = new TrimService(url, new QName("http://tolven.org/trim", "TrimService"));
+            HeaderHandlerResolver handlerResolver = new HeaderHandlerResolver(getUsername(), getPassword(), getExpiresInSeconds());
+            service.setHandlerResolver(handlerResolver);
+            trimPort = service.getTrimPort();
+            Map<String, Object> ctx = ((BindingProvider) trimPort).getRequestContext();
+            ctx.put(BindingProvider.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
         }
-        TrimService service = new TrimService(url, new QName("http://tolven.org/trim", "TrimService"));
-        HeaderHandlerResolver handlerResolver = new HeaderHandlerResolver(getUsername(), getPassword(), getExpiresInSeconds());
-        service.setHandlerResolver(handlerResolver);
-        Trim port = service.getTrimPort();
-        port.submitTrim(webServiceTrim);
+        return trimPort;
     }
 
     /**

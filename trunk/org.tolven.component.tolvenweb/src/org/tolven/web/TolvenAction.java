@@ -34,7 +34,6 @@ import org.tolven.security.key.UserPrivateKey;
 import org.tolven.sso.TolvenSSO;
 import org.tolven.web.security.GeneralSecurityFilter;
 
-import com.iplanet.sso.SSOToken;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 /**
@@ -176,24 +175,20 @@ public abstract class TolvenAction extends TolvenBean {
         return TolvenSSO.getInstance().getUserPublicKey(getRequest());
     }
     
-    protected SSOToken getSSOToken() {
-        return TolvenSSO.getInstance().getSSOToken(getRequest());
-    }
-
     protected String getSessionProperty(String name) {
-        return TolvenSSO.getInstance().getSessionProperty(name, getSSOToken());
+        return TolvenSSO.getInstance().getSessionProperty(name, getRequest());
     }
 
     protected void setSessionProperty(String name, String value) {
-        TolvenSSO.getInstance().setSessionProperty(name, value, getSSOToken());
+        TolvenSSO.getInstance().setSessionProperty(name, value, getRequest());
     }
 
     protected void removeSessionProperty(String name) {
-        TolvenSSO.getInstance().setSessionProperty(name, null, getSSOToken());
+        TolvenSSO.getInstance().setSessionProperty(name, null, getRequest());
     }
 
     protected NewCookie getSSOCookie() {
-        return TolvenSSO.getInstance().getSSOCookie(getSSOToken());
+        return TolvenSSO.getInstance().getSSOCookie(getRequest());
     }
 
     protected WebResource getAppWebResource() {

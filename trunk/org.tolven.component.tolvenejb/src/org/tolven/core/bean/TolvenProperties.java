@@ -14,6 +14,7 @@
 package org.tolven.core.bean;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -180,12 +181,22 @@ public class TolvenProperties implements TolvenPropertiesLocal {
      * @return Map<String, String>
      */
     public Properties findProperties(List<String> propertyNames) {
-        Query query = em.createQuery("SELECT p FROM Property p WHERE p.name in (:propertyNames)");
-        query.setParameter("propertyNames", propertyNames);
+        Query query = em.createQuery("SELECT p FROM Property p WHERE p.name IN (:propertyNames)");
+        StringBuffer buff = new StringBuffer();
+        Iterator<String> it = propertyNames.iterator();
+        while(it.hasNext()) {
+            buff.append(it.next());
+            if(it.hasNext()) {
+                buff.append(",");
+            }
+        }
+        query.setParameter("propertyNames", buff.toString());
         List<Property> propertiesList = query.getResultList();
         Properties properties = new Properties();
         for (Property property : propertiesList) {
-            properties.setProperty(property.getName(), property.getValue());
+            if (property.getValue() != null) {
+                properties.setProperty(property.getName(), property.getValue());
+            }
         }
         return properties;
     }

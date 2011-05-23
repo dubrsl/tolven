@@ -12,7 +12,6 @@
 		<import plugin-id="org.tolven.assembler.war" />
 		<import plugin-id="org.tolven.jaxrs" />
 		<import plugin-id="org.tolven.api.schemas" />
-		<import plugin-id="org.tolven.openamclient" />
 	</requires>
 	<extension id="warModule" plugin-id="org.tolven.component.tolvenear" point-id="warModule">
 		<parameter id="web-uri" value="tolvenWEB.war" />
@@ -1364,18 +1363,6 @@
 	<!-- End Navigation Rules -->
 
 	<!-- Filters -->
-	<extension id="org.tolven.component.tolvenweb-AgentFilter" plugin-id="org.tolven.component.war" point-id="filter">
-		<parameter id="filter-name" value="AgentFilter" />
-		<parameter id="filter-class" value="com.sun.identity.agents.filter.AmAgentFilter" />
-		<parameter id="filter-sequence" value="50" />
-		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
-	</extension>
-	<extension id="org.tolven.component.tolvenweb-AgentFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
-		<parameter id="filter-name" value="AgentFilter" />
-		<parameter id="url-pattern" value="/*" />
-		<parameter id="dispatchers" value="REQUEST,INCLUDE,FORWARD,ERROR" />
-		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
-	</extension>
 	<extension id="TransactionFilter" plugin-id="org.tolven.component.war" point-id="transaction-filter">
 		<parameter id="filter-name" value="TransactionFilter" />
 		<parameter id="filter-class" value="org.tolven.web.TransactionFilter" />

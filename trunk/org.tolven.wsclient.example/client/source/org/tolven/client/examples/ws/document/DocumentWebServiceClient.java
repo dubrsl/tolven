@@ -8,8 +8,10 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
 
 import org.tolven.client.examples.ws.common.HeaderHandlerResolver;
 import org.tolven.client.examples.ws.document.jaxws.Document;
@@ -38,6 +40,7 @@ public class DocumentWebServiceClient {
     private char[] password;
     private String wsdl;
     private int expiresInSeconds;
+    private Document documentPort;
 
     public DocumentWebServiceClient(String username, char[] password, String wsdl, int expiresInSeconds) {
         this.username = username;
@@ -78,7 +81,7 @@ public class DocumentWebServiceClient {
         this.expiresInSeconds = expiresInSeconds;
     }
 
-    private String getXML(File file) {
+    public static String getXML(File file) {
         ByteArrayOutputStream xml = null;
         try {
             InputStream input = new BufferedInputStream(new FileInputStream(file));
@@ -97,17 +100,22 @@ public class DocumentWebServiceClient {
         }
     }
 
-    private Document getDocumentPort() {
-        URL url = null;
-        try {
-            url = new URL(getWsdl());
-        } catch (Exception ex) {
-            throw new RuntimeException("Could not convert to URL: " + getWsdl(), ex);
+    public Document getDocumentPort() {
+        if (documentPort == null) {
+            URL url = null;
+            try {
+                url = new URL(getWsdl());
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not convert to URL: " + getWsdl(), ex);
+            }
+            DocumentService service = new DocumentService(url, new QName("http://tolven.org/document", "DocumentService"));
+            HeaderHandlerResolver handlerResolver = new HeaderHandlerResolver(getUsername(), getPassword(), getExpiresInSeconds());
+            service.setHandlerResolver(handlerResolver);
+            documentPort = service.getDocumentPort();
+            Map<String, Object> ctx = ((BindingProvider) documentPort).getRequestContext();
+            ctx.put(BindingProvider.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
         }
-        DocumentService service = new DocumentService(url, new QName("http://tolven.org/document", "DocumentService"));
-        HeaderHandlerResolver handlerResolver = new HeaderHandlerResolver(getUsername(), getPassword(), getExpiresInSeconds());
-        service.setHandlerResolver(handlerResolver);
-        return service.getDocumentPort();
+        return documentPort;
     }
 
     public String testWS() {
@@ -153,13 +161,16 @@ public class DocumentWebServiceClient {
         }
         String wsdl = args[0];
         String filename = args[1];
-        String accountId = args[2];
+        long accountId = Long.parseLong(args[2]);
         System.out.print("Please enter username: ");
         String username = new BufferedReader(new InputStreamReader(System.in)).readLine();
         System.out.print("Please enter user password: ");
         char[] password = System.console().readPassword();
         DocumentWebServiceClient client = new DocumentWebServiceClient(username, password, wsdl, 60);
-        String result = client.queueMessage(filename, accountId);
+        Document port = client.getDocumentPort();
+        byte[] document = DocumentWebServiceClient.getXML(new File(filename)).getBytes();
+        long result = port.processDocument(document, CCRns, accountId);
         System.out.println("Message queue result: " + result);
     }
+
 }

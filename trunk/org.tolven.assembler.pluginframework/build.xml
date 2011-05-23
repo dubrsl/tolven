@@ -8,7 +8,6 @@
 
 	<property name="buildFolder" value="build" />
 
-	<property file="../tolven/resources/ant-build-default.properties" />
 	<property name="include.java" value="false" />
 	<property name="include.java.source.code" value="true" />
 	<!-- 
@@ -21,6 +20,7 @@
 	<path id="plugin.classpath">
 		<pathelement location="${buildFolder}/tpf/classes" />
 		<pathelement location="${buildFolder}/tpfboot/classes" />
+		<path path="lib/xercesImpl.jar;lib/xml-apis.jar" />
 	</path>
 
 	<target name="resources">
@@ -57,35 +57,35 @@
 
 	<target name="jars" depends="compile,resources" description="Create jars">
 		<mkdir dir="build/pluginLib" />
-		<copy toDir="build/pluginLib">
+		<copy toDir="build/pluginLib" preservelastmodified="true">
 			<fileset dir="lib">
 				<include name="commons-logging.jar" />
 				<include name="jpf-boot.jar" />
 				<include name="jpf-tools.jar" />
 				<include name="jpf.jar" />
 			</fileset>
-			<fileset dir="${apache-ant.location}">
+			<fileset dir="lib/apache-ant">
 				<include name="ant.jar" />
 				<include name="ant-launcher.jar" />
 				<include name="ant-apache-log4j.jar" />
 			</fileset>
-			<fileset dir="${commons-io.location}">
+			<fileset dir="lib/commons-io">
 				<include name="commons-io-1.4.jar" />
 			</fileset>
-			<fileset dir="${commons-codec.location}">
+			<fileset dir="lib/commons-codec">
 				<include name="commons-codec-1.3.jar" />
 			</fileset>
-			<fileset dir="${commons-cli.location}">
+			<fileset dir="lib/commons-cli">
 				<include name="commons-cli-1.2.jar" />
 			</fileset>
-			<fileset dir="${javaee.location}/el">
+			<fileset dir="lib/javaee">
 				<include name="el-api-1.1.jar" />
 				<include name="el-impl-1.1.jar" />
 			</fileset>
-			<fileset dir="${log4j.location}">
+			<fileset dir="lib/log4j">
 				<include name="log4j-1.2.15.jar" />
 			</fileset>
-			<fileset dir="${tolvenCommon.location}/build">
+			<fileset dir="../org.tolven.library.tolvencommon/build">
 				<include name="tolvenCommon.jar" />
 			</fileset>
 		</copy>
@@ -130,6 +130,7 @@
 				<include name="pluginLib/**" />
 			</zipfileset>
 		</zip>
+		<antcall target="create-installer" />
 	</target>
 
 	<target name="gen_plugins">
@@ -141,43 +142,28 @@
 		</exec>
 	</target>
 
-	<target name="create-installer" depends="clean" description="Create Installer">
-		<ant dir="../tolvenCommon" target="clean" />
-		<ant dir="../tolvenCommon" target="build-plugin" />
-		<antcall target="build-plugin" />
+	<target name="create-installer">
+		<ant dir="../org.tolven.library.tolvencommon" target="clean" />
+		<ant dir="../org.tolven.library.tolvencommon" target="build-plugin" />
 		<tstamp>
 			<format property="TSTAMP" pattern="yyyyMMddHHmmss" />
 		</tstamp>
 		<property name="tolven.impl.version" value="tolven${TSTAMP}" />
 		<java classname="org.tolven.plugin.repository.TolvenManifestParser" failonerror="true" outputproperty="plugin.version">
-			<arg line="-url file:///${tolven.home}/pluginFramework/manifest/tolven-plugin.xml -pluginVersion" />
+			<arg line="-url file:///${tolven.home}/org.tolven.assembler.pluginframework/manifest/tolven-plugin.xml -pluginVersion" />
 			<classpath refid="plugin.classpath" />
 			<classpath refid="project.classpath" />
-			<classpath location="lib/xercesImpl.jar" />
-			<classpath location="lib/xml-apis.jar" />
 		</java>
 		<property name="build.tag" value="tolven-V${plugin.version}" />
+		<property name="tolven.installer" value="${basedir}/build/installer" />
 		<property name="kit.dir" value="${tolven.installer}/${build.tag}" />
-		<delete dir="${kit.dir}" />
-		<delete file="${kit.dir}.zip" />
 		<mkdir dir="${kit.dir}" />
 		<copy toDir="${kit.dir}" preservelastmodified="true">
-			<fileset dir="${tolven.location}">
+			<fileset dir="manifest">
 				<include name="lgpl.txt" />
-				<include name="notice.txt" />
-				<include name="readme.txt" />
-			</fileset>
-		</copy>
-		<copy toDir="${kit.dir}/bin" overwrite="true" preservelastmodified="true">
-			<fileset dir="${tolven.location}/installer/izpack/bin">
-				<include name="install.sh" />
-				<include name="install.bat" />
 			</fileset>
 		</copy>
 		<mkdir dir="${kit.dir}/log" />
-		<copy toDir="${kit.dir}/examples/openldap" preservelastmodified="true">
-			<fileset dir="${tolven.location}/ldap-config" />
-		</copy>
 		<mkdir dir="${kit.dir}/installer" />
 		<concat destfile="${kit.dir}/installer/cvstag_dirname_unix.txt">${tolven-dirname-prefix-unix}/${build.tag}</concat>
 		<concat destfile="${kit.dir}/installer/cvstag_dirname_windows.txt">${tolven-dirname-prefix-win}\${build.tag}</concat>
@@ -192,20 +178,19 @@
 				<include name="tolven-log4j.xml" />
 			</fileset>
 		</copy>
-		<copy toDir="${kit.dir}/installer/tolven-config" preservelastmodified="true">
+		<copy toDir="${kit.dir}/bin" preservelastmodified="true" flatten="true">
+			<fileset dir="scripts">
+				<include name="install.*" />
+			</fileset>
+		</copy>
+		<copy toDir="${kit.dir}/installer" preservelastmodified="true">
 			<fileset dir=".">
-				<include name="boot.properties" />
-				<include name="plugins.xml" />
+				<include name="template-tolven-config/**" />
 			</fileset>
 		</copy>
-		<copy toDir="${kit.dir}/installer/tolven-config" preservelastmodified="true">
-			<fileset dir="examples">
-				<include name="repositoryLocal/**" />
-			</fileset>
-		</copy>
-		<copy toDir="${kit.dir}/examples" preservelastmodified="true">
-			<fileset dir="examples">
-				<include name="rootPlugins/**" />
+		<copy toDir="${kit.dir}" preservelastmodified="true">
+			<fileset dir=".">
+				<include name="template-pluginsxml/**" />
 			</fileset>
 		</copy>
 

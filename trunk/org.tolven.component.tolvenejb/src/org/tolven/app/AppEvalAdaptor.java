@@ -536,6 +536,7 @@ public abstract class AppEvalAdaptor implements MessageProcessorLocal {
 				TolvenMessageWithAttachments tm = new TolvenMessageWithAttachments();
 				tm.setAccountId(destinationAccountId);
 				tm.setFromAccountId(getSourceAccount().getId());
+				tm.setDocumentId(attachment.getDocumentId());
 				tm.setAuthorId(tm.getAuthorId());
 				tm.setXmlNS( ns );
 				tm.setMediaType(attachment.getMediaType());
@@ -610,6 +611,10 @@ public abstract class AppEvalAdaptor implements MessageProcessorLocal {
 		return sourceAccount;
 	}
 
+    public void initSourceAccount() {
+    	sourceAccount = null;
+    }
+	
     public void info( String message ) {
         logger.info( "AccountId: " + getAccount().getId() + " " + message);
     }

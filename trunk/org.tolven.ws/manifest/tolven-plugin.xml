@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.ws" version="2.0.5" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.ws" version="2.0.6" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.component.tolvenear" />
 		<import plugin-id="org.tolven.component.war" />
@@ -16,21 +16,6 @@
 	<extension-point id="classes" parent-plugin-id="org.tolven.assembler.war" parent-point-id="classes">
 		<parameter-def id="dir" />
 	</extension-point>
-
-	<!-- Filters -->
-	<extension id="org.tolven.api-AgentFilter" plugin-id="org.tolven.component.war" point-id="filter">
-		<parameter id="filter-name" value="AgentFilter" />
-		<parameter id="filter-class" value="com.sun.identity.agents.filter.AmAgentFilter" />
-		<parameter id="filter-sequence" value="50" />
-		<parameter id="target-plugin-id" value="org.tolven.ws" />
-	</extension>
-	<extension id="org.tolven.api-AgentFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
-		<parameter id="filter-name" value="AgentFilter" />
-		<parameter id="url-pattern" value="/*" />
-		<parameter id="dispatchers" value="REQUEST,INCLUDE,FORWARD,ERROR" />
-		<parameter id="target-plugin-id" value="org.tolven.ws" />
-	</extension>
-	<!-- End Filters -->
 
 	<!-- Servlets -->
 	<extension id="echo" plugin-id="org.tolven.component.war" point-id="servlet">

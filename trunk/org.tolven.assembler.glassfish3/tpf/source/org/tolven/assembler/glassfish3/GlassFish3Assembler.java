@@ -38,9 +38,11 @@ public class GlassFish3Assembler extends TolvenCommandPlugin {
 
     public static final String EXTENSIONPOINT_DB_PLUGIN_COMPONENT = "databasePlugin";
     public static final String EXTENSIONPOINT_LIBJAR_COMPONENT = "libJar";
+    public static final String EXTENSIONPOINT_CONFIG_FILE_COMPONENT = "configFile";
     public static final String EXTENSIONPOINT_LIB_CLASSES = "classes";
 
     public static final String ATTRIBUTE_STAGE_LIB = "libDir";
+    public static final String ATTRIBUTE_STAGE_CONFIG_DIR = "configDir";
 
     public static final String CMD_LINE_DESTDIR_OPTION = "destDir";
 
@@ -75,6 +77,7 @@ public class GlassFish3Assembler extends TolvenCommandPlugin {
         executeRequiredPlugins(args);
         assembleLibClasses();
         assembleLibJars();
+        assembleConfigFiles();
         copyToStageDir();
     }
 
@@ -114,6 +117,21 @@ public class GlassFish3Assembler extends TolvenCommandPlugin {
             for (Parameter parameter : extension.getParameters("jar")) {
                 File sourceJar = getFilePath(pluginDescriptor, parameter.valueAsString());
                 File destJar = new File(tmpStageLibExtDir, sourceJar.getName());
+                FileUtils.copyFile(sourceJar, destJar);
+            }
+        }
+    }
+
+    protected void assembleConfigFiles() throws IOException {
+        ExtensionPoint extensionPoint = getDescriptor().getExtensionPoint(EXTENSIONPOINT_CONFIG_FILE_COMPONENT);
+        ExtensionPoint appServerExtensionPoint = getParentExtensionPoint(extensionPoint);
+        String relativeConfigExtDirPath = getDescriptor().getAttribute(ATTRIBUTE_STAGE_CONFIG_DIR).getValue();
+        File tmpStageConfigExtDir = new File(getPluginTmpDir(), getAppServerDirname() + "/" + relativeConfigExtDirPath);
+        for (Extension extension : appServerExtensionPoint.getConnectedExtensions()) {
+            PluginDescriptor pluginDescriptor = extension.getDeclaringPluginDescriptor();
+            for (Parameter parameter : extension.getParameters("file")) {
+                File sourceJar = getFilePath(pluginDescriptor, parameter.valueAsString());
+                File destJar = new File(tmpStageConfigExtDir, sourceJar.getName());
                 FileUtils.copyFile(sourceJar, destJar);
             }
         }

@@ -154,6 +154,10 @@ public class TolvenSSO {
         removeSessionProperty(name, getSSOToken(request));
     }
 
+    public NewCookie getSSOCookie(HttpServletRequest request) {
+        return getSSOCookie(getSSOToken(request));
+    }
+
     public NewCookie getSSOCookie(SSOToken ssoToken) {
         try {
             return new NewCookie("iPlanetDirectoryPro", URLEncoder.encode(ssoToken.getTokenID().toString(), "UTF-8"));

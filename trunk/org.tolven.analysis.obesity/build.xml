@@ -38,9 +38,6 @@
 			<param name="section" value="app" />
 		</antcall>
 		<antcall target="buildSection">
-			<param name="section" value="ejb" />
-		</antcall>
-		<antcall target="buildSection">
 			<param name="section" value="web" />
 		</antcall>
 		<!-- End of list of sections to build -->

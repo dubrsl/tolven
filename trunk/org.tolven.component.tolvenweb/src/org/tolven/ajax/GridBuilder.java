@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.tolven.app.entity.MSAction;
 import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuQueryControl;
@@ -37,6 +38,7 @@ public class GridBuilder {
 	private String gridId; // to allow setting the grid id other than the menupath
 	private String gridType; // represents output format for the grid
 	private String favoritesType;
+	private Logger logger = Logger.getLogger(GridBuilder.class);
 	
 	/**
 	 * An instance of this class is constructed for the purpose of building a grid 
@@ -131,6 +133,9 @@ public class GridBuilder {
 		String dir;
 		if (initialSort==null) {
 			List<MSColumn> cols = ctrl.getSortedColumns();
+            if(cols.isEmpty()) {
+                throw new RuntimeException("MenuStrucure: " + ctrl.getActualMenuStructure().getPath() + " is expected to have at least one associated column");
+            }
 			initialSort = cols.get(0).getHeading();
 		}
 		initialSort = initialSort.trim();

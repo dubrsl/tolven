@@ -28,6 +28,10 @@
 						<activation-config-property-value>1</activation-config-property-value>
 					</activation-config-property>
 					<activation-config-property>
+						<activation-config-property-name>EndpointPoolResizeCount</activation-config-property-name>
+						<activation-config-property-value>1</activation-config-property-value>
+					</activation-config-property>
+					<activation-config-property>
 						<activation-config-property-name>SendUndeliverableMsgsToDMQ  </activation-config-property-name>
 						<activation-config-property-value>true</activation-config-property-value>
 					</activation-config-property>
@@ -60,6 +64,10 @@
 						<activation-config-property-value>2</activation-config-property-value>
 					</activation-config-property>
 					<activation-config-property>
+						<activation-config-property-name>EndpointPoolResizeCount</activation-config-property-name>
+						<activation-config-property-value>1</activation-config-property-value>
+					</activation-config-property>
+					<activation-config-property>
 						<activation-config-property-name>SendUndeliverableMsgsToDMQ</activation-config-property-name>
 						<activation-config-property-value>true</activation-config-property-value>
 					</activation-config-property>
@@ -89,6 +97,10 @@
 					<activation-config-property>
 						<!-- Keep thread-count small so we don't clobber user performance -->
 						<activation-config-property-name>EndpointPoolMaxSize</activation-config-property-name>
+						<activation-config-property-value>1</activation-config-property-value>
+					</activation-config-property>
+					<activation-config-property>
+						<activation-config-property-name>EndpointPoolResizeCount</activation-config-property-name>
 						<activation-config-property-value>1</activation-config-property-value>
 					</activation-config-property>
 					<activation-config-property>

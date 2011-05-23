@@ -17,7 +17,6 @@
 
 package org.tolven.app.bean;
 
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 
@@ -25,10 +24,8 @@ import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 import org.tolven.app.QueryBuilderLocal;
-import org.tolven.app.el.ELFunctions;
 import org.tolven.app.el.TrimExpressionEvaluator;
 import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuData;
@@ -137,7 +134,7 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 							sbOrder.append(", ");
 						}
 						if (sortCol.startsWith("string")) {
-							sbOrder.append("lower(");sbOrder.append("md.");sbOrder.append(sortCol);sbOrder.append(")");
+							sbOrder.append("md.");sbOrder.append(sortCol);
 						} else {
 							sbOrder.append("md.");//that should do it. redeploy? yes.s
 							sbOrder.append(sortCol);

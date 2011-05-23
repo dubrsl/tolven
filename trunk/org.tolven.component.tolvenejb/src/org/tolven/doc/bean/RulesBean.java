@@ -75,7 +75,7 @@ public class RulesBean implements RulesLocal, RulesRemote {
 			createRulePackage( packageBody );
 		} catch (Exception e) {
 			String details = ExceptionFormatter.toSimpleString(e, "\n");
-			throw new RuntimeException("Error loading rule package\n" + details );
+			throw new RuntimeException("Error loading rule package\n" + details, e);
 		}
 	}
 	

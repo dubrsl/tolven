@@ -30,6 +30,18 @@
 			<zipfileset dir="${buildFolder}">
 				<include name="devLib.jar" />
 			</zipfileset>
+			<zipfileset dir=".">
+				<include name="commons/**" />
+			</zipfileset>
+			<zipfileset dir=".">
+				<include name="hibernate/**" />
+			</zipfileset>
+			<zipfileset dir=".">
+				<include name="log4j/**" />
+			</zipfileset>
+			<zipfileset dir=".">
+				<include name="config/log4j.xml" />
+			</zipfileset>
 		</zip>
 	</target>
 </project>

@@ -33,7 +33,7 @@ import javax.persistence.*;
 public abstract class TolvenEncryptedSecretKey implements Serializable {
 
     @Lob
-    @Basic(fetch = FetchType.LAZY)
+    @Basic
     @Column
     private byte[] encryptedKey;
 
