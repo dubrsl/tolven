@@ -52,13 +52,8 @@
 		</zip>
 	</target>
 
-	<!-- Custom overrides in ant-build.properties -->
-	<property file="../tolven/resources/ant-build.properties"/>
-	<!-- Anything not declared in ant-build.properties, we grab from the default -->
-	<property file="../tolven/resources/ant-build-default.properties"/>
-
 	<path id="jaxws.classpath">
-		<fileset dir="${tolven.location}/lib/metro">
+		<fileset dir="lib">
 			<include name="*.jar"/>
 		</fileset>
 	</path>
@@ -95,6 +90,13 @@
 			debug="on"
 			compile="true"
 			preprocessdir="web/source">
+			<classpath>
+				<path>
+					<fileset dir="lib">
+						<include name="*.jar" />
+					</fileset>
+				</path>
+			</classpath>
 		</apt>
 	</target>
 </project>

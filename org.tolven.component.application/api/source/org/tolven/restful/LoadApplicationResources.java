@@ -23,8 +23,6 @@ import java.util.Map;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMultipart;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -46,12 +44,15 @@ import org.tolven.doc.RulesLocal;
 import org.tolven.report.ReportLocal;
 import org.tolven.util.ExceptionFormatter;
 
+import com.sun.jersey.multipart.BodyPart;
+import com.sun.jersey.multipart.MultiPart;
+
 @Path("loader")
 @ManagedBean
 public class LoadApplicationResources {
 
     public static final String APPLICATION_EXTENSION = ".application.xml";
-    
+
     @Context
     private HttpServletRequest request;
 
@@ -81,17 +82,19 @@ public class LoadApplicationResources {
 
     @Path("loadApplications")
     @POST
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response loadApplications(MimeMultipart multipart) {
+    @Consumes("multipart/mixed")
+    public Response loadApplications(MultiPart multiPart) {
         try {
             Map<String, String> applications = new HashMap<String, String>();
-            for (int i = 0; i < multipart.getCount(); i++) {
-                MimeBodyPart bodyPart = (MimeBodyPart) multipart.getBodyPart(i);
-                String filename = bodyPart.getFileName();
-                if(!MediaType.TEXT_XML.equals(bodyPart.getContentType())) {
-                    return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).type(MediaType.TEXT_PLAIN).entity(filename + " has unsupported media type: " + bodyPart.getContentType()).build();
+            for (BodyPart bodyPart : multiPart.getBodyParts()) {
+                String filename = bodyPart.getContentDisposition().getFileName();
+                if (filename == null) {
+                    return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("No filename found in a Content-Disposition header for upload").build();
                 }
-                String xml = (String) bodyPart.getContent();
+                if (!MediaType.APPLICATION_XML.equals(bodyPart.getMediaType().toString())) {
+                    return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).type(MediaType.TEXT_PLAIN).entity(filename + " has unsupported media type: " + bodyPart.getMediaType()).build();
+                }
+                String xml = bodyPart.getEntityAs(String.class);
                 applications.put(filename, xml);
             }
             applicationMetadataLocal.loadApplications(applications);
@@ -110,10 +113,10 @@ public class LoadApplicationResources {
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public Response loadApplicationXMLs(@QueryParam("applicationName") String applicationName, String application) {
-        if(applicationName == null || applicationName.length() == 0) {
+        if (applicationName == null || applicationName.length() == 0) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("applicationName is missing").build();
         }
-        if(application == null || application.length() == 0) {
+        if (application == null || application.length() == 0) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("The application XML is missing").build();
         }
         try {
@@ -182,10 +185,10 @@ public class LoadApplicationResources {
     @POST
     @Consumes(MediaType.APPLICATION_XML)
     public Response loadRulePackage(@QueryParam("packageBodyName") String packageBodyName, String packageBody) {
-        if(packageBodyName == null || packageBodyName.length() == 0) {
+        if (packageBodyName == null || packageBodyName.length() == 0) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("packageBodyName is missing").build();
         }
-        if(packageBody == null || packageBody.length() == 0) {
+        if (packageBody == null || packageBody.length() == 0) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("The packageBody drl is missing").build();
         }
         try {
@@ -226,7 +229,7 @@ public class LoadApplicationResources {
      * @return The internal name of the trim as extracted from the &lt;name&gt; element.
      */
     public Response createTrimHeader(@QueryParam("trimName") String trimName, String trimXML) {
-        if(trimXML == null || trimXML.length() == 0) {
+        if (trimXML == null || trimXML.length() == 0) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("trimXML is missing").build();
         }
         try {

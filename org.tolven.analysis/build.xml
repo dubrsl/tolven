@@ -42,6 +42,7 @@
 		</antcall>
 		<antcall target="buildSection">
 			<param name="section" value="web" />
+			<param name="lib" value="${buildFolder}/ejb/classes" />
 		</antcall>
 		<!-- End of list of sections to build -->
 		<!-- Add DevLib.jar to plugin zip -->

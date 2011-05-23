@@ -37,8 +37,6 @@ import org.tolven.core.entity.TolvenUser;
 import org.tolven.security.key.UserPrivateKey;
 import org.tolven.sso.TolvenSSO;
 
-import com.iplanet.sso.SSOToken;
-
 public abstract class AbstractVestibule implements Vestibule {
 
     @EJB
@@ -133,24 +131,20 @@ public abstract class AbstractVestibule implements Vestibule {
         return activationBean.findDefaultAccountUser(user);
     }
 
-    protected SSOToken getSSOToken(ServletRequest servletRequest) {
-        return TolvenSSO.getInstance().getSSOToken((HttpServletRequest) servletRequest);
-    }
-
     protected String getSessionProperty(String name, ServletRequest servletRequest) {
-        return TolvenSSO.getInstance().getSessionProperty(name, getSSOToken(servletRequest));
+        return TolvenSSO.getInstance().getSessionProperty(name, (HttpServletRequest)servletRequest);
     }
 
     protected void setSessionProperty(String name, String value, ServletRequest servletRequest) {
-        TolvenSSO.getInstance().setSessionProperty(name, value, getSSOToken(servletRequest));
+        TolvenSSO.getInstance().setSessionProperty(name, value, (HttpServletRequest)servletRequest);
     }
 
     protected void removeSessionProperty(String name, ServletRequest servletRequest) {
-        TolvenSSO.getInstance().setSessionProperty(name, null, getSSOToken(servletRequest));
+        TolvenSSO.getInstance().setSessionProperty(name, null, (HttpServletRequest)servletRequest);
     }
 
     protected NewCookie getSSOCookie(ServletRequest servletRequest) {
-        return TolvenSSO.getInstance().getSSOCookie(getSSOToken(servletRequest));
+        return TolvenSSO.getInstance().getSSOCookie((HttpServletRequest)servletRequest);
     }
 
 }

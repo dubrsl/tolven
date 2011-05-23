@@ -240,8 +240,8 @@ public class EJBModuleAssembler extends TolvenCommandPlugin {
                 xmlStreamWriter.writeStartElement("entity-mappings");
                 xmlStreamWriter.writeAttribute("xmlns", "http://java.sun.com/xml/ns/persistence/orm");
                 xmlStreamWriter.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-                xmlStreamWriter.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd");
-                xmlStreamWriter.writeAttribute("version", "1.0");
+                xmlStreamWriter.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm/orm_2_0.xsd");
+                xmlStreamWriter.writeAttribute("version", "2.0");
                 xmlStreamWriter.writeCharacters("\n");
                 ExtensionPoint extensionPoint = getMyExtensionPoint(EXTENSIONPOINT_ORM);
                 Extension extension = extensionPoint.getConnectedExtensions().iterator().next();
@@ -611,8 +611,7 @@ public class EJBModuleAssembler extends TolvenCommandPlugin {
                 xmlStreamWriter.writeEndElement();
                 xmlStreamWriter.writeCharacters("\n");
             }
-            Parameter embeddedParameter = attributesParameter.getSubParameter("embedded");
-            if (embeddedParameter != null) {
+            for (Parameter embeddedParameter : attributesParameter.getSubParameters("embedded")) {
                 xmlStreamWriter.writeStartElement("embedded");
                 String embeddedName = embeddedParameter.getSubParameter("name").valueAsString();
                 if (embeddedName.trim().length() == 0) {
@@ -701,8 +700,10 @@ public class EJBModuleAssembler extends TolvenCommandPlugin {
                 xmlStreamWriter.writeStartDocument("UTF-8", "1.0");
                 xmlStreamWriter.writeCharacters("\n");
                 xmlStreamWriter.writeStartElement("persistence");
-                xmlStreamWriter.writeAttribute("version", "1.0");
                 xmlStreamWriter.writeAttribute("xmlns", "http://java.sun.com/xml/ns/persistence");
+                xmlStreamWriter.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+                xmlStreamWriter.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd");
+                xmlStreamWriter.writeAttribute("version", "2.0");
                 xmlStreamWriter.writeCharacters("\n");
                 ExtensionPoint extensionPoint = getMyExtensionPoint(EXTENSIONPOINT_ORM);
                 Extension extension = extensionPoint.getConnectedExtensions().iterator().next();
@@ -747,17 +748,6 @@ public class EJBModuleAssembler extends TolvenCommandPlugin {
                         }
                         xmlStreamWriter.writeAttribute("transaction-type", transactionType);
                         xmlStreamWriter.writeCharacters("\n");
-                        Parameter jtaDataSourceParameter = extension.getParameter("jta-data-source");
-                        if (jtaDataSourceParameter != null) {
-                            xmlStreamWriter.writeStartElement("jta-data-source");
-                            String jtaDataSource = jtaDataSourceParameter.valueAsString();
-                            if (jtaDataSource.trim().length() == 0) {
-                                throw new RuntimeException(extension.getUniqueId() + " requires a jta-data-source parameter value");
-                            }
-                            xmlStreamWriter.writeCharacters(jtaDataSource);
-                            xmlStreamWriter.writeEndElement();
-                            xmlStreamWriter.writeCharacters("\n");
-                        }
                         Parameter providerParameter = extension.getParameter("provider");
                         if (providerParameter != null) {
                             xmlStreamWriter.writeStartElement("provider");
@@ -766,6 +756,17 @@ public class EJBModuleAssembler extends TolvenCommandPlugin {
                                 throw new RuntimeException(extension.getUniqueId() + " requires a provider parameter value");
                             }
                             xmlStreamWriter.writeCharacters(provider);
+                            xmlStreamWriter.writeEndElement();
+                            xmlStreamWriter.writeCharacters("\n");
+                        }
+                        Parameter jtaDataSourceParameter = extension.getParameter("jta-data-source");
+                        if (jtaDataSourceParameter != null) {
+                            xmlStreamWriter.writeStartElement("jta-data-source");
+                            String jtaDataSource = jtaDataSourceParameter.valueAsString();
+                            if (jtaDataSource.trim().length() == 0) {
+                                throw new RuntimeException(extension.getUniqueId() + " requires a jta-data-source parameter value");
+                            }
+                            xmlStreamWriter.writeCharacters(jtaDataSource);
                             xmlStreamWriter.writeEndElement();
                             xmlStreamWriter.writeCharacters("\n");
                         }
@@ -883,7 +884,7 @@ public class EJBModuleAssembler extends TolvenCommandPlugin {
         xmlStreamWriter.writeAttribute("version", "{@version}");
         xmlStreamWriter.writeAttribute("xmlns", "http://java.sun.com/xml/ns/javaee");
         xmlStreamWriter.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        xmlStreamWriter.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd");
+        xmlStreamWriter.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd");
         xmlStreamWriter.writeCharacters("\n");
         addRootEnterpriseBeansSelects(xmlStreamWriter);
         addRootAssemblyDescriptorSelects(xmlStreamWriter);

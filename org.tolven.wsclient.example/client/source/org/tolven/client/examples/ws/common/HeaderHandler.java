@@ -19,13 +19,13 @@ package org.tolven.client.examples.ws.common;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPEnvelope;
 import javax.xml.soap.SOAPHeader;
-import javax.xml.soap.SOAPHeaderElement;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
@@ -37,6 +37,7 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 public class HeaderHandler implements SOAPHandler<SOAPMessageContext> {
 
     private static String WS_SECEXT = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+    private static String WS_ADDRESSING = "http://www.w3.org/2005/08/addressing";
     private static String WS_SECUTILITY = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
     private static String WS_USER_TOKEN_PROFILE = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-username-token-profile-1.0#PasswordText";
 
@@ -85,23 +86,23 @@ public class HeaderHandler implements SOAPHandler<SOAPMessageContext> {
                 } else {
                     header = envelope.getHeader();
                 }
-                SOAPHeaderElement headerElement = header.addHeaderElement(new QName(WS_SECEXT, "Security", "wsse"));
-                headerElement.setMustUnderstand(true);
+                SOAPElement messageID = header.addChildElement("MessageID", "wsa", WS_ADDRESSING);
+                messageID.addTextNode(UUID.randomUUID().toString());
                 SOAPElement security = header.addChildElement("Security", "wsse", WS_SECEXT);
                 security.addAttribute(new QName("wsse:mustUnderstand"), "1");
                 SOAPElement timestamp = security.addChildElement("Timestamp", "wsu", WS_SECUTILITY);
                 DatatypeFactory factory = DatatypeFactory.newInstance();
                 SOAPElement createdElement = timestamp.addChildElement("Created", "wsu");
-                GregorianCalendar now = new GregorianCalendar();
-                String xmlNow = factory.newXMLGregorianCalendar(now).toXMLFormat();
+                GregorianCalendar gCal = new GregorianCalendar();
+                String xmlNow = factory.newXMLGregorianCalendar(gCal).toXMLFormat();
                 createdElement.addTextNode(xmlNow);
                 SOAPElement expiresElement = timestamp.addChildElement("Expires", "wsu");
-                GregorianCalendar expires = new GregorianCalendar();
-                expires.add(GregorianCalendar.SECOND, getExpiresInSeconds());
-                String xmlExpires = factory.newXMLGregorianCalendar(expires).toXMLFormat();
+                gCal.add(GregorianCalendar.SECOND, getExpiresInSeconds());
+                String xmlExpires = factory.newXMLGregorianCalendar(gCal).toXMLFormat();
                 expiresElement.addTextNode(xmlExpires);
                 SOAPElement usernameToken = security.addChildElement("UsernameToken", "wsse");
-                usernameToken.addAttribute(new QName("xmlns:wsu"), WS_SECUTILITY);
+                //Following usernameToken attribute should work with contained attributeless <Created> tag, but parser fails
+                //usernameToken.addAttribute(new QName("xmlns:wsu"), WS_SECUTILITY);
                 SOAPElement username = usernameToken.addChildElement("Username", "wsse");
                 username.addTextNode(getUsername());
                 SOAPElement password = usernameToken.addChildElement("Password", "wsse");
@@ -141,4 +142,5 @@ public class HeaderHandler implements SOAPHandler<SOAPMessageContext> {
     public void close(MessageContext context) {
         return;
     }
+
 }

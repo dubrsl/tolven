@@ -282,7 +282,7 @@ public class AccountProcessingProtectionBean implements AccountProcessingProtect
                 throw new RuntimeException("Failed to initialize the account processing key", ex);
             }
         } else {
-            throw new RuntimeException("Cannot set up account processing keys, if keys exists on accout: " + account.getId());
+            throw new RuntimeException("Cannot set up account processing keys, if keys exists on account: " + account.getId());
         }
     }
 

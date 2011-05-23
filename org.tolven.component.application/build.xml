@@ -30,9 +30,11 @@
 		<!-- Begin list of sections to build. Each section is added to the plugin zip file. -->
 		<antcall target="buildSection">
 			<param name="section" value="tpf"/>
+			<param name="lib" value="lib/jersey-multipart.jar"/>
 		</antcall>
 		<antcall target="buildSection">
 			<param name="section" value="api"/>
+			<param name="lib" value="lib/jersey-multipart.jar"/>
 		</antcall>
 		<antcall target="buildSection">
 			<param name="section" value="web"/>

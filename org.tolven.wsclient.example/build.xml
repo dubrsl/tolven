@@ -28,26 +28,30 @@
 			<zipfileset dir="manifest" />
 		</zip>
 		<!-- Begin list of sections to build. Each section is added to the plugin zip file. -->
-		<antcall target="buildSection">
-			<param name="section" value="client" />
-		</antcall>
 		<zip destfile="${buildFolder}/tolven-wsclient-examples-src.zip" update="true">
 			<zipfileset dir="client/source" prefix="tolven-wsclient" />
 			<zipfileset file="readme.txt" prefix="tolven-wsclient" />
 		</zip>
-		<jar destfile="${buildFolder}/tolven-wsclient-examples.jar">
-			<zipfileset dir="${buildFolder}/client/classes" />
-		</jar>
 		<!-- End of list of sections to build -->
 		<!-- Add DevLib.jar to plugin zip -->
 		<zip destfile="${zipFileName}" update="true">
 			<zipfileset dir="${buildFolder}">
 				<include name="devLib.jar" />
 				<include name="tolven-wsclient-examples-src.zip" />
-				<include name="tolven-wsclient-examples.jar" />
 			</zipfileset>
 		</zip>
 	</target>
+
+	<!-- This target can only be used after the generate-ws-clients target is executed against a running instance of Tolven -->
+	<target name="build-wsclient-jar" depends="init" description="Build tolven-wsclient-examples.jar">
+		<antcall target="buildSection">
+			<param name="section" value="client" />
+		</antcall>
+		<jar destfile="${buildFolder}/tolven-wsclient-examples.jar">
+			<zipfileset dir="${buildFolder}/client/classes" />
+		</jar>
+	</target>
+	
 	<target name="generate-ws-clients" depends="init" description="Generate clients from WSDL locations at localhost webserver">
 		<antcall target="generate-EchoWebServiceClient"/>
 		<antcall target="generate-GeneratorWebServiceClient"/>
@@ -103,6 +107,12 @@
 			xnocompile="true"/>
 	</target>
 	<taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
-		<classpath path="lib/webservices-tools.jar;lib/webservices-rt.jar"/>
+		<classpath>
+			<path>
+				<fileset dir="lib">
+					<include name="*.jar" />
+				</fileset>
+			</path>
+		</classpath>
 	</taskdef>
 </project>

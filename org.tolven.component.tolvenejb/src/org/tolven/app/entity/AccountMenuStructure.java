@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -36,6 +35,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -87,28 +87,28 @@ import org.tolven.core.entity.Account;
 @Table
 public class AccountMenuStructure extends MenuStructure implements Serializable, MSAction {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	static final int MAX_DEPTH = 50;
-	
-	public AccountMenuStructure() {
-		super();
-	}
+    static final int MAX_DEPTH = 50;
+    
+    public AccountMenuStructure() {
+        super();
+    }
 
-	public AccountMenuStructure(Account account, AccountMenuStructure parent, String template, String menuTemplate, int seq, String node, String text, String visible, String repeat, String role) {
-		this.account = account;
-		this.parent = parent;
-		this.template = template;
-		this.menuTemplate = menuTemplate;
-		this.sequence = seq;
-		this.node = node;
-		this.text = text;
-		this.visible = visible;
-		this.repeating = repeat;
-		this.role = role;
-	}
+    public AccountMenuStructure(Account account, AccountMenuStructure parent, String template, String menuTemplate, int seq, String node, String text, String visible, String repeat, String role) {
+        this.account = account;
+        this.parent = parent;
+        this.template = template;
+        this.menuTemplate = menuTemplate;
+        this.sequence = seq;
+        this.node = node;
+        this.text = text;
+        this.visible = visible;
+        this.repeating = repeat;
+        this.role = role;
+    }
 
-	@Id
+    @Id
     @GeneratedValue(strategy=GenerationType.TABLE, generator="APP_SEQ_GEN")
     private long id;
     
@@ -122,21 +122,21 @@ public class AccountMenuStructure extends MenuStructure implements Serializable,
     private AccountMenuStructure referenced;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	protected Collection<AccountMenuStructure> children = new HashSet<AccountMenuStructure>( 10 );
-	
-	@OneToMany(mappedBy = "menuStructure", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    protected Collection<AccountMenuStructure> children = new HashSet<AccountMenuStructure>( 10 );
+    
+    @OneToMany(mappedBy = "menuStructure", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	protected Collection<MSColumn> columns = new HashSet<MSColumn>( 10 );
 
-	@Transient
-	private transient Map<String, MSColumn> columnMap;
-	
-	@Column
+    @Transient
+    private transient Map<String, MSColumn> columnMap;
+    
+    @Column
     private String path;
 
-	@Column
+    @Column
     private String eventPath;
 
-	@Column
+    @Column
     private String node;
  
     @Column
@@ -172,13 +172,13 @@ public class AccountMenuStructure extends MenuStructure implements Serializable,
     @Column
     private Integer columnNumber;
  
-	@Column
-	public String allowRoles;
+    @Column
+    public String allowRoles;
 
-	@Column
-	public String denyRoles;
+    @Column
+    public String denyRoles;
 
-	@Column
+    @Column
     private String template;
 
     @Column
@@ -212,6 +212,7 @@ public class AccountMenuStructure extends MenuStructure implements Serializable,
     @Column
     private String menuEventHandlerFactory;
 
+    @Lob
     @Column
     private String menuEventHandlerData;
     
@@ -219,19 +220,19 @@ public class AccountMenuStructure extends MenuStructure implements Serializable,
     private Properties menuEventHandlerDataMap;
     
     //As the name suggests, Get the first child( order by sequence number and which is not a portlet) of the given node. 
-	private MenuStructure getFirstChild( MenuStructure ms ){
-		MenuStructure firstChild = null;
-		if( ms != null){
-			for( MenuStructure item : ms.getSortedChildren() ){
-				if( item.getSequence() > 0 && !(VISIBLE_NEVER.equalsIgnoreCase(item.getVisible())) && !( PORTLET.equalsIgnoreCase( item.getRole() ) ) ){
-					firstChild = item;
-	//				TolvenLogger.info(" first child:" + item.getPath(), AccountMenuStructure.class );
-					break;
-				}
-			}
-		}
-		return firstChild;
-	}
+    private MenuStructure getFirstChild( MenuStructure ms ){
+        MenuStructure firstChild = null;
+        if( ms != null){
+            for( MenuStructure item : ms.getSortedChildren() ){
+                if( item.getSequence() > 0 && !(VISIBLE_NEVER.equalsIgnoreCase(item.getVisible())) && !( PORTLET.equalsIgnoreCase( item.getRole() ) ) ){
+                    firstChild = item;
+    //              TolvenLogger.info(" first child:" + item.getPath(), AccountMenuStructure.class );
+                    break;
+                }
+            }
+        }
+        return firstChild;
+    }
 
     /**
      * The path string is computed, not set. This is where we do it by climbing up the path to the root.
@@ -283,22 +284,22 @@ public class AccountMenuStructure extends MenuStructure implements Serializable,
     }
     
     public Map<String, MSColumn> getColumnMap() {
-    	if (columnMap==null) {
-			// Copy the columns list to a transient attribute on the trim  
-			columnMap = new HashMap<String, MSColumn>(getColumns().size());
-			for (MSColumn col : getColumns()) {
-				columnMap.put(col.getHeading(), col);
-			}
-    	}
-		return columnMap;
+        if (columnMap==null) {
+            // Copy the columns list to a transient attribute on the trim  
+            columnMap = new HashMap<String, MSColumn>(getColumns().size());
+            for (MSColumn col : getColumns()) {
+                columnMap.put(col.getHeading(), col);
+            }
+        }
+        return columnMap;
     }
     /**
      * Get the root of this MenuStructure tree
      * @return The root MenuStructure
      */
     public AccountMenuStructure getRoot() {
-    	if (parent==null) return this;
-    	return parent.getRoot();
+        if (parent==null) return this;
+        return parent.getRoot();
     }
 
     public boolean equals(Object obj) {
@@ -313,111 +314,111 @@ public class AccountMenuStructure extends MenuStructure implements Serializable,
     }
 
     public String toString() {
-    	StringBuffer sb = new StringBuffer();
-    	sb.append("MenuStructure: ");
-    	sb.append(id);
-    	sb.append(" Path: ");
-    	sb.append( path );
-    	return sb.toString();
+        StringBuffer sb = new StringBuffer();
+        sb.append("MenuStructure: ");
+        sb.append(id);
+        sb.append(" Path: ");
+        sb.append( path );
+        return sb.toString();
     }
 
     public int hashCode() {
         return getNode().hashCode();
     }
 
-	public long getId() {
-		return id;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
-	public String getNode() {
-		return node;
-	}
+    public String getNode() {
+        return node;
+    }
 
-	public void setNode(String node) {
-		this.node = node;
-	}
+    public void setNode(String node) {
+        this.node = node;
+    }
 
-	public String getPath() {
-		return path;
-	}
-	/**
-	 * Let the infrastructure set this attribute by following the parent/child hierarchy. In fact, it will be reset at persist time.
-	 * @param path
-	 */
-	public void setPath(String path) {
-		this.path = path;
-	}
+    public String getPath() {
+        return path;
+    }
+    /**
+     * Let the infrastructure set this attribute by following the parent/child hierarchy. In fact, it will be reset at persist time.
+     * @param path
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
 
-	public int getSequence() {
-		return sequence;
-	}
+    public int getSequence() {
+        return sequence;
+    }
 
-	public void setSequence(int sequence) {
-		this.sequence = sequence;
-	}
+    public void setSequence(int sequence) {
+        this.sequence = sequence;
+    }
 
-	public String getTemplate() {
-		return template;
-	}
+    public String getTemplate() {
+        return template;
+    }
 
-	public void setTemplate(String template) {
-		this.template = template;
-	}
+    public void setTemplate(String template) {
+        this.template = template;
+    }
 
-	public String getRepeating() {
-		return repeating;
-	}
+    public String getRepeating() {
+        return repeating;
+    }
 
-	public void setRepeating(String repeating) {
-		this.repeating = repeating;
-	}
-	/**
-	 * Return true if this metadata item is marked as visible
-	 * @return
-	 */
-	public boolean isVisible() {
-	    if (visible==null || VISIBLE_TRUE.equals(visible)) return true;
-		return false;
-	}
-	/**
-	 * Return visible string (if actual value is null, then true is returned).
-	 */
-	public String getVisible() {
-		if (visible==null) {
-			return VISIBLE_TRUE;
-		}
-		return visible;
-	}
+    public void setRepeating(String repeating) {
+        this.repeating = repeating;
+    }
+    /**
+     * Return true if this metadata item is marked as visible
+     * @return
+     */
+    public boolean isVisible() {
+        if (visible==null || VISIBLE_TRUE.equals(visible)) return true;
+        return false;
+    }
+    /**
+     * Return visible string (if actual value is null, then true is returned).
+     */
+    public String getVisible() {
+        if (visible==null) {
+            return VISIBLE_TRUE;
+        }
+        return visible;
+    }
 
-	public void setVisible(String visible) {
-		this.visible = visible;
-	}
+    public void setVisible(String visible) {
+        this.visible = visible;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	/**
-	 * For customization, override text for display, which would normally be pulled and translated via message bundles
-	 * @return
-	 */
-	public String getTextOverride() {
+    /**
+     * For customization, override text for display, which would normally be pulled and translated via message bundles
+     * @return
+     */
+    public String getTextOverride() {
         return textOverride;
     }
 
@@ -426,273 +427,273 @@ public class AccountMenuStructure extends MenuStructure implements Serializable,
     }
 
     public AccountMenuStructure getParent() {
-		return parent;
-	}
+        return parent;
+    }
 
-	public void setParent(AccountMenuStructure parent) {
-		this.parent = parent;
-	}
-	public void setParent(MenuStructure parent){
-		this.parent = (AccountMenuStructure)parent;
-	}
+    public void setParent(AccountMenuStructure parent) {
+        this.parent = parent;
+    }
+    public void setParent(MenuStructure parent){
+        this.parent = (AccountMenuStructure)parent;
+    }
 
-	public Collection<AccountMenuStructure> getChildren() {
-		return children;
-	}
+    public Collection<AccountMenuStructure> getChildren() {
+        return children;
+    }
 
-	/**
-	 * Return a list of actions, sorted per sequence
-	 */
-	public List<MSAction> getActions() {
-		List<MSAction> actions = new ArrayList<MSAction>(5);
-		for (AccountMenuStructure child: getChildren()) {
-			if (ACTION.equals(child.getRole()) && VISIBLE_TRUE.equals(child.getVisible())) {
-				actions.add(child);
-			}
-		}
-		Collections.sort( actions, new MenuSeqSort());
-		return actions;
-	}
-	
-	/**
-	  * Find the first child containing the specified node name.
-	 * @param node Parent node to search
-	 * @return MenuStructure or null
-	 */
-	public AccountMenuStructure findChild( String node ) {
-		for ( AccountMenuStructure c : getChildren()) {
-			if (c.getNode().equals( node )) return c;
-		}
-		return null;
-	}
-	
-	/**
-	 * Find the first child or child of child, etc containing the specified node name.
-	 * @param node Node from which to begin search
-	 * @return MenuStructure or null
-	 */
-	public AccountMenuStructure findDescendent( String node ) {
-		for ( AccountMenuStructure c : getChildren()) {
-			if (c.getNode().equals( node )) return c;
-			AccountMenuStructure cms = c.findDescendent( node );
-			if (cms != null) return cms;
-		}
-		return null;
-	}
+    /**
+     * Return a list of actions, sorted per sequence
+     */
+    public List<MSAction> getActions() {
+        List<MSAction> actions = new ArrayList<MSAction>(5);
+        for (AccountMenuStructure child: getChildren()) {
+            if (ACTION.equals(child.getRole()) && VISIBLE_TRUE.equals(child.getVisible())) {
+                actions.add(child);
+            }
+        }
+        Collections.sort( actions, new MenuSeqSort());
+        return actions;
+    }
+    
+    /**
+      * Find the first child containing the specified node name.
+     * @param node Parent node to search
+     * @return MenuStructure or null
+     */
+    public AccountMenuStructure findChild( String node ) {
+        for ( AccountMenuStructure c : getChildren()) {
+            if (c.getNode().equals( node )) return c;
+        }
+        return null;
+    }
+    
+    /**
+     * Find the first child or child of child, etc containing the specified node name.
+     * @param node Node from which to begin search
+     * @return MenuStructure or null
+     */
+    public AccountMenuStructure findDescendent( String node ) {
+        for ( AccountMenuStructure c : getChildren()) {
+            if (c.getNode().equals( node )) return c;
+            AccountMenuStructure cms = c.findDescendent( node );
+            if (cms != null) return cms;
+        }
+        return null;
+    }
 
-	/**
-	 * Local comparator used to sort menu items by sequence number. The sort only occurs within a
-	 * single menu level and thus the list is usually small, say two up to about ten items.
-	 * @author John Churin
-	 *
-	 */
-	public List<AccountMenuStructure> getSortedChildren( ) {
-		List<AccountMenuStructure> sorted = new ArrayList<AccountMenuStructure>( getChildren());
-		Collections.sort( sorted, new MenuSeqSort());
-		return sorted;
-	}
+    /**
+     * Local comparator used to sort menu items by sequence number. The sort only occurs within a
+     * single menu level and thus the list is usually small, say two up to about ten items.
+     * @author John Churin
+     *
+     */
+    public List<AccountMenuStructure> getSortedChildren( ) {
+        List<AccountMenuStructure> sorted = new ArrayList<AccountMenuStructure>( getChildren());
+        Collections.sort( sorted, new MenuSeqSort());
+        return sorted;
+    }
 
-	public void setChildren(Collection<AccountMenuStructure> children) {
-		this.children = children;
-	}
-	/**
-	 * Depending on the template, this role helps determine where in the page this menu item occurs.
-	 * For example, menuItem is a common role used for the main menu structure. Portlet could also be a role,
-	 * context, etc. 
-	 * @return
-	 */
-	public String getRole() {
-		return role;
-	}
+    public void setChildren(Collection<AccountMenuStructure> children) {
+        this.children = children;
+    }
+    /**
+     * Depending on the template, this role helps determine where in the page this menu item occurs.
+     * For example, menuItem is a common role used for the main menu structure. Portlet could also be a role,
+     * context, etc. 
+     * @return
+     */
+    public String getRole() {
+        return role;
+    }
 
-	public void setRole(String role) {
-		this.role = role;
-	}
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-	public String getMenuTemplate() {
-		return menuTemplate;
-	}
+    public String getMenuTemplate() {
+        return menuTemplate;
+    }
 
-	public void setMenuTemplate(String menuTemplate) {
-		this.menuTemplate = menuTemplate;
-	}
+    public void setMenuTemplate(String menuTemplate) {
+        this.menuTemplate = menuTemplate;
+    }
 
-	public Account getAccount() {
-		return account;
-	}
+    public Account getAccount() {
+        return account;
+    }
 
-	public void setAccount(Account account) {
-		this.account = account;
-	}
+    public void setAccount(Account account) {
+        this.account = account;
+    }
 
-	public Collection<MSColumn> getColumns() {
-		return columns;
-	}
+    public Collection<MSColumn> getColumns() {
+        return columns;
+    }
 
-	/**
-	 * Local comparator used to sort column items by sequence number. 
-	 */
-	class ColSeqSort implements Comparator<Object> {
+    /**
+     * Local comparator used to sort column items by sequence number. 
+     */
+    class ColSeqSort implements Comparator<Object> {
 
-		public int compare(Object o1, Object o2) {
-			MSColumn mcol1 = (MSColumn) o1;
-			MSColumn mcol2 = (MSColumn) o2;
-			if (mcol1.getSequence() == mcol2.getSequence()) return 0;
-			if (mcol1.getSequence() < mcol2.getSequence()) return -1;
-			return 1;
-		}
-	}
+        public int compare(Object o1, Object o2) {
+            MSColumn mcol1 = (MSColumn) o1;
+            MSColumn mcol2 = (MSColumn) o2;
+            if (mcol1.getSequence() == mcol2.getSequence()) return 0;
+            if (mcol1.getSequence() < mcol2.getSequence()) return -1;
+            return 1;
+        }
+    }
 
-	public List<MSColumn> getSortedColumns( ) {
-		List<MSColumn> sortedColumns = new ArrayList<MSColumn>(getColumns());
-		Collections.sort( sortedColumns, new ColSeqSort());
-		return sortedColumns;
-	}
-
-
-	/**
-	 * <p>When non-null, a "list" item refers to another MenuStructure item that actually contains the data.
-	 * This allows a list to be moved around in the menu structure while the rule that populates the list always
-	 * does do in a consistent place.</p>
-	 * <p>This also allows a list, such as a generic menu to be accessed from within, say, the patient context without
-	 * requiring patient to be specified in the path</p>
-	 * @return
-	 */
-	public AccountMenuStructure getReferenced() {
-		return referenced;
-	}
-
-	public void setReferenced(AccountMenuStructure referenced) {
-		this.referenced = referenced;
-	}
-	public void setReferenced(MenuStructure referenced){
-		this.referenced = (AccountMenuStructure)referenced;
-	}
-
-	public String getDefaultPathSuffix() {
-		return defaultPathSuffix;
-	}
-
-	public void setDefaultPathSuffix(String defaultPathSuffix) {
-		this.defaultPathSuffix = defaultPathSuffix;
-	}
-
-	public Boolean getEnableBackButton() {
-		return enableBackButton;
-	}
-
-	public void setEnableBackButton(Boolean enableBackButton) {
-		this.enableBackButton = enableBackButton;
-	}
-
-	@Override
-	public AccountMenuStructure getAccountMenuStructure() {
-		return this;
-	}
-
-	public Integer getColumnNumber() {
-		return columnNumber;
-	}
-
-	public void setColumnNumber(Integer columnNumber) {
-		this.columnNumber = columnNumber;
-	}
-
-	@Override
-	public String getWindowstyle() {
-		return "true";
-	}
-
-	@Override
-	public Integer getNumSummaryItems() {
-		return 6;
-	}
-
-	public String getAllowRoles() {
-		return allowRoles;
-	}
-
-	public void setAllowRoles(String allowRoles) {
-		this.allowRoles = allowRoles;
-	}
-
-	public String getDenyRoles() {
-		return denyRoles;
-	}
-
-	public void setDenyRoles(String denyRoles) {
-		this.denyRoles = denyRoles;
-	}
+    public List<MSColumn> getSortedColumns( ) {
+        List<MSColumn> sortedColumns = new ArrayList<MSColumn>(getColumns());
+        Collections.sort( sortedColumns, new ColSeqSort());
+        return sortedColumns;
+    }
 
 
-	public String getQuery() {
-		return query;
-	}
+    /**
+     * <p>When non-null, a "list" item refers to another MenuStructure item that actually contains the data.
+     * This allows a list to be moved around in the menu structure while the rule that populates the list always
+     * does do in a consistent place.</p>
+     * <p>This also allows a list, such as a generic menu to be accessed from within, say, the patient context without
+     * requiring patient to be specified in the path</p>
+     * @return
+     */
+    public AccountMenuStructure getReferenced() {
+        return referenced;
+    }
 
-	public void setQuery(String query) {
-		this.query = query;
-	}
+    public void setReferenced(AccountMenuStructure referenced) {
+        this.referenced = referenced;
+    }
+    public void setReferenced(MenuStructure referenced){
+        this.referenced = (AccountMenuStructure)referenced;
+    }
 
-	public String getInterval() {
-		return interval;
-	}
+    public String getDefaultPathSuffix() {
+        return defaultPathSuffix;
+    }
 
-	public void setInterval(String interval) {
-		this.interval = interval;
-	}
+    public void setDefaultPathSuffix(String defaultPathSuffix) {
+        this.defaultPathSuffix = defaultPathSuffix;
+    }
 
-	public String getStyle() {
-		return style;
-	}
+    public Boolean getEnableBackButton() {
+        return enableBackButton;
+    }
 
-	public void setStyle(String style) {
-		this.style = style;
-	}
+    public void setEnableBackButton(Boolean enableBackButton) {
+        this.enableBackButton = enableBackButton;
+    }
 
-	public String getFilter() {
-		return filter;
-	}
+    @Override
+    public AccountMenuStructure getAccountMenuStructure() {
+        return this;
+    }
 
-	public void setFilter(String filter) {
-		this.filter = filter;
-	}
+    public Integer getColumnNumber() {
+        return columnNumber;
+    }
 
-	public String getInitialSort() {
-		return initialSort;
-	}
+    public void setColumnNumber(Integer columnNumber) {
+        this.columnNumber = columnNumber;
+    }
 
-	public void setInitialSort(String initialSort) {
-		this.initialSort = initialSort;
-	}
+    @Override
+    public String getWindowstyle() {
+        return "true";
+    }
 
-	public String getIdFrom() {
-		return idFrom;
-	}
+    @Override
+    public Integer getNumSummaryItems() {
+        return 6;
+    }
 
-	public void setIdFrom(String idFrom) {
-		this.idFrom = idFrom;
-	}
-	
-	/**
-	 * EventPath is used in a placeholder and is used when the even has a different
-	 * "event" placeholder than the primary placeholder.
-	 * @return
-	 */
-	public String getEventPath() {
-		return eventPath;
-	}
+    public String getAllowRoles() {
+        return allowRoles;
+    }
 
-	public void setEventPath(String eventPath) {
-		this.eventPath = eventPath;
-	}
+    public void setAllowRoles(String allowRoles) {
+        this.allowRoles = allowRoles;
+    }
 
-	public String getUniqueKey() {
-		return uniqueKey;
-	}
+    public String getDenyRoles() {
+        return denyRoles;
+    }
 
-	public void setUniqueKey(String uniqueKey) {
-		this.uniqueKey = uniqueKey;
-	}
+    public void setDenyRoles(String denyRoles) {
+        this.denyRoles = denyRoles;
+    }
+
+
+    public String getQuery() {
+        return query;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public String getInterval() {
+        return interval;
+    }
+
+    public void setInterval(String interval) {
+        this.interval = interval;
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
+    public String getInitialSort() {
+        return initialSort;
+    }
+
+    public void setInitialSort(String initialSort) {
+        this.initialSort = initialSort;
+    }
+
+    public String getIdFrom() {
+        return idFrom;
+    }
+
+    public void setIdFrom(String idFrom) {
+        this.idFrom = idFrom;
+    }
+    
+    /**
+     * EventPath is used in a placeholder and is used when the even has a different
+     * "event" placeholder than the primary placeholder.
+     * @return
+     */
+    public String getEventPath() {
+        return eventPath;
+    }
+
+    public void setEventPath(String eventPath) {
+        this.eventPath = eventPath;
+    }
+
+    public String getUniqueKey() {
+        return uniqueKey;
+    }
+
+    public void setUniqueKey(String uniqueKey) {
+        this.uniqueKey = uniqueKey;
+    }
 
     @Override
     public String getMenuEventHandlerFactory() {

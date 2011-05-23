@@ -6,6 +6,7 @@
 		<import plugin-id="org.tolven.component.composite" />
 		<import plugin-id="org.tolven.component.ejb" />
 		<import plugin-id="org.tolven.mqkeystore" />
+		<import plugin-id="org.tolven.library.javaee" />
 	</requires>
 	<extension id="component" point-id="component" plugin-id="org.tolven.assembler.ejbmodule">
 		<parameter value="tolvenEJB.jar" id="jar" />
@@ -26,8 +27,8 @@
 		<parameter-def id="ormId" multiplicity="any" />
 		<parameter-def id="name" />
 		<parameter-def id="transaction-type" />
-		<parameter-def id="jta-data-source" multiplicity="none-or-one" />
 		<parameter-def id="provider" multiplicity="none-or-one" />
+		<parameter-def id="jta-data-source" multiplicity="none-or-one" />
 		<parameter-def id="mapping-file" />
 		<parameter-def id="property" multiplicity="any">
 			<parameter-def id="name" />
@@ -245,24 +246,20 @@
 		<parameter id="ormId" value="legacypostgresql" />
 		<parameter id="name" value="em" />
 		<parameter id="transaction-type" value="JTA" />
-		<!--<parameter id="jta-data-source" value="java:/DefaultDS" />-->
 		<parameter id="provider" value="org.hibernate.ejb.HibernatePersistence" />
+		<!--<parameter id="jta-data-source" value="jdbc/__default" /> -->
 		<parameter id="mapping-file" value="META-INF/orm.xml" />
 		<parameter id="property">
 			<parameter id="name" value="eclipselink.ddl-generation" />
 			<parameter id="value" value="create-tables" />
 		</parameter>
 		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation.output-mode" />
+			<parameter id="value" value="database" />
+		</parameter>
+		<parameter id="property">
 			<parameter id="name" value="eclipselink.logging.levelxxxx" />
 			<parameter id="value" value="FINEST" />
-		</parameter>
-		<parameter id="property">
-			<parameter id="name" value="eclipselink.create-ddl-jdbc-file-name" />
-			<parameter id="value" value="tolven-create-ddl.sql" />
-		</parameter>
-		<parameter id="property">
-			<parameter id="name" value="eclipselink.drop-ddl-jdbc-file-name" />
-			<parameter id="value" value="tolven-drop-ddl.sql" />
 		</parameter>
 		<parameter id="property">
 			<parameter id="name" value="eclipselink.target-database" />
@@ -1427,7 +1424,10 @@
 		<parameter id="attributes">
 			<parameter id="basic">
 				<parameter id="name" value="longStringValue" />
-				<parameter id="lob" />
+				<parameter id="column">
+					<parameter id="name" value="longStringValue" />
+					<parameter id="column-definition" value="text" />
+				</parameter>
 			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
@@ -1473,6 +1473,21 @@
 					<parameter id="name" value="STATUS" />
 				</parameter>
 			</parameter>
+			<parameter id="embedded">
+				<parameter id="name" value="accountPrivateKey" />
+				<parameter id="attribute-override">
+					<parameter id="name" value="keySize" />
+					<parameter id="column">
+						<parameter id="name" value="PRIVATE_KEY_SIZE" />
+					</parameter>
+				</parameter>
+				<parameter id="attribute-override">
+					<parameter id="name" value="algorithm" />
+					<parameter id="column">
+						<parameter id="name" value="PRIVATE_KEY_ALGORITHM" />
+					</parameter>
+				</parameter>
+			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
 	</extension>
@@ -1486,7 +1501,10 @@
 		<parameter id="attributes">
 			<parameter id="basic">
 				<parameter id="name" value="longStringValue" />
-				<parameter id="lob" />
+				<parameter id="column">
+					<parameter id="name" value="longStringValue" />
+					<parameter id="column-definition" value="text" />
+				</parameter>
 			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
@@ -2261,6 +2279,21 @@
 				</parameter>
 				<parameter id="lob" />
 			</parameter>
+			<parameter id="embedded">
+				<parameter id="name" value="accountPrivateKey" />
+				<parameter id="attribute-override">
+					<parameter id="name" value="keySize" />
+					<parameter id="column">
+						<parameter id="name" value="PRIVATE_KEY_SIZE" />
+					</parameter>
+				</parameter>
+				<parameter id="attribute-override">
+					<parameter id="name" value="algorithm" />
+					<parameter id="column">
+						<parameter id="name" value="PRIVATE_KEY_ALGORITHM" />
+					</parameter>
+				</parameter>
+			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
 	</extension>
@@ -2314,8 +2347,8 @@
 				<parameter id="name" value="packageBody" />
 				<parameter id="column">
 					<parameter id="name" value="PBODY" />
+					<parameter id="column-definition" value="text" />
 				</parameter>
-				<parameter id="lob" />
 			</parameter>
 			<parameter id="basic">
 				<parameter id="name" value="timestamp" />
@@ -2781,40 +2814,24 @@
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
 	</extension>
-	<extension id="legacypostgresql-org.tolven.security.key.AccountProcessingPublicKey-embeddable" plugin-id="org.tolven.component.tolvenejb" point-id="embeddable">
-		<parameter id="ormId" value="legacypostgresql" />
-		<parameter id="class" value="org.tolven.security.key.AccountProcessingPublicKey" />
-		<parameter id="attributes">
-			<parameter id="basic">
-				<parameter id="name" value="x509EncodedKeySpec" />
-			</parameter>
-			<parameter id="basic">
-				<parameter id="name" value="algorithm" />
-			</parameter>
-		</parameter>
-		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
-	</extension>
 	<extension id="oracle-persistence-unit" plugin-id="org.tolven.component.tolvenejb" point-id="persistence-unit">
 		<parameter id="ormId" value="oracle" />
 		<parameter id="name" value="em" />
 		<parameter id="transaction-type" value="JTA" />
 		<parameter id="provider" value="org.hibernate.ejb.HibernatePersistence" />
+		<!--<parameter id="jta-data-source" value="jdbc/__default" /> -->
 		<parameter id="mapping-file" value="META-INF/orm.xml" />
 		<parameter id="property">
 			<parameter id="name" value="eclipselink.ddl-generation" />
 			<parameter id="value" value="create-tables" />
 		</parameter>
 		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation.output-mode" />
+			<parameter id="value" value="database" />
+		</parameter>
+		<parameter id="property">
 			<parameter id="name" value="eclipselink.logging.levelxxxx" />
 			<parameter id="value" value="FINEST" />
-		</parameter>
-		<parameter id="property">
-			<parameter id="name" value="eclipselink.create-ddl-jdbc-file-name" />
-			<parameter id="value" value="tolven-create-ddl.sql" />
-		</parameter>
-		<parameter id="property">
-			<parameter id="name" value="eclipselink.drop-ddl-jdbc-file-name" />
-			<parameter id="value" value="tolven-drop-ddl.sql" />
 		</parameter>
 		<parameter id="property">
 			<parameter id="name" value="eclipselink.target-database" />
@@ -3058,9 +3075,8 @@
 			</parameter>
 			<parameter id="basic">
 				<parameter id="name" value="menuEventHandlerData" />
-				<parameter id="column">
-					<parameter id="length" value="10000" />
-				</parameter>
+				<!--<parameter id="column"> <parameter id="length" value="10000" /> </parameter> -->
+				<parameter id="lob" />
 			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
@@ -3134,9 +3150,8 @@
 		<parameter id="attributes">
 			<parameter id="basic">
 				<parameter id="name" value="fromDocument" />
-				<parameter id="column">
-					<parameter id="length" value="5000" />
-				</parameter>
+				<!--<parameter id="column"> <parameter id="length" value="5000" /> </parameter> -->
+				<parameter id="lob" />
 			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
@@ -3205,9 +3220,8 @@
 		<parameter id="attributes">
 			<parameter id="basic">
 				<parameter id="name" value="report" />
-				<parameter id="column">
-					<parameter id="length" value="100000" />
-				</parameter>
+				<!--<parameter id="column"> <parameter id="length" value="100000" /> </parameter> -->
+				<parameter id="lob" />
 			</parameter>
 			<parameter id="basic">
 				<parameter id="name" value="date" />
@@ -3248,6 +3262,21 @@
 				</parameter>
 			</parameter>
 			<parameter id="embedded">
+				<parameter id="name" value="accountProcessingPrivateKey" />
+				<parameter id="attribute-override">
+					<parameter id="name" value="keySize" />
+					<parameter id="column">
+						<parameter id="name" value="PRIVATE_KEY_SIZE" />
+					</parameter>
+				</parameter>
+				<parameter id="attribute-override">
+					<parameter id="name" value="algorithm" />
+					<parameter id="column">
+						<parameter id="name" value="PRIVATE_KEY_ALGORITHM" />
+					</parameter>
+				</parameter>
+			</parameter>
+			<parameter id="embedded">
 				<parameter id="name" value="accountProcessingPublicKey" />
 				<parameter id="attribute-override">
 					<parameter id="name" value="x509EncodedKeySpec" />
@@ -3259,6 +3288,21 @@
 					<parameter id="name" value="algorithm" />
 					<parameter id="column">
 						<parameter id="name" value="AP_ALGORITHM" />
+					</parameter>
+				</parameter>
+			</parameter>
+			<parameter id="embedded">
+				<parameter id="name" value="accountPublicKey" />
+				<parameter id="attribute-override">
+					<parameter id="name" value="x509EncodedKeySpec" />
+					<parameter id="column">
+						<parameter id="name" value="X509_ENCODED__KEY_SPEC" />
+					</parameter>
+				</parameter>
+				<parameter id="attribute-override">
+					<parameter id="name" value="algorithm" />
+					<parameter id="column">
+						<parameter id="name" value="PUBLIC_KEY_ALGORITHM" />
 					</parameter>
 				</parameter>
 			</parameter>
@@ -3577,6 +3621,23 @@
 		<parameter id="class" value="org.tolven.doc.entity.DocBase" />
 		<parameter id="discriminator-column">
 			<parameter id="length" value="10" />
+		</parameter>
+		<parameter id="attributes">
+			<parameter id="embedded">
+				<parameter id="name" value="documentSecretKey" />
+				<parameter id="attribute-override">
+					<parameter id="name" value="encryptedKey" />
+					<parameter id="column">
+						<parameter id="name" value="ENCRYPTED_SECRET_KEY" />
+					</parameter>
+				</parameter>
+				<parameter id="attribute-override">
+					<parameter id="name" value="algorithm" />
+					<parameter id="column">
+						<parameter id="name" value="SECRET_KEY_ALGORITHM" />
+					</parameter>
+				</parameter>
+			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
 	</extension>
@@ -3916,19 +3977,6 @@
 				<parameter id="column">
 					<parameter id="length" value="50" />
 				</parameter>
-			</parameter>
-		</parameter>
-		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
-	</extension>
-	<extension id="oracle-org.tolven.security.key.AccountProcessingPublicKey-embeddable" plugin-id="org.tolven.component.tolvenejb" point-id="embeddable">
-		<parameter id="ormId" value="oracle" />
-		<parameter id="class" value="org.tolven.security.key.AccountProcessingPublicKey" />
-		<parameter id="attributes">
-			<parameter id="basic">
-				<parameter id="name" value="x509EncodedKeySpec" />
-			</parameter>
-			<parameter id="basic">
-				<parameter id="name" value="algorithm" />
 			</parameter>
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />

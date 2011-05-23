@@ -18,6 +18,7 @@ com.sun.identity.agents.config.notenforced.uri[5]=/ws/GeneratorService?wsdl*
 com.sun.identity.agents.config.notenforced.uri[6]=/ws/GeneratorService?xsd*
 com.sun.identity.agents.config.notenforced.uri[7]=/ws/TrimService?wsdl*
 com.sun.identity.agents.config.notenforced.uri[8]=/ws/TrimService?xsd*
+com.sun.identity.agents.config.webservice.authentication=org.tolven.openamclient.TolvenWebServiceDefaultAuthenticator
 com.sun.identity.agents.config.webservice.enable=true
 com.sun.identity.agents.config.webservice.endpoint[0]=/ws/EchoService
 com.sun.identity.agents.config.webservice.endpoint[1]=/ws/DocumentService

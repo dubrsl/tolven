@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="build-opends">
+
+	<property file="build-v2-override.properties" />
+	<property file="${password.properties.file}" />
+	<property file="build-v2.properties" />
+	<property file="${database.properties.file}" />
+
+	<target name="props">
+		<condition property="root.dir.default" value="c:" else="/usr/local">
+			<os family="windows" />
+		</condition>
+		<property name="tolven.config.dir.default" value="${root.dir.default}/tolven-config" />
+		<property name="credentials.dir.default" value="${tolven.config.dir.default}/credentials" />
+		<property name="opends.host.default" value="localhost" />
+		<property name="opends.admin.port.default" value="4444" />
+		<property name="opends.example.basedn.default" value="dc=example,dc=com" />
+		<property name="dsconfig.common" value="-h ${opends.host.default} -p ${opends.admin.port.default} -D &quot;${tolven.opends.rootdn}&quot; -w ${opends.rootdn.password.default} -X --no-prompt" />
+		<basename property="opends.zip.prefix" file="${opends.zip}" suffix=".zip" />
+		<condition property="tolven.opends.dir.bin" value="${tolven.opends.dir}/bat" else="${tolven.opends.dir}/bin">
+			<os family="windows" />
+		</condition>
+		<condition property="start-ds" value="${tolven.opends.dir.bin}/start-ds.bat" else="${tolven.opends.dir.bin}/start-ds">
+			<os family="windows" />
+		</condition>
+		<condition property="stop-ds" value="${tolven.opends.dir.bin}/stop-ds.bat" else="${tolven.opends.dir.bin}/stop-ds">
+			<os family="windows" />
+		</condition>
+		<condition property="dsconfig" value="${tolven.opends.dir.bin}/dsconfig.bat" else="${tolven.opends.dir.bin}/dsconfig">
+			<os family="windows" />
+		</condition>
+		<condition property="import-ldif" value="${tolven.opends.dir.bin}/import-ldif.bat" else="${tolven.opends.dir.bin}/import-ldif">
+			<os family="windows" />
+		</condition>
+		<condition property="ldapmodify" value="${tolven.opends.dir.bin}/ldapmodify.bat" else="${tolven.opends.dir.bin}/ldapmodify">
+			<os family="windows" />
+		</condition>
+	</target>
+
+	<target name="install-requirements" depends="props" description="install-requirements">
+		<fail message="opends.zip must be set" unless="opends.zip" />
+		<fail message="${opends.zip} does not exist">
+			<condition>
+				<not>
+					<available file="${opends.zip}" />
+				</not>
+			</condition>
+		</fail>
+		<fail message="${opends.plugin} does not exist">
+			<condition>
+				<not>
+					<available file="${opends.plugin}" />
+				</not>
+			</condition>
+		</fail>
+		<fail message="${common.keystore.src} must exist">
+			<condition>
+				<not>
+					<available file="${common.keystore.src}" />
+				</not>
+			</condition>
+		</fail>
+		<fail message="${common.truststore.src} must exist">
+			<condition>
+				<not>
+					<available file="${common.truststore.src}" />
+				</not>
+			</condition>
+		</fail>
+		<fail message="${tolven.opends.dir} already exists">
+			<condition>
+				<available file="${tolven.opends.dir}" />
+			</condition>
+		</fail>
+		<echo message="${ant.project.name} install-requirements VERIFIED" />
+		<echo message="${ant.project.name} to uninstall, remove: ${tolven.opends.dir}" />
+	</target>
+
+	<target name="install" depends="props" description="install">
+		<guide-echo args="Install OpenDS" />
+		<guide-echo args="" />
+
+		<guide-echo args="Unzip: ${opends.zip} to ${tolven.opends.parent.dir}" />
+		<guide-echo args="" />
+
+		<unzip src="${opends.zip}" dest="${tolven.opends.parent.dir}" />
+		<move todir="${tolven.opends.dir}">
+			<fileset dir="${tolven.opends.parent.dir}/${opends.zip.prefix}" />
+		</move>
+		<guide-echo args="Copy SSL keystore from ${common.keystore.src} to ${tolven.opends.keystore}" />
+		<copy file="${common.keystore.src}" tofile="${tolven.opends.keystore}" overwrite="false" verbose="true" />
+		<guide-echo args="Copy SSL truststore from ${common.truststore.src} to ${tolven.opends.truststore}" />
+		<copy file="${common.truststore.src}" tofile="${tolven.opends.truststore}" overwrite="false" verbose="true" />
+		<guide-echo args="" />
+		<guide-echo args="For linux ensure that *.sh in ${tolven.opends.dir} and its subdirectories are executable" />
+		<chmod dir="${tolven.opends.dir}" perm="u+x" includes="**/*.sh" />
+		<guide-echo args="For linux ensure that ${tolven.opends.dir.bin}/* are executable" />
+		<chmod dir="${tolven.opends.dir.bin}" perm="u+x" includes="*" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="start-opends" depends="props" description="start-opends">
+		<guide-echo args="Start OpenDS server" />
+		<echo message="Starting server..." />
+		<guide-echo args="${start-ds}" />
+		<exec executable="${start-ds}" dir="${tolven.opends.dir.bin}" failonerror="true" />
+	</target>
+
+	<target name="config-opends" depends="props" description="config-opends">
+		<guide-echo args="Config OpenDS" />
+		<guide-echo args="" />
+
+		<guide-echo args="Unzip ${opends.plugin} to ${tolven.opends.dir}" />
+		<unzip src="${opends.plugin}" dest="${tolven.opends.dir}" />
+		<guide-echo args="" />
+
+		<guide-echo args="Check the default admin SSHA password in ${tolven.opends.dir}/tolven-admin.ldif matches your password (default: ${admin.ssha.password.default})" />
+		<replace token="${admin.ssha.password.default}" value="${admin.ssha.password}" file="${tolven.opends.dir}/tolven-admin.ldif" />
+		<guide-echo args="Check the default manager SSHA password in ${tolven.opends.dir}/tolven-admin.ldif matches your password (default: ${manager.ssha.password.default})" />
+		<replace token="${manager.ssha.password.default}" value="${manager.ssha.password}" file="${tolven.opends.dir}/tolven-admin.ldif" />
+		<guide-echo args="" />
+
+		<guide-echo args="Create an SSL keystore pin file with one line with the password (default: ${tolven.opends.keystore.password})" />
+		<concat destfile="${tolven.opends.keystore.pin.file}" append="false">${tolven.opends.keystore.password}</concat>
+		<guide-echo args="The SSL truststore pin file can be the same as that of the SSL keystore" />
+		<concat destfile="${tolven.opends.truststore.pin.file}" append="false">${tolven.opends.truststore.password}</concat>
+		<guide-echo args="" />
+		<guide-echo args="For linux ensure that the following are executable" />
+		<guide-echo args="All *.sh file in ${tolven.opends.dir} and its subdirectories" />
+		<chmod dir="${tolven.opends.dir}" perm="u+x" includes="**/*.sh" />
+		<guide-echo args="${tolven.opends.dir.bin}/*" />
+		<chmod dir="${tolven.opends.dir.bin}" perm="u+x" />
+		<guide-echo args="" />
+		<guide-echo args="Execute the following OpenDS commands" />
+		<guide-echo args="cd ${tolven.opends.dir.bin}" />
+		<dsconfig args="set-password-policy-prop --policy-name &quot;Default Password Policy&quot; --set allow-pre-encoded-passwords:true" />
+		<dsconfig args="set-key-manager-provider-prop --provider-name &quot;JKS&quot; --set enabled:true --set key-store-type:JKS --set key-store-file:${tolven.opends.keystore} --set key-store-pin-file:${tolven.opends.keystore.pin.file}" />
+		<dsconfig args="set-trust-manager-provider-prop --provider-name &quot;JKS&quot; --set enabled:true --set trust-store-type:JKS --set trust-store-file:${tolven.opends.truststore} --set trust-store-pin-file:${tolven.opends.truststore.pin.file}" />
+		<dsconfig args="set-connection-handler-prop --handler-name &quot;LDAPS Connection Handler&quot; --set enabled:true --set listen-address:${tolven.opends.domain} --set listen-port:${tolven.opends.ldap.port} --set ssl-client-auth-policy:optional --remove ssl-cert-nickname:server-cert" />
+		<dsconfig args="set-connection-handler-prop --handler-name &quot;LDAP Connection Handler&quot; --set enabled:false" />
+		<dsconfig args="set-backend-prop --backend-name userRoot --add base-dn:${tolven.opends.basedn} --noPropertiesFile" />
+		<dsconfig args="set-backend-prop --backend-name userRoot --remove base-dn:${opends.example.basedn.default}" />
+		<echo message="Import ${tolven.opends.dir}/tolven-admin.ldif" />
+		<import-ldif args="-h ${opends.host.default} -p ${opends.admin.port.default} -X --bindDN &quot;${tolven.opends.rootdn}&quot; --bindPassword ${tolven.opends.rootdn.password} -l ${tolven.opends.dir}/tolven-admin.ldif --backendID userRoot --append --noPropertiesFile" />
+		<echo message="Done" />
+		<echo message="ldapmodify using ${tolven.opends.dir}/tolven-aci.ldif" />
+		<ldapmodify args="--filename ${tolven.opends.dir}/tolven-aci.ldif" />
+		<echo message="ldapmodify using ${tolven.opends.dir}/tolven-user-status.ldif" />
+		<ldapmodify args="--filename ${tolven.opends.dir}/tolven-user-status.ldif" />
+		<dsconfig args="set-administration-connector-prop --set listen-port:${tolven.opends.admin.port}" />
+		<guide-echo args="Restart OpenDS server in order to start listening on port ${tolven.opends.admin.port}" />
+		<antcall target="stop-opends" />
+		<antcall target="start-opends" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="stop-opends" depends="props" description="stop-opends">
+		<guide-echo args="Stop OpenDS server" />
+		<echo message="Stopping opends..." />
+		<guide-echo args="${stop-ds}" />
+		<exec executable="${stop-ds}" dir="${tolven.opends.dir.bin}" failonerror="true" />
+	</target>
+
+	<macrodef name="dsconfig">
+		<attribute name="args" />
+		<sequential>
+			<guide-echo args="${dsconfig} ${dsconfig.common} @{args}" />
+			<echo message="${dsconfig} ${dsconfig.common} @{args}" />
+			<exec executable="${dsconfig}" dir="${tolven.opends.dir.bin}" failonerror="true">
+				<arg line="${dsconfig.common} @{args}" />
+			</exec>
+			<echo message="Done" />
+			<echo message="" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="import-ldif">
+		<attribute name="args" />
+		<sequential>
+			<guide-echo args="${import-ldif} @{args}" />
+			<echo message="${import-ldif} @{args}" />
+			<exec executable="${import-ldif}" dir="${tolven.opends.dir.bin}" failonerror="true">
+				<arg line="@{args}" />
+			</exec>
+			<echo message="Done" />
+			<echo message="" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="ldapmodify">
+		<attribute name="args" />
+		<sequential>
+			<property name="args.prefix" value="-h ${opends.host.default} -p ${opends.admin.port.default} -D &quot;${tolven.opends.rootdn}&quot; -w ${tolven.opends.rootdn.password} -X --useSSL --keyStorePath ${tolven.opends.keystore} -u ${tolven.opends.keystore.pin.file}" />
+			<basename property="ldap.modify.basename" file="${ldapmodify}" />
+			<guide-echo args="${ldap.modify.basename} ${args.prefix} @{args}" />
+			<echo message="${ldapmodify} ${args.prefix} @{args}" />
+			<exec executable="${ldapmodify}" dir="${tolven.opends.dir.bin}" failonerror="true">
+				<arg line="${args.prefix} @{args}" />
+			</exec>
+			<echo message="Done" />
+			<echo message="" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="guide-echo">
+		<attribute name="args" />
+		<sequential>
+			<echo message="@{args}${line.separator}" file="${guide.file}" append="true" />
+		</sequential>
+	</macrodef>
+
+</project>

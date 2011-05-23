@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="install" name="build- v2-kit">
+
+	<property file="build-v2-override.properties" />
+	<property file="${password.properties.file}" />
+	<property file="${database.properties.file}" />
+	<property file="build-v2.properties" />
+
+	<target name="props">
+		<condition property="root.dir.default" value="c:" else="/usr/local">
+			<os family="windows" />
+		</condition>
+		<basename property="tolven.kit.filename" file="${tolven.kit.zip}" suffix=".zip" />
+		<property name="tolven.kit.dir" value="${tolven.kit.parent.dir}/${tolven.kit.filename}" />
+		<property name="tolven.config.dir.default" value="${root.dir.default}/tolven-config" />
+		<property name="credentials.dir.default" value="${tolven.config.dir.default}/credentials" />
+		<property name="common.keystore.default" value="${credentials.dir.default}/${tolven.domain.default}/keystore.jks" />
+		<property name="common.truststore.default" value="${credentials.dir.default}/${tolven.domain.default}/cacerts.jks" />
+		<condition property="install" value="${tolven.kit.dir}/bin/install.bat" else="${tolven.kit.dir}/bin/install.sh">
+			<os family="windows" />
+		</condition>
+		<condition property="repositoryInit" value="${tolven.kit.dir}/bin/repositoryInit.bat" else="${tolven.kit.dir}/bin/repositoryInit.sh">
+			<os family="windows" />
+		</condition>
+		<condition property="checkIntegrity" value="${tolven.kit.dir}/bin/checkIntegrity.bat" else="${tolven.kit.dir}/bin/checkIntegrity.sh">
+			<os family="windows" />
+		</condition>
+		<condition property="genMetadata" value="${tolven.kit.dir}/bin/genMetadata.bat" else="${tolven.kit.dir}/bin/genMetadata.sh">
+			<os family="windows" />
+		</condition>
+		<condition property="configPhase1" value="${tolven.kit.dir}/bin/configPhase1.bat" else="${tolven.kit.dir}/bin/configPhase1.sh">
+			<os family="windows" />
+		</condition>
+		<condition property="configPhase3" value="${tolven.kit.dir}/bin/configPhase3.bat" else="${tolven.kit.dir}/bin/configPhase3.sh">
+			<os family="windows" />
+		</condition>
+		<condition property="tpf" value="${tolven.kit.dir}/bin/tpf.bat" else="${tolven.kit.dir}/bin/tpf.sh">
+			<os family="windows" />
+		</condition>
+		<condition property="tpfenv" value="${tolven.kit.dir}/bin/tpfenv.bat" else="${tolven.kit.dir}/bin/tpfenv.sh">
+			<os family="windows" />
+		</condition>
+	</target>
+
+	<target name="install-requirements" depends="props" description="install-requirements">
+		<fail message="tolven.kit.zip must be set" unless="tolven.kit.zip" />
+		<fail message="common.keystore.src must be set" unless="common.keystore.src" />
+		<fail message="common.truststore.src must be set" unless="common.truststore.src" />
+		<fail message="mdbuser.keystore.src must be set" unless="mdbuser.keystore.src" />
+		<fail message="${tolven.kit.zip} must exist">
+			<condition>
+				<not>
+					<available file="${tolven.kit.zip}" />
+				</not>
+			</condition>
+		</fail>
+		<fail message="${common.keystore.src} must exist">
+			<condition>
+				<not>
+					<available file="${common.keystore.src}" />
+				</not>
+			</condition>
+		</fail>
+		<fail message="${common.truststore.src} must exist">
+			<condition>
+				<not>
+					<available file="${common.truststore.src}" />
+				</not>
+			</condition>
+		</fail>
+		<fail message="${tolven.kit.dir} already exists">
+			<condition>
+				<available file="${tolven.kit.dir}" />
+			</condition>
+		</fail>
+		<fail message="tolven.kit.parent.dir must be set" unless="tolven.kit.parent.dir" />
+		<fail message="tolven.domain.default must be set" unless="tolven.domain.default" />
+		<fail message="tolven.domain must be set" unless="tolven.domain" />
+		<fail message="tolven.https.port must be set" unless="tolven.https.port" />
+		<fail message="tolven.password.default must be set" unless="tolven.password.default" />
+		<fail message="common.keystore must be set" unless="common.keystore" />
+		<fail message="${common.keystore} already exists">
+			<condition>
+				<available file="${common.keystore}" />
+			</condition>
+		</fail>
+		<fail message="common.truststore must be set" unless="common.truststore" />
+		<fail message="${common.truststore}">
+			<condition>
+				<available file="${common.truststore}" />
+			</condition>
+		</fail>
+		<fail message="mdbuser.keystore must be set" unless="mdbuser.keystore" />
+		<fail message="${mdbuser.keystore}">
+			<condition>
+				<available file="${mdbuser.keystore}" />
+			</condition>
+		</fail>
+		<echo message="${ant.project.name} install-requirements VERIFIED" />
+		<echo message="${ant.project.name} to uninstall, remove: ${tolven.kit.dir}, ${credentials.dir}" />
+	</target>
+
+	<target name="install" depends="props" description="install">
+		<guide-echo args="Install Tolven Kit" />
+		<guide-echo args="" />
+
+		<guide-echo args="Unzip: ${tolven.kit.zip} to ${tolven.kit.parent.dir}" />
+		<guide-echo args="" />
+
+		<delete dir="${java.io.tmpdir}/${tolven.kit.filename}" />
+		<unzip src="${tolven.kit.zip}" dest="${java.io.tmpdir}" />
+		<move todir="${tolven.kit.parent.dir}">
+			<fileset dir="${java.io.tmpdir}">
+				<include name="${tolven.kit.filename}/**" />
+			</fileset>
+		</move>
+
+		<echo message="Installing ${tolven.kit.filename} with config directory: ${tolven.config.dir}..." />
+		<guide-echo args="Installation must use one of the following: glassfish3-legacypostgresql-plugins.xml OR glassfish3-oracle-plugins.xml" />
+		<echo message="Installation must use one of the following: glassfish3-legacypostgresql-plugins.xml OR glassfish3-oracle-plugins.xml" />
+		<guide-echo args="For linux ensure install.sh files in ${tolven.kit.dir}/bin is executable" />
+		<chmod dir="${tolven.kit.dir}/bin" perm="u+x" includes="install.sh" />
+		<guide-echo args="" />
+		<basename property="install.basename" file="${install}" />
+		<guide-echo args="cd ${tolven.kit.dir}/bin" />
+		<guide-echo args="${install.basename} -conf ${tolven.config.dir} -pluginsXMLTemplate glassfish3-legacypostgresql-plugins.xml" />
+		<exec executable="${install}" dir="${tolven.kit.dir}/bin" failonerror="true">
+			<arg line="-conf ${tolven.config.dir} -pluginsXMLTemplate ${tolven.kit.pluginsxml.template}" />
+		</exec>
+		<guide-echo args="" />
+		<guide-echo args="Check the default properties in ${tolven.config.dir}/plugins.xml:" />
+		<guide-echo args="${tolven.domain.default}:${tolven.https.port.default}" />
+		<replace token="${tolven.domain.default}:${tolven.https.port.default}" value="${tolven.domain}:${tolven.https.port}" file="${tolven.config.dir}/plugins.xml" />
+		<guide-echo args="${sso.domain.default}:${sso.port.default}" />
+		<replace token="${sso.domain.default}:${sso.port.default}" value="${sso.domain}:${sso.port}" file="${tolven.config.dir}/plugins.xml" />
+		<guide-echo args="your-appserver-homeDir" />
+		<guide-echo args="" />
+		<guide-echo args="Replace your-appserver-homeDir with ${glassfish.dir}" />
+		<replace token="your-appserver-homeDir" value="${glassfish.dir}" file="${tolven.config.dir}/plugins.xml" />
+		<guide-echo args="" />
+		<guide-echo args="Check the default admin password '${admin.password.default}' in ${tpfenv}" />
+		<replace token="${admin.password.default}" value="${admin.password}" file="${tpfenv}" />
+		<guide-echo args="" />
+		<guide-echo args="Check the default properties in ${tpf}" />
+		<guide-echo args="${tolven.domain.default}" />
+		<replace token="${tolven.domain.default}" value="${tolven.domain}" file="${tpf}" />
+		<guide-echo args="javax.net.ssl.keyStorePassword" />
+		<replace token="javax.net.ssl.keyStorePassword=${tolven.password.default}" value="javax.net.ssl.keyStorePassword=${tolven.kit.keystore.password}" file="${tpf}" />
+		<guide-echo args="javax.net.ssl.trustStorePassword" />
+		<replace token="javax.net.ssl.trustStorePassword=${tolven.password.default}" value="javax.net.ssl.trustStorePassword=${tolven.kit.truststore.password}" file="${tpf}" />
+		<guide-echo args="" />
+		<guide-echo args="Copy SSL keystore from ${common.keystore.src} to ${common.keystore}" />
+		<copy file="${common.keystore.src}" tofile="${common.keystore}" overwrite="false" verbose="true" />
+		<guide-echo args="Copy SSL truststore from ${common.truststore.src} to ${common.truststore}" />
+		<copy file="${common.truststore.src}" tofile="${common.truststore}" overwrite="false" verbose="true" />
+		<guide-echo args="Copy mdbuser keystore from ${mdbuser.keystore.src} to ${mdbuser.keystore}" />
+		<copy file="${mdbuser.keystore.src}" tofile="${mdbuser.keystore}" overwrite="false" verbose="true" />
+		<guide-echo args="" />
+		<guide-echo args="For linux ensure *.sh files in ${tolven.kit.dir}/bin are executable" />
+		<chmod dir="${tolven.kit.dir}/bin" perm="u+x" includes="**/*.sh" />
+		<genMetadata args="-plugins ${tolven.config.dir}/repositoryLocal/plugins -liburl file:///${tolven.config.dir}/repositoryLocal -outdir ${tolven.config.dir}/repositoryLocal" />
+		<guide-echo args="Initialize the Runtime Repository" />
+		<guide-echo args="cd ${tolven.kit.dir}/bin" />
+		<guide-echo args="${repositoryInit}" />
+		<exec executable="${repositoryInit}" dir="${tolven.kit.dir}/bin" failonerror="true" />
+		<guide-echo args="" />
+		<guide-echo args="After repositoryInit, ${tolven.config.dir}/build is deleted, if ${tolven.config.dir}/plugins.xml was changed or any plugins were downloaded" />
+		<guide-echo args="For a first install, it should not exist at this point. If it does, then delete it" />
+		<delete dir="${tolven.config.dir}/build" />
+		<guide-echo args="" />
+		<guide-echo args="Run the Check Integrity Command" />
+		<guide-echo args="cd ${tolven.kit.dir}/bin" />
+		<guide-echo args="${checkIntegrity}" />
+		<exec executable="${checkIntegrity}" dir="${tolven.kit.dir}/bin" failonerror="true" />
+		<guide-echo args="" />
+		<guide-echo args="Run Phase 1 Configuration" />
+		<guide-echo args="cd ${tolven.kit.dir}/bin" />
+		<guide-echo args="${configPhase1}" />
+		<exec executable="${configPhase1}" dir="${tolven.kit.dir}/bin" failonerror="true" />
+		<guide-echo args="" />
+		<guide-echo args="Assemble MQKeyStore" />
+		<tpf args="-plugin org.tolven.assembler.connectormodule -rarPlugin org.tolven.mqkeystore" />
+		<guide-echo args="Assemble Tolven EAR File" />
+		<tpf args="-plugin org.tolven.assembler.ear -earPlugin org.tolven.component.tolvenear -earFile tolven.ear" />
+	</target>
+
+	<target name="assemble-tolven" depends="props" description="assemble-tolven">
+		<guide-echo args="Assemble Tolven" />
+		<guide-echo args="" />
+
+		<genMetadata args="-plugins ${tolven.config.dir}/repositoryLocal/plugins -liburl file:///${tolven.config.dir}/repositoryLocal -outdir ${tolven.config.dir}/repositoryLocal" />
+		<guide-echo args="Initialize the Runtime Repository" />
+		<guide-echo args="cd ${tolven.kit.dir}/bin" />
+		<guide-echo args="${repositoryInit}" />
+		<exec executable="${repositoryInit}" dir="${tolven.kit.dir}/bin" failonerror="true" />
+		<guide-echo args="" />
+		<guide-echo args="After repositoryInit, ${tolven.config.dir}/build is deleted if ${tolven.config.dir}/plugins.xml was changed or any plugins were downloaded" />
+		<delete dir="${tolven.config.dir}/build" />
+		<guide-echo args="" />
+		<guide-echo args="Run Phase 1 Configuration" />
+		<guide-echo args="cd ${tolven.kit.dir}/bin" />
+		<guide-echo args="${configPhase1}" />
+		<exec executable="${configPhase1}" dir="${tolven.kit.dir}/bin" failonerror="true" />
+		<guide-echo args="" />
+		<antcall target="assemble-tolven-openam" />
+		<guide-echo args="Assemble MQKeyStore" />
+		<tpf args="-plugin org.tolven.assembler.connectormodule -rarPlugin org.tolven.mqkeystore" />
+		<guide-echo args="Assemble Tolven EAR File" />
+		<tpf args="-plugin org.tolven.assembler.ear -earPlugin org.tolven.component.tolvenear -earFile tolven.ear" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="assemble-tolven-openam" unless="exclude.openam">
+		<guide-echo args="Assemble Tolven OpenAM Library Jar" />
+		<tpf args="-plugin org.tolven.assembler.library -libPlugin org.tolven.openam" />
+	</target>
+
+	<target name="tolven-post-installation" depends="props" description="tolven-post-installation">
+		<guide-echo args="Update Server Properties" />
+		<tpf args="-plugin org.tolven.appserverproperties -load" />
+		<guide-echo args="In a Tolven development environment, execute the following to disable the enforced use of user security certificates and keystores" />
+		<guide-echo args="In a Tolven production environment, we recommend that the certificates and keystores should not be optional, and thus all AccountPrivateKeys will be encrypted, as well as the documents they were involved in encrypting. Execute the following to return to using the security certificates and keystores" />
+		<tpf args="-plugin org.tolven.appserverproperties -set tolven.security.user.keysOptional ${tolven.security.user.keysOptional}" />
+		<exec executable="${configPhase3}" dir="${tolven.kit.dir}/bin" failonerror="true" />
+	</target>
+
+	<macrodef name="tpf">
+		<attribute name="args" />
+		<sequential>
+			<guide-echo args="cd ${tolven.kit.dir}/bin" />
+			<basename property="tpf.basename" file="${tpf}" />
+			<guide-echo args="${tpf.basename} @{args}" />
+			<echo message="${tpf} @{args}" />
+			<exec executable="${tpf}" dir="${tolven.kit.dir}/bin" failonerror="true">
+				<arg line="@{args}" />
+			</exec>
+			<echo message="Done" />
+			<echo message="" />
+			<guide-echo args="" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="genMetadata">
+		<attribute name="args" />
+		<sequential>
+			<echo message="Update Local Repository" />
+			<guide-echo args="genMetadata will update ${tolven.config.dir}/repositoryLocal/plugins/plugins.xml if the contents of ${tolven.config.dir}/repositoryLocal/plugins have changed" />
+			<guide-echo args="cd ${tolven.kit.dir}/bin" />
+			<basename property="genMetadata.basename" file="${genMetadata}" />
+			<guide-echo args="${genMetadata.basename} @{args}" />
+			<echo message="${genMetadata} @{args}" />
+			<exec executable="${genMetadata}" dir="${tolven.kit.dir}/bin" failonerror="true">
+				<arg line="@{args}" />
+			</exec>
+			<echo message="Done" />
+			<echo message="" />
+			<guide-echo args="" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="guide-echo">
+		<attribute name="args" />
+		<sequential>
+			<echo message="@{args}${line.separator}" file="${guide.file}" append="true" />
+		</sequential>
+	</macrodef>
+
+</project>

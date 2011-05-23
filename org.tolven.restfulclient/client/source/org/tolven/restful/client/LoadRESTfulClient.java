@@ -25,7 +25,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.tolven.deploy.allergies.LoadAllergies;
 import org.tolven.logging.TolvenLogger;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -45,7 +44,7 @@ public class LoadRESTfulClient extends RESTfulClient {
                     limit = Integer.parseInt(limitString);
                 }
             } catch (NumberFormatException e) {
-                TolvenLogger.error("Error getting property: " + UPLOAD_LIMIT, LoadAllergies.class);
+                TolvenLogger.error("Error getting property: " + UPLOAD_LIMIT, LoadRESTfulClient.class);
                 throw e;
             }
         }

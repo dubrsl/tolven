@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
@@ -360,8 +361,8 @@ public class MenuBean implements MenuLocal, MenuRemote {
         List<MenuStructure> msList = new ArrayList<MenuStructure>( 50 );
         try{
             StringBuffer queryA = new StringBuffer( 350 );
-            queryA.append( "SELECT um FROM UserMenuStructure um WHERE um.accountuser = :accountuser and um.underlyingMS IN " );
-            queryA.append( "(SELECT am FROM AccountMenuStructure am WHERE am.account = :account AND am.parent = :parent )" );
+            queryA.append( "SELECT um FROM UserMenuStructure um WHERE um.accountuser = :accountuser and um.underlyingMS.id IN " );
+            queryA.append( "(SELECT am.id FROM AccountMenuStructure am WHERE am.account = :account AND am.parent = :parent )" );
             
             Query query = em.createQuery( queryA.toString() );
             query.setParameter("accountuser", accountUser);
@@ -376,9 +377,9 @@ public class MenuBean implements MenuLocal, MenuRemote {
             
             StringBuffer queryB = new StringBuffer( 350 );
             queryB.append( "SELECT m from AccountMenuStructure m WHERE m.parent = :menustructure " );
-            queryB.append("AND (m.visible IS NULL OR m.visible != 'never') ");
+            queryB.append("AND (m.visible IS NULL OR m.visible <> 'never') ");
             queryB.append("AND (m.account = :account) ");
-            queryB.append( " AND m NOT IN ( SELECT um.underlyingMS FROM UserMenuStructure um WHERE um.accountuser = :accountuser)" );
+            queryB.append( " AND m.id NOT IN ( SELECT um.underlyingMS.id FROM UserMenuStructure um WHERE um.accountuser = :accountuser)" );
 
             Query query2 = em.createQuery( queryB.toString() );
             query2.setParameter("menustructure", ms.getAccountMenuStructure() );
@@ -1549,10 +1550,11 @@ public class MenuBean implements MenuLocal, MenuRemote {
     public AccountMenuStructure addCopyOfMenuStructure( Account targetAccount, 
             AccountMenuStructure sms ) {
         AccountMenuStructure msParent = null;
+        AccountMenuStructure msNew = new AccountMenuStructure();
         if (sms.getParent()!=null) {
             msParent = findAccountMenuStructure( targetAccount.getId(), sms.getParent().getPath());
+            msParent.getChildren().add(msNew);
         }
-        AccountMenuStructure msNew = new AccountMenuStructure();
         msNew.setAccount(targetAccount);
         replaceColumns( msNew, sms );
         msNew.setLevel(sms.getLevel());
@@ -1607,20 +1609,29 @@ public class MenuBean implements MenuLocal, MenuRemote {
      * Resolve differences in column definitions between two menuStructure entries.
      *
      */
-    public void replaceColumns(MenuStructure tms, MenuStructure sms ) {
-        // Safest thing we can do is just replace everything.
-        for (MSColumn col : tms.getColumns()) {
-            em.remove(col);
-        }
-        tms.getColumns().removeAll(tms.getColumns() );
+    public void replaceColumns(MenuStructure tms, MenuStructure sms) {
+        // Make a set of all columns already in the target
+        Map<String, MSColumn> currentColumns = new HashMap<String, MSColumn>();
 
-        // Now add the new column info
+        for (MSColumn col : tms.getColumns()) {
+            currentColumns.put(col.getHeading(), col);
+        }
+
+        // Now add or update the new column info
         for (MSColumn col : sms.getColumns()) {
-            MSColumn newCol = new MSColumn();
+            MSColumn newCol = currentColumns.get(col.getHeading());
+            if (newCol == null) {
+                newCol = new MSColumn();
+                newCol.setHeading(col.getHeading());
+                tms.getColumns().add(newCol);
+            } else {
+                // Remove this column from the current columns list
+                // Anything left in the list must be deleted, later.
+                currentColumns.remove(col.getHeading());
+            }
             newCol.setAccount(tms.getAccount());
             newCol.setDisplayFunction(col.getDisplayFunction());
             newCol.setDisplayFunctionArguments(col.getDisplayFunctionArguments());
-            newCol.setHeading(col.getHeading());
             newCol.setText(col.getText());
             newCol.setInternal(col.getInternal());
             newCol.setMenuStructure(tms.getAccountMenuStructure());
@@ -1633,7 +1644,11 @@ public class MenuBean implements MenuLocal, MenuRemote {
             newCol.setOutputFormat(col.getOutputFormat());
             newCol.setDatatype(col.getDatatype());
             em.persist(newCol);
-//          msNew.getColumns().add(newCol);
+        }
+        // Any columns left in the map should be removed from DB.
+        for (Entry<String, MSColumn> entry : currentColumns.entrySet()) {
+            em.remove(entry.getValue());
+            tms.getColumns().remove(entry.getValue());
         }
     }
     

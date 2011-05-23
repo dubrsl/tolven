@@ -16,8 +16,10 @@ package org.tolven.client.examples.ws.echo;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
 
 import org.tolven.client.examples.ws.common.HeaderHandlerResolver;
 import org.tolven.client.examples.ws.echo.jaxws.Echo;
@@ -36,11 +38,12 @@ import org.tolven.client.examples.ws.echo.jaxws.EchoService;
  *
  */
 public class EchoWebServiceClient {
-    
+
     private String username;
     private char[] password;
     private String wsdl;
     private int expiresInSeconds;
+    private Echo echoPort;
 
     public EchoWebServiceClient(String username, char[] password, String wsdl) {
         this(username, password, wsdl, 60);
@@ -91,22 +94,28 @@ public class EchoWebServiceClient {
     }
 
     public String echo(String string) {
-        System.out.println("Starting EchoClient");
-        URL url = null;
-        try {
-            url = new URL(getWsdl());
-        } catch (Exception ex) {
-            throw new RuntimeException("Could not convert to URL: " + getWsdl(), ex);
-        }
-        EchoService service = new EchoService(url, new QName("http://tolven.org/echo", "EchoService"));
-        HeaderHandlerResolver handlerResolver = new HeaderHandlerResolver(getUsername(), getPassword(), getExpiresInSeconds());
-        service.setHandlerResolver(handlerResolver);
-        Echo port = service.getEchoPort();
         System.out.println("Sending: " + string);
-        String echoedString = port.echo(string);
+        String echoedString = getEchoPort().echo(string);
         System.out.println("Received: \"" + echoedString + "\"");
-        System.out.println("End EchoClient");
         return echoedString;
+    }
+
+    public Echo getEchoPort() {
+        if (echoPort == null) {
+            URL url = null;
+            try {
+                url = new URL(getWsdl());
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not convert to URL: " + getWsdl(), ex);
+            }
+            EchoService service = new EchoService(url, new QName("http://tolven.org/echo", "EchoService"));
+            HeaderHandlerResolver handlerResolver = new HeaderHandlerResolver(getUsername(), getPassword(), getExpiresInSeconds());
+            service.setHandlerResolver(handlerResolver);
+            echoPort = service.getEchoPort();
+            Map<String, Object> ctx = ((BindingProvider) echoPort).getRequestContext();
+            ctx.put(BindingProvider.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
+        }
+        return echoPort;
     }
 
     /**
@@ -134,7 +143,9 @@ public class EchoWebServiceClient {
         System.out.print("Please enter user password: ");
         char[] password = System.console().readPassword();
         EchoWebServiceClient client = new EchoWebServiceClient(username, password, wsdl, 60);
-        client.echo();
+        Echo port = client.getEchoPort();
+        String result = port.echo("Is there anybody out there?");
+        System.out.print(result);
     }
 
 }

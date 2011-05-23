@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.library.tolvencommon" version="2.0.17" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.library.tolvencommon" version="2.0.18" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.component.tolvenweb" />
 		<import plugin-id="org.tolven.config.appserver" />

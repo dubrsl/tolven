@@ -24,9 +24,6 @@
 		</zip>
 		<antcall target="jar"/>
 		<copy toDir="${buildFolder}/ejb/classes" preservelastmodified="true">
-			<fileset dir="ejb/lib">
-				<include name="*.jar" />
-			</fileset >
 			<fileset dir="${buildFolder}/bin" includes="**/*.class" excludes="test/org/**,test/rules/**" />
 			<fileset dir="src" includes="**/*.properties" excludes="test/org/**,test/rules/**" />
 			<fileset dir="resources/" />
@@ -46,11 +43,8 @@
 			<src path="src" />
 			<classpath refid="project.classpath"/>
 			<classpath>
-				<fileset dir="ejb/lib">
+				<fileset dir="lib">
 					<include name="**/*.jar"/>
-				</fileset>
-				<fileset dir="../tolven/lib/jaxb/lib">
-					<include name="*.jar"/>
 				</fileset>
 			</classpath>
 		</javac>

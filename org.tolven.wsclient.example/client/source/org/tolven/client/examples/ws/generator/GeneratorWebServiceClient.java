@@ -7,8 +7,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Map;
 
 import javax.xml.namespace.QName;
+import javax.xml.ws.BindingProvider;
 
 import org.tolven.client.examples.ws.common.HeaderHandlerResolver;
 import org.tolven.client.examples.ws.generator.jaxws.Generator;
@@ -32,6 +34,7 @@ public class GeneratorWebServiceClient {
     private char[] password;
     private String wsdl;
     private int expiresInSeconds;
+    private Generator generatorPort;
 
     public GeneratorWebServiceClient(String username, char[] password, String wsdl, int expiresInSeconds) {
         this.username = username;
@@ -84,20 +87,25 @@ public class GeneratorWebServiceClient {
     }
 
     public String generate() {
-        // Establish a connection to tolven's data generator
-        URL url = null;
-        try {
-            url = new URL(getWsdl());
-        } catch (MalformedURLException ex) {
-            throw new RuntimeException("Could not convert to URL: " + getWsdl(), ex);
+        return getGeneratorPort().generateCCRXML(1995);
+    }
+
+    public Generator getGeneratorPort() {
+        if (generatorPort == null) {
+            URL url = null;
+            try {
+                url = new URL(getWsdl());
+            } catch (MalformedURLException ex) {
+                throw new RuntimeException("Could not convert to URL: " + getWsdl(), ex);
+            }
+            GeneratorService service = new GeneratorService(url, new QName("http://tolven.org/generator", "GeneratorService"));
+            HeaderHandlerResolver handlerResolver = new HeaderHandlerResolver(getUsername(), getPassword(), getExpiresInSeconds());
+            service.setHandlerResolver(handlerResolver);
+            generatorPort = service.getGeneratorPort();
+            Map<String, Object> ctx = ((BindingProvider) generatorPort).getRequestContext();
+            ctx.put(BindingProvider.SESSION_MAINTAIN_PROPERTY, Boolean.TRUE);
         }
-        GeneratorService service = new GeneratorService(url, new QName("http://tolven.org/generator", "GeneratorService"));
-        HeaderHandlerResolver handlerResolver = new HeaderHandlerResolver(getUsername(), getPassword(), getExpiresInSeconds());
-        service.setHandlerResolver(handlerResolver);
-        Generator port = service.getGeneratorPort();
-        // Use the Tolven data generator to create a random CCR Message.
-        byte[] payload = port.generateCCRXML(1995);
-        return new String(payload);
+        return generatorPort;
     }
 
     /**

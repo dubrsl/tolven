@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.assembler.ejbmodule" version="2.0.17" class="org.tolven.assembler.ejbmodule.EJBModuleAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.assembler.ejbmodule" version="2.0.18" class="org.tolven.assembler.ejbmodule.EJBModuleAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<runtime>
 		<library type="code" path="tpf/classes/" id="tpfclasses" />
 	</runtime>
@@ -38,8 +38,8 @@
 		<parameter-def id="ormId" multiplicity="any" />
 		<parameter-def id="name" />
 		<parameter-def id="transaction-type" />
-		<parameter-def id="jta-data-source" />
 		<parameter-def id="provider" multiplicity="none-or-one" />
+		<parameter-def id="jta-data-source" />
 		<parameter-def id="mapping-file" />
 		<parameter-def id="property" multiplicity="any">
 			<parameter-def id="name" />

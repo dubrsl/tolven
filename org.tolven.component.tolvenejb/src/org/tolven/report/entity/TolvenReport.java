@@ -25,6 +25,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -51,6 +52,7 @@ public class TolvenReport implements Serializable {
     @Column
     private String name;
 
+    @Lob
     @Column
     private String report;
 

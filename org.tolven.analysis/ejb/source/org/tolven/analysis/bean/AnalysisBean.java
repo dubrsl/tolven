@@ -43,7 +43,7 @@ public class AnalysisBean implements AnalysisLocal {
             tm.setFromAccountId(account.getId());
             tm.setMediaType("text/xml");
             tm.setXmlNS("org.tolven.analysis");
-            tmSchedulerBean.schedule(tm, queueOnDate, messageProperties);
+            tmSchedulerBean.schedule(tm, messageProperties, queueOnDate);
         } catch (Exception ex) {
             throw new RuntimeException("Could not submit snapshot for queue", ex);
         }

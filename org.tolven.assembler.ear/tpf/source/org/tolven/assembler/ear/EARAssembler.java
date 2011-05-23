@@ -279,7 +279,7 @@ public class EARAssembler extends TolvenCommandPlugin {
         xmlStreamWriter.writeAttribute("version", "{@version}");
         xmlStreamWriter.writeAttribute("xmlns", "http://java.sun.com/xml/ns/javaee");
         xmlStreamWriter.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        xmlStreamWriter.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_5.xsd");
+        xmlStreamWriter.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd");
         xmlStreamWriter.writeCharacters("\n");
         addRootDisplayName(xmlStreamWriter);
         addRootConnectorModuleSelects(xmlStreamWriter);
