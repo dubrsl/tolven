@@ -1,0 +1,50 @@
+package  test.rules.m1
+//@use echr placeholders
+import java.util.Date;
+import org.tolven.app.entity.MenuData;
+import org.drools.facttemplates.Fact;
+import org.tolven.rules.*;
+global java.io.PrintStream out;
+global test.rules.FactRuleTests frt;
+
+//function void addToList(PlaceholderFact fact, String list) {
+//	frt.addToList( fact, list );
+//}
+
+rule "Check Patient fact"
+	when
+		patient($lastName: lastName, $dob: dob )
+	then
+		Date x = $dob;
+		out.println( "Patient: " + $lastName + " " + $dob );
+end
+
+rule "Check Observation fact"
+	when
+		observation($test: test )
+	then
+		out.println( "Observation: " + $test );
+end
+
+rule "Check Observation-patient fact"
+	when
+		observation($lastName: patient.lastName, $test: test )
+	then
+		out.println( "Observation: " + $lastName + " " + $test );
+end
+
+rule "Check Java class on MenuData"
+	when
+		observation( $obs:menuData)
+	then
+		MenuData md = $obs;
+//		out.println("Hard access to obs MenuData" + md.getField("test" ));
+end
+
+rule "Check Java class on MenuData field"
+	when
+		observation($patient: patient )
+	then
+		MenuData md = $patient;
+//		out.println("Hard access to MenuData" + md.getField("lastName" ));
+end

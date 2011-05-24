@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="urn:tolven-org:tpf:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tpf="urn:tolven-org:tpf:1.0" targetNamespace="urn:tolven-org:tpf:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:element name="plugin">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="attributes" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="requires" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="runtime" minOccurs="0" maxOccurs="1" />
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="extension-point" />
+					<xs:element ref="extension" />
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required" />
+			<xs:attribute name="version" type="xs:string" use="required" />
+			<xs:attribute name="vendor" type="xs:string" />
+			<xs:attribute name="class" type="xs:string" />
+			<xs:attribute name="docs-path" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="plugin-fragment">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="attributes" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="requires" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="runtime" minOccurs="0" maxOccurs="1" />
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="extension-point" />
+					<xs:element ref="extension" />
+				</xs:choice>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required" />
+			<xs:attribute name="version" type="xs:string" use="required" />
+			<xs:attribute name="vendor" type="xs:string" />
+			<xs:attribute name="plugin-id" type="xs:string" use="required" />
+			<xs:attribute name="plugin-version" type="xs:string" />
+			<xs:attribute name="match" default="compatible">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="equal" />
+						<xs:enumeration value="equivalent" />
+						<xs:enumeration value="compatible" />
+						<xs:enumeration value="greater-or-equal" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="docs-path" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="attributes">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="attribute" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="attribute">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="attribute" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required" />
+			<xs:attribute name="value" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="doc">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc-ref" minOccurs="0" maxOccurs="unbounded" />
+				<xs:element ref="doc-text" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+			<xs:attribute name="caption" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="doc-ref">
+		<xs:complexType>
+			<xs:attribute name="path" type="xs:string" use="required" />
+			<xs:attribute name="caption" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="doc-text">
+		<xs:complexType mixed="true" />
+	</xs:element>
+
+	<xs:element name="requires">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="import" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="import">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" />
+			<xs:attribute name="plugin-id" type="xs:string" use="required" />
+			<xs:attribute name="plugin-version" type="xs:string" />
+			<xs:attribute name="match" default="compatible">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="equal" />
+						<xs:enumeration value="equivalent" />
+						<xs:enumeration value="compatible" />
+						<xs:enumeration value="greater-or-equal" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="exported" default="false">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="true" />
+						<xs:enumeration value="false" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="optional" default="false">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="true" />
+						<xs:enumeration value="false" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="reverse-lookup" default="false">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="true" />
+						<xs:enumeration value="false" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="runtime">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="library" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="library">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="export" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required" />
+			<xs:attribute name="path" type="xs:string" use="required" />
+			<xs:attribute name="type" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="code" />
+						<xs:enumeration value="resources" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="version" type="xs:string" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="export">
+		<xs:complexType>
+			<xs:attribute name="prefix" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="extension-point">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="parameter-def" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required" />
+			<xs:attribute name="parent-plugin-id" type="xs:string" />
+			<xs:attribute name="parent-point-id" type="xs:string" />
+			<xs:attribute name="extension-multiplicity" default="any">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="any" />
+						<xs:enumeration value="one" />
+						<xs:enumeration value="one-per-plugin" />
+						<xs:enumeration value="none" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="parameter-def">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="parameter-def" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required" />
+			<xs:attribute name="multiplicity">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="one" />
+						<xs:enumeration value="any" />
+						<xs:enumeration value="none-or-one" />
+						<xs:enumeration value="one-or-more" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="type">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="string" />
+						<xs:enumeration value="boolean" />
+						<xs:enumeration value="number" />
+						<xs:enumeration value="date" />
+						<xs:enumeration value="time" />
+						<xs:enumeration value="date-time" />
+						<xs:enumeration value="null" />
+						<xs:enumeration value="any" />
+						<xs:enumeration value="plugin-id" />
+						<xs:enumeration value="extension-point-id" />
+						<xs:enumeration value="extension-id" />
+						<xs:enumeration value="fixed" />
+						<xs:enumeration value="resource" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="custom-data" type="xs:string" use="optional" />
+			<xs:attribute name="default-value" type="xs:string" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="extension">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="plugin-id" type="xs:string" use="required" />
+			<xs:attribute name="point-id" type="xs:string" use="required" />
+			<xs:attribute name="id" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="parameter">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="doc" minOccurs="0" maxOccurs="1" />
+				<xs:element ref="parameter" minOccurs="0" maxOccurs="unbounded" />
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required" />
+			<xs:attribute name="value" type="xs:string" use="optional" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="value">
+		<xs:complexType mixed="true" />
+	</xs:element>
+
+</xs:schema>

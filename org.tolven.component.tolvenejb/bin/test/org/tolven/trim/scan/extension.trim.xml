@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>base.trim.xml</extends>
+	<name>chest/chestExam</name>
+	<author>Extension Author</author>
+	<reference>http://www.wikihit.org/wiki/index.php/OBS_Chest_Exam</reference>
+	<act classCode="ORGANIZER" moodCode="EVN">
+		<code>
+			<CE>
+				<displayName>Physical findings:Find:Pt:Chest:Nar:Observed</displayName>
+				<code>11391-0</code>
+				<codeSystem>2.16.840.1.113883.6.1</codeSystem>
+				<codeSystemName>LOINC</codeSystemName>
+				<codeSystemVersion>2.21</codeSystemVersion>
+			</CE>
+		</code>
+		<relationship name="breastExam" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<bind>
+					<include>actInclude.trim.xml</include>
+				</bind>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="genders">
+		<CE>
+			<displayName>Male</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Female</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<field name="field3"><value xsi:type="xs:string">Field 3 - In extension only</value></field>
+</trim>

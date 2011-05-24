@@ -1,0 +1,131 @@
+package test.rules.m1
+ 
+import java.util.*;
+import org.tolven.app.entity.*;
+import org.tolven.core.*;
+import org.tolven.core.entity.*;
+import org.tolven.trim.CD;
+import org.tolven.conceptgroup.*;
+import test.rules.*;
+
+global java.io.PrintStream out;
+global org.tolven.conceptgroup.ObjectFactory cgf;
+
+rule "Get Useful Account properties"
+	when
+		$account: Account()
+	then
+		for (SimpleProperty property : $account.findMatchingProperties("org\\.tolven\\..*")) {
+			insert(property);
+		}
+end
+
+rule "Property is a concept group"
+	when
+		SimpleProperty( name matches ".*\.concept\..*", $propertyValue: value)
+	then
+		insert( cgf.createConceptGroup($propertyValue));
+end
+
+rule "Create an account"
+	when
+		eval(true)
+	then
+		ConceptGroup cg = cgf.createConceptGroup();
+		cg.setName( "org.tolven.concept.diabetes");
+		cg.addCode( "SCT", "701" );
+		cg.addCode( "SCT", "702" );
+		cg.addCode( "SCT", "703" );
+		Account account = new Account();
+		account.setId(1);
+		account.getProperty().put("org.tolven.concept.diabetes", cgf.toXML( cg ));
+		insert( account );
+end 
+
+rule "Create a Patient"
+	when
+		$account: Account()
+		$msPatient: AccountMenuStructure(path=="patient")
+	then
+		MenuData md = new MenuData();
+		md.setAccount( $account );
+		md.setId(123);
+		md.setMenuStructure( $msPatient );
+		md.setPath( "patient-123" );
+		md.setString01( "Ms Swizzle" );
+		insert( md );
+end 
+
+rule "Create a Patient diagnosis"
+	when
+		$account: Account()
+		$msPatient: AccountMenuStructure(path=="patient:diagnosis")
+	then
+		MenuData md = new MenuData();
+		md.setAccount( $account );
+		md.setId(123);
+		md.setMenuStructure( $msPatient );
+		md.setPath( "patient-123:diagnosis-456" );
+		md.setCode01CodeSystem( "SCT" );
+		md.setCode01Code( "701" );
+		insert( md );
+end 
+
+rule "Create a patient MenuStructure"
+	when
+		$account: Account()
+		eval(true)
+	then
+		AccountMenuStructure ms = new AccountMenuStructure();
+		ms.setId(111);
+		ms.setAccount( $account );
+		ms.setNode("patient");
+		ms.setPath("patient");
+		insert( ms );
+end 
+
+rule "Create a result MenuStructure"
+	when
+		$account: Account()
+		$patient: AccountMenuStructure( node=="patient")
+	then
+		AccountMenuStructure ms = new AccountMenuStructure();
+		ms.setId(222);
+		ms.setAccount( $account );
+		ms.setNode("result");
+		ms.setPath("patient:result");
+		ms.setParent( $patient );
+		insert( ms );
+end 
+
+rule "Create a diagnosis MenuStructure"
+	when
+		$account: Account()
+		$patient: AccountMenuStructure( node=="patient")
+	then
+		AccountMenuStructure ms = new AccountMenuStructure();
+		ms.setId(333);
+		ms.setAccount( $account );
+		ms.setNode("diagnosis");
+		ms.setPath("patient:diagnosis");
+		ms.setParent( $patient );
+		insert( ms );
+end 
+
+rule "Create patients"
+	when
+		$msPatient: MenuStructure( path=="patient")
+		$mdPatient: MenuData( menuStructure==$msPatient )
+	then
+		out.println( $mdPatient + " " + $mdPatient.getString01() ); 
+end
+
+rule "Select a Diabetes patient"
+	when
+		$msDiagnosis: MenuStructure( path=="patient:diagnosis")
+		$mdDiagnosis: MenuData( menuStructure==$msDiagnosis, $code: code01 )
+		ConceptGroup( name=="org.tolven.concept.diabetes", $dmCodes: codes contains $code)
+//		Information(name=="org.tolven.analysis.dm", includeCodes contains $code, ages contains $age, $account: account );
+	then
+end
+
