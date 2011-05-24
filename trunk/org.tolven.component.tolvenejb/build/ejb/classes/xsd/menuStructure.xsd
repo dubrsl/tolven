@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:app="urn:tolven-org:menuStructure:1.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" xmlns:ns1="urn:tolven-org:menuStructure:1.0" targetNamespace="urn:tolven-org:menuStructure:1.0" elementFormDefault="qualified" attributeFormDefault="unqualified" jaxb:version="2.1" jaxb:extensionBindingPrefixes="xjc">
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings>
+				<xjc:simple/>
+				<xjc:serializable /> 
+			</jaxb:globalBindings>
+		</xs:appinfo>
+	</xs:annotation>
+	<xs:element name="application" type="Application"/>
+	<xs:complexType name="Application">
+		<xs:sequence>
+			<xs:element name="depends" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="rules" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="property" type="AccountProperty" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="notice" type="Notice" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="trimMenu" type="Placeholder" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="menu" type="Menu" minOccurs="0" maxOccurs="1"/>
+			<xs:element name="placeholder" type="Placeholder" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="extends" type="Extends" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="title" type="xs:string"/>
+		<xs:attribute name="homePage" type="xs:string"/>
+		<xs:attribute name="logo" type="xs:string"/>
+		<xs:attribute name="css" type="xs:string"/>
+		<xs:attribute name="creatable" type="xs:boolean"/>
+		<xs:attribute name="createAccountPage" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Notice">
+		<xs:sequence>
+			<xs:element name="subject" type="xs:string" minOccurs="0"/>
+			<xs:element name="body" type="InvitationBody" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="handler" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="InvitationBody">
+		<xs:attribute name="file" type="xs:string"/>
+		<xs:attribute name="mimeType" type="xs:string"/>
+		<xs:attribute name="locale" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="Extends">
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="band" type="Band" />
+				<xs:element name="calendar" type="Calendar"/>
+				<xs:element name="instance" type="Instance" />
+				<xs:element name="entry" type="Entry" />
+				<xs:element name="list" type="List" />
+				<xs:element name="menu" type="Menu" />
+				<xs:element name="portal" type="Portal"/>
+				<xs:element name="portlet" type="Portlet"/>
+				<xs:element name="timeline" type="Timeline"/>
+				<xs:element name="trimList" type="TrimList" />
+				<xs:element name="placeholder" type="Placeholder"/>
+				<xs:element name="field" type="PlaceholderField"/>
+				<xs:element name="column" type="Column"/>
+			</xs:choice>
+		</xs:sequence>
+		<xs:attribute name="path" type="xs:string"/>
+		<xs:attribute name="optional" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="before" type="xs:string" use="optional"/>
+		<xs:attribute name="after" type="xs:string" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="AccountProperty">
+	    <xs:simpleContent>
+	      <xs:extension base="xs:string">
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="file" type="xs:string"/>
+			<xs:attribute name="accountType" type="xs:string" use="optional"/>
+			<xs:attribute name="account" type="xs:long" use="optional"/>
+	      </xs:extension>
+	    </xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="MenuBase" abstract="true">
+		<xs:sequence>
+			<xs:element name="menuEventHandler" type="MenuEventHandler" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="path" type="xs:string"/>
+		<xs:attribute name="title" type="xs:string"/>
+		<xs:attribute name="page" type="xs:string"/>
+		<xs:attribute name="visible" type="xs:string"/>
+		<xs:attribute name="sequence" type="xs:long" use="optional"/>
+	</xs:complexType>
+	<xs:complexType name="Placeholder">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="field" type="PlaceholderField" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="menu" type="Menu" />
+						<xs:element name="portal" type="Portal"/>
+						<xs:element name="timeline" type="Timeline"/>
+						<xs:element name="calendar" type="Calendar"/>
+						<xs:element name="list" type="List" />
+						<xs:element name="trimList" type="TrimList" />
+						<xs:element name="instance" type="Instance" />
+					</xs:choice>
+					<xs:element name="placeholder" type="Placeholder" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="heading" type="xs:string"/>
+				<xs:attribute name="initialSort" type="xs:string" use="optional"/>
+				<xs:attribute name="eventInstance" type="xs:string">
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Menu">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="menu" type="Menu" />
+					<xs:element name="portal" type="Portal"/>
+					<xs:element name="timeline" type="Timeline"/>
+					<xs:element name="calendar" type="Calendar"/>
+					<xs:element name="list" type="List" />
+					<xs:element name="trimList" type="TrimList" />
+					<xs:element name="instance" type="Instance" />
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Portal">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:choice minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="portletColumn" type="PortletColumn" />
+					</xs:choice>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Portlet">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="column" type="Column" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="action" type="Action" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="drilldown" type="xs:string"/>
+				<xs:attribute name="filter" type="xs:string" use="optional"/>
+				<xs:attribute name="query" type="xs:string" use="optional"/>
+				<xs:attribute name="initialSort" type="xs:string" use="optional"/>
+				<xs:attribute name="portalColumn" type="xs:long" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PortletColumn">
+		<xs:sequence>
+			<xs:element name="portlet" type="Portlet" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Instance">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:attribute name="heading" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="List">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="column" type="Column" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="action" type="Action" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="drilldown" type="xs:string"/>
+				<xs:attribute name="filter" type="xs:string" use="optional"/>
+				<xs:attribute name="query" type="xs:string" use="optional"/>
+				<xs:attribute name="initialSort" type="xs:string" use="optional"/>
+				<xs:attribute name="uniqueKey" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Action">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="column" type="Column" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="query" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MenuEventHandler">
+		<xs:sequence>
+			<xs:element name="data" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="name" type="xs:string"/>
+					<xs:attribute name="value" type="xs:string"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="factory" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="TrimList">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="column" type="Column" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="placeholder" type="xs:string"/>
+				<xs:attribute name="initialSort" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="PlaceholderField">
+		<xs:sequence>
+			<xs:element name="from" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="internal" type="xs:string"/>
+		<xs:attribute name="type" type="ColumnType"/>
+	</xs:complexType>
+	<xs:complexType name="Column">
+		<xs:sequence>
+			<xs:element name="from" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="output" minOccurs="0" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:any processContents="skip"/>
+					</xs:sequence>
+					<xs:attribute name="type" type="xs:string" default="_default"/>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string"/>
+		<xs:attribute name="title" type="xs:string"/>
+		<xs:attribute name="internal" type="xs:string"/>
+		<xs:attribute name="type" type="ColumnType"/>
+		<xs:attribute name="format" type="xs:string" use="optional"/>
+		<xs:attribute name="instantiate" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="reference" type="xs:boolean" use="optional" default="false"/>
+		<xs:attribute name="supress" type="xs:string" use="optional"/>
+		<xs:attribute name="width" type="xs:float"/>
+		<xs:attribute name="align" type="Alignment" default="left"/>
+		<xs:attribute name="visible" type="xs:string"/>
+	</xs:complexType>
+	<xs:simpleType name="ColumnType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="string"/>
+			<xs:enumeration value="date"/>
+			<xs:enumeration value="long"/>
+			<xs:enumeration value="double"/>
+			<xs:enumeration value="placeholder"/>
+			<xs:enumeration value="AD"/>
+			<xs:enumeration value="CD"/>
+			<xs:enumeration value="ED"/>
+			<xs:enumeration value="INT"/>
+			<xs:enumeration value="PQ"/>
+			<xs:enumeration value="REAL"/>
+			<xs:enumeration value="TEL"/>
+			<xs:enumeration value="TS"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Alignment">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="left"/>
+			<xs:enumeration value="center"/>
+			<xs:enumeration value="right"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Timeline">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="band" type="Band" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Band">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="column" type="Column" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="action" type="Action" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="drilldown" type="xs:string"/>
+				<xs:attribute name="interval" type="BandInterval" use="required"/>
+				<xs:attribute name="style" type="xs:string"/>
+				<xs:attribute name="query" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="BandInterval">
+		<xs:restriction base="xs:token">
+			<xs:enumeration value="year"/>
+			<xs:enumeration value="month"/>
+			<xs:enumeration value="week"/>
+			<xs:enumeration value="day"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="Calendar">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="entry" type="Entry" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Entry">
+		<xs:complexContent>
+			<xs:extension base="MenuBase">
+				<xs:sequence>
+					<xs:element name="column" type="Column" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="action" type="Action" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+				<xs:attribute name="drilldown" type="xs:string"/>
+				<xs:attribute name="style" type="xs:string"/>
+				<xs:attribute name="query" type="xs:string" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>baseBase.trim.xml</extends>
+	<abstract>true</abstract>
+	<name>base/observation</name>
+	<description>Description from Base</description>
+	<author>Base Author</author>
+	<application name="echr">
+		<instance>echr:patient:observation</instance>
+		<wip>echr:activity:all</wip>
+		<menu>echr:observationMenu</menu>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr">
+					<placeholder>
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr">
+					<placeholder>
+						<path>ephr:patient</path>
+					</placeholder>
+				</bind>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>ROOTFromBase</root>
+						<extension>ExtensionFromBase</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+		<participation name="author" typeCode="AUT">
+			<role xsi:type="Role" classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id />
+			</role>
+		</participation>
+		<relationship name="encounter" direction="IN" typeCode="COMP">
+			<act xsi:type="Act" classCode="OBS" moodCode="EVN">
+				<bind application="echr">
+					<placeholder>
+						<path>echr:patient:encounter</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr">
+					<placeholder>
+						<path>ephr:patient:encounter</path>
+					</placeholder>
+				</bind>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="gendersFromBase">
+		<CE>
+			<displayName>Male</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Female</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- This should not override the value set in extension.trim.xml -->
+	<valueSet name="genders">
+		<CE>
+			<displayName>Other</displayName>
+			<code>xxxxxxxxxx</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>MaleXXXXXXX</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>FemaleXXXXXXXXXXXXXXXx</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<field name="field2"><value xsi:type="xs:string">Field 2 from Base</value></field>
+</trim>

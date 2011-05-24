@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>reg/evn/patient</name>
+	<description>New Person</description>
+	<page>newPatient.xhtml</page>
+	<drilldown>patientDD.xhtml</drilldown>
+ 	<tolvenId application="#{knownType}" path="#{internalId(account,trim.act.participation['subject'].role.id)}" id="#{patient.id}" accountId="#{account.id}"/>
+ 	<application name="ephr">
+		<instance>ephr:patient</instance>
+		<wip>ephr:activity:all</wip>
+		<menu>ephr:ephrMenu</menu>
+	</application>
+	<application name="echr">
+		<instance>echr:patient</instance>
+		<wip>echr:activity:all</wip>
+		<menu>echr:echrMenu</menu>
+	</application>
+	<act classCode="REG" moodCode="EVN">
+		<transitions>
+			<transition name="create" to="active">
+				<label language="en">New Patient</label>
+			</transition>
+			<transition name="reviseActive" from="active" to="active">
+				<label language="en">Revise</label>
+			</transition>
+		</transitions>
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Person</ST>
+		</title>
+		<effectiveTime>
+			<label>Effective time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr" phase="create">
+					<placeholder>
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr" phase="create">
+					<placeholder>
+						<path>ephr:patient</path>
+					</placeholder>
+				</bind>
+				<id/>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Patient Name</label>
+						<EN>
+							<label>Legal Name</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{source.firstName}</ST>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{source.middleName}</ST>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{source.lastName}</ST>
+							</part>
+							<part>
+								<label>Suffix</label>
+								<type>SFX</type>
+								<ST/>
+							</part>
+						</EN>
+					</name>
+					<telecom>
+						<label>Telecom</label>
+						<TEL>
+							<label>Home Phone</label>
+							<use>H</use>
+							<value>#{source.homeTelecom}</value>
+						</TEL>
+					</telecom>
+					<livingSubject>
+						<administrativeGenderCode>
+							<label>Gender</label>
+							<new><encoded>#{encode(source.gender)}</encoded></new>
+							<valueSet>genders</valueSet>
+						</administrativeGenderCode>
+						<birthTime>
+							<label>Date of Birth</label>
+							<TS><value>#{TS(source.dob)}</value></TS>
+						</birthTime>
+					</livingSubject>
+					<person>
+						<addr>
+							<label>Address</label>
+							<AD>
+								<label>Home Address</label>
+								<use>H</use>
+								<part>
+									<label>Address Line 1</label>
+									<type>AL</type>
+									<ST>#{source.homeAddr1}</ST>
+								</part>
+								<part>
+									<label>Address Line 2</label>
+									<type>AL</type>
+									<ST>#{source.homeAddr2}</ST>
+								</part>
+								<part>
+									<label>City</label>
+									<type>CTY</type>
+									<ST>#{source.homeCity}</ST>
+								</part>
+								<part>
+									<label>State</label>
+									<type>STA</type>
+									<ST>#{source.homeState}</ST>
+								</part>
+								<part>
+									<label>Zip</label>
+									<type>ZIP</type>
+									<ST>#{source.homeZip}</ST>
+								</part>
+								<part>
+									<label>Country</label>
+									<type>CNT</type>
+									<ST>#{source.homeCountry}</ST>
+								</part>
+							</AD>
+						</addr>
+					</person>
+				</player>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+	</act>
+	<valueSet name="genders">
+		<CE>
+			<displayName>Male</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Female</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

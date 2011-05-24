@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>base/observation</extends>
+	<name>Observations/breast/breastContour</name>
+	<description>Test ValueSet include</description>
+	<valueSet name="breastLocation">
+		<CE>
+			<displayName>Left breast</displayName>
+			<code>C0222601</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

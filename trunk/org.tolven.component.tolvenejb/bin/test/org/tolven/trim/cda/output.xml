@@ -1,0 +1,320 @@
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<name>docclin</name>
+	<!-- A clinical document which will receive one or more observation trims -->
+	<act classCode="DOCCLIN" moodCode="EVN">
+   		<code>
+			<CE>
+				<displayName>HISTORY AND PHYSICAL NOTE</displayName>
+				<code>34117-2</code>			    			
+				<codeSystem>2.16.840.1.113883.6.1</codeSystem> 
+				<codeSystemName>LOINC</codeSystemName>
+			</CE>
+   		</code>
+        <relationship direction="OUT" name="component" typeCode="COMP">
+		    <act classCode="DOCBODY" moodCode="EVN">
+		        <relationship direction="OUT" name="component" typeCode="COMP">
+			    	<act classCode="DOCSECT" moodCode="EVN">
+			    		<code>
+			    			<CE>
+				    			<displayName>Physical Findings</displayName>
+								<code>10164-2</code>			    			
+				    			<codeSystem>2.16.840.1.113883.6.1</codeSystem> 
+				    			<codeSystemName>LOINC</codeSystemName>
+			    			</CE>
+			    		</code>
+					<relationship direction="OUT" name="entry" typeCode="COMP">
+						    <!-- A simple act to be added to a document -->
+						    <act classCode="OBS" moodCode="EVN">
+								<transitions initialState="${act.actStatus}">
+									<transition name="create" to="completed">
+										<label language="en">Completed</label>
+									</transition>
+									<transition from="active" name="reviseActive" to="active">
+										<label language="en">Revise</label>
+									</transition>
+									<transition from="active" name="eieActive" to="nullified">
+										<label language="en">Entered in Error</label>
+									</transition>
+									<transition from="completed" name="eieCompleted" to="nullified">
+										<label language="en">Entered in Error</label>
+									</transition>
+									<transition from="completed" name="reviseCompleted" to="completed">
+										<label language="en">Revise</label>
+									</transition>
+								</transitions>
+						        <code>
+						            <CD>
+						                <code>404639000</code>
+						                <codeSystem>2.16.840.1.113883.6.96</codeSystem>
+						                <codeSystemName>SCT</codeSystemName>
+						            </CD>
+						        </code>
+						        <title>
+						            <ST>Weight</ST>
+						        </title>
+						        <effectiveTime>
+						            <label>Time of observation</label>
+						            <new datatype="TS" function="now"/>
+						        </effectiveTime>
+						        <observation>
+						            <value>
+						                <PQ>
+							                <label>Weight</label>
+						                    <value>0.0</value>
+						                    <unit>lb</unit>
+						                </PQ>
+						            </value>
+						        </observation>
+						        <participation name="author" typeCode="AUT">
+						            <role classCode="ASSIGNED">
+						                <player classCode="PSN" determinerCode="INSTANCE"/>
+						            </role>
+						        </participation>
+						        <relationship direction="OUT" name="clothing" typeCode="PERT">
+						            <act classCode="OBS" moodCode="EVN">
+						                <title>
+						                    <ST>Clothing</ST>
+						                </title>
+						                <observation>
+						                    <value>
+						                        <label>Clothing</label>
+						                        <valueSet>clothing</valueSet>
+						                    </value>
+						                </observation>
+						            </act>
+						        </relationship>
+						        <relationship direction="OUT" name="device" typeCode="PERT">
+						            <act classCode="OBS" moodCode="EVN">
+						                <title>
+						                    <ST>Device</ST>
+						                </title>
+						                <observation>
+						                    <value>
+						                        <label>Device</label>
+						                        <valueSet>device</valueSet>
+						                    </value>
+						                </observation>
+						            </act>
+						        </relationship>
+						    </act>
+				        </relationship><relationship direction="OUT" name="entry" typeCode="COMP">
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>105723007</code>
+                <codeSystem>2.16.840.1.113883.6.96</codeSystem>
+                <codeSystemName>SCT</codeSystemName>
+			</CD>
+		</code>
+		<title>
+			<ST>Temperature</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<PQ>
+					<label>Temperature</label>
+					<value>0.0</value>
+					<unit>C</unit>
+				</PQ>
+			</value>
+			<methodCode>
+				<label>Method</label>
+				<valueSet>method</valueSet>
+			</methodCode>
+		</observation>
+		<relationship direction="OUT" name="ambient" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Ambient temperature</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Ambient temperature</label>
+						<valueSet>ambient</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship direction="OUT" name="comment" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Comment</label>
+						<ED/>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+				        </relationship></act>
+				</relationship>
+			</act>
+		</relationship>	
+	</act>
+<valueSet name="weightValue">
+        <PQ>
+            <label>Weight in pounds</label>
+            <value>0</value>
+            <unit>lb</unit>
+        </PQ>
+        <PQ>
+            <label>Weight in kg</label>
+            <value>0</value>
+            <unit>kg</unit>
+        </PQ>
+        <null type="NA">
+            <label>Unable to obtain</label>
+        </null>
+    </valueSet><valueSet name="clothing">
+		<null type="UNK">
+			<label>Select Clothing</label>
+		</null>
+        <CE>
+            <displayName>Lightly Clothed/Underwear</displayName>
+            <code>X1</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Naked</displayName>
+            <code>C0424470</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Fully Dressed</displayName>
+            <code>X2</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Nappy/Diaper</displayName>
+            <code>X3</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+    </valueSet><valueSet name="device">
+		<null type="UNK">
+			<label>Select Device</label>
+		</null>
+        <CE>
+            <displayName>Floor Scale</displayName>
+            <code>C0183108</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Chair Scale</displayName>
+            <code>C0183107</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Wheelchair Scale</displayName>
+            <code>C0183113</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Underbed</displayName>
+            <code>C0183105</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Platform</displayName>
+            <code>C0810617</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Bedside</displayName>
+            <code>C0810484</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+    </valueSet><valueSet name="method">
+		<CE>
+			<displayName>Axillary</displayName>
+			<code>C0488002</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Oral</displayName>
+			<code>C0555770</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Rectal</displayName>
+			<code>C0489749</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Typanic</displayName>
+			<code>C0488007</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet><valueSet name="ambient">
+		<CE>
+			<displayName>Indoor - Normal Clothing or Bedding </displayName>
+			<code>x1</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Indoor - Reduced Clothing Bedding</displayName>
+			<code>x2</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Indoor - Increased Clothing Bedding</displayName>
+			<code>x3</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Outdoor - Normal Clothing or Bedding</displayName>
+			<code>x4</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Outdoor - Reduced Clothing Bedding</displayName>
+			<code>x5</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Outdoor - Increased Clothing Bedding</displayName>
+			<code>x6</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Thermal Stress - Downward</displayName>
+			<code>x7</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Thermal Stress - Upward</displayName>
+			<code>x8</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Pediatric Incubator</displayName>
+			<code>x9</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet></trim>
