@@ -71,6 +71,7 @@ import org.tolven.doc.entity.Invitation;
 import org.tolven.el.ExpressionEvaluator;
 import org.tolven.security.LDAPLocal;
 import org.tolven.security.TolvenPerson;
+import org.tolven.session.TolvenSessionWrapperFactory;
 
 /**
  * <p>Provide the capability to manage notifications backed by an internal structure called an
@@ -217,7 +218,7 @@ public class InvitationBean implements InvitationLocal {
 	        // To
 	        String toString = getAttribute(ee, "to");
 	        if (toString==null) {
-	            TolvenPerson tp = ldapBean.findTolvenPerson( ejbContext.getCallerPrincipal().getName() ); 
+	            TolvenPerson tp = ldapBean.findTolvenPerson((String) TolvenSessionWrapperFactory.getInstance().getPrincipal()); 
             	List<String> mail = tp.getMail();
             	if (mail.size()>0) {
 	            	toString = mail.get(0);
@@ -618,7 +619,7 @@ public class InvitationBean implements InvitationLocal {
 					invitation.setStatus(Status.OBSOLETE.value());
 					ldapBean.deleteUser(activate.getPrincipal());
 				} else {
-					String principal = ejbContext.getCallerPrincipal().getName();
+					String principal =(String)TolvenSessionWrapperFactory.getInstance().getPrincipal();
 			        if (!principal.equals(activate.getPrincipal())) {
 			        	throw new InvitationException( "Invitation does not match logged in user");
 			        }

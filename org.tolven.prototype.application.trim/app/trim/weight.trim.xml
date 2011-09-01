@@ -10,24 +10,33 @@
     <page>weight.xhtml</page>
     <drilldown>weightDD.xhtml</drilldown>
     <reference>http://www.wikihit.org/wiki/index.php/Weight</reference>
+ 	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="editActive" from="active" to="edit">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="suspendActive" from="active" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>		
+		<transition name="suspendCompleted" from="completed" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>	
+		<transition name="nullifiedActive" from="active" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>
+		<transition name="nullifiedCompleted" from="completed" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>		
+		<transition name="completedActive" from="active" to="completed">
+			<label language="en">Resolved</label>
+		</transition>
+		<transition name="completedSuspend" from="suspended" to="completed">
+			<label language="en">Resolved</label>
+		</transition>	
+	</transitions>
     <act classCode="OBS" moodCode="EVN">
-		<transitions>
-			<transition name="create" to="completed">
-				<label language="en">Completed</label>
-			</transition>
-			<transition name="reviseActive" from="active" to="active">
-				<label language="en">Revise</label>
-			</transition>
-			<transition name="eieActive" from="active" to="nullified">
-				<label language="en">Entered in Error</label>
-			</transition>
-			<transition name="eieCompleted" from="completed" to="nullified">
-				<label language="en">Entered in Error</label>
-			</transition>
-			<transition name="reviseCompleted" from="completed" to="completed">
-				<label language="en">Revise</label>
-			</transition>
-		</transitions>
         <code>
             <CD>
                 <code>404639000</code>
@@ -35,6 +44,7 @@
                 <codeSystemName>SCT</codeSystemName>
             </CD>
         </code>
+        <statusCode>active</statusCode>
         <title>
             <ST>Weight</ST>
         </title>

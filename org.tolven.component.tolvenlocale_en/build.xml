@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.component.tolvenlocale_en">
+
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+
+	<property name="include.java" value="false" />
+	<property name="include.java.source.code" value="true" />
+	<!-- 
+	Source code will be included in the devLib jar file if true. Otherwise, source code
+	known to this build script will not be in the plugin
+	 -->
+	<property name="includeSourceInDevLib" value="true" />
+
+	<property name="lang.suffix" value="_en"/>
+	<target name="checkBundleDates">
+		<uptodate property="native2ascii.notRequired" targetfile="build/tolvenLocale${lang.suffix}.jar">
+			<srcfiles dir="." includes="**/*.properties" />
+		</uptodate>
+	</target>
+
+	<target name="native2ascii" depends="checkBundleDates" description="Build tolvenLocale${lang.suffix}.jar" unless="native2ascii.notRequired">
+		<native2ascii encoding="UTF-8" src="messages" dest="build/bundle/messages" />
+		<native2ascii encoding="UTF-8" src="echr" dest="build/bundle/echr" />
+		<native2ascii encoding="UTF-8" src="ephr" dest="build/bundle/ephr" />
+	</target>
+
+	<target name="jars" description="Build tolvenLocale${lang.suffix}.jar">
+		<antcall target="native2ascii" />
+		<jar destfile="build/tolvenLocale${lang.suffix}.jar">
+			<manifest>
+				<attribute name="Built-By" value="Tolven Healthcare Innovations" />
+			</manifest>
+			<zipfileset dir="build/bundle/messages" prefix="messages" />
+			<zipfileset dir="build/bundle/echr" prefix="echr" />
+			<zipfileset dir="build/bundle/ephr" prefix="ephr" />
+		</jar>
+	</target>
+
+	<target name="build-plugin" depends="jars" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+		<!-- Each section adds itself to the zip file-->
+		<antcall target="buildSection">
+			<param name="section" value="lib" />
+		</antcall>
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar" />
+				<include name="tolvenLocale${lang.suffix}.jar" />
+			</zipfileset>
+		</zip>
+	</target>
+
+</project>

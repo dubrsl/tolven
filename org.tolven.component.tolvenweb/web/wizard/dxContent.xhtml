@@ -13,57 +13,124 @@
 
 <body>
 <ui:composition>
-	<wiz:step title="#{rel.act.observation.value.CE.displayName}" >
-		<wiz:body>	
-			<div class="delete"> 
-				<a href="#" onclick="javascript:removeTemplate('#{menu.elementLabel}',#{rel.sequenceNumber})">Remove this Diagnosis</a>
-        <a class="addnew" href="#" onclick="javascript:openTemplate('#{menu.menuDataItem.parent01.path}:diagnoses:menu','#{menu.menuDataItem.parent01.path}:diagnoses:menu', 'addTemplate', '#{menu.elementLabel}', 0)">Add Additional Diagnosis</a>
-			</div>
-			<wiz:group title="#{rel.act.observation.value.CE.displayName}">
-				<table style="width:100%;">
+			<h:inputHidden value="0" id="currentAction"/>
+			<table width="100%">
+				<thead>
           <tr>
-            <td style="width:60%;">
-							<wiz:group title="Diagnosis">
-								<h:outputText value="#{rel.act.observation.value.CE.displayName}"/>
-							</wiz:group>
+						<th style="width: 15%;"><b>Diagnosis</b></th>
+						<th style="width: 8%;" nowrap="nowrap"><b>Date of Diagnosis*</b></th>
+						<th style="width: 15%;"><b>Episodicity</b></th>
+						<th style="width: 15%;"><b>Severity</b></th>
+						<th style="width: 10%;"><b>Course</b></th>
+						<th style="width: 15%;"><b>Onset</b></th>
+						<th style="width: 7%;"></th>
+					</tr>
+				</thead>
+				<tbody style="width: 100%;">
+					<c:set var="i" value="1"/>
+					<c:if test="#{trim.trim.act.relationshipsList['entry']!=null}">
+						<c:forEach var="rel" items="#{trim.trim.act.relationshipsList['entry']}" varStatus="widgetIndex">
+							<c:if test="#{rel!=null}">
+								<c:set var="class" value="odd"/>
+								<c:set var="i" value="0"/>
+								<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/><c:set var="i" value="1"/></c:if>
+								<tr id="savedOrder#{widgetIndex.index}" class="#{class}">
+									<td style="width: 15%;">#{rel.act.observation.value.CE.displayName}</td>
+									<td style="width: 8%;">
+										<trim:TSNew value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+									</td>
+									<td style="width: 15%;">#{rel.act.relationship['episodicity'].act.observation.value.CE.displayName}</td>
+									<td style="width: 15%;">#{rel.act.relationship['severity'].act.observation.value.CE.displayName}</td>
+									<td style="width: 10%;">#{rel.act.relationship['course'].act.observation.value.CE.displayName}</td>
+									<td style="width: 15%;">#{rel.act.relationship['onset'].act.observation.value.CE.displayName}</td>
+									<td style="width: 7%;">
+										<span style="float: left;"><img onclick="editTpfRel('#{menu.element}','diagnosisDiv','dxContent','#{widgetIndex.index}');" alt="Edit" src="../images/edit.jpg" style="cursor:pointer;" title="Edit" height="22" width="22"></img></span>
+										<span style="float: right;"><img onclick="removeTpfRel('#{menu.element}','diagnosisDiv','dxContent','#{widgetIndex.index}','#{menu.elementLabel}');" alt="Remove" src="../images/delete.gif" style="cursor:pointer;" title="Remove" height="20" width="20"></img></span>
+									</td>
+								</tr>
+		     					<tr id="toBeSavedOrder#{widgetIndex.index}" style="display: none;">
+			      					<td style="width:15%;" id="order">
+			      						#{rel.act.observation.value.CE.displayName}
+			      					</td>
+			      					<td style="width:8%;" nowrap="nowrap" >
+			      						<trim:TSNew id="orderDate#{widgetIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" style="width: 90px;" />
+			      					</td>
+			      					<td style="width:15%;" >
+			      						<h:selectOneMenu value="#{rel.act.relationship['episodicity'].act.observation.value.CE}" id="episodicity#{widgetIndex.index}" style="width: 100px;">
+           									<f:selectItems value="#{trim.valueSets['episodicity']}" />
+           								</h:selectOneMenu>
+			      					</td>
+			      					<td style="width:15%;">
+			      						<h:selectOneMenu value="#{rel.act.relationship['severity'].act.observation.value.CE}" id="severity#{widgetIndex.index}" style="width: 120px;">
+				           					<f:selectItems value="#{trim.valueSets['severity']}" />
+				           				</h:selectOneMenu>
+			      					</td>
+			      					<td style="width:10%;">
+			      						<h:selectOneMenu value="#{rel.act.relationship['course'].act.observation.value.CE}" id="course#{widgetIndex.index}" style="width: 70px;">
+				           					<f:selectItems value="#{trim.valueSets['course']}" />
+				           				</h:selectOneMenu>
+			      					</td>
+			      					<td style="width:15%;" >
+			      						<h:selectOneMenu value="#{rel.act.relationship['onset'].act.observation.value.CE}" id="onset#{widgetIndex.index}" style="width: 100px;">
+				           					<f:selectItems value="#{trim.valueSets['onset']}" />
+				           				</h:selectOneMenu>
+			      					</td>
+									<td style="width:7%;" nowrap="nowrap">
+			       						<span style="float: left;">
+		   									<img onclick="saveDiagRel('#{menu.element}','diagnosisDiv','dxContent','#{widgetIndex.index}','#{menu.elementLabel}')" src="../images/save.gif" alt="Save" style="cursor:pointer;" title="Save" height="22" width="22">
+			        						</img>
+		        						</span>
+		        						<span style="float: right;">
+			        						<img onclick="cancelTpfRel('#{menu.element}','diagnosisDiv','dxContent','#{widgetIndex.index}');" src="../images/undo.gif" alt="Cancel" style="cursor:pointer;" title="Cancel" height="22" width="22">
+			        						</img>
+			        					</span>
 						</td>
-            <td style="width:30%;">
-              <c:if test="#{not empty trim.list['echr:patient:share:accountShares~Name']}">
-	              <wiz:group title="#{msg.SendTo}">
-	              	<h:selectManyCheckbox value="#{rel.act.sendTos}" >
-	              		<f:selectItems value="#{trim.partyList['echr:patient:share:accountShares~Name']}"/>
-	                </h:selectManyCheckbox>
-	              </wiz:group>
+						       	</tr>		
+							</c:if>
+						</c:forEach>
               </c:if>		              
+					<tr id="newOrder" style="display: none;">
+	   					<h:inputHidden value="0" id="template"/>
+	   					<h:inputHidden value="0" id="templateTrim"/>
+	   					<td style="width:15%;" id="order">
+		    				<h:outputText id="templateDescription"/>		
+    					</td>
+    					<td style="width:8%;" nowrap="nowrap" >
+    						<trim:TSNew id="orderDate" value="#{rel.act.effectiveTime.TS}" dateStyle="short" style="width: 90px;" />
+    					</td>
+    					<td style="width:15%;" >
+    						<h:selectOneMenu id="episodicity" style="width: 100px;">
+      							<f:selectItems value="#{trim.valueSets['episodicity']}" />
+      						</h:selectOneMenu>
+    					</td>
+    					<td style="width:15%;">
+    						<h:selectOneMenu id="severity" style="width: 120px;">
+          						<f:selectItems value="#{trim.valueSets['severity']}" />
+          					</h:selectOneMenu>
+    					</td>
+    					<td style="width:10%;">
+    						<h:selectOneMenu id="course" style="width: 70px;">
+          						<f:selectItems value="#{trim.valueSets['course']}" />
+          					</h:selectOneMenu>
+    					</td>
+    					<td style="width:15%;" >
+    						<h:selectOneMenu id="onset" style="width: 100px;">
+          						<f:selectItems value="#{trim.valueSets['onset']}" />
+          					</h:selectOneMenu>
+    					</td>
+						<td style="width:7%;" nowrap="nowrap">
+     						<span style="float: left;">
+								<img onclick="saveDiagRel('#{menu.element}','diagnosisDiv','dxContent','','#{menu.elementLabel}')" src="../images/save.gif" alt="Save" style="cursor:pointer;" title="Save" height="22" width="22">
+      							</img>
+     						</span>
+		     				<span style="float: right;">
+		      					<img onclick="cancelTpfRel('#{menu.element}','diagnosisDiv','dxContent','');" src="../images/undo.gif" alt="Cancel" style="cursor:pointer;" title="Cancel" height="22" width="22">
+		      					</img>
+		      				</span>
             </td>
           </tr>
+				</tbody>		
         </table>		    
-				<wiz:group title="Date of diagnosis">
-					<trim:TS id="effectiveTime#{rel.sequenceNumber}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" />
-				</wiz:group>
-				<wiz:group title="Additional Details" >
-					<wiz:yesno id="dxDetails#{rel.sequenceNumber}">Add?</wiz:yesno>
-					<wiz:group title="Episodicity" visible="$('#{menu.elementLabel}:dxDetails#{rel.sequenceNumber}').isTrue();">
-						<trim:valueSetMenu id="episodicity#{rel.sequenceNumber}" slot="#{rel.act.relationship['episodicity'].act.observation.value}"/>
-					</wiz:group>
-					<wiz:group title="Severity" visible="$('#{menu.elementLabel}:dxDetails#{rel.sequenceNumber}').isTrue();">
-						<trim:CE id="severity#{rel.sequenceNumber}" valueSet="severity" value="#{rel.act.relationships[1].act.observation.value}" layout="pageDirection" />
-					</wiz:group>
-					<wiz:group title="Course" visible="$('#{menu.elementLabel}:dxDetails#{rel.sequenceNumber}').isTrue();">
-						<trim:CE id="course#{rel.sequenceNumber}" valueSet="course" value="#{rel.act.relationships[2].act.observation.value}"/>
-					</wiz:group>
-					<wiz:group title="Onset" visible="$('#{menu.elementLabel}:dxDetails#{rel.sequenceNumber}').isTrue();">
-						<trim:CE id="onset#{rel.sequenceNumber}" valueSet="onset" value="#{rel.act.relationships[3].act.observation.value}" layout="pageDirection" />
-					</wiz:group>
-				</wiz:group>
-			</wiz:group>
-		</wiz:body>
-		<wiz:help>
-			<h1>Diagnosis</h1>
-			<p>TBD</p>
-		</wiz:help>
-	</wiz:step>
 </ui:composition>
-
 </body>
 </html>

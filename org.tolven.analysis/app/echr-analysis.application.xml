@@ -4,6 +4,7 @@
 	<extends path="echr">
 		<placeholder name="cohort" title="Cohort" page="/five/cohort.xhtml" heading="/five/cohortLink.xhtml">
 			<field name="name" internal="string01" />
+			<field name="changeType" internal="string08" />
 			<field name="effectiveTime" internal="date01">
 				<from>#{act.effectiveTime.TS.date}</from>
 				<from>#{act.effectiveTime.IVLTS.low.date}</from>
@@ -70,6 +71,9 @@
 			<list name="all" title="All Cohorts" page="/five/list.xhtml" visible="true" drilldown="echr:cohort">
 				<column name="Name" internal="string01" reference="true" width="25.0">
 					<from>#{cohort.name}</from>
+				</column>
+				<column name="ChangeType" internal="string08" visible="false" width="25.0">
+					<from>#{cohort.changeType}</from>
 				</column>
 			</list>
 		</menu>

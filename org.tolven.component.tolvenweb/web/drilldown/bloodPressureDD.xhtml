@@ -18,10 +18,10 @@
 			<h:panelGrid columns="2" >
 				<h:outputText value="#{msg.DateOfObservation}: "/>
 				<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
-				<h:outputText value="#{trim.trim.act.relationships[0].act.observation.value.label.value}"/>
-				<trim:PQ id="sys" value="#{trim.trim.act.relationships[0].act.observation.value}" readonly="true"/>
-				<h:outputText value="#{trim.trim.act.relationships[1].act.observation.value.label.value}"/>
-				<trim:PQ id="dia" value="#{trim.trim.act.relationships[1].act.observation.value}" readonly="true"/>
+				<h:outputText value="#{trim.trim.act.relationship['systolic'].act.observation.value.label.value}"/>
+				<h:outputText id="sys" value="#{trim.trim.act.relationship['systolic'].act.observation.value.ST.value}" readonly="true"/>
+				<h:outputText value="#{trim.trim.act.relationship['diastolic'].act.observation.value.label.value}"/>
+				<h:outputText id="dia" value="#{trim.trim.act.relationship['diastolic'].act.observation.value.ST.value}" readonly="true"/>
 			</h:panelGrid>
 		</wiz:body>
 	</ui:composition>

@@ -12,7 +12,7 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id: SessionResourceBundleFactory.java 915 2011-05-18 05:32:10Z joe.isaac $
+ * @version $Id: SessionResourceBundleFactory.java 1009 2011-05-18 22:37:37Z joe.isaac $
  */
 package org.tolven.locale;
 
@@ -42,8 +42,7 @@ public class SessionResourceBundleFactory {
             AccountUser accountUser = (AccountUser) request.getAttribute("accountUser");
             if (accountUser != null) {
                 String accountType = accountUser.getAccount().getAccountType().getKnownType();
-                TolvenResourceBundle appBundle = 
-                	new TolvenResourceBundle(ResourceBundleHelper.getAppBundleName(accountType), locale);
+                TolvenResourceBundle appBundle = new TolvenResourceBundle(ResourceBundleHelper.getAppBundleName(accountType), locale);
                 if (appBundle != null) {
                     parentBundles.add(appBundle);
                 }

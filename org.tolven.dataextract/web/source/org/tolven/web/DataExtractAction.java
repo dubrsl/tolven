@@ -22,6 +22,7 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.naming.NamingException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.tolven.app.DataExtractLocal;
@@ -38,7 +39,7 @@ public class DataExtractAction extends TolvenAction {
 
     private String menuPath;
 
-    @EJB
+    @EJB(name = "tolven/DataExtractBean/local")
     private DataExtractLocal dataExtractBean;
 
     private List<SelectItem> availableColumnHeadings;
@@ -67,7 +68,7 @@ public class DataExtractAction extends TolvenAction {
 
     public DataQueryResults getDQ() {
     	if (dq==null) {
-        	dq = dataExtractBean.setupQuery(getMenuPath(), getAccountUser());
+        	dq = getDataExtractBean().setupQuery(getMenuPath(), getAccountUser());
     	}
     	return dq;
     }
@@ -110,7 +111,7 @@ public class DataExtractAction extends TolvenAction {
     public List<SelectItem> getAvailableSQLDialects() {
         if (availableSQLDialects == null) {
             availableSQLDialects = new ArrayList<SelectItem>();
-            for (String heading : dataExtractBean.getSQLDialects()) {
+            for (String heading : getDataExtractBean().getSQLDialects()) {
                 availableSQLDialects.add(new SelectItem(heading, heading));
             }
         }
@@ -137,6 +138,17 @@ public class DataExtractAction extends TolvenAction {
         this.tableName = tableName;
     }
 
+    public DataExtractLocal getDataExtractBean() {
+        if (dataExtractBean == null) {
+            try {
+                dataExtractBean = (DataExtractLocal) getContext().lookup("tolven/DataExtractBean/local");
+            } catch (NamingException ex) {
+                throw new RuntimeException("Failed to look up tolven/DataExtractBean/local", ex);
+            }
+        }
+        return dataExtractBean;
+    }
+
     public AccountUser getAccountUser() {
         return getActivationBean().findAccountUser(getSessionAccountUserId());
     }
@@ -144,14 +156,14 @@ public class DataExtractAction extends TolvenAction {
     public void xmlDataExtract() throws IOException {
         FacesContext faces = FacesContext.getCurrentInstance();
         Writer out = header(faces, "text/xml", "data-extract.xml");
-        dataExtractBean.streamResultsXML(out, dq);
+        getDataExtractBean().streamResultsXML(out, dq);
         faces.responseComplete();
     }
 
     public void csvDataExtract() throws IOException {
         FacesContext faces = FacesContext.getCurrentInstance();
         Writer out = header(faces, "text/csv", "data-extract.csv");
-        dataExtractBean.streamResultsCSV(out, dq);
+        getDataExtractBean().streamResultsCSV(out, dq);
         faces.responseComplete();
     }
 
@@ -163,7 +175,7 @@ public class DataExtractAction extends TolvenAction {
             return;
         }
         Writer out = header(faces, "text/sql", "data-extract.sql");
-        dataExtractBean.streamResultsSQL(out, dq, getTableName(), getSelectedSQLDialect());
+        getDataExtractBean().streamResultsSQL(out, dq, getTableName(), getSelectedSQLDialect());
         faces.responseComplete();
     }
 

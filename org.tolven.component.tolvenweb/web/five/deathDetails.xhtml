@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:wiz="http://www.tolven.org/jsf/wizard"
+	xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+<title>Record Patient Death</title>
+</head>
+<body>
+	<ui:composition>
+	 <div id="#{menu.element}:menu" class="popupgrid"/>
+			<div id="#{menu.element}-pane" class="paneBody">
+			<script language="JavaScript" type="text/javascript">
+		   // <![CDATA[
+		      if($("deathCause").innerHTML == null || document.getElementById("deathCause").innerHTML == "" || document.getElementById("deathCause").innerHTML == "undefined") {
+		      	instantiate('obs/evn/deathDetails','#{menu.element}','#{menu.drilldownItem.path}');
+		      }
+		   // ]]>   
+		  </script>	
+		  </div>
+		<c:if test="#{top.accountType=='echr'}">
+  			<wiz:group title="Death Details">
+				<div>
+					<table width="30%">
+						<tr>
+							<td width="10%">
+								<h:outputLabel value="Date of Death"/>
+							</td>
+							<td width="10%">
+								<h:outputText id="deathDate" value="#{menu.drilldownItem.deathDate}"/>
+							</td>
+						</tr>
+	  			<tr>
+							<td width="10%">
+								<h:outputLabel value="Cause of Death"/>
+							</td>
+							<td width="10%">
+								<h:outputText id="deathCause" style="width:90%;" value="#{menu.drilldownItem.deathCause}" />
+							</td>
+	  			</tr>
+					</table>
+				</div>
+			</wiz:group>
+		</c:if>
+		<a href="#" onclick="instantiate('obs/evn/deathDetails','#{menu.element}','#{menu.drilldownItem.path}')">#{msg.Update}</a>
+	</ui:composition>
+</body>
+</html>

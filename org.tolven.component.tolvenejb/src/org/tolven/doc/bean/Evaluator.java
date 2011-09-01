@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenContext;
+import javax.interceptor.Interceptors;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
@@ -32,6 +33,7 @@ import org.tolven.app.JMSMessageProcessorLocal;
 import org.tolven.app.MessageProcessorLocal;
 import org.tolven.core.TolvenPropertiesLocal;
 import org.tolven.doc.TolvenMessageSchedulerLocal;
+import org.tolven.session.QueueSessionInterceptor;
 import org.tolven.util.ExceptionFormatter;
 /**
  * Evaluate new documents that have arrived. We do this after a document is safely stored and in the
@@ -41,6 +43,7 @@ import org.tolven.util.ExceptionFormatter;
  */
 
 @MessageDriven
+@Interceptors({ QueueSessionInterceptor.class })
 public class Evaluator implements MessageListener {
     
 	protected @EJB TolvenPropertiesLocal propertyBean;

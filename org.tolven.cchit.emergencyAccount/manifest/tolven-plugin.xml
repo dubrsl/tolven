@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.cchit.emergencyAccount" version="2.1.0" vendor="Tolven">
+	<requires>
+	     <import plugin-id="org.tolven.component.tolvenejb" />
+	     <import plugin-id="org.tolven.component.faces" />
+	     <import plugin-id="org.tolven.component.tolvenweb" />
+		 <import plugin-id="org.tolven.component.application" />
+		 <import plugin-id="org.tolven.component.tolvenlocale_en" />
+		 <import plugin-id="org.tolven.component.war" />
+		 <import plugin-id="org.tolven.component.tolvenear" />
+		 <import plugin-id="org.tolven.cchit.component.ejb" />		 
+
+	</requires>
+	<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+		<parameter id="dir" value="app" />
+	</extension>
+	<extension id="trims" plugin-id="org.tolven.component.application" point-id="trims">
+		<parameter id="dir" value="app/trim" />
+	</extension>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point> 
+	<!-- Add locale extensions -->
+	<extension id="application-locale" plugin-id="org.tolven.component.tolvenlocale_en" point-id="application-locale">
+	    <parameter id="application-name" value="echr" />
+	    <parameter id="properties-file" value="locale/emergency-locale.properties" />
+	</extension>
+	<extension id="application-global-locale"  plugin-id="org.tolven.component.tolvenlocale_en" point-id="application-global-locale">
+	    <parameter id="application-name" value="echr" />
+	    <parameter id="properties-file" value="locale/emergency-global-locale.properties" />
+	</extension>
+	<!-- Add EJB classes -->
+	<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+	</extension>
+	<!-- Web pages extensions -->
+
+	<extension id="drilldownDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="drilldownDirectory">
+	     <parameter id="sourceDirectory" value="web/drilldown" />
+	</extension>
+	<extension id="fiveDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="fiveDirectory">
+	     <parameter id="sourceDirectory" value="web/five" />
+	</extension>
+
+	<extension id="manageDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="manageDirectory">
+	     <parameter id="sourceDirectory" value="web/manage" />
+	</extension>
+
+	<extension id="scriptsDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="scriptsDirectory">
+	     <parameter id="sourceDirectory" value="web/scripts" />
+	</extension>
+	<extension id="wizardDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="wizardDirectory">
+	     <parameter id="sourceDirectory" value="web/wizard" />
+	</extension>
+	<extension id="vestibuleDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="vestibuleDirectory">
+	     <parameter id="sourceDirectory" value="web/vestibule" />
+	</extension>
+	<extension id="myJavaScript" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/emergencyAccountScripts.txt" />
+	</extension>
+	<extension id="EmergencyAccountAjaxServlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="EmergencyAccountAjaxServlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.EmergencyAccountAjaxServlet" />
+		<parameter id="web-resource-name" value="Protected Area" />
+		<parameter id="transaction" value="true" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="EmergencyAccountAjaxServletMapping" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="EmergencyAccountAjaxServlet" />
+  		<parameter id="url-pattern" value="*.ajaxea" />
+  		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+ 	</extension>
+	<extension id="warclasses" plugin-id="org.tolven.component.war" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>	
+</plugin>

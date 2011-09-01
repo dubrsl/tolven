@@ -200,6 +200,8 @@ public interface MenuRemote {
 	 */
 	public void persistMenuStructure( MenuStructure ms );
 	
+        //CCHIR merge
+        public void persistResource( MSResource resource);
 	/**
 	 * Store a resource into the database. The resource primary key is Account+name
 	 * @param resource

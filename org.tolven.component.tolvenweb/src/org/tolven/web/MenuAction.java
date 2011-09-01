@@ -1114,7 +1114,8 @@ public class MenuAction extends TolvenAction {
 					}
 				}
 			}
-			setVisible( menuToEdit.getVisible());
+			if(menuToEdit != null)
+				setVisible( menuToEdit.getVisible());
 		}
 		return menuToEdit;
 	}
@@ -1137,9 +1138,11 @@ public class MenuAction extends TolvenAction {
 		if(null == visibleChildren){
 			getMenuToEdit();
 			visibleChildren = new ArrayList<MenuStructure>();
-			for(MenuStructure child : menuToEdit.getSortedChildren()){
-				if(child.getSequence() >= 0 ){
-					visibleChildren.add( child);
+			if(menuToEdit != null){
+				for(MenuStructure child : menuToEdit.getSortedChildren()){
+					if(child.getSequence() >= 0 ){
+						visibleChildren.add( child);
+					}
 				}
 			}
 		}
@@ -1155,7 +1158,7 @@ public class MenuAction extends TolvenAction {
 		if(menuAllowRoles == null){
 			getMenuToEdit();
 			menuAllowRoles = new ArrayList<String>();
-			if(null != menuToEdit.getAllowRoles()){
+			if(menuToEdit != null && null != menuToEdit.getAllowRoles()){
 				String ar[] = menuToEdit.getAllowRoles().split(",");
 				for(String role : ar){
 					menuAllowRoles.add( role);

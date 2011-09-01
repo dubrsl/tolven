@@ -37,18 +37,18 @@ import org.tolven.doc.DocumentLocal;
 import org.tolven.doc.XMLLocal;
 import org.tolven.doc.entity.DocBase;
 import org.tolven.doc.entity.DocXML;
+import org.tolven.gatekeeper.RSGatekeeperClientLocal;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.security.DocProtectionLocal;
-import org.tolven.security.hash.SSHA;
 import org.tolven.security.key.UserPrivateKey;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.trim.ActRelationship;
 import org.tolven.trim.ValueSet;
 import org.tolven.trim.ex.ActEx;
 import org.tolven.trim.ex.ActRelationshipsMap;
 import org.tolven.trim.ex.TRIMException;
 import org.tolven.trim.ex.TrimEx;
-import org.tolven.trim.ex.TrimFactory;
 import org.tolven.web.security.GeneralSecurityFilter;
 
 public class InstantiateServlet extends HttpServlet {
@@ -74,6 +74,9 @@ public class InstantiateServlet extends HttpServlet {
     @EJB
     private TolvenPropertiesLocal propertyBean;
     
+    @EJB
+    private RSGatekeeperClientLocal rsGatekeeperClientBean;
+    
     public DocumentLocal getDocBean() {
         return docBean;
     }
@@ -98,11 +101,11 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    resp.setHeader("Cache-Control", "no-cache");
 	    Writer writer=resp.getWriter();
     	Date now = (Date) req.getAttribute("tolvenNow");
-    	TrimFactory trimFactory = new TrimFactory(); 
 	    //	    writer.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
 
         String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-        PrivateKey userPrivateKey = TolvenSSO.getInstance().getUserPrivateKey(req, keyAlgorithm);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        PrivateKey userPrivateKey = sessionWrapper.getUserPrivateKey(keyAlgorithm);
 	    if (uri.endsWith("sendCCR.ajaxi")) {
 	    	long menuDataId = Long.parseLong(req.getParameter("patientId"));
 	    	long otherAccount = Long.parseLong(req.getParameter("otherAccountId"));
@@ -200,6 +203,23 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 //			writer.close();
 			return;
 	    }
+	    /**
+	     * To nullify the current trim;
+	     * @author vineetha
+	     * Added on: 1/18/2011 
+	     */
+		
+	    else if (uri.endsWith("wizNullify.ajaxi")) {
+			String element = req.getParameter( "element");
+			String action = req.getParameter( "action");
+			MenuData md  = menuBean.findMenuDataItem(activeAccountUser.getAccount().getId(), element);
+			MenuData mdNew = creatorBean.createTRIMEvent(md, activeAccountUser, action, now,userPrivateKey);
+			creatorBean.submit(mdNew, activeAccountUser,userPrivateKey);
+	    	writer.write(md.getPath());
+    		req.setAttribute("activeWriter", writer);
+    		return;
+    	}
+
 
 	    // Instantiation request from browser
 	    else if (uri.endsWith("instantiate.ajaxi")) {
@@ -462,20 +482,24 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
                 DocBase document = getDocBean().findDocument(md.getDocumentId());
                 try {
                     String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-                     PrivateKey userPrivateKey = TolvenSSO.getInstance().getUserPrivateKey(request, keyAlgorithm);
+                    TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+                     PrivateKey userPrivateKey = sessionWrapper.getUserPrivateKey(keyAlgorithm);
                     if (document.isSignatureRequired()) {
                         String password = request.getParameter("password");
                         if (password == null || password.trim().length() == 0) {
                             response.sendError(599, "To sign a document, the signer's password is required");
                             return;
                         }
-                        String sshaUserPassword = TolvenSSO.getInstance().getTolvenPersonString("userPassword", request);
-                        boolean passwordVerfied = SSHA.checkPassword(password.toCharArray(), sshaUserPassword);
+
+                        String principal = (String) sessionWrapper.getPrincipal();
+                        String realm = sessionWrapper.getRealm();
+                        boolean passwordVerfied = rsGatekeeperClientBean.verifyUserPassword(principal, realm, password.toCharArray());
+
                         if (!passwordVerfied) {
                             response.sendError(599, "Incorrect password");
                             return;
                         }
-                        getDocProtectionBean().sign(document, activeAccountUser, userPrivateKey, TolvenSSO.getInstance().getUserX509Certificate(request));
+                        getDocProtectionBean().sign(document, activeAccountUser, userPrivateKey, sessionWrapper.getUserX509Certificate());
                     }
                     creatorBean.submitNow(md, activeAccountUser, now, userPrivateKey);
                     // Confirm by returning the path of the element we submitted. (path==element)

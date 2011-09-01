@@ -15,6 +15,9 @@ public class TolvenReplaceRegExp {
     }
 
     public static void replaceregexp(File file, String match, String replace, String flags, boolean byline) {
+        if(!file.exists()) {
+            throw new RuntimeException(file.getPath() + " does not exist");
+        }
         Project project = new Project();
         project.init();
         ReplaceRegExp replaceRegExp = new ReplaceRegExp();

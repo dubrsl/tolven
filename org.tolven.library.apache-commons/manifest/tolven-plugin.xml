@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.library.apache-commons" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jarDir" default-value="jars" />
+	</extension-point>
+	<extension-point id="lib" extension-multiplicity="none">
+		<parameter-def id="commons-beanutils" default-value="jars/commons-beanutils-1.7.jar" multiplicity="none-or-one" />
+		<parameter-def id="commons-cli" default-value="jars/commons-cli-1.2.jar" multiplicity="none-or-one" />
+		<parameter-def id="commons-codec" default-value="jars/commons-codec-1.3.jar" multiplicity="none-or-one" />
+		<parameter-def id="commons-digester" default-value="jars/commons-digester-1.7.jar" multiplicity="none-or-one" />
+		<parameter-def id="commons-fileupload" default-value="jars/commons-fileupload-1.2.1.jar" multiplicity="none-or-one"/>
+		<parameter-def id="commons-io" default-value="jars/commons-io-1.4.jar" multiplicity="none-or-one"/>
+		<parameter-def id="commons-javaflow" default-value="jars/commons-javaflow-20060411.jar" multiplicity="none-or-one"/>
+		<parameter-def id="commons-lang" default-value="jars/commons-lang-2.4.jar" multiplicity="none-or-one"/>
+		<parameter-def id="commons-math" default-value="jars/commons-math-1.2.jar" />
+	</extension-point>
+	
+	<extension-point id="commons-beanutils" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-beanutils-1.7.jar" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="commons-cli" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-cli-1.2.jar" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="commons-codec" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-codec-1.3.jar" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="commons-digester" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-digester-1.7.jar" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="commons-fileupload" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-fileupload-1.2.1.jar" multiplicity="none-or-one"/>
+	</extension-point>
+	<extension-point id="commons-io" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-io-1.4.jar" multiplicity="none-or-one"/>
+	</extension-point>
+	<extension-point id="commons-javaflow" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-javaflow-20060411.jar" multiplicity="none-or-one"/>
+	</extension-point>
+	<extension-point id="commons-lang" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-lang-2.4.jar" multiplicity="none-or-one"/>
+	</extension-point>
+	<extension-point id="commons-math" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="jars/commons-beanutils-1.7.jar" multiplicity="none-or-one" />
+	</extension-point>
+</plugin>

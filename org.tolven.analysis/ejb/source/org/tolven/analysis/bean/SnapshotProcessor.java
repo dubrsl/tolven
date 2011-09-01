@@ -12,7 +12,7 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id$
+ * @version $Id: SnapshotProcessor.java 486 2011-03-29 00:51:12Z kanag.kuttiannan $
  */
 package org.tolven.analysis.bean;
 
@@ -29,6 +29,7 @@ import org.tolven.analysis.AnalysisEvent;
 import org.tolven.analysis.SnapshotLocal;
 import org.tolven.analysis.SnapshotProcessorLocal;
 import org.tolven.app.AppEvalAdaptor;
+import org.tolven.app.JMSMessageProcessorLocal;
 import org.tolven.app.MenuLocal;
 import org.tolven.app.el.TrimExpressionEvaluator;
 import org.tolven.doc.TolvenMessageSchedulerLocal;
@@ -38,8 +39,8 @@ import org.tolven.doctype.DocumentType;
 import org.tolven.el.ExpressionEvaluator;
 
 @Stateless
-@Local(SnapshotProcessorLocal.class)
-public class SnapshotProcessor extends AppEvalAdaptor implements SnapshotProcessorLocal {
+@Local( { SnapshotProcessorLocal.class, JMSMessageProcessorLocal.class })
+public class SnapshotProcessor extends AppEvalAdaptor implements JMSMessageProcessorLocal, SnapshotProcessorLocal {
 
     public static final String ANALYSIS_NS = "org.tolven.analysis";
 

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!-- 
+	***********   Do NOT Modify this file for your project.  ****************
+	***********  This file will build a build script for you **************
+	***********         and put it into your project         **************
+	Manage plugins in repositoryLocal and perform general TPF commands from Ant.
+	See http://wiki.tolven.org/doc/index.php/Developer%27s_Guide for details.
+	This script depends on the presence of <config-dir>/devLib containing
+	jars that were extracted at the command line (one time) using:
+	tpf -plugin org.tolven.developmentmgr -devLib
+	-->
+<project basedir="." default="configPhase1" name="_managePlugins">
+	
+	<import file="../plugin/buildCommon.xml"/>
+	<condition property="plugin.directory.ok">
+		<available file="../plugin/managePlugins.xml"/>
+	</condition>
+
+	<fail unless="plugin.directory.ok">
+		This ant build file (${ant.file}) must be in a directory named plugin
+	</fail>
+	
+	<!--
+	Get plugins from local and library repositories
+	This is the same as tpf -getPlugins (or repositoryInit) at the command line
+	-->
+	<target name="getPlugins" description="Get plugins from local and central repositories">
+		<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="tpf.classpath">
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+			<arg line="-getPlugins" />
+		</java>
+	</target>
+	<!-- Generate repositoryRuntime plugins list-->	
+	<target name="repositoryRuntimeList" description="repositoryRuntime List">
+		<property name="src" value="${tolvenConfig.location}/repositoryRuntime/plugins.xml" />
+		<property name="dest" value="build/repositoryRuntime.html" />
+		<pathconvert property="dest">
+			<fileset dir="." file="build/repositoryRuntime.html"/>
+		</pathconvert>
+		
+		<xslt 	
+			style="transform/pluginSummary.xslt"
+			classpath="${xslt.processor.classpath}"
+			in="${src}" 
+			out="${dest}">
+			<param name="repositoryRuntime" expression="${tolvenConfig.location}/repositoryRuntime/plugins.xml"/>
+		</xslt>
+		<echo>Result can be found at ${dest}</echo>		
+	</target>
+	
+	<!--
+	Install devlib 
+	-->
+	<target name="updateDevLib" depends="getPlugins" description="Create or update Tolven developer library">
+		<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="tpf.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+			<arg line="-plugin org.tolven.developmentmgr -devLib" />
+		</java>
+	</target>
+	
+	<!--
+	Run configPhase1 which assmbles the tolven.ear file and deploys it to the application server.
+	This is the same as configPhase1 at the command line
+	-->
+	<target name="configPhase1" depends="updateDevLib" description="Assemble and deploy tolven.ear">
+		<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+			<arg line="-plugin org.tolven.assembler" />
+		</java>
+		<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+			<arg line="-plugin org.tolven.deploy" />
+		</java>
+	</target>
+
+	<!--
+	Run configPhase3 which uploads the primary application configuration files to the running application server.
+	This is the same as configPhase3 at the command line
+	-->
+	<target name="configPhase3" depends="updateDevLib" description="Upload Application metadata">
+		<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+<!--			<jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,address=8788,server=y,suspend=y" /> 
+-->
+			<arg line="-plugin org.tolven.component.application" />
+		</java>
+	</target>
+	<target name="loadRxNorm" depends="updateDevLib" description="Upload RxNorm (medications)">
+		<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+<!--			<jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,address=8788,server=y,suspend=y" /> 
+-->
+			<arg line="-plugin org.tolven.deploy.rxnorm" />
+		</java>
+	</target>
+	
+	<target name="getPrototype">
+		<property name="srcRepos" value="http://tolven.org/download"/>
+		<input addProperty="srcId" >Enter the name of the plugin to use from ${srcRepos}</input>
+		<mkdir dir="build/temp"/>
+		<delete dir="build/temp"/>
+		<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+			<arg line="-plugin org.tolven.deploy.plugincopy -src ${srcRepos} -srcId ${srcId} -dest build/temp -destId ${pluginId}" />
+		</java>
+	</target>
+	
+	<!--
+	Download the contents of an existing Tolven plugin prototype
+	-->
+	<target name="addPrototypeToProject" depends="addPluginStructure,getPrototype" description="Add a prototype to a plugin project">
+		<unzip dest="../${pluginFolder}/prototype" src="build/temp/${pluginId}-0.0.1.zip">
+		</unzip>
+		<echo>The prototype has been loaded to a folder in your project so that you may harvest it's contents for use in your project.</echo>
+		<echo>You can delete the prototype folder when you are done with it.</echo>
+		<echo>Refresh your package explorer if using Eclipse.</echo>
+	</target>
+	
+	<target name="getPluginFolder" unless="pluginFolder">
+		<input addProperty="pluginFolder" defaultvalue="myplugin">Enter name of the project folder</input>
+	</target>
+	<target name="getPluginId" unless="pluginId">
+		<input addProperty="pluginId" defaultvalue="com.myorg.myplugin">Enter ID of the new plugin</input>
+	</target>
+	
+	<!-- Prompt for the pluginId and plugin folder -->
+	<target name="getPluginProperties" depends="getPluginFolder,getPluginId"/>
+	
+	<!--
+	Create a build file. The pluginFolder property determines where the file is created.
+	PluginId property must contain the plugin id.
+	The source template is named buildTemplate and will be renamed to build.xml.
+	-->
+	<target name="createBuildFile" depends="getPluginProperties" description="Create build file for a plugin">
+		<copy file="buildTemplate.xml" toFile="../${pluginFolder}/build.xml" overwrite="false">
+		    <filterset>
+		      <filter token="pluginId" value="${pluginId}"/>
+		    </filterset>
+		  </copy>
+	</target>
+	
+	<!--
+	Create initial files from template directory 
+	The pluginFolder property determines where the file is created.
+	PluginId property must contain the plugin id.
+	template param property specified the template directory
+	Filtering is done to replace @pluginId@ with the pluginId
+	-->
+	<target name="addTemplateFiles" if="addFiles-${template}">
+		<copy toDir="../${pluginFolder}" overwrite="false">
+			<fileset dir="${template}"/>
+		    <filterset>
+		      <filter token="pluginId" value="${pluginId}"/>
+		    </filterset>
+		  </copy>
+	</target>
+	
+	<!--
+	Setup a project with plugin stuff. A combination of creating a manifest and a build file.
+	We'll add a license file if the plugin belongs to Tolven
+	We don't step on any files already there, though.
+	-->
+	<target name="addPluginStructure" description="Add plugin stuff to a project" depends="getPluginProperties">
+		<property name="addFiles-template" value="X"/>
+		<antcall target="addTemplateFiles">
+			<param name="template" value="template"/>
+		</antcall>
+		<condition property="addFiles-template2">
+		  <matches pattern="org\.tolven\..*" string="${pluginId}"/>
+		</condition>
+		<antcall target="addTemplateFiles">
+			<param name="template" value="template2"/>
+		</antcall>
+		<antcall target="createBuildFile"/>
+		<xmlproperty file="../${pluginFolder}/manifest/tolven-plugin.xml"/>
+		<echo>Plugin project ${pluginFolder} created for plugin ${plugin(id)} version ${plugin(version)}</echo>
+		<echo>If using Eclipse, be sure to refresh your workspace</echo>
+	</target>
+	
+	<!-- 
+	GenMetadata for repositoryLocal
+	 -->
+	 <target name="updateLocalMetaData" description="Update plugins metadata in repositoryLocal">
+ 		<java fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+			<arg line="-genMetadata -plugins ${respositoryLocal.location}/plugins -liburl file:///${respositoryLocal.location} -outdir ${respositoryLocal.location}" />
+		</java>
+	 </target>
+	 
+	<!--
+	Delete all plugins from the local repository. This is called automatically when publishing from
+	the local repository. However, if you decide not to publish, this command clears the local repository.
+	deploy-to-local-repository in a plugin will add that plugin back to the local repository in
+	preparation for testing (configphase1/3) and/or publication.
+	-->
+	<target name="deleteAllFromLocal" description="Delete all plugins in ${respositoryLocal.location}">
+		<delete>
+			<fileset dir="${respositoryLocal.location}/plugins"/>
+		</delete>
+		<antcall target="updateLocalMetaData"/>
+	</target>
+	<target name="updateCatalogMetadata" >
+ 		<java fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+			<arg line="-genMetadata -plugins ${respositoryLocal.location}/plugins -merge -liburl ${repository.location} -outdir build/publish" />
+		</java>
+	</target>	
+
+	<!-- 
+	Publish Local Plugin(s) to catalog:
+	1. Upload plugins from tolven-config/repositoryLocal to public repository (catalog)
+	2. GenerateMetadata (merge) to add this/these plugins to that plugins metadata file
+	3. Upload the new metadata plugin.xml to the public repository
+	4. Delete the plugin(s) from repositoryLocal
+	5. GenMetadata on repositoryLocal to reflect the removed plugins in the metadata plugin 
+	This target uses the FTP task which requires commmons-net-2.0.jar on the classpath
+	-->
+	<target name="publish" description="Publish plugin(s) from repositoryLocal ">
+		<input addProperty="repository.location" >Resulting download location for uploaded plugins</input>
+		<input addProperty="ftp.server" >Plugins will be *moved* from repositoryLocal to this FTP server</input>
+		<input addProperty="ftp.remoteDir">FTP remote directory</input>
+		<input addProperty="ftp.user" >FTP user</input>
+		<echo>The following plugins will be uploaded to ${ftp.server}/${ftp.remoteDir}:</echo>
+		<pathconvert>
+			<fileset dir="${respositoryLocal.location}/plugins"/>
+		</pathconvert>
+		<input addProperty="ftp.password">FTP password</input>
+		<antcall target="updateLocalMetaData"/>
+		<ftp server="${ftp.server}"
+		       remotedir="${ftp.remoteDir}/plugins"
+		       userid="${ftp.user}"
+			   passive="yes"
+		       password="${ftp.password}"
+		 	   verbose="yes"
+		       depends="yes">
+		    <fileset dir="${respositoryLocal.location}/plugins"/>
+		</ftp>
+		<antcall target="updateCatalogMetadata"/>
+		<ftp server="${ftp.server}"
+		       remotedir="${ftp.remoteDir}"
+		       userid="${ftp.user}"
+			   passive="yes"
+		       password="${ftp.password}"
+		 	   verbose="yes"
+		       depends="yes">
+		    <fileset dir="build/publish">
+		    	<include name="plugins.xml"/>
+		    </fileset>
+		</ftp>
+		<echo>The following files have been deleted from the local repository and uploaded to the library for availably at ${repository.location}</echo>
+		<pathconvert>
+			<fileset dir="${respositoryLocal.location}/plugins"/>
+		</pathconvert>
+		<antcall target="deleteAllFromLocal"/>
+	</target>	
+</project>

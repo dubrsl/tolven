@@ -32,13 +32,12 @@ import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPMessage;
 
 import com.sun.identity.agents.common.IHttpServletRequestHelper;
-import com.sun.identity.agents.filter.AmAgentFilter;
 import com.sun.identity.agents.filter.AmAgentServletRequest;
 import com.sun.identity.agents.filter.AmFilterResult;
 import com.sun.identity.agents.filter.OpenSSOHttpServletResponse;
 import com.sun.identity.wss.security.handler.SOAPRequestHandler;
 
-public class TolvenWSAgentFilter extends AmAgentFilter {
+public class TolvenWSAgentFilter extends TolvenAgentFilter {
 
     protected void sendData(HttpServletResponse response, AmFilterResult result) throws IOException {
         PrintWriter out = null;

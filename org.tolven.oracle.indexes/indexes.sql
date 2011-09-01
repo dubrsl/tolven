@@ -1,0 +1,18 @@
+CREATE INDEX tolven.md_index1 ON tolven.menudata (menustructure_id);
+CREATE INDEX tolven.md_index2 ON tolven.menudata (menustructure_id, parent01_id);
+CREATE INDEX tolven.md_index3 ON tolven.menudata (trimheader_id);
+CREATE INDEX tolven.md_index4 ON tolven.menudata (account_id, documentid);
+CREATE INDEX tolven.md_index5 ON tolven.menudata (account_id, path);
+CREATE INDEX tolven.md_index6 ON tolven.menudata (account_id, reference_id);
+CREATE UNIQUE INDEX tolven.mdv_index1 ON tolven.menudataversion (account_id, element);
+CREATE INDEX tolven.mdw_index1 ON tolven.menudataword (menudata_id);
+CREATE INDEX tolven.mdw_index2 ON tolven.menudataword (menustructure_id, word, menudata_id);
+CREATE UNIQUE INDEX tolven.ph_index2 ON tolven.placeholderid (account_id, menustrucuture_id, root, extension);
+CREATE INDEX tolven.ms_index1 ON tolven.accountmenustructure (account_id, path);
+CREATE INDEX tolven.mcol_index1 ON tolven.mscolumn (menustructure_id, account_id);
+CREATE INDEX tolven.ums_index1 ON tolven.usermenustructure (accountuser_id, underlyingms_id);
+CREATE INDEX tolven.au_index1 ON tolven.accountuser (user_id);
+CREATE INDEX tolven.user_index1 ON tolven.tolvenuser (ldapuid, status, id);
+CREATE INDEX tolven.doc_index1 ON tolven.docbase (account_id, xmlname);
+CREATE INDEX tolven.th_index1 ON tolven.trimheader (name,status);
+CREATE INDEX tolven.th_index2 ON tolven.trimheader (status, id);

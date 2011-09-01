@@ -19,12 +19,42 @@
 					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
 				</wiz:group>
 				<wiz:group title="#{menu.menuDataItem.string01}"> 
-					<h:panelGrid columns="2" >
-						<h:outputText value="#{trim.trim.act.relationship['systolic'].act.observation.value.label.value}"/>
-						<trim:PQ id="sys" value="#{trim.trim.act.relationship['systolic'].act.observation.value}" readonly="false"/>
-						<h:outputText value="#{trim.trim.act.relationship['diastolic'].act.observation.value.label.value}"/>
-						<trim:PQ id="dia" value="#{trim.trim.act.relationship['diastolic'].act.observation.value}" readonly="false"/>
-					</h:panelGrid>
+						<table>
+							<tr>
+								<td>
+									<h:outputText
+										value="#{trim.trim.act.relationship['systolic'].act.observation.value.label.value}" />
+								</td>
+								<td>
+									<h:inputText id="sys"
+										value="#{trim.trim.act.relationship['systolic'].act.observation.value.ST.value}"
+										onkeyup="validateOnlyNumbers('#{menu.elementLabel}','sys','SystolicErrorMsg')">
+										<f:validator validatorId="numberAndDecimalValidator" />
+										<f:attribute name="attributeFactor" value="number" />
+									</h:inputText>
+								</td>
+							</tr>
+							<tr>
+								<span id="SystolicErrorMsg" style="color: red;"></span>
+							</tr>
+							<tr>
+								<td>
+									<h:outputText
+										value="#{trim.trim.act.relationship['diastolic'].act.observation.value.label.value}" />
+								</td>
+								<td>
+									<h:inputText id="dia"
+										value="#{trim.trim.act.relationship['diastolic'].act.observation.value.ST.value}"
+										onkeyup="validateOnlyNumbers('#{menu.elementLabel}','dia','DiastolicErrorMsg')">
+										<f:validator validatorId="numberAndDecimalValidator" />
+										<f:attribute name="attributeFactor" value="number" />
+									</h:inputText>
+								</td>
+							</tr>
+							<tr>
+								<span id="DiastolicErrorMsg" style="color: red;"></span>
+							</tr>
+						</table>
 				</wiz:group>
 			</wiz:body>
 			<wiz:help>

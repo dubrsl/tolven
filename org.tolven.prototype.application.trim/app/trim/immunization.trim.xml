@@ -75,5 +75,17 @@
 				<id/>
 			</role>
 		</participation>
+		<relationship name="LOTnumber" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>LOT Number</ST>
+				</title>
+				<observation>
+					<value>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
 	</act>
 </trim>

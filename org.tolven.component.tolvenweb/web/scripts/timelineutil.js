@@ -265,7 +265,7 @@ function updateEvents(eventPainter,request,reloadEvetns){
 		return;
     }else{
        if(request.responseText == 'refreshTimeline'){
-			rePaintTimeline(eventPainter);
+			rePaintTimeline(eventPainter,eventPainter._band._bandInfo.etherPainter._unit);
 	   		return;
 	   }
 	   try{
@@ -283,6 +283,8 @@ function updateEvents(eventPainter,request,reloadEvetns){
 	  // if(eventPainter._index > (eventPainter._timeline.getBandCount()/2) || resizeTimeline){
 		   resizeTimelineDiv(eventPainter._timeline);
 	//	}
+		eventSource.maxDate = eventData.maxDate;
+		eventSource.minDate = eventData.minDate;
    	}catch(e){alert("Loading band data failed for path "+eventPainter._path + e);}
    }  
 }

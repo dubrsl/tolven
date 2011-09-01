@@ -14,7 +14,7 @@
 	<h:form id="bpForm">
 		<fieldset><legend>Properties</legend>
 			<fieldset><legend>Target</legend>
-				<h:inputText id="bpTarget" value="#{cohortAnalysis.properties[bpTargetProperty]}" size="1"
+				<h:inputText id="bpTarget" value="#{top.accountUser.account.property[bpTargetProperty]}" size="1"
 					required="true"
 					validatorMessage=" Target must be a number from 0 to 100 inclusive"
 					requiredMessage=" A Target is required">
@@ -26,7 +26,7 @@
 			<fieldset><legend>Threshold</legend>
 				<h:panelGrid columns="3" cellpadding="5">
 					<h:outputText value=" High Systolic: " />
-					<h:inputText id="bpSystolicHigh" value="#{cohortAnalysis.properties[highSystolicProperty]}" size="1"
+					<h:inputText id="bpSystolicHigh" value="#{top.accountUser.account.property[highSystolicProperty]}" size="1"
 						required="true"
 						validatorMessage=" High Systolic must be a number greater than or equal to 0"
 						requiredMessage=" High Systolic value is required">
@@ -34,7 +34,7 @@
 					</h:inputText>
 					<h:outputText value=" mmHg" readonly="true" />
 					<h:outputText value="High Diastolic: " />
-					<h:inputText id="bpDiastolicHigh" value="#{cohortAnalysis.properties[highDiastolicProperty]}" size="1"
+					<h:inputText id="bpDiastolicHigh" value="#{top.accountUser.account.property[highDiastolicProperty]}" size="1"
 						required="true"
 						validatorMessage=" High Diastolic must be a number greater than or equal to 0"
 						requiredMessage=" High Diastolic value is required">

@@ -19,8 +19,8 @@ package org.tolven.restful.client;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Properties;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -28,6 +28,13 @@ import javax.net.ssl.SSLSession;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+
+import org.tolven.naming.DefaultTolvenContext;
+import org.tolven.naming.JndiManager;
+import org.tolven.naming.TolvenContext;
+import org.tolven.naming.WebContext;
+import org.tolven.plugin.TolvenPlugin;
+import org.tolven.plugin.repository.bean.PluginPropertyDetail;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -39,66 +46,48 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class RESTfulClient {
 
-    public static final String TOLVEN_REALM = "tolven";
-    public static final String COOKIE_NAME_FOR_TOKEN = "iPlanetDirectoryPro";
+    class DefaultHostnameVerifier implements HostnameVerifier {
 
+        @Override
+        public boolean verify(String hostName, SSLSession session) {
+            //          System.out.println("Verify Host: " + hostName + " for peer host: " + session.getPeerHost() + " Port: " + session.getPeerPort());
+            //          System.out.println("Cert: " + session.getPeerCertificates()[0]);
+            return true;
+        }
+
+    }
+
+    public static final String TOLVEN_REALM = "tolven";
     private String userId;
     private char[] password;
     private String realm;
-    private String authRestfulURL;
-    private String appRestfulURL;
-    private String token;
-    private Cookie tokenCookie;
 
+    private Cookie tokenCookie;
     private WebResource authWebResource;
+
     private WebResource appWebResource;
 
     private static Client client;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public char[] getPassword() {
-        return password;
-    }
-
-    public void setPassword(char[] password) {
-        this.password = password;
-    }
-
-    public String getRealm() {
-        if (realm == null) {
-            realm = System.getenv("TOLVEN_REALM");
-            if (realm == null) {
-                realm = TOLVEN_REALM;
-            }
-        }
-        return realm;
-    }
-
-    public void setRealm(String realm) {
-        this.realm = realm;
-    }
-
-    public String getAuthRestfulURL() {
-        return authRestfulURL;
-    }
-
-    public void setAuthRestfulURL(String authRestfulURL) {
-        this.authRestfulURL = authRestfulURL;
-    }
+    private TolvenContext tolvenContext;
 
     public String getAppRestfulURL() {
-        return appRestfulURL;
+        WebContext webContext = (WebContext) getTolvenContext().getWebContext("tolvenapi");
+        return webContext.getRsInterface();
     }
 
-    public void setAppRestfulURL(String appRestfulURL) {
-        this.appRestfulURL = appRestfulURL;
+    public WebResource getAppWebResource() {
+        if (appWebResource == null) {
+            setAppWebResource(getClient().resource(getAppRestfulURL()));
+        }
+        return appWebResource;
+    }
+
+    public WebResource getAuthWebResource() {
+        if (authWebResource == null) {
+            setAuthWebResource(getClient().resource(getGatekeeperRsInterface()));
+        }
+        return authWebResource;
     }
 
     protected Client getClient() {
@@ -115,80 +104,18 @@ public class RESTfulClient {
         return client;
     }
 
-    public void init(String userId, char[] password, String appRestfulURL, String authRestful) {
-        this.userId = userId;
-        this.password = password;
-        this.appRestfulURL = appRestfulURL;
-        this.authRestfulURL = authRestful;
+    private String getGatekeeperRsInterface() {
+        WebContext webContext = (WebContext) getTolvenContext().getRsGatekeeperWebContext();
+        return webContext.getRsInterface();
     }
 
-    public void init(RESTfulClient client) {
-        setUserId(client.getUserId());
-        setPassword(client.getPassword());
-        setToken(client.getToken());
-        setTokenCookie(client.getTokenCookie());
-        setAuthWebResource(client.getAuthWebResource());
-        setAppWebResource(client.getAppWebResource());
+    private String getGatekeeperRsLoginPath() {
+        WebContext webContext = (WebContext) getTolvenContext().getRsGatekeeperWebContext();
+        return webContext.getRsLoginPath();
     }
 
-    public WebResource getAuthWebResource() {
-        if (authWebResource == null) {
-            setAuthWebResource(getClient().resource(getAuthRestfulURL()));
-        }
-        return authWebResource;
-    }
-
-    public void setAuthWebResource(WebResource authWebResource) {
-        this.authWebResource = authWebResource;
-    }
-
-    public WebResource getAppWebResource() {
-        if (appWebResource == null) {
-            setAppWebResource(getClient().resource(getAppRestfulURL()));
-        }
-        return appWebResource;
-    }
-
-    public void setAppWebResource(WebResource appWebResource) {
-        this.appWebResource = appWebResource;
-    }
-
-    public WebResource getRoot() {
-        return getAppWebResource();
-    }
-
-    protected Cookie getTokenCookie() {
-        if (tokenCookie == null) {
-            try {
-                tokenCookie = new Cookie(COOKIE_NAME_FOR_TOKEN, URLEncoder.encode(getToken(), "UTF-8"));
-            } catch (UnsupportedEncodingException ex) {
-                throw new RuntimeException("Could not encode token", ex);
-            }
-            setTokenCookie(tokenCookie);
-        }
-        return tokenCookie;
-    }
-
-    public void setTokenCookie(Cookie tokenCookie) {
-        this.tokenCookie = tokenCookie;
-    }
-
-    protected String getToken() {
-        if (token == null) {
-            WebResource login = getAuthWebResource().path("authenticate");
-            MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-            if (getUserId() == null) {
-                throw new RuntimeException("A userId must be supplied to get an SSO token");
-            }
-            formData.add("username", getUserId());
-            if (getPassword() == null) {
-                throw new RuntimeException("A password must be supplied to get an SSO token");
-            }
-            formData.add("password", new String(getPassword()));
-            ClientResponse response = login.queryParam("uri", "realm=" + getRealm()).type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class, formData);
-            if (response.getStatus() != 200) {
-                throw new RuntimeException("Could not authenticate " + getUserId() + " in realm: " + getRealm() + ". Error " + response.getStatus());
-            }
+    protected Cookie getOpenAMCookie(ClientResponse response) {
+        try {
             String result = response.getEntity(String.class);
             String tokenString = null;
             try {
@@ -211,20 +138,94 @@ public class RESTfulClient {
                 throw new RuntimeException("Could not read the string response, ex");
             }
             if (tokenString == null) {
-                throw new RuntimeException("No token found for: " + getUserId());
+                throw new RuntimeException(getSSOCookieName() + " not found");
             }
             String tokenid = tokenString.substring(1 + tokenString.indexOf('='));
-            if (isTokenValid(tokenid)) {
-                setToken(tokenid);
-            } else {
-                throw new RuntimeException("token invalid for: " + getUserId());
-            }
+            return new Cookie(getSSOCookieName(), URLEncoder.encode(tokenid, "UTF-8"));
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not encode token", ex);
         }
-        return token;
     }
 
-    protected void setToken(String token) {
-        this.token = token;
+    public char[] getPassword() {
+        return password;
+    }
+
+    public String getRealm() {
+        if (realm == null) {
+            realm = System.getenv("TOLVEN_REALM");
+            if (realm == null) {
+                realm = TOLVEN_REALM;
+            }
+        }
+        return realm;
+    }
+
+    public WebResource getRoot() {
+        return getAppWebResource();
+    }
+
+    protected Cookie getShiroCookie(ClientResponse response) {
+        for (Cookie cookie : response.getCookies()) {
+            if (cookie.getName().equals(getSSOCookieName())) {
+                return cookie;
+            }
+        }
+        throw new RuntimeException(getSSOCookieName() + " not found");
+    }
+
+    public String getSSOCookieName() {
+        return getTolvenContext().getSsoCookieName();
+    }
+
+    protected Cookie getTokenCookie() {
+        if (tokenCookie == null) {
+            tokenCookie = login();
+            setTokenCookie(tokenCookie);
+        }
+        return tokenCookie;
+    }
+
+    private TolvenContext getTolvenContext() {
+        if (tolvenContext == null) {
+            PluginPropertyDetail tolvenContextPluginProperty = TolvenPlugin.getPluginProperty(JndiManager.TOLVEN_ID_REF);
+            Properties jndiProperties = new Properties();
+            for (PluginPropertyDetail property : tolvenContextPluginProperty.getProperty()) {
+                jndiProperties.setProperty(property.getName(), property.getValue());
+            }
+            DefaultTolvenContext defaultTolvenContext = new DefaultTolvenContext();
+            defaultTolvenContext.setMapping(jndiProperties);
+            tolvenContext = defaultTolvenContext;
+        }
+        return tolvenContext;
+    }
+
+    public String getTolvenSecurityCode() {
+        //TODO This needs to be part of the TolvenContext
+        return "shiro";
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void init(RESTfulClient client) {
+        setUserId(client.getUserId());
+        setPassword(client.getPassword());
+        setTokenCookie(client.getTokenCookie());
+        setAuthWebResource(client.getAuthWebResource());
+        setAppWebResource(client.getAppWebResource());
+    }
+
+    public void init(String userId, char[] password) {
+        this.userId = userId;
+        this.password = password;
+    }
+
+    @Deprecated
+    public void init(String userId, char[] password, String appRestfulURL, String authRestful) {
+        this.userId = userId;
+        this.password = password;
     }
 
     protected boolean isTokenValid(String tokenid) {
@@ -239,22 +240,60 @@ public class RESTfulClient {
         return (resultString.startsWith("boolean=true"));
     }
 
-    public ClientResponse logout() {
-        WebResource login = getAuthWebResource().path("logout");
+    protected Cookie login() {
+        WebResource webResource = getAuthWebResource().path(getGatekeeperRsLoginPath());
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("subjectid", getToken());
+        formData.add("uid", getUserId());
+        formData.add("password", new String(getPassword()));
+        formData.add("realm", new String(getRealm()));
+        ClientResponse response = webResource.post(ClientResponse.class, formData);
+        if (response.getStatus() != 200) {
+            throw new RuntimeException("Error: " + response.getStatus() + " " + userId + " " + webResource.getURI() + " " + response.getEntity(String.class));
+        }
+        if ("shiro".equals(getTolvenSecurityCode())) {
+            return getShiroCookie(response);
+        } else {
+            return getOpenAMCookie(response);
+        }
+    }
+
+    public ClientResponse logout() {
+        WebResource login = getAuthWebResource().path("authenticate/logout");
+        MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
+        formData.add("subjectid", getTokenCookie().getValue());
         ClientResponse response = login.type(MediaType.APPLICATION_FORM_URLENCODED).post(ClientResponse.class, formData);
         return response;
     }
 
-    class DefaultHostnameVerifier implements HostnameVerifier {
+    @Deprecated
+    public void setAppRestfulURL(String appRestfulURL) {
+    }
 
-        @Override
-        public boolean verify(String hostName, SSLSession session) {
-            //          System.out.println("Verify Host: " + hostName + " for peer host: " + session.getPeerHost() + " Port: " + session.getPeerPort());
-            //          System.out.println("Cert: " + session.getPeerCertificates()[0]);
-            return true;
-        }
+    public void setAppWebResource(WebResource appWebResource) {
+        this.appWebResource = appWebResource;
+    }
 
+    @Deprecated
+    public void setAuthRestfulURL(String authRestfulURL) {
+    }
+
+    public void setAuthWebResource(WebResource authWebResource) {
+        this.authWebResource = authWebResource;
+    }
+
+    public void setPassword(char[] password) {
+        this.password = password;
+    }
+
+    public void setRealm(String realm) {
+        this.realm = realm;
+    }
+
+    public void setTokenCookie(Cookie tokenCookie) {
+        this.tokenCookie = tokenCookie;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

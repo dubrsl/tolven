@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenContext;
+import javax.interceptor.Interceptors;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
@@ -13,9 +14,11 @@ import javax.jms.ObjectMessage;
 import org.apache.log4j.Logger;
 import org.tolven.app.ActivateNewTrimHeadersMessage;
 import org.tolven.app.TrimLocal;
+import org.tolven.session.QueueSessionInterceptor;
 
 
 @MessageDriven
+@Interceptors({ QueueSessionInterceptor.class })
 public class AdminAppMDB implements MessageListener {
 	@EJB TrimLocal trimBean;
 

@@ -18,7 +18,11 @@ import java.security.GeneralSecurityException;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
-import javax.persistence.*;
+
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Lob;
+import javax.persistence.MappedSuperclass;
 
 /**
  * This class encapsulates an x509EncodedKeySpec for a Public Key
@@ -78,12 +82,16 @@ public abstract class TolvenPublicKey implements Serializable {
      * @return
      * @throws GeneralSecurityException
      */
-    public PublicKey getPublicKey() throws GeneralSecurityException {
+    public PublicKey getPublicKey() {
         if (publicKey == null) {
             if (x509EncodedKeySpec == null || algorithm == null)
                 throw new IllegalStateException(NOT_INITIALIZED);
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(x509EncodedKeySpec);
-            publicKey = KeyFactory.getInstance(algorithm).generatePublic(keySpec);
+            try {
+                publicKey = KeyFactory.getInstance(algorithm).generatePublic(keySpec);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not PublicKey with algorithm: " + algorithm, ex);
+            }
         }
         return publicKey;
     }

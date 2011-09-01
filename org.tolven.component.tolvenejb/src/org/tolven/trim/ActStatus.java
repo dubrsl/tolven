@@ -24,6 +24,9 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;enumeration value="held"/>
  *     &lt;enumeration value="new"/>
  *     &lt;enumeration value="suspended"/>
+ *     &lt;enumeration value="resolved"/>
+ *     &lt;enumeration value="inactive"/>
+ *     &lt;enumeration value="edit"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
@@ -52,7 +55,18 @@ public enum ActStatus {
     @XmlEnumValue("new")
     NEW("new"),
     @XmlEnumValue("suspended")
-    SUSPENDED("suspended");
+    SUSPENDED("suspended"),
+    @XmlEnumValue("resolved")
+    RESOLVED("resolved"),
+    @XmlEnumValue("inactive")
+    INACTIVE("inactive"),
+    @XmlEnumValue("edit")
+    EDIT("edit");
+	/** CCHIT merge
+	 * Created a new transition EDIT
+	 * @author Vineetha
+	 * added on 1/21/2011
+	 */	
     private final String value;
 
     ActStatus(String v) {

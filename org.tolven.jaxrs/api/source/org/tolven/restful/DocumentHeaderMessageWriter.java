@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -36,6 +37,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.tolven.app.DataExtractLocal;
 import org.tolven.doc.DocumentLocal;
 import org.tolven.doc.entity.DocAttachment;
 import org.tolven.doc.entity.DocBase;
@@ -80,7 +82,7 @@ public class DocumentHeaderMessageWriter implements MessageBodyWriter<DocBase> {
             xmlStreamWriter.writeAttribute("authorId", Long.toString(doc.getAuthor().getId()));
             xmlStreamWriter.writeAttribute("signatureRequired", doc.isSignatureRequired() ? "true" : "false");
             xmlStreamWriter.writeStartElement("attachments");
-            List<DocAttachment> attachments = docBean.findAttachments(doc);
+            List<DocAttachment> attachments = getDocBean().findAttachments(doc);
             for (DocAttachment attachment : attachments) {
                 xmlStreamWriter.writeStartElement("attachment");
                 xmlStreamWriter.writeAttribute("id", Long.toString(attachment.getId()));
@@ -103,5 +105,18 @@ public class DocumentHeaderMessageWriter implements MessageBodyWriter<DocBase> {
                 }
             }
         }
+    }
+	
+	protected DocumentLocal getDocBean() {
+        if (docBean == null) {
+            String jndiName = "java:app/tolvenEJB/DocumentBean!org.tolven.doc.DocumentLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                docBean = (DocumentLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return docBean;
     }
 }

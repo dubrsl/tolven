@@ -2,8 +2,8 @@
 <project basedir="." name="build-openam">
 
 	<property file="build-v2-override.properties" />
-	<property file="${password.properties.file}" />
 	<property file="build-v2.properties" />
+	<property file="${password.properties.file}" />
 	<property file="${database.properties.file}" />
 
 	<target name="props">
@@ -46,7 +46,33 @@
 		</condition>
 	</target>
 
-	<target name="install-requirements" depends="props" description="install-requirements">
+	<target name="requirements-guide" if="INCLUDE.OPENAM">
+		<basename property="tomcat.zip.full-basename" file="${tomcat.zip}" />
+		<guide-echo args="Download Apache Tomcat: ${v2.plugin.download.site}/${tomcat.zip.full-basename}" />
+		<dirname property="tomcat.zip.dirname" file="${tomcat.zip}" />
+		<guide-echo args="Place ${tomcat.zip.full-basename} in: ${tomcat.zip.dirname}" />
+		<guide-echo args="" />
+
+		<basename property="openam.config.plugin.full-basename" file="${openam.config.plugin}" />
+		<guide-echo args="Download Tolven OpenAM Plugin: ${v2.plugin.download.site}/${openam.config.plugin.full-basename}" />
+		<dirname property="openam.config.plugin.dirname" file="${openam.config.plugin}" />
+		<guide-echo args="Place ${openam.config.plugin.full-basename} in: ${openam.config.plugin.dirname}" />
+		<guide-echo args="" />
+
+		<basename property="openam.zip.full-basename" file="${openam.zip}" />
+		<guide-echo args="Download OpenAM Software: ${v2.plugin.download.site}/${openam.zip.full-basename}" />
+		<dirname property="openam.zip.dirname" file="${openam.zip}" />
+		<guide-echo args="Place ${openam.zip.full-basename} in: ${openam.zip.dirname}" />
+		<guide-echo args="" />
+
+		<basename property="policyagent.zip.full-basename" file="${policyagent.zip}" />
+		<guide-echo args="Download Policy Agent: ${v2.plugin.download.site}/${policyagent.zip.full-basename}" />
+		<dirname property="policyagent.zip.dirname" file="${policyagent.zip}" />
+		<guide-echo args="Place ${policyagent.zip.full-basename} in: ${policyagent.zip.dirname}" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="install-requirements" depends="props" description="install-requirements" if="INCLUDE.OPENAM">
 		<fail message="tomcat.zip must be set" unless="tomcat.zip" />
 		<fail message="openam.zip must be set" unless="openam.zip" />
 		<fail message="${tomcat.zip} does not exist">
@@ -98,7 +124,7 @@
 		<echo message="${ant.project.name} to uninstall, remove: ${tomcat.dir}, ${config.opends.dir}" />
 	</target>
 
-	<target name="install" depends="props" description="install">
+	<target name="install" depends="props" description="install" if="INCLUDE.OPENAM">
 		<guide-echo args="Install OpenAM" />
 		<guide-echo args="" />
 
@@ -217,10 +243,12 @@
 		<replace token="${tolven.opends.domain.default}:${tolven.opends.ldap.port.default}" value="${tolven.opends.domain}:${tolven.opends.ldap.port}" dir="${tomcat.dir}/openam-conf" />
 		<guide-echo args="sun-idrepo-ldapv3-config-ldap-server=${tolven.opends.domain.default}:${tolven.opends.ldap.port.default}" />
 		<replace token="sun-idrepo-ldapv3-config-ldap-server=${tolven.opends.domain.default}:${tolven.opends.ldap.port.default}" value="sun-idrepo-ldapv3-config-ldap-server=${tolven.opends.domain}:${tolven.opends.ldap.port}" dir="${tomcat.dir}/openam-conf" />
+		<guide-echo args="sun-idrepo-ldapv3-config-authid=${tolven.opends.manager.default}" />
+		<replace token="sun-idrepo-ldapv3-config-authid=${tolven.opends.manager.default}" value="sun-idrepo-ldapv3-config-authid=${tolven.opends.manager}" dir="${tomcat.dir}/openam-conf" />
 		<guide-echo args="sun-idrepo-ldapv3-config-authpw=${manager.password.default}" />
 		<replace token="sun-idrepo-ldapv3-config-authpw=${manager.password.default}" value="sun-idrepo-ldapv3-config-authpw=${manager.password}" dir="${tomcat.dir}/openam-conf" />
-		<guide-echo args="${tolven.opends.basedn.default}" />
-		<replace token="${tolven.opends.basedn.default}" value="${tolven.opends.basedn}" dir="${tomcat.dir}/openam-conf" />
+		<guide-echo args="${tolven.opends.baseDN.default}" />
+		<replace token="${tolven.opends.baseDN.default}" value="${tolven.opends.baseDN}" dir="${tomcat.dir}/openam-conf" />
 		<guide-echo args="-*-${cookie.domain.default}:${tolven.https.port.default}" />
 		<replace token="-*-${cookie.domain.default}:${tolven.https.port.default}" value="-*-${cookie.domain}:${tolven.https.port}" dir="${tomcat.dir}/openam-conf" />
 		<guide-echo args="${tolven.domain.default}:${tolven.https.port.default}" />
@@ -256,7 +284,7 @@
 
 	</target>
 
-	<target name="start-openam" depends="props" description="start-openam">
+	<target name="start-openam" depends="props">
 		<echo message="Starting openam..." />
 		<exec executable="${tolvenstartup}" dir="${tomcat.dir}/bin" spawn="true" />
 		<echo message="Waiting for openam to start..." />
@@ -264,7 +292,13 @@
 		<waitfor maxwait="600" maxwaitunit="second" timeoutproperty="timed.out">
 			<available file="${Login.jsp}" />
 		</waitfor>
-		<fail message="openam appears to not have started since the following file was not found: ${Login.jsp}" if="timed.out" />
+		<fail message="openam appears to not have started since the following file was not found: ${Login.jsp}">
+			<condition>
+				<not>
+					<available file="${Login.jsp}" />
+				</not>
+			</condition>
+		</fail>
 		<echo message="Done" />
 	</target>
 
@@ -298,9 +332,7 @@
 		<exec executable="${ssoadm-setup}" dir="${ssoadmintools.dir}" failonerror="true">
 			<arg line="-p ${config.opends.dir}/openam -d ${ssoadmintools.dir}/debug -l ${ssoadmintools.dir}/log" />
 		</exec>
-		<exec executable="${ldapmodify}" dir="${tolven.opends.dir.bin}" failonerror="true">
-			<arg line="-h ${config.opends.domain} -p ${config.opends.ldap.port} -D &quot;${config.opends.rootdn}&quot; -w ${config.opends.rootdn.password} -X --filename ${tolven.opends.dir}/tolven-delegation.ldif" />
-		</exec>
+		<antcall target="import-tolven-delegation-ldif" />
 		<guide-echo args="Add the following java options to ${ssoadm}" />
 		<guide-echo args="-Djavax.net.ssl.keyStore=${openam.keystore}" />
 		<guide-echo args="-Djavax.net.ssl.keyStorePassword=${openam.keystore.password}" />
@@ -329,15 +361,21 @@
 		<guide-echo args="" />
 	</target>
 
-	<target name="stop-openam" depends="props" description="config-openam">
+	<target name="stop-openam" depends="props">
 		<echo message="Stopping openam..." />
 		<exec executable="${tolvenshutdown}" dir="${tomcat.dir}/bin" failonerror="true" />
 	</target>
 
-	<target name="create-j2ee-agent" depends="props" description="create-j2ee-agent">
+	<target name="create-j2ee-agent" depends="props">
 		<ssoadm args="create-agent -e / -b ${j2ee.agent} -t J2EEAgent -a &quot;userpassword=${agentauth.password}&quot; -s https://${sso.domain}:8444/openam -g https://${tolven.domain}:8443/agentapp" />
 		<ssoadm args="update-agent -e / -b ${j2ee.agent} -D ../../../openam-conf/tolven-agent-attributes.txt" />
 		<ssoadm args="update-agent -e / -b agentAuth -a ${sso.agentsAllowedToReadAttribute}" />
+	</target>
+
+	<target name="import-tolven-delegation-ldif" if="INCLUDE.TOLVEN.OPENDS">
+		<exec executable="${ldapmodify}" dir="${tolven.opends.dir.bin}" failonerror="true">
+			<arg line="-h ${config.opends.domain} -p ${config.opends.ldap.port} -D &quot;${config.opends.rootdn}&quot; -w ${config.opends.rootdn.password} -X --filename ${tolven.opends.dir}/tolven-delegation.ldif" />
+		</exec>
 	</target>
 
 	<macrodef name="tpf">

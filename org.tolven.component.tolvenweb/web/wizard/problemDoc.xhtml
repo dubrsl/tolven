@@ -13,60 +13,53 @@
 
 <body>
     <ui:composition>
-      <div id="popupGrids">
-  			<div id="#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}" class="popupgrid"/>          
-      </div>
- 
- 		<wiz:step title="Add #{trim.trim.act.relationship['type'].act.title.ST.value}s" >
+    	
+    	<h:inputHidden id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" converter="javax.faces.Boolean"/>			
+		<h:inputHidden id="deleteUnsavedProblems"  value="#{trim.trim.act.computes[1].property['enabled']}" converter="javax.faces.Boolean"/>			
+		<h:inputText  id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
+		<h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
+		<h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />
+      	<div id="popupGrids">
+  			<div id="#{top.accountType}:#{trim.fieldMap['formType']}" class="popupgrid"/>          
+      	</div>
+      	<!-- <script> //SriniK: Why do we need this?
+			// <![CDATA[
+	  				 if ($("#{menu.elementLabel}submitButton")!=null) {
+	                           $("#{menu.elementLabel}submitButton").observe('click', function() {
+	                        	   submitUniqueTrim("#{trim.trim.name}", "#{menu.element}");
+	                           });
+	                 } 
+	  			// ]]>               
+		</script> -->
+		<wiz:step title="#{trim.trim.act.relationship['type'].act.title.ST.value}" >
 			<wiz:body>
-         	 <h:inputText id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" style="display: none;" converter="javax.faces.Boolean"/>			
-			 <h:inputText  id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
-			 <h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
-			 <h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />										
-				<wiz:group title="Problem">
-		          <table>
-		            <c:if test="#{not empty trim.trim.act.relationshipsList['entry']}">
-		              <tr>
-		                <th><u>Name</u></th>
-		                <th></th>
-		              </tr>
-		            </c:if>
-		            <c:forEach items="#{trim.trim.act.relationshipsList['entry']}" var="item" varStatus="itemIndex">
-		              <tr>
-		                <td>#{item.act.observation.value.CE.displayName}</td>
-		                <td><a href="javascript:removeTemplate('#{menu.elementLabel}',#{item.sequenceNumber})">delete</a> </td>
-		              </tr>              
-		            </c:forEach>
-		          </table>
-					<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'addTemplate', '#{menu.elementLabel}', 0)">Add #{trim.trim.act.relationship['type'].act.title.ST.value}</a>
-				</wiz:group>
-				<wiz:group title="Onset of Symptoms">
-					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
-				</wiz:group>
-				<c:if test="#{top.accountType=='echr'}">
-					<ui:include src="author.xhtml"/>
-				</c:if>
-				<wiz:group title="Additional Details" >
-					<wiz:yesno id="probDetails">Add?</wiz:yesno>
-					<wiz:group title="Episodicity" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
-						<trim:valueSetMenu id="episodicity" slot="#{trim.trim.act.relationship['episodicity'].act.observation.value}"/>
-					</wiz:group>
-					<wiz:group title="Severity" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
-						<trim:CE id="severity" valueSet="severity" value="#{trim.trim.act.relationships[1].act.observation.value}" layout="pageDirection" />
-					</wiz:group>
-					<wiz:group title="Course" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
-						<trim:CE id="course" valueSet="course" value="#{trim.trim.act.relationships[2].act.observation.value}"/>
-					</wiz:group>
-					<wiz:group title="Onset" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
-						<trim:CE id="onset" valueSet="onset" value="#{trim.trim.act.relationships[3].act.observation.value}" layout="pageDirection" />
-					</wiz:group>
-				</wiz:group>
+				<div id="problemDocclinDiv" class="widget" style="width: 100%; margin-left: 0px;">
+					<ui:include src="problemDocclinContent.xhtml"/> 
+				</div>
+					<div id="msgProblemDocclin" style="color: red;font-weight: bold;text-align: center;" ></div>
+					<c:if test="#{trim.trim.act.relationship['submitStatus'].act.observation.values[1].ST.value != 'Yes'}">
+						<div id="addNewOrderAnchor">
+							<a onclick="openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'addTemplate', '#{menu.elementLabel}', 0)" href="#">Add Problems</a>
+						</div>						
+					</c:if>
 				
-			</wiz:body>			
+			</wiz:body>
 		</wiz:step>
-    
-	</ui:composition>
-
-	
+		<wiz:step title="#{trim.trim.act.relationship['encounter'].act.title.ST.value}" >
+			<wiz:body>
+				<table>
+					<tr>
+						<td><h:outputText value="#{trim.trim.act.relationship['encounter'].act.observation.value.label.value} :"/></td>
+						<td>
+							<h:selectOneMenu id="orderAssociateEncounters" value="#{trim.trim.act.relationship['encounter'].act.observation.value.CE}">
+								<f:selectItems value="#{trim.valueSets['encounter']}"/>
+				            	<f:converter converterId="DataTypeConverter"/>
+				        	</h:selectOneMenu>
+				        </td>
+				    </tr>
+				 </table>
+			</wiz:body>
+		</wiz:step> 	
+	</ui:composition>	
 </body>
 </html>

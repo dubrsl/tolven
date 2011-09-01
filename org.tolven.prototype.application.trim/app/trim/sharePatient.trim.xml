@@ -135,7 +135,7 @@
 									<ST>#{patient.homeAddr2}</ST>
 								</part>
 								<part>
-									<label>City</label>
+									<label>County</label>
 									<type>CTY</type>
 									<ST>#{patient.homeCity}</ST>
 								</part>
@@ -217,7 +217,7 @@
 				<value xsi:type="xs:string">#{patient.path}</value>
 			</property>
 			<property name="path">
-		        <value xsi:type="xs:string">:patient:procedures:pxList</value>		        
+		        <value xsi:type="xs:string">:patient:procedures:active</value>
 			</property>
 			<property name="template">
 		        <value xsi:type="xs:string">share/procedure</value>
@@ -247,8 +247,8 @@
 		        <value xsi:type="xs:string">procedure</value>
 			</property>
 		</compute>
-		<compute forTrimName="docclin/evn/sharePatient">
-			<type>org.tolven.process.Harvest</type>
+		<compute forTrimName="docclin/evn/sharePatient" forAccountType="ephr">
+			<type>org.tolven.process.ShareHarvest</type>
 			<property name="enabled">
 		        <value xsi:type="xs:boolean">false</value>
 			</property>
@@ -268,11 +268,144 @@
 		        <value xsi:type="xs:string">medication</value>
 			</property>
 		</compute>
+		
+		<compute forTrimName="docclin/evn/sharePatient" forAccountType="echr">
+			<type>org.tolven.process.ShareHarvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Medications</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:medications:active</value>
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/medication</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">medication</value>
+			</property>
+		</compute>		 
+		<compute forTrimName="docclin/evn/sharePatient">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Administered Medication</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:medications:administration</value>
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/administration</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">administration</value>
+			</property>
+		</compute>
+		
+		<!-- For Sharing Pharmacy -->
+		<compute forTrimName="docclin/evn/sharePatient">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Preferred Pharmacy</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:pharmacies:all</value>
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/pharmacy</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">pharmacy</value>
+			</property>
+		</compute> 
+		
+		<!-- For eCHR Problems -->
+		<compute forTrimName="docclin/evn/sharePatient" forAccountType="echr">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Problems</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:problems:active</value> 
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/problem</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">problem</value>
+			</property>
+		</compute>
+		
+		<!-- For ePHR Problems -->
+		<compute forTrimName="docclin/evn/sharePatient" forAccountType="ephr">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Problems</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:problems:current</value> 
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/problem</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">problem</value>
+			</property>
+		</compute>
+		
+		<!-- For Lab Results -->
+		<compute forTrimName="docclin/evn/sharePatient">
+			<type>org.tolven.process.Harvest</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="title">
+		        <value xsi:type="xs:string">Lab Results</value>
+			</property>
+			<property name="pathContext">
+				<value xsi:type="xs:string">#{patient.path}</value>
+			</property>
+			<property name="path">
+		        <value xsi:type="xs:string">:patient:results:lab</value> 
+			</property>
+			<property name="template">
+		        <value xsi:type="xs:string">share/labresult</value>
+			</property>
+			<property name="relationship">
+		        <value xsi:type="xs:string">labresult</value>
+			</property>
+		</compute>
+		
 	</act>
     <field name="plans">
-        <value xsi:type="xs:boolean">true</value>
-    </field>
-    <field name="procedures">
         <value xsi:type="xs:boolean">true</value>
     </field>
     <field name="observations">

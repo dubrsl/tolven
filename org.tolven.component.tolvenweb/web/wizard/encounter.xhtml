@@ -13,19 +13,7 @@
 
 <body>
     <ui:composition>
-		<wiz:step title="#{msg.GettingStarted}" >
-			<wiz:body>
-				<p>#{trim.trim.act.title.ST.value}: <trim:transitionName act="#{trim.trim.act}"/></p>
-			</wiz:body>
-			<wiz:help>
-				<h1>Getting Started</h1>
-				<p>Help provides additional information about each page</p>
-				<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yuo can continue at any time later.
-				If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
-				Once submitted, you will not be able to Cancel the form.</p>
-			</wiz:help>
-		</wiz:step>
-		<wiz:step title="Encounter Details" >
+	<wiz:step title="Encounter Details" >
 			<wiz:body>
 			
 				<c:if test="#{trim.trim.act.effectiveTime.IVLTS!=null}">

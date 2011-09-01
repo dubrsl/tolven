@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.tolven.app.CCHITLocal;
 import org.tolven.app.MenuEventHandler;
 import org.tolven.app.MenuLocal;
 import org.tolven.app.bean.MenuPath;
@@ -44,6 +47,8 @@ public class GenericServlet extends HttpServlet {
     @EJB
     private ProviderLocal providerBean;
     
+    @EJB
+    private CCHITLocal cchitBean;
     protected void getProviderOptions(HttpServletRequest req, HttpServletResponse resp) {
         try {
             Writer writer=resp.getWriter();
@@ -163,6 +168,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
     		// Get path for the parent menu structure
 	    	String path = req.getParameter( "element" );
 	    	String rolename = req.getParameter("role");
+	    	String source = req.getParameter("source");
 	    	// get menu structure
 	    	AccountMenuStructure ams = menuBean.findAccountMenuStructure(activeAccountUser.getAccount().getId(), path );
 	    	
@@ -172,7 +178,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    	// get its preferred children
 	    	List<MenuStructure> children = menuBean.findSortedChildren(activeAccountUser, ams);
 	    	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
-	    	String title = tolvenResourceBundle.getString("UserPreferencesTitle");
+            String title = tolvenResourceBundle.getString("UserPreferencesTitle");
 	    	
 	    	// prepare xml
 	    	writer.write("<ajax-response>");
@@ -184,19 +190,51 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    		writer.write("</UserPreferencesHelp>");
 	    	}
 	    	
+	    	String conditions =  " md.string01 IS NOT NULL AND md.status='ACTIVE' AND md.account.id=" + activeAccountUser.getAccount().getId() + " AND md.path LIKE 'echr:patientListDefinition-%'";
+	    	Map<String, String> refIdMap = new HashMap<String, String>();
+	    	if ("pld".equals(source)) {  			
+	    		refIdMap = cchitBean.findReferenceIds(conditions);
+			}
+	    	
+	    	/**
+	    	 * Modified to set text value when there is no entry in app bundle.
+	    	 * added on 05/20/2010 by Valsaraj
+	    	 */
 	    	for( MenuStructure item : children ){
 	    		if(!"placeholder".equalsIgnoreCase(item.getRole()) && item.getSequence() > 0 ){
 	    			String checked = ("true".equalsIgnoreCase( item.getVisible()))? "true": "false";
+	    			String txt = StringEscapeUtils.escapeHtml(item.getLocaleText(tolvenResourceBundle));
+		    		String regExp = "^\\?{3}(.*)\\?{3}$";			    		
+		    		if (Pattern.compile(regExp).matcher(txt).matches()) {
+		    			txt = item.getText();
+		    		}			    		
+	    			if ("pld".equals(source)) {
+	    				if (! refIdMap.containsKey(txt.toLowerCase())) {
+	    					continue;
+	    				}
+	    				else {
+	    					writer.write("<element path=\"" + item.getPath() + "\" visible=\"" + checked + "\" reference=\"" + refIdMap.get(txt.toLowerCase()) + "\">");
+	    				}
+	    			}else {
 	    			writer.write("<element path=\"" + item.getPath() + "\" visible=\"" + checked + "\">");
 //		    		writer.write(item.getText());
-		             writer.write(StringEscapeUtils.escapeHtml(item.getLocaleText(tolvenResourceBundle))); 
+		             
+	    			}
+	    			writer.write(txt); 
 		    		writer.write("</element>");
+	    		
 	    		}
 	    	}
 	    	writer.write("<VisibilityColumnHeader>" + tolvenResourceBundle.getString("UserPreferencesVisibilityColumnHeader") + "</VisibilityColumnHeader>");
 	    	writer.write("<DefaultColumnHeader>" + tolvenResourceBundle.getString("UserPreferencesDefaultColumnHeader") + "</DefaultColumnHeader>");
 	    	writer.write("<MenuColumnHeader>" + tolvenResourceBundle.getString("UserPreferencesMenuColumnHeader") + "</MenuColumnHeader>");
-
+                /**
+	    	 * Modified to display new button 'Editor' to to display PatientList Designer page.
+	    	 * added on 04/05/2010 by Valsaraj
+	    	 */
+	    	if ("echr:patients".equals(path)) {
+	    		writer.write("<EditorButton>" + tolvenResourceBundle.getString("Editor") + "</EditorButton>");
+	    	}
 	    	writer.write("<DefaultButton>" + tolvenResourceBundle.getString("Default") + "</DefaultButton>");
 	    	writer.write("<SaveButton>" + tolvenResourceBundle.getString("Save") + "</SaveButton>");
 	    	writer.write("<CancelButton>" + tolvenResourceBundle.getString("Cancel") + "</CancelButton>");

@@ -17,11 +17,13 @@
 package org.tolven.queue.bean;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
@@ -35,6 +37,7 @@ import javax.jms.Session;
 import org.tolven.doc.RuleQueueLocal;
 import org.tolven.doc.bean.TolvenMessage;
 import org.tolven.doc.bean.TolvenMessageInfo;
+import org.tolven.key.QueueKeyLocal;
 
 @Stateless
 @Local(RuleQueueLocal.class)
@@ -43,10 +46,13 @@ public class RuleQueueBean implements RuleQueueLocal {
     @Resource(name = "jms/JmsXA")
     private ConnectionFactory connectionFactory;
 
-    @Resource(name = "queue/rule")
-    private Queue ruleQueue;
+    @EJB
+    private QueueKeyLocal queueKeyLocal;
 
     private String queueName;
+    
+    @Resource(name = "queue/rule")
+    private Queue ruleQueue;
 
     @Override
     public String getQueueName() {
@@ -60,15 +66,9 @@ public class RuleQueueBean implements RuleQueueLocal {
         return queueName;
     }
 
-    /**
-     * Queue a payload
-     * @param payload
-     */
     @Override
-    public void send(Serializable payload) {
-        List<Serializable> payloads = new ArrayList<Serializable>(1);
-        payloads.add(payload);
-        send(payloads, null);
+    public X509Certificate getQueueOwnerX509Certificate() {
+        return queueKeyLocal.getUserX509Certificate(getQueueName());
     }
 
     /**
@@ -79,20 +79,6 @@ public class RuleQueueBean implements RuleQueueLocal {
     @Override
     public void send(List<Serializable> payloads) {
         send(payloads, null);
-    }
-
-    /**
-     * Queue a payload along with its JMS properties
-     * @param payload
-     * @param properties
-     */
-    @Override
-    public void send(Serializable payload, Map<String, Object> properties) {
-        List<Serializable> payloads = new ArrayList<Serializable>(1);
-        payloads.add(payload);
-        List<Map<String, Object>> listOfProperties = new ArrayList<Map<String, Object>>(1);
-        listOfProperties.add(properties);
-        send(payloads, listOfProperties);
     }
 
     /**
@@ -142,6 +128,31 @@ public class RuleQueueBean implements RuleQueueLocal {
                 throw new RuntimeException("Failed to close connection to queue" + getQueueName(), e);
             }
         }
+    }
+
+    /**
+     * Queue a payload
+     * @param payload
+     */
+    @Override
+    public void send(Serializable payload) {
+        List<Serializable> payloads = new ArrayList<Serializable>(1);
+        payloads.add(payload);
+        send(payloads, null);
+    }
+
+    /**
+     * Queue a payload along with its JMS properties
+     * @param payload
+     * @param properties
+     */
+    @Override
+    public void send(Serializable payload, Map<String, Object> properties) {
+        List<Serializable> payloads = new ArrayList<Serializable>(1);
+        payloads.add(payload);
+        List<Map<String, Object>> listOfProperties = new ArrayList<Map<String, Object>>(1);
+        listOfProperties.add(properties);
+        send(payloads, listOfProperties);
     }
 
 }

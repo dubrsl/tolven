@@ -14,11 +14,12 @@
 <body> 
     <ui:composition>
 		<trim:ENSlot id="name" slot="#{entity.name}" readonly="#{readonly}"/>
-		<wiz:group title="#{entity.livingSubject.administrativeGenderCode.label.value}">
+		<!-- Modified to validate gender and DOB, 07/119/2010, Valsaraj -->
+		<wiz:group title="#{entity.livingSubject.administrativeGenderCode.label.value}*">
 			<trim:valueSetMenu id="gender" slot="#{entity.livingSubject.administrativeGenderCode}" />
 		</wiz:group>
-		<wiz:group title="#{entity.livingSubject.birthTime.label.value}">
-			<trim:TS id="dob" value="#{entity.livingSubject.birthTime.TS}" validate="past" dateStyle="short"/>
+		<wiz:group title="#{entity.livingSubject.birthTime.label.value}*">
+			<trim:TS id="dob" value="#{entity.livingSubject.birthTime.TS}" dateStyle="short"/>
 		</wiz:group>
 		<trim:ADSlot id="addr" slot="#{entity.person.addr}"/>
 		<trim:TELSlot id="telecom" slot="#{entity.telecom}"/>

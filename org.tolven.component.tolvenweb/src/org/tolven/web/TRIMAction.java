@@ -5,6 +5,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -63,6 +65,7 @@ import org.tolven.trim.NullFlavor;
 import org.tolven.trim.ParticipationType;
 import org.tolven.trim.Role;
 import org.tolven.trim.TSSlot;
+import org.tolven.trim.TolvenId;
 import org.tolven.trim.Trim;
 import org.tolven.trim.ValueSet;
 import org.tolven.trim.ex.CopyToEx;
@@ -83,8 +86,9 @@ public class TRIMAction extends MenuAction {
     private int psychCountLeft;
 	private MDList mdList = null;
 	private PartyList partyList = null;
+	private List<HashMap<String, String>> history;
 
-    private List<SelectItem> activeEncounters;
+	private List<SelectItem> activeEncounters;
         
 	private Map<String, List<SelectItem>> valueSets;
 	
@@ -270,6 +274,7 @@ public class TRIMAction extends MenuAction {
 				String[] pathKeys = parsedPath.split("~", 2);
 				parsedPath = pathKeys[0];
 				columnsStr = pathKeys[1];
+				ctrl.setSortOrder(columnsStr);
 			} else {
 				// Default layout if none specified
 				columnsStr = "string01 string02";
@@ -731,10 +736,6 @@ public class TRIMAction extends MenuAction {
 			if ("iip-32.xhtml".equals(trim.getPage())) {
 				savePsych();
 			}
-			// Temp
-			if ("bodyMassIndex.xhtml".equals(trim.getPage())) {
-				computeBMI();
-			}
 			
 			// Scan for binding requirements in TRIM - request-phase
 			MenuPath contextPath = new MenuPath(getElement());
@@ -783,24 +784,7 @@ public class TRIMAction extends MenuAction {
 		return "fail";
 	}
 
-	public void computeBMI() throws Exception {
-		Act act = (Act) getTrim().getAct();
-		Act weightAct = (Act)act.getRelationships().get(0).getAct();
-		Act heightAct = (Act) act.getRelationships().get(1).getAct();
-		double weight = weightAct.getObservation().getValues().get(0).getPQ().getValue();
-		double height = heightAct.getObservation().getValues().get(0).getPQ().getValue();
-		if (weight==0.0 || height==0.0) {
-			act.getObservation().getValues().get(0).getPQ().setValue(0.0);
-		} else {
-			if ("cm".equals(heightAct.getObservation().getValues().get(0).getPQ().getUnit().toLowerCase())) {
-				height = height /100;
-			}
-			long  longbmi = Math.round(10.0 *(weight/(height*height)));
-			double doublebmi = longbmi/10.0;
-			act.getObservation().getValues().get(0).getPQ().setValue(doublebmi);
-		}
-	}
-
+	
 	public static class Scale implements Serializable {
 		private static final long serialVersionUID = 1L;
 		private String title;
@@ -1138,5 +1122,25 @@ public class TRIMAction extends MenuAction {
 	public String getReference() throws Exception {
         return StringEscapeUtils.escapeXml(getTrim().getReference());
     }
-	
+	public List<HashMap<String, String>> getHistory() throws ParseException, Exception {
+		if(history == null){
+			history = new ArrayList<HashMap<String,String>>();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmssZ");
+			SimpleDateFormat sdfOut = new SimpleDateFormat(
+					"MM/dd/yyyy hh:mm:ss");
+			history = new ArrayList<HashMap<String, String>>();
+			for (TolvenId item : getTrim().getTolvenEventIds()) {
+				HashMap<String, String> tempHistory = new HashMap<String, String>();
+				tempHistory.put("user", item.getPrincipal());
+				tempHistory.put("timestamp", sdfOut.format(sdf.parse(item.getTimestamp())));
+				tempHistory.put("status", item.getStatus() != null ? item.getStatus().toUpperCase():"NEW");
+				history.add(tempHistory);
+			}
+		}
+		return history;
+	}
+
+	public void setHistory(List<HashMap<String, String>> history) {
+		this.history = history;
+	}
 }

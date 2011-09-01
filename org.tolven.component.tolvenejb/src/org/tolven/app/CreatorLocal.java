@@ -18,6 +18,7 @@ import org.tolven.doctype.DocumentType;
 import org.tolven.trim.BindPhase;
 import org.tolven.trim.Trim;
 import org.tolven.trim.ex.TRIMException;
+import org.tolven.trim.ex.TolvenIdEx;
 import org.tolven.trim.ex.TrimEx;
 
 /**
@@ -110,6 +111,15 @@ public interface CreatorLocal {
 	 */
 	public void submit( long accountId, long userId, ContinuityOfCareRecord ccr ) throws Exception;
 
+	/** CCHIT merge
+	 * exposing this for using in CCHIT bean
+	 * @param documentId
+	 * @param activeAccountUser
+	 * @param queueOnDate
+	 * @param userPrivateKey
+	 */
+	public void submit( long documentId, AccountUser activeAccountUser, Date queueOnDate, PrivateKey userPrivateKey) throws Exception;
+	
 	/**
 	 * Send a copy of an existing document to another account
 	 * @throws Exception 
@@ -125,5 +135,11 @@ public interface CreatorLocal {
 	 * @throws TRIMException
 	 */
 	public void marshalToDocument( Trim trim, DocXML docXML ) throws JAXBException, TRIMException;
-
+	
+	public boolean isSignatureRequired( TrimEx trim, String knownType);
+	public String calculateTransition( Trim trim, String transitionName );
+	public TolvenIdEx createTolvenId( MenuData md, String context, Date now, String status, String principal);
+	public String getInstancePath( Trim trim, String knownType);
+	public MenuData createEvent( Account account, String instancePath, Trim trim, Date now, Map<String, Object> variables);
+	
 }

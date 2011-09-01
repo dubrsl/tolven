@@ -53,7 +53,6 @@ import org.tolven.plugin.repository.bean.PluginPropertyDetail;
 import org.tolven.plugin.repository.bean.PluginVersionDetail;
 import org.tolven.plugin.repository.bean.Plugins;
 import org.tolven.plugin.repository.bean.RootPluginDetail;
-import org.tolven.security.hash.TolvenMessageDigest;
 
 /**
  * The class initializes and/or upgrades the runtime repository

@@ -138,10 +138,6 @@
 			</mdb-resource-adapter>
 		</ejb>
 		<message-destination>
-			<message-destination-name>RuleQueue</message-destination-name>
-			<jndi-name>queue/rule</jndi-name>
-		</message-destination>
-		<message-destination>
 			<message-destination-name>AdminAppQueue</message-destination-name>
 			<jndi-name>queue/adminApp</jndi-name>
 		</message-destination>
@@ -152,6 +148,10 @@
 		<message-destination>
 			<message-destination-name>InvitationQueue</message-destination-name>
 			<jndi-name>queue/invitation</jndi-name>
+		</message-destination>
+		<message-destination>
+			<message-destination-name>RuleQueue</message-destination-name>
+			<jndi-name>queue/rule</jndi-name>
 		</message-destination>
 	</enterprise-beans>
 </sun-ejb-jar>

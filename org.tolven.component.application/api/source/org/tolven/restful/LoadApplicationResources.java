@@ -23,6 +23,7 @@ import java.util.Map;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -57,22 +58,103 @@ public class LoadApplicationResources {
     private HttpServletRequest request;
 
     @EJB
-    private ApplicationMetadataLocal applicationMetadataLocal;
+    private ApplicationMetadataLocal applicationMetadataBean;
 
     @EJB
-    private ReportLocal reportLocal;
+    private ReportLocal reportBean;
 
     @EJB
-    private MenuLocal menuLocal;
+    private MenuLocal menuBean;
 
     @EJB
     private AccountDAOLocal accountBean;
 
     @EJB
-    private RulesLocal rulesLocal;
+    private RulesLocal rulesBean;
 
     @EJB
-    private TrimLocal trimLocal;
+    private TrimLocal trimBean;
+
+    public LoadApplicationResources() {
+    }
+
+    protected ApplicationMetadataLocal getApplicationMetadataBean() {
+        if (applicationMetadataBean == null) {
+            String jndiName = "java:app/tolvenEJB/ApplicationMetadata!org.tolven.app.ApplicationMetadataLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                applicationMetadataBean = (ApplicationMetadataLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return applicationMetadataBean;
+    }
+
+    protected ReportLocal getReportBean() {
+        if (reportBean == null) {
+            String jndiName = "java:app/tolvenEJB/ReportBean!org.tolven.report.ReportLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                reportBean = (ReportLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return reportBean;
+    }
+
+    protected MenuLocal getMenuBean() {
+        if (menuBean == null) {
+            String jndiName = "java:app/tolvenEJB/MenuBean!org.tolven.app.MenuLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                menuBean = (MenuLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return menuBean;
+    }
+
+    protected AccountDAOLocal getAccountDAOBean() {
+        if (accountBean == null) {
+            String jndiName = "java:app/tolvenEJB/AccountDAOBean!org.tolven.core.AccountDAOLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                accountBean = (AccountDAOLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return accountBean;
+    }
+
+    protected RulesLocal getRulesBean() {
+        if (rulesBean == null) {
+            String jndiName = "java:app/tolvenEJB/RulesBean!org.tolven.doc.RulesLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                rulesBean = (RulesLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return rulesBean;
+    }
+
+    protected TrimLocal getTrimBean() {
+        if (trimBean == null) {
+            String jndiName = "java:app/tolvenEJB/TrimBean!org.tolven.app.TrimLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                trimBean = (TrimLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return trimBean;
+    }
 
     /**
      * Load all supplied application metadata. The files have been read to memory on the client and passed here as
@@ -97,7 +179,7 @@ public class LoadApplicationResources {
                 String xml = bodyPart.getEntityAs(String.class);
                 applications.put(filename, xml);
             }
-            applicationMetadataLocal.loadApplications(applications);
+            getApplicationMetadataBean().loadApplications(applications);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(500).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
@@ -122,7 +204,7 @@ public class LoadApplicationResources {
         try {
             Map<String, String> applications = new HashMap<String, String>();
             applications.put(applicationName + APPLICATION_EXTENSION, application);
-            applicationMetadataLocal.loadApplications(applications);
+            getApplicationMetadataBean().loadApplications(applications);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(500).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
@@ -145,9 +227,9 @@ public class LoadApplicationResources {
             // How are dates portably transmitted
             Date date = (Date) request.getAttribute("tolvenNow"); // new Date(Long.parseLong(time));
             if (externalReportName == null) {
-                reportLocal.storeReport(reportAsString, reportType, date);
+                getReportBean().storeReport(reportAsString, reportType, date);
             } else {
-                reportLocal.storeReport(externalReportName, reportAsString, reportType, date);
+                getReportBean().storeReport(externalReportName, reportAsString, reportType, date);
             }
             return Response.ok().build();
         } catch (Exception ex) {
@@ -164,13 +246,13 @@ public class LoadApplicationResources {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response persistResource(@FormParam("accountId") String accountId, @FormParam("resourceName") String resourceName, @FormParam("resourceValue") String resourceValue) {
         try {
-            Account account = accountBean.findAccount(Long.parseLong(accountId));
+            Account account = getAccountDAOBean().findAccount(Long.parseLong(accountId));
             MSResource msResource = new MSResource();
             msResource.setAccount(account);
             msResource.setName(resourceName);
             // How is byte[] portably transmitted
             msResource.setValue(resourceValue.getBytes());
-            menuLocal.persistResource(msResource);
+            getMenuBean().persistResource(msResource);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(500).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
@@ -192,7 +274,7 @@ public class LoadApplicationResources {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("The packageBody drl is missing").build();
         }
         try {
-            rulesLocal.loadRulePackage(packageBody);
+            getRulesBean().loadRulePackage(packageBody);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(500).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
@@ -208,7 +290,7 @@ public class LoadApplicationResources {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response queueActivateNewTrimHeaders() {
         try {
-            trimLocal.queueActivateNewTrimHeaders();
+            getTrimBean().queueActivateNewTrimHeaders();
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(500).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
@@ -234,7 +316,7 @@ public class LoadApplicationResources {
         }
         try {
             //trimLocal.createTrimHeader(trimXML, user, comment, Boolean.parseBoolean(autogenerated));
-            trimLocal.createTrimHeader(trimXML, request.getUserPrincipal().getName(), null, false);
+            getTrimBean().createTrimHeader(trimXML, request.getUserPrincipal().getName(), null, false);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(500).type(MediaType.TEXT_PLAIN).entity("Trim " + trimName + ": " + ExceptionFormatter.toSimpleString(ex, "\\n")).build();

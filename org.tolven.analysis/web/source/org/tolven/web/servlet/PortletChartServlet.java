@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +44,18 @@ public class PortletChartServlet extends HttpServlet {
 
     @EJB
     private SnapshotLocal snapshotBean;
+
+    @Override
+    public void init(ServletConfig config) {
+        try {
+            InitialContext ctx = new InitialContext();
+            if (snapshotBean == null) {
+                snapshotBean = (SnapshotLocal) ctx.lookup("tolven/SnapshotBean/local");
+            }
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {

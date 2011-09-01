@@ -14,14 +14,18 @@
 			<ui:define name="tableBody">
 				<h:column>
 					<h:outputText value="#{md.date01}">
-						<f:convertDateTime type="date" pattern="MMM-yyyy" timeZone="#{top.timeZone}"/>
+						<f:convertDateTime type="date" pattern="MM/dd/yyyy"
+							timeZone="#{top.timeZone}" />
 					</h:outputText>
 				</h:column>
 				<h:column>
 	           		<h:outputText value="#{md.string01}"/>
            	</h:column>
            	<h:column>
-	           		<h:outputText value="#{md.pqStringVal01} #{md.pqUnits01}"/>
+					<h:outputText value="#{md.string07}" />
+				</h:column>
+				<h:column>
+					<h:outputText value="#{md.string08}" />
            	</h:column>
 			</ui:define>
 		</ui:composition>

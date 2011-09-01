@@ -21,6 +21,8 @@ import java.net.URLEncoder;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -30,14 +32,18 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.tolven.api.security.GeneralSecurityFilter;
 import org.tolven.core.AccountDAOLocal;
+import org.tolven.core.ActivationLocal;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountType;
+import org.tolven.core.entity.AccountUser;
 import org.tolven.util.ExceptionFormatter;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -54,6 +60,12 @@ public class AccountTypeResources {
 
     @EJB
     private AccountDAOLocal accountBean;
+    
+    @EJB
+    private ActivationLocal activationBean;
+    
+    @Context
+    private HttpServletRequest request;
 
     /**
      * Create an AccountType and return HTTP status code 201, if the accountType is created.
@@ -84,9 +96,9 @@ public class AccountTypeResources {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("knownType is missing").build();
         }
         try {
-            AccountType accountType = accountBean.findAccountTypebyKnownType(knownType);
+            AccountType accountType = getAccountBean().findAccountTypebyKnownType(knownType);
             if (accountType == null) {
-                accountType = accountBean.createAccountType(knownType, homePage, title, false, org.tolven.core.entity.Status.ACTIVE.value(), Boolean.TRUE.toString().equals(creatable));
+                accountType = getAccountBean().createAccountType(knownType, homePage, title, false, org.tolven.core.entity.Status.ACTIVE.value(), Boolean.TRUE.toString().equals(creatable));
                 updateAccountType(accountType, creatable, createAccountPage, css, homePage, logo, title);
                 URI uri = new URI(URLEncoder.encode(knownType, "UTF-8"));
                 return Response.created(uri).entity(accountType.getStatus()).build();
@@ -113,7 +125,7 @@ public class AccountTypeResources {
         if (knownType == null || knownType.length() == 0) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("knownType is missing").build();
         }
-        AccountType accountType = accountBean.findAccountTypebyKnownType(knownType);
+        AccountType accountType = getAccountBean().findAccountTypebyKnownType(knownType);
         if (accountType == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(knownType + " not found: " + knownType).build();
         }
@@ -163,17 +175,17 @@ public class AccountTypeResources {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("knownType is missing").build();
         }
         try {
-            AccountType accountType = accountBean.findAccountTypebyKnownType(knownType);
+            AccountType accountType = getAccountBean().findAccountTypebyKnownType(knownType);
             if (accountType == null) {
                 return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountType not found: " + knownType).build();
             } else {
                 updateAccountType(accountType, creatable, createAccountPage, css, homePage, logo, title);
                 if(accountId != null) {
-                    Account account = accountBean.findTemplateAccount(Long.parseLong(accountId));
+                    Account account = getAccountBean().findTemplateAccount(Long.parseLong(accountId));
                     if (account == null) {
                         return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Template account not found: " + accountId).build();
                     }
-                    accountBean.setAccountTemplate(knownType, account);
+                    getAccountBean().setAccountTemplate(knownType, account);
                 }
                 return Response.noContent().build();
             }
@@ -197,7 +209,7 @@ public class AccountTypeResources {
         if (knownType == null || knownType.length() == 0) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("knownType is missing").build();
         }
-        AccountType accountType = accountBean.findAccountTypebyKnownType(knownType);
+        AccountType accountType = getAccountBean().findAccountTypebyKnownType(knownType);
         if (accountType == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("knownType not found: " + knownType).build();
         }
@@ -240,6 +252,66 @@ public class AccountTypeResources {
         if (title != null) {
             accountType.setLongDesc(title);
         }
+    }
+    
+    
+    /**
+     * Set an Account Type Property
+     * @param pname
+     * @param pvalue
+     * @return
+     */
+    @Path("property")
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response setAccountProperty(
+            @FormParam("pname") String pname,		
+            @FormParam("pvalue") String pvalue) {
+        if (pname == null || pname.trim().length() == 0) {
+            return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("pname is missing").build();
+        }
+        Long accountUserId = (Long) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER_ID);
+        if (accountUserId == null) {
+            return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Account required").build();
+        }
+        AccountUser accountUser = getActivationBean().findAccountUser(accountUserId);
+        Account templateAccount = accountUser.getAccount().getAccountTemplate(); 
+        try {
+        	getAccountBean().putAccountProperty(templateAccount.getId(), pname, pvalue);
+        	
+        	return Response.noContent().build();
+        	/*URI uri = new URI(URLEncoder.encode(Long.toString(accountUser.getAccount().getId()), "UTF-8"));
+            return Response.created(uri).entity(Long.toString(accountUser.getAccount().getId())).build();*/
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
+        }
+    }
+    
+    protected AccountDAOLocal getAccountBean() {
+        if (accountBean == null) {
+            String jndiName = "java:app/tolvenEJB/AccountDAOBean!org.tolven.core.AccountDAOLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                accountBean = (AccountDAOLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return accountBean;
+    }
+    
+    protected ActivationLocal getActivationBean() {
+        if (activationBean == null) {
+            String jndiName = "java:app/tolvenEJB/ActivationBean!org.tolven.core.ActivationLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                activationBean = (ActivationLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return activationBean;
     }
 
 }

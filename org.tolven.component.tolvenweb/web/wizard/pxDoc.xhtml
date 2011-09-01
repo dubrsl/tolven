@@ -7,50 +7,62 @@
       xmlns:wiz="http://www.tolven.org/jsf/wizard"
       xmlns:trim="http://www.tolven.org/jsf/trim">
 <head>
-    <title>Problems</title>
+    <title>Procedures</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 
 <body>
     <ui:composition>
-      <div id="popupGrids">
+    	<c:if test="#{top.accountType=='echr'}">
+			<h:inputText id="computeEnableSharing"  value="#{trim.trim.act.computes[2].property['enabled']}" style="display: none;" />
+			<script>
+				//<![CDATA[
+					$('#{menu.elementLabel}:computeEnableSharing').value=true;
+				// ]]>
+			</script>
+		</c:if>
+		<h:inputText id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" style="display: none;" />			
+		<h:inputText  id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
+		<h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
+		<h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />		
+      	<div id="popupGrids">
   			<div id="#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}" class="popupgrid"/>          
-      </div>
- 		<wiz:step title="Add #{trim.trim.act.relationship['type'].act.title.ST.value}" >
+      	</div>
+		<wiz:step title="#{trim.trim.act.relationship['type'].act.title.ST.value}" >
 			<wiz:body>
-         	 <h:inputText id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" style="display: none;" converter="javax.faces.Boolean"/>			
-			 <h:inputText  id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
-			 <h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
-			 <h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />										
-				<wiz:group title="#{trim.trim.act.relationship['type'].act.title.ST.value}">
-		          <table>
-		            <c:if test="#{not empty trim.trim.act.relationshipsList['entry']}">
-		              <tr>
-		                <th><u>Name</u></th>
-		                <th></th>
-		              </tr>
-		            </c:if>
-		            <c:forEach items="#{trim.trim.act.relationshipsList['entry']}" var="item" varStatus="itemIndex">
-		              <tr>
-		                <td>#{item.act.code.CE.displayName}</td>
-		                <td><a href="javascript:removeTemplate('#{menu.elementLabel}',#{item.sequenceNumber})">delete</a> </td>
-		              </tr>              
-		            </c:forEach>
-		          </table>
-					<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'addTemplate', '#{menu.elementLabel}', 0)">Add #{trim.trim.act.relationship['type'].act.title.ST.value}</a>
-				</wiz:group>
-			</wiz:body>			
+				<div id="procedureDocclinDiv" class="widget" style="width: 100%; margin-left: 0px;">
+					<script>
+						showOrderAssociationsDropDown("#{menu.element}","procedureDocclinDiv","px","","#{menu.elementLabel}");
+					</script> 
+				</div>
+				<div id="msgProcedureDocclin" style="color: red;font-weight: bold;text-align: center;" ></div>
+				<div id="addNewOrderAnchor">
+					<a onclick="openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'wizSaveProcedureDocclin', '#{menu.elementLabel}', 0)" href="#">Add Procedures</a>
+				</div>
+				<script>
+					openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'wizSaveProcedureDocclin', '#{menu.elementLabel}', 0);
+				</script>
+				<h:inputHidden value="0" id="checkRelationship">
+					<f:validator validatorId="nullRelationshipValidator" />
+					<f:attribute name="name" value="Procedure"/>
+				</h:inputHidden>
+			</wiz:body>
 		</wiz:step>
-    	<c:forEach var="rel" items="#{trim.trim.act.relationships}" varStatus="diagnosis">
-			<c:if test="#{rel.name=='entry'}">
-    			<ui:include src="px.xhtml">
-					<ui:param name="rel" value="#{rel}"/>
-              		<ui:param name="type" value="#{trim.trim.act.relationship['type'].act.title.ST.value}"/>
-	     		</ui:include>	     			
-			</c:if>
-		</c:forEach>	
+		<wiz:step title="#{trim.trim.act.relationship['encounter'].act.title.ST.value}">
+			<wiz:body>
+				<table>
+					<tr>
+						<td><h:outputText value="#{trim.trim.act.relationship['encounter'].act.observation.value.label.value} :"/></td>
+						<td>
+							<h:selectOneMenu id="orderAssociateEncounters" value="#{trim.trim.act.relationship['encounter'].act.observation.value.CE}">
+								<f:selectItems value="#{trim.valueSets['encounter']}"/>
+				            	<f:converter converterId="DataTypeConverter"/>
+				        	</h:selectOneMenu>
+				        </td>
+				    </tr>
+				 </table>
+			</wiz:body>
+		</wiz:step> 		
 	</ui:composition>
-
-	
 </body>
 </html>

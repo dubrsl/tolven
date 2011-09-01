@@ -24,7 +24,9 @@
 <link 
 	href="#{facesContext.externalContext.request.contextPath}/styles/calendarUtil.css"
 	type="text/css" rel="stylesheet" />
-	
+<link 
+	href="#{facesContext.externalContext.request.contextPath}/styles/bluecurve.css"
+	type="text/css" rel="stylesheet" />	
 <link 
 	href="#{facesContext.externalContext.request.contextPath}/styles/bundle.css"
 	type="text/css" rel="stylesheet" />
@@ -51,7 +53,7 @@
 	        titlePrefix = '[#{top.getTolvenPersonString('givenName')} #{top.getTolvenPersonString('sn')}]'; 
 	        initialPage = '#{top.accountUser.openMeFirst==null ? top.accountType : top.accountUser.openMeFirst}';
 	        contextPath = '#{facesContext.externalContext.request.contextPath}';
-	        if( "#{top.accountUser.account.isEnableBackButton()}" == "true" ){
+	        if( "#{top.accountUser.account.enableBackButton}" == "true" ){
 			  	initHistory( contextPath + "/scripts/blank.html" );
 	        }
 	        initPages(#{top.accountUserId});
@@ -87,6 +89,13 @@
 				<h:panelGroup rendered="#{top.tp!=null}">
 					<h:commandLink action="preferences">
 						<h:outputText value="#{msg.Preferences}"/>
+					</h:commandLink>
+				</h:panelGroup>
+			</td>
+			<td>
+				<h:panelGroup rendered="#{top.tp!=null}">
+					<h:commandLink action="surescripts" rendered="#{top.accountUserId!=0}">
+						<h:outputText value="Surescripts Message Center"/>
 					</h:commandLink>
 				</h:panelGroup>
 			</td>
@@ -163,5 +172,9 @@
 <div id="userprefDiv" class="userprefbox"></div>
 <div id="faderPane" style="display: none; top: 0px;"></div>
 <div name="abcd" id="_drpDwn" style="position: absolute;display:none;z-index: 500;" class="drpDwn"> </div>
+<div id="ajaxLoader" style="display:none;">
+       <img src="/Tolven/images/ajax-loader.gif" alt="Loading..."/>
+</div>
+<div id="ajaxOverlay" style="display:none;" onclick="hideAjaxOverlay();"></div>
 </body>
 </html>

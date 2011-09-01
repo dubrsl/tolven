@@ -719,6 +719,10 @@ public class MenuBean implements MenuLocal, MenuRemote {
         } catch ( Exception e) {
             throw new RuntimeException( "Error building query " + ctrl.toString(), e);
         }
+        //SK: added from CCHIT plugin
+	if (sbOrder != null && sbOrder.length() > 0) {
+			sbOrder.append(",md.id DESC");
+		}
 
         // Assemble the query string
         String qs = String.format(Locale.US, "SELECT %s FROM %s WHERE %s %s", init, sbFrom, sbWhere, sbOrder);
@@ -2018,6 +2022,7 @@ public class MenuBean implements MenuLocal, MenuRemote {
                 evaluator = (GeneralExpressionEvaluator)sourceMap;
             } else {
                 evaluator = new TrimExpressionEvaluator();
+				if (sourceMap.entrySet()!=null) {
                 for (Map.Entry<String, Object> entry : sourceMap.entrySet() ) {
                     String variable = entry.getKey();
                     // Initial lowercase and camelCase otherwise
@@ -2026,6 +2031,7 @@ public class MenuBean implements MenuLocal, MenuRemote {
                     }
                     evaluator.addVariable(variable, entry.getValue());
                 }
+				}
                 evaluator.addVariable("account", destination.getAccount());
             }
             // If this is an event, then we'll use the metadata of the placeholder.
@@ -2098,6 +2104,9 @@ public class MenuBean implements MenuLocal, MenuRemote {
                     result = evaluator.evaluate(from);
 //              logger.debug( "[populateMenuData] value=" + result);
                     if (result!=null) break;
+                }
+                if(result == null) {
+                	continue;
                 }
                 if (result != null && result instanceof Enum) {
                     // Special handling for Enums

@@ -7,16 +7,16 @@
     <body>
     	<table style="width:90%">
     		<tr><td>
-			<a target="results" href="/Tolven/api/application/metadata">Show all metadata</a><br/><br/>
+			<a target="results" href="/api/application/metadata">Show all metadata</a><br/><br/>
     		<p><b>Describe Metadata columns</b></p>
-    		<form action="/Tolven/api/application/describe" method="get" target="results">
+    		<form action="/api/application/describe" method="get" target="results">
 				  Path: <input type="text" name="path" value="echr:patient" size="50"/><br />
   					<input type="submit" value="Columns" />
 				</form>
 			</td>
     		<td>
     		<p><b>Get List</b></p>
-    		<form action="/Tolven/api/application/list" method="get" target="results">
+    		<form action="/api/application/list" method="get" target="results">
 				  Path: <input type="text" name="path" value="echr:patients:all" size="50"/><br />
 				  Fields: <input type="text" name="fields" value="" size="50"/><br />
 				  Sort: <input type="text" name="order" value="id asc" size="50"/><br />
@@ -29,10 +29,18 @@
 			</td>
     		<td>
     		<p><b>Get Item</b></p>
-    		<form action="/Tolven/api/application/item" method="get" target="results">
+    		<form action="/api/application/item" method="get" target="results">
 				  Path: <input type="text" name="path" value="" size="50"/><br />
 				  Fields: <input type="text" name="fields" value="" size="50"/><br />
   					<input type="submit" value="Item" />
+				</form>
+			</td></tr>
+			<tr><td>
+			<p><b>XSLT</b></p>
+    		<form action="/api/application/xslt" method="get" target="results">
+				  Stylesheet Property: <input type="text" name="xslt" value="" size="50"/><br />
+				  Context: <input type="text" name="context" value="" size="50"/><br />
+  					<input type="submit" value="xslt" />
 				</form>
 			</td></tr>
 			</table>

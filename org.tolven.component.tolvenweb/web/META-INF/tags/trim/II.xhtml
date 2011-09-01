@@ -14,7 +14,7 @@
 <body> 
     <ui:composition>
 		<h:outputText value="#{value.extension}" rendered="#{readonly=='true' or value.editable == false }"/>
-		<h:inputText value="#{value.extension}" rendered="#{readonly!='true' and value.editable == true }"/>
+		<h:inputText value="#{value.extension}" maxlength="35" rendered="#{readonly!='true' and value.editable == true }"/>
 	</ui:composition>
 </body>
 </html>

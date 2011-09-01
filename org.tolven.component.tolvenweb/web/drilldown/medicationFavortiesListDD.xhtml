@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Medication Favourites - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+     <div id="#{menu.elementLabel}favoriteDetails" class="popupgrid"/> 
+		<div class="pagesm">
+			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+			<br/>
+	        <div id="#{trim.trim.act.id.for[top.accountUser.account].extension}:favorites" style="">
+                <div class="grid" id="#{menu.element}:favorites-grid" style="border: 1px solid rgb(153, 153, 153); width: 311px;">
+                  <table id="#{menu.element}:favorites_header" style="width:100%;">
+                    <thead>
+                      <tr>
+                        <th style="text-align: left;">Name</th>
+                      </tr>
+                    </thead>
+                  </table>
+                  <div style="height: 330.188px;overflow:auto;">
+                      <table class="gridBody" width="100%">
+                        <tbody>
+                          <c:forEach items="#{trim.trim.act.relationshipsList['favoriteItem']}" var="favorite" varStatus="favoriteIndex">
+                            <c:choose>
+                              <c:when test="#{favoriteIndex.index%2 == 0}">
+                                <tr class="even">
+                                  <td>
+                                    <h:outputText value="#{favorite.act.title.ST.value}"/>
+                                  </td>
+                                </tr>
+                              </c:when>
+                              <c:otherwise>
+                                <tr class="odd">
+                                  <td>
+                                  	<h:outputText value="#{favorite.act.title.ST.value}"/>
+                                  </td>
+                                </tr>
+                              </c:otherwise>
+                            </c:choose>                           
+                          </c:forEach>                          
+                        </tbody>
+                      </table>                    
+                  </div>
+                </div>              
+              </div>
+		</div>
+	</ui:composition>
+</body>
+</html>

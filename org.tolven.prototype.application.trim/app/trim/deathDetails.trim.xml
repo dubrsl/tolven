@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>obs/evn/deathDetails</name>
+	<description>Death Details Document</description>
+	<page>deathDetailsWiz.xhtml</page>
+	<drilldown>deathDetailsDD.xhtml</drilldown>
+	<menu>global:codMenu</menu>
+	<application name="ephr">
+		<instance>ephr:patient:cod</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:cod</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="cancelActive" from="active" to="inactive">
+			<label language="en">Inactive</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+	</transitions>
+	<act classCode="OBS" moodCode="EVN">	
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:cod</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:cod</path>
+			</placeholder>
+		</bind>
+		<id/>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Record Cause of Death</ST>
+		</title>
+		<effectiveTime>
+			<label>Date of Death</label>
+			<new datatype="TS" function="now"/>
+			<TS><value>#{from(source.deathDate, death.deathDate)}</value></TS>
+		</effectiveTime>
+		<availabilityTime>
+			<label>Date of documentation</label>
+			<TS></TS>
+		</availabilityTime>
+		<!-- Copied the PatientAct -->
+		<participation name="patient" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr">
+					<placeholder bindAction="exist">
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr">
+					<placeholder bindAction="exist">
+						<path>ephr:patient</path>
+					</placeholder>
+				</bind>
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{patient.path}</extension>
+					</II>
+				</id>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Patient Name</label>
+						<EN>
+							<label>Legal Name</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{patient.firstName}</ST>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{patient.middleName}</ST>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{patient.lastName}</ST>
+							</part>
+						</EN>
+					</name>
+				</player>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+		<relationship name="problem" direction="IN" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<bind application="echr" phase="create">
+					<placeholder bindAction="exist" optional="true">
+						<path>echr:patient:problem</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr" phase="create">
+					<placeholder bindAction="exist" optional="true">
+						<path>ephr:patient:problem</path>
+					</placeholder>
+				</bind>
+				<bind application="echr" phase="request">
+					<list cardinality="single">
+						<path>echr:patient:problems:active</path>
+					</list>
+				</bind>
+				<id/>
+				<title>
+					<ST>Cause of Death</ST>
+				</title>
+				<observation>
+					<value>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.SetDocumentationDate</type>
+		</compute>
+	</act>
+</trim>

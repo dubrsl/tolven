@@ -251,5 +251,14 @@ public class RulesBean implements RulesLocal, RulesRemote {
 		return packages;
 	}
 
+	/** CCHIT merge
+	 * Added to set time from out side class.
+	 * @author valsaraj
+	 * added on 08/03/2010
+	 */
+	public void setSavedTime(Date savedTime) {
+		this.savedTime = savedTime;
+	}
+
 	
 }

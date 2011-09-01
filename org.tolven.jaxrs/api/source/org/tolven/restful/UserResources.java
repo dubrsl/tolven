@@ -30,6 +30,7 @@ import java.util.Set;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.Consumes;
@@ -62,7 +63,8 @@ import org.tolven.core.entity.TolvenUser;
 import org.tolven.security.LoginLocal;
 import org.tolven.security.TolvenPerson;
 import org.tolven.security.key.UserPrivateKey;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.util.ExceptionFormatter;
 
 @Path("user")
@@ -72,7 +74,8 @@ public class UserResources {
     @EJB
     private ActivationLocal activationBean;
     
-    @EJB
+
+	@EJB
     private LoginLocal loginBean;
 
     @EJB
@@ -89,13 +92,14 @@ public class UserResources {
     @Path("logout")
     @POST
     public Response logout() {
-        TolvenSSO.getInstance().logout(request);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        sessionWrapper.logout();
         return Response.ok().type(MediaType.TEXT_PLAIN).entity("Session Invalidated").build();
     }
     
 
     protected Response prepareUserDetails( String username, String fields ) throws Exception {
-        TolvenUser tolvenUser = activationBean.findUser(username);
+        TolvenUser tolvenUser = getActivationBean().findUser(username);
         if (tolvenUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN_TYPE).entity("TolvenUser not found").build();
         }
@@ -163,7 +167,8 @@ public class UserResources {
                         }
                     } else if ("appEncryptionActive".equals(field)) {
                         xmlStreamWriter.writeStartElement(field);
-                        String appEncryptionActiveValue = TolvenSSO.getInstance().getSessionProperty("appEncryptionActive", request);
+                        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+                        String appEncryptionActiveValue = (String) sessionWrapper.getAttribute("appEncryptionActive");
                         boolean appEncryptionActive = Boolean.TRUE.toString().equals(appEncryptionActiveValue);
                         xmlStreamWriter.writeCharacters(String.valueOf(appEncryptionActive));
                         xmlStreamWriter.writeEndElement();
@@ -176,8 +181,9 @@ public class UserResources {
                         xmlStreamWriter.writeEndElement();
                     } else if ("userPKCS12Active".equals(field)) {
                         xmlStreamWriter.writeStartElement(field);
-                        String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-                        boolean encryptionActive = TolvenSSO.getInstance().getUserPrivateKey(request, keyAlgorithm) != null;
+                        String keyAlgorithm = getPropertyBean().getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
+                        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+                        boolean encryptionActive = sessionWrapper.getUserPrivateKey(keyAlgorithm) != null;
                         xmlStreamWriter.writeCharacters(String.valueOf(encryptionActive));
                         xmlStreamWriter.writeEndElement();
                     } else {
@@ -249,7 +255,7 @@ public class UserResources {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response getUserCount(@Context SecurityContext sc) {
-        long count = activationBean.countUsers();
+        long count = getActivationBean().countUsers();
         return Response.ok(Long.toString(count)).build();
     }
     
@@ -307,7 +313,7 @@ public class UserResources {
         }
         TolvenUser tolvenUser;
         try {
-            tolvenUser = loginBean.registerAndActivate( tp, new Date() );
+            tolvenUser = getLoginBean().registerAndActivate( tp, new Date() );
         } catch (Exception e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(e,"\\n")).build();
         }
@@ -332,7 +338,7 @@ public class UserResources {
         tp.setUid(uid);
         TolvenUser tolvenUser = null;
         try {
-            tolvenUser = loginBean.activate(tp, new Date());
+            tolvenUser = getLoginBean().activate(tp, new Date());
         } catch (Exception e) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(e, "\\n")).build();
         }
@@ -350,11 +356,11 @@ public class UserResources {
     @Produces(MediaType.APPLICATION_XML)
     public Response accountUsers(@QueryParam("accountUserId") String accountUserId) {
         List<AccountUser> accountUsers = new ArrayList<AccountUser>();
-        TolvenUser user = activationBean.findUser(request.getUserPrincipal().getName());
+        TolvenUser user = getActivationBean().findUser(request.getUserPrincipal().getName());
         if (accountUserId == null || accountUserId.length() == 0) {
-            accountUsers.addAll(activationBean.findUserAccounts(user));
+            accountUsers.addAll(getActivationBean().findUserAccounts(user));
         } else {
-            AccountUser accountUser = activationBean.findAccountUser(Long.parseLong(accountUserId));
+            AccountUser accountUser = getActivationBean().findAccountUser(Long.parseLong(accountUserId));
             if (accountUser.getUser().getId() != user.getId()) {
                 return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("AccountUser: " + accountUser.getUser().getId() + " does not belong to TolvenUser: " + user.getId()).build();
             }
@@ -369,11 +375,11 @@ public class UserResources {
     @Produces(MediaType.APPLICATION_XML)
     public Response accountUsers(@QueryParam("accountUserId") String accountUserId, @PathParam("accountUserId") String tolvenUserId) {
         List<AccountUser> accountUsers = new ArrayList<AccountUser>();
-        TolvenUser user = activationBean.findTolvenUser(Long.parseLong(tolvenUserId));
+        TolvenUser user = getActivationBean().findTolvenUser(Long.parseLong(tolvenUserId));
         if (accountUserId == null || accountUserId.length() == 0) {
-            accountUsers.addAll(activationBean.findUserAccounts(user));
+            accountUsers.addAll(getActivationBean().findUserAccounts(user));
         } else {
-            AccountUser accountUser = activationBean.findAccountUser(Long.parseLong(accountUserId));
+            AccountUser accountUser = getActivationBean().findAccountUser(Long.parseLong(accountUserId));
             if (accountUser.getUser().getId() != user.getId()) {
                 return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("AccountUser: " + accountUser.getUser().getId() + " does not belong to TolvenUser: " + user.getId()).build();
             }
@@ -383,4 +389,43 @@ public class UserResources {
         return Response.ok(uas).build();
     }
     
+    protected ActivationLocal getActivationBean() {
+        if (activationBean == null) {
+            String jndiName = "java:app/tolvenEJB/ActivationBean!org.tolven.core.ActivationLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                activationBean = (ActivationLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return activationBean;
+    }
+    
+	protected TolvenPropertiesLocal getPropertyBean() {
+  		if (propertyBean == null) {
+            String jndiName = "java:app/tolvenEJB/TolvenProperties!org.tolven.core.TolvenPropertiesLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                propertyBean = (TolvenPropertiesLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+  		return propertyBean;
+  	}
+
+
+    protected LoginLocal getLoginBean() {
+    	if (loginBean == null) {
+            String jndiName = "java:app/tolvenEJB/LoginBean!org.tolven.security.LoginLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                loginBean = (LoginLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+		return loginBean;
+	}
 }

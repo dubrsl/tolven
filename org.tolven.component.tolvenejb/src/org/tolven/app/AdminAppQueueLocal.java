@@ -14,17 +14,16 @@
 package org.tolven.app;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 public interface AdminAppQueueLocal {
 
     public String getQueueName();
+    
+    public X509Certificate getQueueOwnerX509Certificate();
 
-    /**
-     * Queue a payload
-     * @param payload
-     */
-    public void send(Serializable payload);
+    public void queueActivateNewTrimHeaders( );
 
     /**
      * Queue a list of payloads
@@ -33,6 +32,10 @@ public interface AdminAppQueueLocal {
      */
     public void send(List<Serializable> payloads);
 
-    public void queueActivateNewTrimHeaders( );
+    /**
+     * Queue a payload
+     * @param payload
+     */
+    public void send(Serializable payload);
 
 }

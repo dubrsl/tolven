@@ -7,58 +7,110 @@
     xmlns:wiz="http://www.tolven.org/jsf/wizard"
     xmlns:trim="http://www.tolven.org/jsf/trim">
 <head>
-  <title>Patient Diagnosis - Drilldown</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Patient Problems - Drilldown</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 
 <body>
-  <ui:composition>
-    <wiz:body>
-
-      <table style="width:80%">
-        <thead>
-          <th>#{trim.trim.act.relationship['type'].act.title.ST.value}</th>
-          <th>#{msg.Date}</th>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.relationship['episodicity'] != null}">
-            <th>#{msg.Episodicity}</th>
-          </c:if>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.relationship['reaction'] != null}">
-            <th>#{msg.Reaction}</th>
-          </c:if>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.relationship['severity'] != null}">
-            <th>#{msg.Severity}</th>
-          </c:if>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.relationship['course'] != null}">
-            <th>#{msg.Course}</th>
-          </c:if>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.relationship['onset'] != null}">
-            <th>#{msg.Onset}</th>
-          </c:if>
-        </thead>
-        <tbody>
-          <c:forEach items="#{trim.trim.act.relationshipsList['entry']}" var="rel" varStatus="entryIndex">
-            <tr>
-              <td>#{rel.act.observation.value.CE.displayName}</td>
-              <td><trim:TS id="effectiveTime#{entryIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
-              <c:if test="#{rel.act.relationship['episodicity'] != null}">
-                <td><trim:CE id="episodicity#{entryIndex.index}" valueSet="episodicity" value="#{rel.act.relationship['episodicity'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-              <c:if test="#{rel.act.relationship['reaction'] != null}">
-                <td><trim:CE id="reaction#{entryIndex.index}" valueSet="reaction" value="#{rel.act.relationship['reaction'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-              <c:if test="#{rel.act.relationship['severity'] != null}">
-                <td><trim:CE id="severity#{entryIndex.index}" valueSet="severity" value="#{rel.act.relationship['severity'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-              <c:if test="#{rel.act.relationship['course'] != null}">
-                <td><trim:CE id="course#{entryIndex.index}" valueSet="course" value="#{rel.act.relationship['course'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-              <c:if test="#{rel.act.relationship['onset'] != null}">
-                <td><trim:CE id="onset#{entryIndex.index}" valueSet="onset" value="#{rel.act.relationship['onset'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-            </tr>
-          </c:forEach>
-        </tbody>
-      </table>
+	<ui:composition>
+		<script type="text/javascript">
+		// <![CDATA[ 
+		ProblemDocumentDD = function() {
+			return {
+				toggleHistory: function(anc, tab) {
+					if ($(tab).style.display != 'block') {
+						$(tab).style.display = 'block';
+						anc.innerHTML = 'Hide History';
+					} else {
+						$(tab).style.display = 'none';
+						anc.innerHTML = 'Show History';
+					}
+				}
+			}
+		}();
+	
+		// ]]> 
+		</script>
+		<wiz:body>
+			<table width="100%">
+        		<thead>
+					<tr>
+						<th style="width: 12%;"><b>Problems</b></th>
+						<th style="width: 8%;"><b>Date Of Onset</b></th>
+						<th style="width: 10%;"><b>Severity</b></th>
+						<th style="width: 10%;"><b>Course</b></th>
+						<th style="width: 10%;"><b>Outcome</b></th>
+						<th style="width: 15%;"><b>Treatment</b></th>
+						<th style="width: 15%;"><b>Comments</b></th>
+						<th style="width: 10%;"></th>
+					</tr>
+				</thead>
+					<tbody style="width: 100%;">
+						
+						<c:if test="#{trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]!=null}">
+							<c:forEach var="rel" items="#{trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}" varStatus="widgetIndex">
+								<c:if test="#{rel.enabled == true}">
+									<c:set var="class" value="odd"/>
+									<c:set var="i" value="0"/>
+									<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/><c:set var="i" value="1"/></c:if>
+									<tr class="#{class}">
+										<td style="width: 12%;">#{rel.act.observation.value.CE.displayName}</td>
+										<td style="width: 8%;">
+											<trim:TS value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+										</td>
+										<td style="width: 10%;">#{rel.act.relationship['severity'].act.observation.value.CE.displayName}</td>
+										<td style="width: 10%;">#{rel.act.relationship['course'].act.observation.value.CE.displayName}</td>
+										<td style="width: 10%;">#{rel.act.relationship['outcome'].act.observation.value.CE.displayName}</td>
+										<td style="width: 15%;">#{rel.act.relationship['treatment'].act.text.ST.value}</td>
+										<td style="width: 15%;">#{rel.act.relationship['comments'].act.text.ST.value}</td>
+										<td style="width: 10%;">
+											<a href="javascript:displayMedLinePage('#{rel.act.observation.value.CE.code}', 'medLinePageFrame', 'medLinePageDiv', 'problem');">
+												<h:outputText value="More Info"/>
+											</a>
+										</td>
+									</tr>
+          						</c:if>
+							</c:forEach>
+          				</c:if>
+					</tbody>			
+				</table>
+				<div id="medLinePageDiv" style="width:70%;height:60%; padding: 5px;visibility: hidden;position: absolute;left: 150px;top: 100px;">
+					<div class="popupgridheader"><img onclick="closeMedLinePagePopup('medLinePageDiv');return false;" src="../images/x_black.gif" class="closetab"/>&nbsp;</div>
+					<iframe id="medLinePageFrame" src ="" width="100%" height="300" style="border: 0px;">
+					  <p>Your browser does not support iframes.</p>
+					</iframe>
+				</div>
+				<table>
+					<tr>
+						<td><b><h:outputText value="#{trim.trim.act.relationship['encounter'].act.observation.value.label.value} :"/></b></td>
+						<td colspan="4">
+							#{trim.trim.act.relationship['encounter'].act.observation.value.CE.displayName}
+						</td>
+					</tr>
+				</table>
+				<c:if test="#{trim.history != null}">
+    				<div style="width:100%;height:100%; padding: 5px;">
+						<a href="#" onclick="$('historyDisplayTable').toggle();return false;">History</a>
+						<table cellspacing="0" cellpadding="0" style="display: none;" id="historyDisplayTable" width="60%">
+							<thead>
+			    				<tr>
+			    					<th>User</th>
+			    					<th>Timestamp</th>
+			    					<th>Status</th>
+			    				</tr>
+        					</thead>
+							<tbody style="width: 100%;">
+				    			<c:forEach var="tmp" items="#{trim.history}" varStatus="indx">
+            						<tr>
+				    					<td style="width: 33%;">#{tmp['user']}</td>
+				    					<td style="width: 33%;">#{tmp['timestamp']}</td>
+				    					<td style="width: 33%;">#{tmp['status']}</td>
+            						</tr>
+								</c:forEach>
+					        </tbody>
+					    </table>
+					</div>
+				</c:if>
     </wiz:body>
   </ui:composition>
 </body>

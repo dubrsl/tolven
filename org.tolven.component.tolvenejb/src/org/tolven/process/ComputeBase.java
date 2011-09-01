@@ -44,6 +44,7 @@ public abstract class ComputeBase {
 	private String location;
 	private ResourceBundle globalBundle;
 	
+	
 	/**
 	 * Result of Validation Messages.
 	 */

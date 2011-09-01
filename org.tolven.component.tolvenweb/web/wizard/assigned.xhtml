@@ -5,27 +5,406 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:wiz="http://www.tolven.org/jsf/wizard"
-      xmlns:trim="http://www.tolven.org/jsf/trim">
-      
+      xmlns:trim="http://www.tolven.org/jsf/trim"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 <head>
     <title>Assigned Person (staff)</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
     <ui:composition>
+    	<script>
+			// <![CDATA[
+			          	checkServiceLevel("#{menu.elementLabel}" , "#{trim.trim.act.relationship['prescriber'].act.observation.values[3].ST.value}");
+			// ]]>           	
+		</script>
+ 		<input type="hidden" id="accountId" value="#{top.accountId}"/>
+		<wiz:step title="#{msg.GettingStarted}" >
+				<img id="ajaxLoader"  alt="ajax" src="../images/ajax-loader23.gif" style="display:none; z-index: 50;position: absolute;margin-top: 40px;margin-left: 900px;"/>			 
+				<wiz:body>
+					<p>Click Next to Start.</p>
+					<table width ="85%" cellpadding="1">
+						<tr>
+							<td colspan="4">
+							<p>You can also get details of a prescriber if he is already registered with Surescripts. Please enter the first 10 digits of the SPI number and click on Get Prescriber button.</p>
+							<h:inputHidden id="spisInAccnt" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[19].ST.value}"/>
+							</td>
+						</tr>
+						<tr>
+							<td width="10%">
+							#{trim.trim.act.relationship['prescriber'].act.observation.values[6].label.value}
+							</td>
+							<td width="20%">
+								<h:inputText id="spi" maxlength="10" onkeyup="checkFormat('spi', '#{menu.elementLabel}', 'errorMsgSPI');" size="15"  />
+							 	<span id="errorMsgSPI" style="display: none; color: red;">
+									<h:outputText value="SPI must be 10 Digit Numeric."/>
+								 </span>	
+							</td>
+							<td width="20%">
+								<input type="submit" value="Get Prescriber" style="width: 150px;" onclick="getPrescriber('#{menu.elementLabel}' , '#{menu.element}');" />
+							</td>
+							<td width="50%">
+								<span id="prescriberFoundMsg" style="display: none; color: green;">
+									<h:outputText value="Prescriber found in Surescripts registry. Please wait for some time for the details to get populated."/>
+						    	 </span>
+						    	 <span id="prescriberNotFoundMsg" style="display: none; color: red;">
+									<h:outputText value="No such prescriber found in surescripts registry"/>
+						    	 </span>
+							</td>
+						</tr>
+					</table>
+				</wiz:body>		
+				<wiz:help>
+					<h1>getting Started</h1>
+					<p>Help provides additional information about each page</p>
+					<p>You can create a new prescriber by clicking on the Next Button and entering the values. If your prescriber is already registered with surescripts , then click on the get prescriber button and then go to complete page and submit the form.
+					   You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that you can continue at any time later.
+					   If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
+						Once submitted, you will not be able to Cancel the form.
+					</p>
+				</wiz:help>
+		</wiz:step>	
 		<wiz:step title="Demographics" >
 			<wiz:body>
-				<trim:ENSlot id="name" slot="#{trim.trim.act.participation['subject'].role.player.name}" />
+				<wiz:group title="#{trim.trim.act.participation['subject'].role.player.name.label.value}">
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[0]'].label.value}*
+							</td>
+							<td width="40%">
+								<h:inputText id="firstName" onkeyup="validateName('firstName', '#{menu.elementLabel}', 'noSpaceFirst');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[0]'].ST.value}" size="20" required="true" maxlength="35">
+									<f:validator validatorId="noSpaceInBetweenValidator" />
+								</h:inputText>
+								 <span id="noSpaceFirst" style="display: none; color: red;">
+									<h:outputText value="No space allowed in First Name."/>
+						    	 </span>
+							</td>
+						</tr>
+					</table>
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[1]'].label.value}
+							</td>
+							<td width="40%">
+								<h:inputText id="middleName" onkeyup="validateName('middleName', '#{menu.elementLabel}', 'noSpaceMiddle');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[1]'].ST.value}" size="20" maxlength="35">
+									<f:validator validatorId="noSpaceInBetweenValidator" />
+								</h:inputText>
+								<span id="noSpaceMiddle" style="display: none; color: red;">
+									<h:outputText value="No space allowed in Middle Name."/>
+						    	 </span>
+							</td>
+						</tr>
+					</table>
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['FAM'].label.value}*
+							</td>
+							<td width="40%">
+								<h:inputText id="lastName"  onkeyup="validateName('lastName', '#{menu.elementLabel}', 'noSpaceLast');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['FAM'].ST.value}" size="20" required="true" maxlength="35">
+									<f:validator validatorId="noSpaceInBetweenValidator" />
+								</h:inputText>
+								<span id="noSpaceLast" style="display: none; color: red;">
+									<h:outputText value="No space allowed in Last Name."/>
+						    	 </span>
+							</td>
+						</tr>
+					</table>
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['SFX'].label.value}
+							</td>
+							<td width="40%">
+								<h:inputText id="suffix" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['SFX'].ST.value}" size="20" maxlength="10"/>
+							</td>
+						</tr>
+					</table>
+				</wiz:group>
 				<wiz:group title="#{trim.trim.act.participation['subject'].role.player.livingSubject.administrativeGenderCode.label.value}">
 					<trim:valueSetMenu id="gender" slot="#{trim.trim.act.participation['subject'].role.player.livingSubject.administrativeGenderCode}" />
 				</wiz:group>
-				<trim:ADSlot id="addr" slot="#{trim.trim.act.participation['subject'].role.player.person.addr}"/>
-				<trim:TELSlot id="telecom" slot="#{trim.trim.act.participation['subject'].role.player.telecom}"/>
+				<wiz:group title="#{trim.trim.act.participation['subject'].role.player.person.addr.label.value}">
+					<table width ="100%" cellpadding="5">
+					    <tr>
+					    	<td width="60%">
+					    		<table width="100%">
+					    				<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['AL[0]'].label.value}*
+											</td>
+											<td width="72%">
+												<h:inputText id="addressLine1" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['AL[0]'].ST.value}"
+												 size="20" onkeyup="validateAddress('addressLine1', '#{menu.elementLabel}', 'errorAdd', 'errorAddSpace');" required="true" maxlength="35">
+												 	<f:validator validatorId="addressLine1Validator" />
+												 </h:inputText>
+												 <span id="errorAdd" style="display: none; color: red;">
+													<h:outputText value="PO box number not allowed here."/>
+											    </span>
+											    <span id="errorAddSpace" style="display: none; color: red;">
+													<h:outputText value="Address Line 1 must contain space."/>
+										    	</span>
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['AL[1]'].label.value}
+											</td>
+											<td width="72%">
+												<h:inputText id="addressLine2" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['AL[1]'].ST.value}" size="20" maxlength="35"/>
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['CTY'].label.value}*
+											</td>
+											<td width="72%">
+												<h:inputText id="city" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['CTY'].ST.value}" size="20" required="true" maxlength="35"/>
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['STA'].label.value}*
+											</td>
+											<td width="72%" >
+											    <h:selectOneMenu id="state" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['STA'].ST.value}"  required="true">
+											    <f:selectItem itemLabel="Select" itemValue="#{null}" />
+											    <f:selectItems value="#{demographicsAct.statesUsa}" />
+											    </h:selectOneMenu>
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['ZIP'].label.value}*
+											</td>
+											<td width="72%">
+												<h:inputText id="zip" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['ZIP'].ST.value}" required="true"
+												 size="20" maxlength="9" onkeyup="checkFormat('zip', '#{menu.elementLabel}', 'errorZip');" onkeypress="return onlyNumbers(event);">
+												 	<f:validator validatorId="zipCodeValidator" />
+												 </h:inputText>
+												 <span id="errorZip" style="display: none; color: red;">
+													<h:outputText value="Enter zip + 4 code."/>
+											    </span>	
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['CNT'].label.value}
+											</td>
+											<td width="72%">
+												<h:inputText id="country" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['CNT'].ST.value}" size="20" />
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.relationship['prescriber'].act.observation.values[11].label.value}*
+											</td>
+											<td width="72%">
+												<h:inputText id="email"  maxlength="80" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[11].ST.value}" size="20" required="true"
+												 onkeyup="checkFormat('email', '#{menu.elementLabel}', 'errorMsgEmail');">
+												 	<f:validator validatorId="emailValidator" />
+												 </h:inputText>
+												<span id="errorMsgEmail" style="display: none; color: red;">
+													<h:outputText value="Enter a valid email."/>
+											    </span>
+											</td>
+										</tr>
+									</table>
+						    	</td>
+						    	<td width="40%">
+						    		<table width="100%">
+						    			<tr tvisible="#{trim.trim.act.relationship['prescriber'].act.observation.values[15].ST.value != ''}">
+						    				<td>
+						    					<h:outputText  value="#{trim.trim.act.relationship['prescriber'].act.observation.values[15].label.value}"/>
+						    				</td>
+						    				<td>
+						    					<h:inputText id="originalAddress"  value="#{trim.trim.act.relationship['prescriber'].act.observation.values[15].ST.value}" disabled="true" size="20"/>
+						    				</td>
+						    			</tr>
+						    			<tr tvisible="#{trim.trim.act.relationship['prescriber'].act.observation.values[16].ST.value != ''}">
+						    				<td>
+						    					<h:outputText  value="#{trim.trim.act.relationship['prescriber'].act.observation.values[16].label.value}"/>
+						    				</td>
+						    				<td>
+						    					<h:inputText id="originalCity"  value="#{trim.trim.act.relationship['prescriber'].act.observation.values[16].ST.value}" disabled="true" size="20"/>
+						    				</td>
+						    			</tr>
+						    			<tr tvisible="#{trim.trim.act.relationship['prescriber'].act.observation.values[17].ST.value != ''}">
+						    				<td>
+						    					<h:outputText  value="#{trim.trim.act.relationship['prescriber'].act.observation.values[17].label.value}"/>
+						    				</td>
+						    				<td>
+						    					<h:inputText id="originalState"  value="#{trim.trim.act.relationship['prescriber'].act.observation.values[17].ST.value}" disabled="true" size="20"/>
+						    				</td>
+						    			</tr>
+						    			<tr tvisible="#{trim.trim.act.relationship['prescriber'].act.observation.values[18].ST.value != ''}">
+						    				<td>
+						    					<h:outputText  value="#{trim.trim.act.relationship['prescriber'].act.observation.values[18].label.value}"/>
+						    				</td>
+						    				<td>
+						    					<h:inputText id="originalZip"  value="#{trim.trim.act.relationship['prescriber'].act.observation.values[18].ST.value}" disabled="true" size="20"/>
+						    				</td>
+						    			</tr>
+						    		</table>
+						    	</td>
+						    </tr>
+						</table>
+				</wiz:group>
+				<wiz:group title="#{trim.trim.act.participation['subject'].role.player.telecom.label.value}">
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.telecom.TEL['WP'].label.value}*
+							</td>
+							<td width="40%">
+								<h:inputHidden id="prescriberPhone" value="#{trim.trim.act.participation['subject'].role.player.telecom.TEL['WP'].value}" />								
+								<h:inputText id="phone" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[12].ST.value}" required="true" size="20" maxlength="10"
+								  onkeyup="checkFormat('phone', '#{menu.elementLabel}', 'errorMsgPhone');" onkeypress="return onlyNumbers(event);">
+								  	<f:validator validatorId="telValidator" />
+								</h:inputText>
+								
+								<h:inputText id="extension" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[13].ST.value}" size="6" maxlength="4"
+								 onkeyup="checkFormat('extension', '#{menu.elementLabel}', 'errorMsgExtn');" onkeypress="return onlyNumbers(event);">								 	
+								</h:inputText>
+								
+								<span id="errorMsgPhone" style="display: none; color: red;">
+									<h:outputText value="Enter valid 10 digit no."/>
+							    </span>		
+							    <span id="errorMsgExtn" style="display: none; color: red;">
+									<h:outputText value="Enter 4 digit extension."/>
+							    </span>		
+							</td>
+						</tr>
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.relationship['prescriber'].act.observation.values[8].label.value}*
+							</td>
+							<td width="40%">
+								<h:inputText id="FX" onkeyup="checkFormat('FX', '#{menu.elementLabel}', 'errorMsgFax');" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[8].ST.value}" maxlength="10" size="20" required="true" onkeypress="return onlyNumbers(event);">
+									<f:validator validatorId="telValidator" />
+								</h:inputText>
+									<span id="errorMsgFax" style="display: none; color: red;">
+									<h:outputText value="Enter valid 10 digit no."/>
+							    	</span>	
+							</td>
+						</tr>
+					</table>
+				</wiz:group> 
 			</wiz:body>
 			<wiz:help>
 				<p>We need to know the name, age, and gender of the person being added.</p>
 			</wiz:help>
 		</wiz:step>
+		<wiz:step title="Identification">
+		 <wiz:body>
+			<wiz:group title="Identification">
+				<table width ="85%" cellpadding="5">	
+					<tr>
+						<td width="10%">
+							#{trim.trim.act.relationship['prescriber'].act.observation.values[0].label.value}
+						</td>
+						<td width="40%">
+							<h:inputText id="accountId" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[0].INT.value}" 
+								readonly="true" size="20" />
+						</td>
+					</tr>
+				</table>
+				<table width ="85%" cellpadding="5">
+					<tr>
+						<td width="10%">
+							#{trim.trim.act.relationship['prescriber'].act.observation.values[1].label.value}
+						</td>
+						<td width="40%">
+							<h:inputText id="portalId" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[1].INT.value}"
+								 size="20" readonly="true"/>
+						</td>
+					</tr>
+				</table>
+				<table width ="85%" cellpadding="5">
+					<tr>
+						<td width="10%">
+							#{trim.trim.act.relationship['prescriber'].act.observation.values[7].label.value}*
+						</td>
+						<td width="40%">
+							<h:inputText id="dea" maxlength="9" onkeyup="checkFormat('dea', '#{menu.elementLabel}', 'errorMsgDea');" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[7].ST.value}" size="20" required="true" >
+								<f:validator validatorId="deaValidator" />
+							</h:inputText>
+							 <span id="errorMsgDea" style="display: none; color: red;">
+									<h:outputText value="DEA Number should start with 2 alphabets and end with 7 digits."/>
+							 </span>	
+						</td>						
+					</tr>
+				</table>
+				<table width ="85%" cellpadding="5">
+					<tr>
+						<td width="10%">
+							#{trim.trim.act.relationship['prescriber'].act.observation.values[14].label.value}
+						</td>
+						<td width="40%">
+							<h:inputText id="npi" maxlength="10" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[14].ST.value}" size="20"
+							onkeyup="checkFormat('npi', '#{menu.elementLabel}', 'errorMsgNpi');" onkeypress="return onlyNumbers(event);" >
+								<f:validator validatorId="telValidator" />
+							</h:inputText>
+							 <span id="errorMsgNpi" style="display: none; color: red;">
+									<h:outputText value="Enter 10 digit NPI."/>
+							 </span>	
+						</td>
+					</tr>
+				</table>
+			</wiz:group>			
+			<c:if test="#{trim.trim.act.relationship['serviceLevel'] != null}">
+				<wiz:group title="Service Level">
+					<h:selectManyCheckbox id="serviceLevel" value="#{trim.trim.act.relationship['serviceLevel'].act.observation.value.CEValues}"
+					 layout="lineDirection" >
+						<f:selectItems value="#{trim.valueSets['serviceLevel']}"/>
+						<f:converter converterId="DataTypeConverter"/>
+                	</h:selectManyCheckbox>
+				</wiz:group>		
+			</c:if>
+			<wiz:group title="Time">
+				<table width ="85%" cellpadding="5" >
+					<tr>
+						<td width="10%">
+							#{trim.trim.act.relationship['prescriber'].act.observation.values[4].label.value}*
+						</td>
+						<td width="40%">
+							<trim:TS id="activeStartTime" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[4].TS}" dateStyle="short" timeStyle="short" required="true"/>	
+						</td>
+					</tr>
+					<tr>
+						<td width="10%" >
+							#{trim.trim.act.relationship['prescriber'].act.observation.values[5].label.value}*
+						</td>
+						<td width="40%" evalFunc="validatePrescriberDateFields('#{menu.elementLabel}');">
+							<trim:TSNew id="activeEndTime" days="30" compareWith="#{trim.trim.act.relationship['prescriber'].act.observation.values[4].TS}" validate="endTimeValidator"
+							value="#{trim.trim.act.relationship['prescriber'].act.observation.values[5].TS}" dateStyle="short" timeStyle="short" required="true" />
+							<span id="prescMinDiff" style="display: none; color: red;">
+									<h:outputText value="Minimum difference between Active Start Time and Active End Time must be 30 days."/>
+						    </span>
+						    <span id="prescGreater" style="display: none; color: red;">
+									<h:outputText value="Active Start Time should not be greater than the Active End Time."/>
+						    </span>
+						    <span id="prescSameTime" style="display: none; color: red;">
+									<h:outputText value="Both Active Start Time and End Time are the same.The Difference between Active Start Time and Active End Time must be atleast 30 Days."/>
+						    </span>
+						</td>
+					</tr>
+				</table>
+			</wiz:group>
+		</wiz:body>
+    </wiz:step>
+    <wiz:step title="Alert Preference" >
+		<wiz:body>
+			<table width="100%">
+ 				<h:selectManyCheckbox id="notificationPreference" value="#{trim.trim.act.relationship['notificationPreference'].act.observation.value.CEValues}">
+					<f:selectItems value="#{trim.valueSets['notificationPreferenceVS']}"/>
+					<f:converter converterId="DataTypeConverter"/>
+				</h:selectManyCheckbox>
+			</table>
+		</wiz:body>
+	</wiz:step>
 		<wiz:help title="#{trim.trim.description}">
 			<p>Help provides additional information about each page</p>
 			<p>We need to know the name, age, and gender of the person being added.</p>

@@ -40,6 +40,14 @@
 		<antcall target="buildSection">
 			<param name="section" value="ejb" />
 		</antcall>
+		<mkdir dir="${buildFolder}/web/classes"/>
+		<javac destdir="${buildFolder}/web/classes" debug="true">
+			<src path="web/source" />
+			<classpath refid="project.classpath" />
+			<classpath path="${buildFolder}/ejb/classes" />
+		</javac>
+		
+		
 		<antcall target="buildSection">
 			<param name="section" value="web" />
 			<param name="lib" value="${buildFolder}/ejb/classes" />
@@ -49,6 +57,9 @@
 		<zip destfile="${zipFileName}" update="true">
 			<zipfileset dir="${buildFolder}">
 				<include name="devLib.jar" />
+			</zipfileset>			
+			<zipfileset dir="${buildFolder}">
+				<include name="**/*.class" />
 			</zipfileset>
 			<zipfileset dir=".">
 				<include name="app/**" />

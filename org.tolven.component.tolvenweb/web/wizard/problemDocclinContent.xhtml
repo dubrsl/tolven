@@ -8,42 +8,117 @@
       xmlns:wiz="http://www.tolven.org/jsf/wizard"
       xmlns:trim="http://www.tolven.org/jsf/trim">
  <body>
-	<ui:composition template="docclinContent.xhtml">
-		<ui:define name="content">
-			<wiz:group title="#{msg.OnsetSymptoms}">
-        <trim:TS id="effectiveTime#{rel.sequenceNumber}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" />
-      </wiz:group>
-      <wiz:group title="#{msg.AddtDetail}" >
-        <wiz:yesno id="details#{rel.sequenceNumber}">Add?</wiz:yesno>
-        <c:if test="#{rel.act.relationship['episodicity'] != null}">
-          <wiz:group title="#{msg.Episodicity}" visible="$('#{menu.elementLabel}:details#{rel.sequenceNumber}').isTrue();">
-            <trim:valueSetMenu id="episodicity#{rel.sequenceNumber}" slot="#{rel.act.relationship['episodicity'].act.observation.value}"/>
-          </wiz:group>
-        </c:if>
-        <c:if test="#{rel.act.relationship['reaction'] != null}">
-          <wiz:group title="#{msg.Reaction}" visible="$('#{menu.elementLabel}:details#{rel.sequenceNumber}').isTrue();">
-            <trim:CE id="reaction#{rel.sequenceNumber}" valueSet="reaction" value="#{rel.act.relationship['reaction'].act.observation.value}" layout="pageDirection" />
-          </wiz:group>
-        </c:if>
-        <c:if test="#{rel.act.relationship['severity'] != null}">
-          <wiz:group title="#{msg.Severity}" visible="$('#{menu.elementLabel}:details#{rel.sequenceNumber}').isTrue();">
-            <trim:CE id="severity#{rel.sequenceNumber}" valueSet="severity" value="#{rel.act.relationship['severity'].act.observation.value}" layout="pageDirection" />
-          </wiz:group>
-        </c:if>
-        <c:if test="#{rel.act.relationship['course'] != null}">	
-          <wiz:group title="#{msg.Course}" visible="$('#{menu.elementLabel}:details#{rel.sequenceNumber}').isTrue();">
-            <trim:CE id="course#{rel.sequenceNumber}" valueSet="course" value="#{rel.act.relationship['course'].act.observation.value}"/>
-          </wiz:group>
-        </c:if>
-        <c:if test="#{rel.act.relationship['onset'] != null}">						
-          <wiz:group title="#{msg.Onset}" visible="$('#{menu.elementLabel}:details#{rel.sequenceNumber}').isTrue();">
-            <trim:CE id="onset#{rel.sequenceNumber}" valueSet="onset" value="#{rel.act.relationship['onset'].act.observation.value}" layout="pageDirection" />
-          </wiz:group>
-        </c:if>   
-       
-      </wiz:group>
-		</ui:define>
-	</ui:composition>
+		<c:set var="hasUnsavedProblem" value="false"/>
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="width: 11%;"><b>Problems</b></th>
+					<th style="width: 8%;" nowrap="nowrap"><b>Date Of Onset*</b></th>
+					<th style="width: 10%;"><b>Severity</b></th>
+					<th style="width: 10%;"><b>Course</b></th>
+					<th style="width: 10%;"><b>Outcome</b></th>
+					<th style="width: 13%;"><b>Treatment</b></th>
+					<th style="width: 13%;"><b>Comments</b></th>
+					<th style="width: 7%;"></th>
+				</tr>
+			</thead>
+			<tbody style="width: 100%;">
+				<c:forEach var="rel" items="#{trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}" varStatus="widgetIndex">
+					<c:set var="class" value="odd"/>
+					<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+					<c:if test="#{rel.enabled == true}"> <!-- saved problems-->
+						<tr id="#{menu.elementLabel}savedOrder#{widgetIndex.index}" class="#{class}">
+							<td style="width: 12%;">#{rel.act.observation.value.CE.displayName}</td>
+							<td style="width: 8%;" nowrap="nowrap">
+								<trim:TS value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+							</td>
+							<td style="width: 10%;">#{rel.act.relationship['severity'].act.observation.value.CE.displayName}</td>
+							<td style="width: 10%;">#{rel.act.relationship['course'].act.observation.value.CE.displayName}</td>
+							<td style="width: 10%;">#{rel.act.relationship['outcome'].act.observation.value.CE.displayName}</td>
+							<td style="width: 13%;">#{rel.act.relationship['treatment'].act.text.ST.value}</td>
+							<td style="width: 13%;">#{rel.act.relationship['comments'].act.text.ST.value}</td>
+							<td style="width: 7%;" nowrap="nowrap">
+								<span style="float: left;"><img onclick="{$('#{menu.elementLabel}savedOrder#{widgetIndex.index}').toggle();$('#{menu.elementLabel}editableOrder#{widgetIndex.index}').toggle();}" alt="Edit" src="../images/edit.jpg" style="cursor:pointer;" title="Edit" height="22" width="22"></img></span>
+								
+								<span style="float: right;"><img onclick="removeTemplate('#{menu.elementLabel}','#{widgetIndex.index+1}');" alt="Remove" src="../images/delete.gif" style="cursor:pointer;" title="Remove" height="20" width="20"></img>
+								</span>								
+							</td>
+						</tr>
+						<tr id="#{menu.elementLabel}editableOrder#{widgetIndex.index}" class="#{class}" style="display:none">
+							<td style="width:11%;" id="order">
+								#{rel.act.observation.value.CE.displayName}
+								<h:inputHidden id="saveProblem#{widgetIndex.index}" value="#{rel.enableRelationship}"/>
+							</td>
+							<td style="width:8%;" nowrap="nowrap" >
+								<trim:TS value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="false"/>
+							</td>
+							<td style="width:10%;" >
+								<trim:valueSetMenu id="severity#{widgetIndex.index}"  slot="#{rel.act.relationship['severity'].act.observation.value}" />
+								
+							</td>
+							<td style="width:10%;" >
+								<trim:valueSetMenu id="course#{widgetIndex.index}" slot="#{rel.act.relationship['course'].act.observation.value}" />
+							</td>
+							<td style="width:10%;">
+								<trim:valueSetMenu id="outcome#{widgetIndex.index}" slot="#{rel.act.relationship['outcome'].act.observation.value}" />
+							</td>
+							<td style="width:13%;" >
+								<h:inputTextarea id="treatment#{widgetIndex.index}" value="#{rel.act.relationship['treatment'].act.text.ST.value}"/>
+							</td>
+							<td style="width:13%;" >
+								<h:inputTextarea id="comments#{widgetIndex.index}"  value="#{rel.act.relationship['comments'].act.text.ST.value}"/>
+							</td>
+							<td style="width:7%;" nowrap="nowrap">
+								<span style="float: left;">
+									<img onclick="setEnableAct('#{menu.elementLabel}','saveProblem#{widgetIndex.index}',true)" src="../images/save.gif" alt="Save" style="cursor:pointer;" title="Save" height="22" width="22">
+									</img>
+								</span>
+								<span style="float: right;"><img onclick="removeTemplate('#{menu.elementLabel}','#{widgetIndex.index+1}');" alt="Remove" src="../images/delete.gif" style="cursor:pointer;" title="Remove" height="20" width="20"></img>
+								</span>	
+							</td>
+						</tr>
+					</c:if>
+					<c:if test="#{rel.enabled == false}"> <!-- problems not saved -->
+						<c:set var="hasUnsavedProblem" value="true"/>
+						<tr class="#{class}">
+							<td style="width:11%;" id="order">
+								#{rel.act.observation.value.CE.displayName}
+								<h:inputHidden id="saveProblem#{widgetIndex.index}" value="#{rel.enableRelationship}"/>
+							</td>
+							<td style="width:8%;" nowrap="nowrap" >								
+								<trim:TS value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="false"/>
+							</td>
+							<td style="width:10%;" >
+								<trim:valueSetMenu id="severity#{widgetIndex.index}"  slot="#{rel.act.relationship['severity'].act.observation.value}" />
+								
+							</td>
+							<td style="width:10%;" >
+								<trim:valueSetMenu id="course#{widgetIndex.index}" slot="#{rel.act.relationship['course'].act.observation.value}" />
+							</td>
+							<td style="width:10%;">
+								<trim:valueSetMenu id="outcome#{widgetIndex.index}" slot="#{rel.act.relationship['outcome'].act.observation.value}" />
+							</td>
+							<td style="width:13%;" >
+								<h:inputTextarea id="treatment#{widgetIndex.index}" value="#{rel.act.relationship['treatment'].act.text.ST.value}"/>
+							</td>
+							<td style="width:13%;" >
+								<h:inputTextarea id="comments#{widgetIndex.index}"  value="#{rel.act.relationship['comments'].act.text.ST.value}"/>
+							</td>
+							<td style="width:7%;" nowrap="nowrap">
+								<span style="float: left;">
+									<img onclick="setEnableAct('#{menu.elementLabel}','saveProblem#{widgetIndex.index}',true)" src="../images/save.gif" alt="Save" style="cursor:pointer;" title="Save" height="22" width="22">
+									</img>
+								</span>
+								<span style="float: right;"><img onclick="removeTemplate('#{menu.elementLabel}','#{widgetIndex.index+1}');" alt="Remove" src="../images/delete.gif" style="cursor:pointer;" title="Remove" height="20" width="20"></img>
+								</span>	
+							</td>
+						</tr>		
+					</c:if>
+				</c:forEach>
+			</tbody>		
+		</table>
+		<c:if test="#{hasUnsavedProblem == 'true'}">
+			<h:inputHidden id="preProcessStepParams" value="2,confirmDeleteUnsavedProblems"/>
+		</c:if>
 </body>
 </html>
-

@@ -28,6 +28,7 @@ public abstract interface PersisterLocal {
 	
 	public enum Participation {NONE, EXCLUSIVE, SHARED};
 	public enum Operation {PERSIST, DELETE, UPDATE};
+	public enum Method {GET,POST,PUT, DELETE};
 	
 	/**
 	 * Given the menuData item, a persister must return its desired level of participation in the operation.

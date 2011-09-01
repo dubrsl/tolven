@@ -14,7 +14,12 @@
 <body> 
     <ui:composition>
 		<trim:ENSlot id="name" slot="#{entity.name}" readonly="true"/>
-		<wiz:group title="#{entity.livingSubject.administrativeGenderCode.label.value}">
+		<c:if test="#{entity.id.for['SSN'].label.value != null}">
+			<wiz:group id="ssn" title="#{entity.id.for['SSN'].label.value}">
+				<h:outputText value="#{entity.id.for['SSN'].extension}" />
+			</wiz:group>
+		</c:if>
+		<wiz:group id="sex" title="#{entity.livingSubject.administrativeGenderCode.label.value}">
 			<h:outputText value="#{entity.livingSubject.administrativeGenderCode.CE.displayName}" />
 		</wiz:group>
 		<wiz:group title="#{entity.livingSubject.birthTime.label.value}">

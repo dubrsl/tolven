@@ -33,7 +33,7 @@
 		</antcall>
 		<!-- End of list of sections to build -->
 		<!-- Add DevLib.jar to plugin zip -->
-		<jar destfile="build/tolvenWS.war">
+		<jar destfile="${buildFolder}/tolvenWS.war">
 			<manifest>
 				<attribute name="Built-By" value="Tolven Healthcare Innovations"/>
 				<attribute name="Implementation-Version" value="${tolven.impl.version}" />

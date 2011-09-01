@@ -88,7 +88,6 @@ public class DocumentBean implements DocumentLocal, DocumentRemote {
     @EJB TolvenMessageSchedulerLocal tmSchedulerBean;
 
     private DocTypeFactory docTypeFactory;
-
     public DocumentBean() {
         super();
     }
@@ -507,7 +506,7 @@ public class DocumentBean implements DocumentLocal, DocumentRemote {
      * @return The list of attachments. The list may be empty
      */
     public List<DocAttachment> findAttachments(DocBase parentDocument) {
-        Query query = em.createQuery("SELECT da FROM DocAttachment da WHERE da.parentDocument = :parent");
+    	Query query = em.createQuery("SELECT da FROM DocAttachment da WHERE da.parentDocument = :parent");
         query.setParameter("parent", parentDocument);
         List<DocAttachment> attachments = query.getResultList();
         for (DocAttachment attachment : attachments) {

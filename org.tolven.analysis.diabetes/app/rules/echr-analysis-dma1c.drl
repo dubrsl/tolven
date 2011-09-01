@@ -11,14 +11,89 @@ import org.tolven.trim.ex.*;
 import org.tolven.analysis.SnapshotEvent;
 import org.tolven.analysis.DMA1cSnapshotEvent;
 import org.tolven.analysis.SnapshotLocal;
+import org.tolven.analysis.AnalysisLocal;
+import org.tolven.analysis.AnalysisEvent;
+import org.tolven.app.entity.MenuQueryControl;
+import org.tolven.app.bean.MenuPath;
+import org.tolven.app.MenuLocal;
+import org.tolven.app.CCHITLocal;
 
 global org.tolven.app.AppEvalAdaptor app;
 global Date now;
 
+rule "Refresh Cohort Lists on change in cohort properties"
+	when
+		$analysisEvent: AnalysisEvent( command == "update", $cohortType: cohortType)
+		$snapshotBean: SnapshotLocal()
+		$analysisBean: AnalysisLocal()
+		$menuBean: MenuLocal()
+		$cchitBean: CCHITLocal()
+		$msPatientcohort: MenuStructure( role == "placeholder", path == "echr:patient:patientcohort" )
+		$msPatientCohortList: MenuStructure( role == "list", path == "echr:patient:cohorts:current" )
+		$msCohortPatientList: MenuStructure( role == "list", path == "echr:cohort:patients" )
+		$msCohort: MenuStructure( role == "placeholder", path == "echr:cohort" )
+		$msList: MenuStructure( role == "list", path == "echr:analysis:cohorts:all" )
+	then
+		if($cohortType.equals("org.tolven.cohort.dm")){			
+			$snapshotBean.deletePatientCohortList(app.getAccount(),"Diabetes");
+			$snapshotBean.deleteCohortPlaceholder(app.getAccount(),"dm");
+			$snapshotBean.deleteCohortList(app.getAccount(),"Diabetes","dm");
+			$snapshotBean.deleteAnalysisCohortList(app.getAccount(),"Diabetes");			
+			MenuPath path = new MenuPath("echr:patients:all");
+		    MenuQueryControl ctrl=new MenuQueryControl();
+			ctrl.setMenuStructurePath("echr:patients:all");
+			ctrl.setOriginalTargetPath(path);
+			ctrl.setAccountUser(app.getAccountUser());
+			MenuData cohort = null;
+			List<MenuData> patientList =null;
+			MenuData patientcohort=null;
+			patientList = $menuBean.findMenuData(ctrl);
+			for(MenuData $mdPat: patientList) { 
+				patientcohort = $snapshotBean.findPatientcohort("dm", $mdPat, app.getAccount());
+				Boolean status = $snapshotBean.validateCohortProperties("dm", $mdPat, app);
+				String referenceId = $mdPat.getReferencePath().replace("echr:patient-", "");	
+				String contextPath = "echr:patient-"+referenceId+":problems:current";
+				Boolean codeStatus = false;
+				List<Map<String, Object>> list= $cchitBean.findAllMenuDataList("echr:patient:problems:all",contextPath,"DateSort=DESC",app.getAccountUser());
+				if (list != null && !list.isEmpty()){
+					for (Map<String, Object> map : list) {
+						codeStatus = $snapshotBean.validateCodeStatusCohortProperties("dm", $mdPat, app, map.get("Code").toString());
+						if(codeStatus == true){
+							break;
+						}
+					}
+					cohort = $snapshotBean.findCohort("dm",  app.getAccount());
+					if(cohort==null) {
+						cohort = app.createPlaceholder($msCohort);
+					    cohort.setString01("Diabetes");
+					    cohort.setString02("dm");
+					    cohort.setDate01(now);
+						$snapshotBean.addCohortPlaceholderID("dm", cohort);
+						if(status == true && codeStatus == true){
+							app.createReferenceMD( cohort, $msList );
+						}else {
+							$snapshotBean.deleteCohortPlaceholder(app.getAccount(),"dm");
+						}
+					}
+					Map<String, Object> menuDataMap = new HashMap<String, Object>();
+					menuDataMap.put("patient", $mdPat.getId());
+					menuDataMap.put("cohort", cohort.getId());
+					patientcohort = app.createPlaceholder( $msPatientcohort, menuDataMap );
+					patientcohort.setDate01( now );
+					$snapshotBean.addPatientcohortPlaceholderID("dm", patientcohort);
+					if(status == true && codeStatus == true){
+						app.createReferenceMD( patientcohort, $msPatientCohortList );
+						app.createReferenceMD( patientcohort, $msCohortPatientList, cohort );
+					}
+				}
+			}
+		}
+	end
+
 rule "Create patientcohort for dm.a1csnapshot"
 	when
 		$ms: MenuStructure( role == "placeholder", path == "echr:patient:problem" )
-		$md: MenuData( menuStructure == $ms, actStatus!="nullified", string01 matches "(?i).*diabetes.*", $mdPat : parent01 )
+		$md: MenuData( menuStructure == $ms, actStatus!="nullified", $mdPat : parent01 )
 		$msPatientcohort: MenuStructure( role == "placeholder", path == "echr:patient:patientcohort" )
 		$msCohortPatientList: MenuStructure( role == "list", path == "echr:cohort:patients" )
 		$msPatientCohortList: MenuStructure( role == "list", path == "echr:patient:cohorts:current" )
@@ -26,8 +101,9 @@ rule "Create patientcohort for dm.a1csnapshot"
 		$msList: MenuStructure( role == "list", path == "echr:analysis:cohorts:all" )
 		$snapshotBean: SnapshotLocal()
 	then
-		//app.debug( "Create patientcohort for dm.a1csnapshot" );
 		MenuData patientcohort = $snapshotBean.findPatientcohort("dm", $mdPat, app.getAccount());
+		Boolean status = $snapshotBean.validateCohortProperties("dm", $mdPat, app);
+		Boolean codeStatus = $snapshotBean.validateCodeStatusCohortProperties("dm", $mdPat, app, $md.getString06());
 		if(patientcohort == null) {
 			MenuData cohort = $snapshotBean.findCohort("dm",  app.getAccount());
 			if(cohort == null) {
@@ -36,7 +112,11 @@ rule "Create patientcohort for dm.a1csnapshot"
 	            cohort.setString02("dm");
 	            cohort.setDate01(now);
 				$snapshotBean.addCohortPlaceholderID("dm", cohort);
-				app.createReferenceMD( cohort, $msList );
+				if(status == true && codeStatus == true){
+					app.createReferenceMD( cohort, $msList );
+				}else {
+					$snapshotBean.deleteCohortPlaceholder(app.getAccount(),"dm");
+				}
 			}
 			Map<String, Object> menuDataMap = new HashMap<String, Object>();
 			menuDataMap.put("patient", $mdPat.getId());
@@ -44,10 +124,12 @@ rule "Create patientcohort for dm.a1csnapshot"
 			patientcohort = app.createPlaceholder( $msPatientcohort, menuDataMap );
 			patientcohort.setDate01( now );
 			$snapshotBean.addPatientcohortPlaceholderID("dm", patientcohort);
-			app.createReferenceMD( patientcohort, $msPatientCohortList );
-			app.createReferenceMD( patientcohort, $msCohortPatientList, cohort );
+			if(status == true && codeStatus == true) {
+				app.createReferenceMD( patientcohort, $msPatientCohortList );
+				app.createReferenceMD( patientcohort, $msCohortPatientList, cohort );
+			}
 		}
-end
+	end
 
 rule "Update latest dm.a1csnapshot"
 	when
@@ -55,7 +137,6 @@ rule "Update latest dm.a1csnapshot"
 		$md: MenuData( menuStructure == $ms, $mdPat: parent01, string01 matches "(?i).*a1c.*", pqValue01 != null, $pqValue01: pqValue01, pqUnits01 != null, $pqUnits01: pqUnits01, date01 != null, $date: date01 )
 		$snapshotBean: SnapshotLocal()
 	then
-		//app.debug( "Update latest dm.a1csnapshot" );
 		MenuData patientcohort = $snapshotBean.findPatientcohort( "dm", $mdPat.getId(), app.getAccount() );
 		if(patientcohort != null) {
 			MenuData lastA1c = (MenuData) patientcohort.getField("lastA1c");
@@ -63,7 +144,7 @@ rule "Update latest dm.a1csnapshot"
 				patientcohort.setField("lastA1c", $md);
 			}
 		}
-end
+	end
 
 rule "Insert DMA1cSnapshotEvent into working memory"
 	when
@@ -72,7 +153,7 @@ rule "Insert DMA1cSnapshotEvent into working memory"
 		$msSnapshotList: MenuStructure( role == "list", path =="echr:cohort:snapshots:a1csnapshot" )
 		$snapshotBean: SnapshotLocal()
 	then
-		//app.debug( "Insert DMA1cSnapshotEvent into working memory");
+		$snapshotBean.deleteAnalysisList(app.getAccount(),"a1csnapshot");
 		MenuData cohort = $snapshotBean.findCohort("dm",  app.getAccount());
 		if(cohort != null) {
 			List<MenuData> patientcohorts = $snapshotBean.findCohortPatients(cohort, app.getAccount() );
@@ -97,7 +178,7 @@ rule "Insert DMA1cSnapshotEvent into working memory"
 			insert( dma1cSnapshotEvent );
 			$snapshotBean.upateMenuDataVersion( "echr:analysis:portal:dma1csnapshotsum", app.getAccount(), now );
 		}
-end
+	end
 
 rule "Insert last dm.a1csnapshot Result into working memory"
 	when
@@ -106,9 +187,8 @@ rule "Insert last dm.a1csnapshot Result into working memory"
 		$mdPatientcohort: MenuData( menuStructure == $msPatientcohort, $mdPat: parent01, parent02 == $cohort )
 		eval ($mdPatientcohort.getField("lastA1c") != null )
 	then
-		//app.debug( "Insert last dm.a1csnapshot Result into working memory" );
 		insert($mdPatientcohort.getField("lastA1c"));
-end
+	end
 
 rule "Create And Insert dm.a1csnapshot Snapshotresult into working memory"
 	when
@@ -120,7 +200,6 @@ rule "Create And Insert dm.a1csnapshot Snapshotresult into working memory"
 		eval ( $mdPatientcohort.getField("lastA1c") != null && $mdPatientcohort.getField("lastA1c").equals($mdResult) )
 		$msSnapshotresult: MenuStructure( role == "placeholder", path == "echr:cohort:a1csnapshot:a1csnapshotresult" )
 	then
-		//app.debug( "Create And Insert dm.a1csnapshot Snapshotresult into working memory" );
 		Map<String, Object> menuDataMap = new HashMap<String, Object>();
 		menuDataMap.put("a1csnapshot", $snapshot);
 		menuDataMap.put("patient", $mdPat);
@@ -130,7 +209,7 @@ rule "Create And Insert dm.a1csnapshot Snapshotresult into working memory"
 		mdSnapshotresult.setField("a1cUnits", $mdResult.getPqUnits01());
 		mdSnapshotresult.setField("a1cDate", $mdResult.getDate01());
 		insert ( mdSnapshotresult );
-end
+	end
 
 rule "Create And Insert Null dm.a1csnapshot Snapshotresult into working memory"
 	when
@@ -140,14 +219,29 @@ rule "Create And Insert Null dm.a1csnapshot Snapshotresult into working memory"
 		eval ( $mdPatientcohort.getField("lastA1c") == null )
 		$msSnapshotresult: MenuStructure( role == "placeholder", path == "echr:cohort:a1csnapshot:a1csnapshotresult" )
 		$snapshotBean: SnapshotLocal()
+		$cchitBean: CCHITLocal()
 	then
-		//app.debug( "Create And Insert Null dm.a1csnapshot Snapshotresult into working memory" );
-		Map<String, Object> menuDataMap = new HashMap<String, Object>();
-		menuDataMap.put("a1csnapshot", $snapshot);
-		menuDataMap.put("patient", $mdPat);
-		MenuData mdSnapshotresult = app.createPlaceholder( $msSnapshotresult, menuDataMap );
-		insert ( mdSnapshotresult );
-end
+		Boolean status = $snapshotBean.validateCohortProperties("dm", $mdPat, app);
+		String referenceId = $mdPat.getPath().replace("echr:patient-", "");	
+		String contextPath = "echr:patient-"+referenceId+":problems:current";
+		Boolean codeStatus = false;
+		List<Map<String, Object>> list= $cchitBean.findAllMenuDataList("echr:patient:problems:all",contextPath,"DateSort=DESC",app.getAccountUser());
+		if (list != null && !list.isEmpty()){
+			for (Map<String, Object> map : list) {
+				codeStatus = $snapshotBean.validateCodeStatusCohortProperties("dm", $mdPat, app, map.get("Code").toString());
+					if(codeStatus == true){
+						break;
+					}
+				}
+		}
+		if(status == true && codeStatus == true) {
+			Map<String, Object> menuDataMap = new HashMap<String, Object>();
+			menuDataMap.put("a1csnapshot", $snapshot);
+			menuDataMap.put("patient", $mdPat);
+			MenuData mdSnapshotresult = app.createPlaceholder( $msSnapshotresult, menuDataMap );
+			insert ( mdSnapshotresult );
+		}
+	end
 
 rule "Add patientcohorts To dm.a1csnapshot Snapshot Norm List"
 	when
@@ -157,15 +251,18 @@ rule "Add patientcohorts To dm.a1csnapshot Snapshot Norm List"
 		eval ( $mdSnapshotresult.getField("a1cValue") != null && $mdSnapshotresult.getDoubleField("a1cValue") <= $a1cHigh )
 		$msNormList: MenuStructure( role == "list", path == "echr:cohort:a1csnapshot:norma1c" )
 		$msAllList: MenuStructure( role == "list", path == "echr:cohort:a1csnapshot:all" )
+		$msMainNormList: MenuStructure( role == "list", path == "echr:analysis:dma1csnapshot:norma1c" )
+		$msMainAllList: MenuStructure( role == "list", path == "echr:analysis:dma1csnapshot:all" )
 	then
-		//app.debug( "Add patientcohorts To dm.a1csnapshot Snapshot Norm List: " + $msNormList);
 		app.createReferenceMD( $mdSnapshotresult, $msNormList );
+		app.createReferenceMD( $mdSnapshotresult, $msMainNormList );
 		long count = $snapshot.getLongField("normCount").longValue();
 		$snapshot.setField("normCount", ++count);
 		app.createReferenceMD( $mdSnapshotresult, $msAllList );
+		app.createReferenceMD( $mdSnapshotresult, $msMainAllList );
 		count = $snapshot.getLongField("allCount").longValue();
 		$snapshot.setField("allCount", ++count);
-end
+	end
 
 rule "Add patientcohorts dm.a1csnapshot Snapshot High List"
 	when
@@ -175,12 +272,15 @@ rule "Add patientcohorts dm.a1csnapshot Snapshot High List"
 		eval ( $mdSnapshotresult.getField("a1cValue") == null || $mdSnapshotresult.getDoubleField("a1cValue") > $a1cHigh )
 		$msHighList: MenuStructure( role == "list", path == "echr:cohort:a1csnapshot:abnorma1c" )
 		$msAllList: MenuStructure( role == "list", path == "echr:cohort:a1csnapshot:all" )
+		$msMainHighList: MenuStructure( role == "list", path == "echr:analysis:dma1csnapshot:abnorma1c" )
+		$msMainAllList: MenuStructure( role == "list", path == "echr:analysis:dma1csnapshot:all" )		
 	then
-		//app.debug( "Add patientcohorts dm.a1csnapshot Snapshot High List: " + $msHighList );
 		app.createReferenceMD( $mdSnapshotresult, $msHighList );
+		app.createReferenceMD( $mdSnapshotresult, $msMainHighList );
 		long count = $snapshot.getLongField("abnormCount").longValue();
 		$snapshot.setField("abnormCount", ++count);
 		app.createReferenceMD( $mdSnapshotresult, $msAllList );
+		app.createReferenceMD( $mdSnapshotresult, $msMainAllList );
 		count = $snapshot.getLongField("allCount").longValue();
 		$snapshot.setField("allCount", ++count);
-end
+	end

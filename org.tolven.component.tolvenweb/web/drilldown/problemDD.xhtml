@@ -46,6 +46,8 @@
 					<trim:CE id="course" valueSet="course" value="#{trim.trim.act.relationships[2].act.observation.value}" readonly="true"/>
 					<h:outputText value="#{msg.Onset}: "/>
 					<trim:CE id="onset" valueSet="onset" value="#{trim.trim.act.relationships[3].act.observation.value}" readonly="true"/>
+				        <h:outputText value="#{msg.Outcome}: "/>
+					<trim:CE id="outcome" valueSet="outcome" value="#{trim.trim.act.relationships[3].act.observation.value}" readonly="true"/>
 				</h:panelGrid>
 			</c:if>
 		</wiz:body>

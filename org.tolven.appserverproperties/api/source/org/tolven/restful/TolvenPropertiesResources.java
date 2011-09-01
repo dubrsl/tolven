@@ -26,6 +26,7 @@ import java.util.Set;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -47,7 +48,23 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 public class TolvenPropertiesResources {
 
     @EJB
-    private TolvenPropertiesLocal tolvenPropertiesLocal;
+    private TolvenPropertiesLocal tolvenPropertiesBean;
+
+    public TolvenPropertiesResources() {
+    }
+
+    protected TolvenPropertiesLocal getTolvenPropertiesBean() {
+        if (tolvenPropertiesBean == null) {
+            String jndiName = "java:app/tolvenEJB/TolvenProperties!org.tolven.core.TolvenPropertiesLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                tolvenPropertiesBean = (TolvenPropertiesLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return tolvenPropertiesBean;
+    }
 
     /**
      * Return tolven persistent properties (from the database, not the running system). If any of the properties
@@ -61,9 +78,9 @@ public class TolvenPropertiesResources {
         try {
             Properties foundProperties = null;
             if (propertyNames == null || propertyNames.isEmpty()) {
-                foundProperties = tolvenPropertiesLocal.findProperties();
+                foundProperties = getTolvenPropertiesBean().findProperties();
             } else {
-                foundProperties = tolvenPropertiesLocal.findProperties(propertyNames);
+                foundProperties = getTolvenPropertiesBean().findProperties(propertyNames);
             }
             MultivaluedMap<String, String> mvMap = new MultivaluedMapImpl();
             for (Object obj : foundProperties.keySet()) {
@@ -101,7 +118,7 @@ public class TolvenPropertiesResources {
             for (String name : mvMap.keySet()) {
                 properties.setProperty(name, mvMap.getFirst(name));
             }
-            tolvenPropertiesLocal.setProperties(properties);
+            getTolvenPropertiesBean().setProperties(properties);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
@@ -118,7 +135,7 @@ public class TolvenPropertiesResources {
             }
             Properties properties = new Properties();
             properties.loadFromXML(new ByteArrayInputStream(propertiesXML.getBytes("UTF-8")));
-            tolvenPropertiesLocal.setProperties(properties);
+            getTolvenPropertiesBean().setProperties(properties);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
@@ -139,7 +156,7 @@ public class TolvenPropertiesResources {
             if (propertyNames != null) {
                 boolean silentIfMissing = "true".equals(map.get("silentIfMissing"));
                 if (!silentIfMissing) {
-                    Properties foundProperties = tolvenPropertiesLocal.findProperties(propertyNames);
+                    Properties foundProperties = getTolvenPropertiesBean().findProperties(propertyNames);
                     if (!propertyNames.containsAll(foundProperties.keySet())) {
                         StringBuffer buff = new StringBuffer();
                         propertyNames.removeAll(foundProperties.keySet());
@@ -153,7 +170,7 @@ public class TolvenPropertiesResources {
                         return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity(buff.toString()).build();
                     }
                 }
-                tolvenPropertiesLocal.removeProperties(propertyNames);
+                getTolvenPropertiesBean().removeProperties(propertyNames);
             }
             return Response.ok().build();
         } catch (Exception ex) {
@@ -168,7 +185,7 @@ public class TolvenPropertiesResources {
     @POST
     public Response resetAllProperties() {
         try {
-            tolvenPropertiesLocal.resetAllProperties();
+            getTolvenPropertiesBean().resetAllProperties();
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();

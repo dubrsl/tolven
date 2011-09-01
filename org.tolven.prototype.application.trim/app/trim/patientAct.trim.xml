@@ -61,21 +61,5 @@
 				</id>
 			</role>
 		</participation>
-		<relationship name="annotation" direction="IN" typeCode="SUBJ">
-			<act classCode="OBS" moodCode="EVN">
-				<code>
-					<label>Comment</label>
-					<valueSet>annotationType</valueSet>
-				</code>
-				<text>
-					<ED />
-				</text>
-			</act>
-		</relationship>		
 	</act>
-	<valueSet name="annotationType">
-		<null type="UNK">
-			<label>no comment</label>
-		</null>
-	</valueSet>	
 </trim>

@@ -22,6 +22,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJBContext;
 import javax.ejb.Local;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,6 +35,8 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.export.JRPdfExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
 import net.sf.jasperreports.engine.xml.JRXmlWriter;
 
 import org.tolven.core.entity.AccountUser;
@@ -159,11 +162,31 @@ public class ReportBean implements ReportLocal {
         java.util.Map<String, Object> parameterMap = new java.util.HashMap<String, Object>();
         parameterMap.put("accountUser", accountUser);
         JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameterMap, dataSource);
-        if (reportFormat == null || "pdf".toLowerCase().equals(reportFormat.toLowerCase())) {
-            JRPdfExporter exporter = new JRPdfExporter();
-            exporter.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
-            exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, out);
-            exporter.exportReport();
+        /* CCHIT merge
+         * To export data to xls format
+         */
+        if ( "xls".toLowerCase().equals(reportFormat.toLowerCase())){
+        	JRXlsExporter exporterXLS = new JRXlsExporter();
+            exporterXLS.setParameter(JRXlsExporterParameter.JASPER_PRINT,jasperPrint);
+            exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_STREAM,out);
+            exporterXLS.setParameter(JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET,Boolean.FALSE);
+            exporterXLS.setParameter(JRXlsExporterParameter.IS_DETECT_CELL_TYPE,Boolean.TRUE);
+            exporterXLS.setParameter(JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND,Boolean.FALSE);            
+            exporterXLS.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS,Boolean.TRUE);
+            exporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_FILE_NAME,reportName);
+           //xporterXLS.setParameter(JRXlsExporterParameter.OUTPUT_FILE, value)
+            exporterXLS.exportReport();
+        }
+        /*
+         * To export data to pdf format
+         */
+        else if (reportFormat == null || "pdf".toLowerCase().equals(reportFormat.toLowerCase())) {
+        	 JRPdfExporter exporterPDF = new JRPdfExporter();
+        	 exporterPDF.setParameter(JRXlsExporterParameter.JASPER_PRINT, jasperPrint);
+        	 exporterPDF.setParameter(JRXlsExporterParameter.OUTPUT_STREAM, out);
+        	 exporterPDF.setParameter(JRExporterParameter.JASPER_PRINT, jasperPrint);
+        	 exporterPDF.setParameter(JRXlsExporterParameter.OUTPUT_FILE_NAME, reportName);
+        	 exporterPDF.exportReport();
         } else {
             throw new RuntimeException("Report format unrecognized: " + reportName);
         }

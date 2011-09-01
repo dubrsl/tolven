@@ -17,10 +17,12 @@
 package org.tolven.queue.bean;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
@@ -33,17 +35,21 @@ import javax.jms.Session;
 
 import org.tolven.app.ActivateNewTrimHeadersMessage;
 import org.tolven.app.AdminAppQueueLocal;
+import org.tolven.key.QueueKeyLocal;
 
 @Stateless
 @Local(AdminAppQueueLocal.class)
 public class AdminAppQueueBean implements AdminAppQueueLocal {
 
-    @Resource(name = "jms/JmsXA")
-    private ConnectionFactory connectionFactory;
-
     @Resource(name = "queue/adminApp")
     private Queue adminAppQueue;
 
+    @Resource(name = "jms/JmsXA")
+    private ConnectionFactory connectionFactory;
+
+    @EJB
+    private QueueKeyLocal queueKeyLocal;
+    
     private String queueName;
 
     @Override
@@ -58,15 +64,15 @@ public class AdminAppQueueBean implements AdminAppQueueLocal {
         return queueName;
     }
 
-    /**
-     * Queue a payload.
-     * @param payload
-     */
     @Override
-    public void send(Serializable payload) {
-        List<Serializable> payloads = new ArrayList<Serializable>(1);
-        payloads.add(payload);
-        send(payloads);
+    public X509Certificate getQueueOwnerX509Certificate() {
+        return queueKeyLocal.getUserX509Certificate(getQueueName());
+    }
+
+    @Override
+    public void queueActivateNewTrimHeaders() {
+        ActivateNewTrimHeadersMessage msg = new ActivateNewTrimHeadersMessage();
+        send(msg);
     }
 
     /**
@@ -99,10 +105,15 @@ public class AdminAppQueueBean implements AdminAppQueueLocal {
         }
     }
 
+    /**
+     * Queue a payload.
+     * @param payload
+     */
     @Override
-    public void queueActivateNewTrimHeaders() {
-        ActivateNewTrimHeadersMessage msg = new ActivateNewTrimHeadersMessage();
-        send(msg);
+    public void send(Serializable payload) {
+        List<Serializable> payloads = new ArrayList<Serializable>(1);
+        payloads.add(payload);
+        send(payloads);
     }
 
 }

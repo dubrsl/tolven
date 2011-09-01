@@ -10,6 +10,8 @@ import org.tolven.app.entity.MenuData;
 import org.tolven.app.bean.Mode;
 import org.tolven.app.bean.Plan;
 import org.tolven.core.entity.Status;
+//import org.tolven.app.ShareAdvanceDirectiveLocal;
+import org.tolven.doc.bean.TolvenMessage;
 
 global org.tolven.app.AppEvalAdaptor app;
 global Date now;
@@ -298,5 +300,66 @@ rule "Place Provider on Provider list"
 		app.addMyProvider( $md.getField("providerId") );
 end
 
+rule "Place Directives on Directives list"
+	when
+		$msConsent: MenuStructure( role == "placeholder", path == "ephr:patient:consent" )
+		$msConsentList: MenuStructure( role == "list", path == "ephr:patient:consents:current" )		
+		$mdConsent: MenuData( menuStructure == $msConsent)
+	then
+		app.createReferenceMD( $mdConsent, "ephr:patient:consents:current" );
+end
+rule "Place consent on consentsum summary list"
+	when
+		$msConsent: MenuStructure( role == "placeholder", path == "ephr:patient:consent" )
+		$mdConsent: MenuData( menuStructure == $msConsent )
+	then
+		MenuData mdPXList = app.createReferenceMD( $mdConsent, "ephr:patient:summary:consentsum" );
+end
 
 
+rule "Place Progress Note on Progress Note list"
+when
+	$msProgressNote: MenuStructure( role == "placeholder", path == "ephr:patient:progressnote" )
+	$msProgressNoteList: MenuStructure( role == "list", path == "ephr:patient:progressnotes:current" )		
+	$mdProgressNote: MenuData( menuStructure == $msProgressNote)
+then
+	app.createReferenceMD( $mdProgressNote, "ephr:patient:progressnotes:current" );
+end
+
+rule "Place progressnote on progressnotessum summary list"
+when
+	$msProgressNote: MenuStructure( role == "placeholder", path == "ephr:patient:progressnote" )
+	$mdProgressNote: MenuData( menuStructure == $msProgressNote )
+then
+	MenuData mdPXList = app.createReferenceMD( $mdProgressNote, "ephr:patient:summary:progressnotessum" );
+end
+
+rule "Place Contact on Contact list"
+	when
+		$msPC: MenuStructure( role == "placeholder", path == "ephr:patient:contact" )
+		$mdPC: MenuData( menuStructure == $msPC, actStatus == "active" )
+	then
+		MenuData md = app.createReferenceMD( $mdPC, "ephr:patient:personal:contacts" );
+		md.addPhrase(  $mdPC.getString01(),  "type" , "en_US"  );
+end
+
+/*rule "Initialize ShareAdvanceDirectiveBean"
+salience 5
+when
+	eval(true)
+then
+	insert(app.lookupResource( "tolven/ShareAdvanceDirectiveBean/local" ));
+end
+
+rule "Share Advance Directive"
+when
+	$shareAdvanceDirectiveBean:ShareAdvanceDirectiveLocal()
+	Mode( direction == "local" )
+	$trim: Trim( name == "docclin/evn/consent" )
+	$ms: MenuStructure( role == "placeholder", path == "ephr:patient:consent" )
+	$md: MenuData( menuStructure == $ms)
+	$tm: TolvenMessage()
+then
+	app.info( "Share Advance Directive" );
+	$shareAdvanceDirectiveBean.startSharingAdvanceDirective($trim, app, $tm);
+end */

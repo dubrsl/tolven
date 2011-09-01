@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <trim xmlns="urn:tolven-org:trim:4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
 	<name>docclin/evn/allergy</name>
 	<description>Allergy Document</description>
 	<page>docclin.xhtml</page>
@@ -18,8 +19,8 @@
 		<transition name="create" to="active">
 			<label language="en">Active</label>
 		</transition>
-		<transition name="cancelActive" from="active" to="cancelled">
-			<label language="en">Cancel</label>
+		<transition name="cancelActive" from="active" to="inactive">
+			<label language="en">Inactive</label>
 		</transition>
 		<transition name="reviseActive" from="active" to="active">
 			<label language="en">Revise</label>
@@ -34,26 +35,6 @@
 			<label>Time of Allery</label>
 			<new datatype="TS" function="now" />
 		</effectiveTime>
-		<participation name="subject" typeCode="SBJ">
-			<role classCode="PAT">
-				<bind application="echr">
-					<placeholder>
-						<path>echr:patient</path>
-					</placeholder>
-				</bind>
-				<bind application="ephr">
-					<placeholder>
-						<path>ephr:patient</path>
-					</placeholder>
-				</bind>
-				<id>
-					<II>
-						<root>#{computeIDRoot(account)}</root>
-						<extension>#{patient.path}</extension>
-					</II>
-				</id>
-			</role>
-		</participation>
 		<participation name="dataEnterer" typeCode="ENT">
 			<role classCode="ROL">
 				<id>

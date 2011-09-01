@@ -14,12 +14,21 @@
 <body> 
     <ui:composition>
 		<wiz:group title="#{value.label.value}">
-	    	<h:dataTable value="#{value.parts}" var="enxp">
+			<!-- Modified to validate firstname and lastname, 07/19/2010, Valsaraj -->
+	    	<h:dataTable value="#{value.parts}" var="enxp" id="name">
 				<h:column>
-					<h:outputText value="#{enxp.label.value}" />
+					<h:outputText value="#{enxp.label.value}#{readonly!='true' and (enxp.label.value == 'Last Name' or enxp.label.value == 'First Name')?' *':''}" />
+					<!--
+	    			<h:outputText value="#{enxp.label.value}*" style="width:125px;border: 0px;" rendered="#{enxp.label.value=='First Name'}"/>
+	    			<h:outputText value="#{enxp.label.value}*" style="width:125px;border: 0px;" rendered="#{enxp.label.value=='Last Name'}"/> 
+	    			<h:outputText value="#{enxp.label.value}" style="width:125px;border: 0px;" rendered="#{enxp.label.value!='First Name' and enxp.label.value!='Last Name'}"/>-->				
 				</h:column>
 				<h:column>
-					<h:inputText value="#{enxp.ST.value}" rendered="#{readonly!='true'}"/>
+    				<h:inputText id="firstname" value="#{enxp.ST.value}"  rendered="#{enxp.label.value=='First Name' and readonly!='true'}">
+    				</h:inputText>
+    				<h:inputText id="lastname" value="#{enxp.ST.value}"  rendered="#{enxp.label.value=='Last Name' and readonly!='true'}">
+    				</h:inputText>
+    				<h:inputText value="#{enxp.ST.value}" rendered="#{enxp.label.value!='First Name' and enxp.label.value!='Last Name' and readonly!='true'}"/>
 					<h:outputText value="#{enxp.ST.value}" rendered="#{readonly=='true'}"/>
 				</h:column>
 	    	</h:dataTable> 

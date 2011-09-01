@@ -60,8 +60,6 @@ import org.tolven.plugin.repository.bean.PluginDetail;
 import org.tolven.plugin.repository.bean.PluginPropertyDetail;
 import org.tolven.plugin.repository.bean.PluginVersionDetail;
 import org.tolven.plugin.repository.bean.Plugins;
-import org.tolven.security.hash.TolvenMessageDigest;
-import org.tolven.util.VersionNumber;
 
 /**
  * The class reads information in all of the plugin manifests in a repository and compiles a repository plugins.xml file.

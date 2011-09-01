@@ -6,13 +6,13 @@
     </head>
     <body>
    		<p>Select an Account (User must be logged in)</p>
-		<a target="results" href="/Tolven/api/vestibule/accountList">Show Account List</a><br/><br/>
-   		<form action="/Tolven/api/vestibule/selectAccount" method="post" target="results">
+		<a target="results" href="/api/vestibule/accountList">Show Account List</a><br/><br/>
+   		<form action="/api/vestibule/selectAccount" method="post" target="results">
 			  AccountId: <input type="text" name="accountId" value="" size="10"/><br />
  					<input type="submit" value="Select Account" />
 		</form>
 		<br/>or<br/>
-   		<form action="/Tolven/api/vestibule/selectAccountUser" method="post" target="results">
+   		<form action="/api/vestibule/selectAccountUser" method="post" target="results">
 			  AccountUserId: <input type="text" name="accountUserId" value="" size="10"/><br />
  					<input type="submit" value="Select AccountUser" />
 		</form>

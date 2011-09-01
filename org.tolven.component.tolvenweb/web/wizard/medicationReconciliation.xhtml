@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Medication Reconciliation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+	<ui:composition>
+		<wiz:step title="Medication Reconciliation" >
+			<wiz:body>
+				<table width="100%">
+					<tr>
+						<td>
+							<b>Active Medications</b>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<c:forEach var="activeMedication" items="#{trim.trim.act.relationship['activeMedications'].act.relationshipsList['medication']}" varStatus="medIndex">
+								<c:if test="#{activeMedication != null}">
+									<h:selectBooleanCheckbox id="medication#{medIndex.index}" value="#{activeMedication.enableRelationship}"/>
+									<h:outputText value="#{activeMedication.act.title.ST.value}"/>
+									<br/>
+								</c:if>
+							</c:forEach>
+						</td>
+					</tr>
+				</table>		
+			</wiz:body>
+		</wiz:step>	
+	</ui:composition>
+</body>
+</html>

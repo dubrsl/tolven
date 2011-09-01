@@ -24,6 +24,7 @@ import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -35,6 +36,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -55,7 +57,8 @@ import org.tolven.core.entity.AccountType;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.locale.ResourceBundleHelper;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.util.ExceptionFormatter;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -69,6 +72,8 @@ import com.sun.jersey.core.util.MultivaluedMapImpl;
 @Path("accounts")
 @ManagedBean
 public class AccountResources {
+	
+	//private Logger logger = Logger.getLogger(this.getClass());
 
     @EJB
     private AccountDAOLocal accountBean;
@@ -79,6 +84,9 @@ public class AccountResources {
     @EJB
     private ActivationLocal activationBean;
     
+    /*@EJB
+    private AppResolverLocal appResolver;
+    */
     @Context
     private HttpServletRequest request;
 
@@ -124,17 +132,18 @@ public class AccountResources {
             } else {
                 Date timeNow = (Date) request.getAttribute("timeNow");
                 String principal = request.getUserPrincipal().getName();
-                TolvenUser user = activationBean.findUser(principal);
+                TolvenUser user = getActivationBean().findUser(principal);
                 if (user == null) {
                     throw new RuntimeException("Could not find TolvenUser: " + principal);
                 }
                 if(locale == null) {
                     locale = user.getLocale();
                 }
-                PublicKey userPublicKey = TolvenSSO.getInstance().getUserPublicKey(request);
+                TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+                PublicKey userPublicKey = sessionWrapper.getUserPublicKey();
                 AccountUser accountUser = accountBean.createAccount(accountType, user, userPublicKey, timeNow);
                 account = accountUser.getAccount();
-                menuBean.updateMenuStructure(account);
+                getMenuBean().updateMenuStructure(account);
             }
             updateAccount(account, title, locale, timeZone, emailFormat, enableBackButton, disableAutoRefresh, manualMetaUpdate);
             URI uri = new URI(URLEncoder.encode(Long.toString(account.getId()), "UTF-8"));
@@ -269,7 +278,8 @@ public class AccountResources {
     @GET
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     public Response refreshAccount() {
-        boolean inAccount = "account".equals(TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.USER_CONTEXT, request));
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        boolean inAccount = "account".equals((String) sessionWrapper.getAttribute(GeneralSecurityFilter.USER_CONTEXT));
         if (!inAccount) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("You are not in an Account").build();
         }
@@ -277,14 +287,124 @@ public class AccountResources {
         Date now = (Date) request.getAttribute("tolvenNow");
         XAccountUser xAccountUser = XAccountUserFactory.createXAccountUser(accountUser, now);
         String xAccountUserXML = APIXMLUtil.marshalXAccountUser(xAccountUser);
-        List<AccountUser> accountUsers = activationBean.findUserAccounts(accountUser.getUser());
+        List<AccountUser> accountUsers = getActivationBean().findUserAccounts(accountUser.getUser());
         XFacadeAccountUsers xFacadeAccountUsers = XFacadeAccountUserFactory.createXFacadeAccountUsers(accountUsers, accountUser.getUser(), now);
         String xFacadeAccountUsersXML = APIXMLUtil.marshalXFacadeAccountUsers(xFacadeAccountUsers);
         MultivaluedMap<String, String> mvMap = new MultivaluedMapImpl();
         mvMap.putSingle(GeneralSecurityFilter.ACCOUNTUSER, xAccountUserXML);
         mvMap.putSingle(GeneralSecurityFilter.ACCOUNTUSERS, xFacadeAccountUsersXML);
-        TolvenSSO.getInstance().updateAccountUserTimestamp(request);
         return Response.ok(mvMap).build();
     }
+    
+    /**
+     * Get an Account Property
+     * @param pname
+     * @param pvalue
+     * @return
+     */
+    @Path("property")
+    @GET
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    //@Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    //@Produces(MediaType.APPLICATION_XML)
+    public Response getAccountProperty(
+            @QueryParam("pname") String pname) {
+        if (pname == null || pname.trim().length() == 0) {
+            return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("pname is missing").build();
+        }
+        Long accountUserId = (Long) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER_ID);
+        if (accountUserId == null) {
+            return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Account required").build();
+        }
+        //AccountUser accountUser = (AccountUser) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+        AccountUser accountUser = getActivationBean().findAccountUser(accountUserId);
+        
+        try {
+        	String pvalue = accountUser.getProperty().get(pname);
+        	
+        	/*if(pvalue.startsWith("<?xml")) {
+        		return XSLTUtil.generateXSLTResponse(pvalue, accountUser);
+	        	
+        	} else {*/
+	        	Response response = Response.ok().entity(pvalue).build(); 
+	        	return response;
+        	//}
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
+        }
+    }
 
+    /**
+     * Set an Account Property
+     * @param pname
+     * @param pvalue
+     * @return
+     */
+    @Path("property")
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    //@Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response setAccountProperty(
+            @FormParam("pname") String pname,		
+            @FormParam("pvalue") String pvalue) {
+        if (pname == null || pname.trim().length() == 0) {
+            return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("pname is missing").build();
+        }
+        Long accountUserId = (Long) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER_ID);
+        if (accountUserId == null) {
+            return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Account required").build();
+        }
+        AccountUser accountUser = (AccountUser) getActivationBean().findAccountUser(accountUserId);
+        try {
+        	getAccountBean().putAccountProperty(accountUser.getAccount().getId(), pname, pvalue);
+        	
+        	return Response.noContent().build();
+        	/*URI uri = new URI(URLEncoder.encode(Long.toString(accountUser.getAccount().getId()), "UTF-8"));
+            return Response.created(uri).entity(Long.toString(accountUser.getAccount().getId())).build();*/
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
+        }
+    }
+    
+    protected AccountDAOLocal getAccountBean() {
+        if (accountBean == null) {
+            String jndiName = "java:app/tolvenEJB/AccountDAOBean!org.tolven.core.AccountDAOLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                accountBean = (AccountDAOLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return accountBean;
+    }
+    
+    protected ActivationLocal getActivationBean() {
+        if (activationBean == null) {
+            String jndiName = "java:app/tolvenEJB/ActivationBean!org.tolven.core.ActivationLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                activationBean = (ActivationLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return activationBean;
+    }
+    
+    protected MenuLocal getMenuBean() {
+        if (menuBean == null) {
+            String jndiName = "java:app/tolvenEJB/MenuBean!org.tolven.app.MenuLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                menuBean = (MenuLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return menuBean;
+    }
+    
 }

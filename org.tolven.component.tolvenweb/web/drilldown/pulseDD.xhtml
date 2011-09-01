@@ -19,7 +19,7 @@
 				<h:outputText value="#{msg.DateOfObservation}: "/>
 				<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
 				<h:outputText value="#{msg.Value}: "/>
-				<h:outputText value="#{act.observation.value.PQ.value} #{act.observation.value.PQ.unit}"/>
+				<h:outputText value="#{trim.trim.act.observation.value.ST.value} #{act.observation.value.label.value}"/>
 
 				<h:outputText value="#{trim.trim.act.relationships[0].act.observation.value.label.value}: "/>
 				<trim:CE id="rhythm" valueSet="rhythm" value="#{trim.trim.act.relationships[0].act.observation.value}" readonly="true"/>
@@ -30,7 +30,37 @@
 				<h:outputText value="#{trim.trim.act.relationships[2].act.observation.value.label.value}: "/>
 				<trim:CE id="laterality" valueSet="laterality" value="#{trim.trim.act.relationships[2].act.observation.value}" readonly="true"/>
 
+				<h:outputText value="#{trim.trim.act.relationships[3].act.observation.value.label.value}: "/>
+				<h:outputText id="comments" value="#{trim.trim.act.relationships[3].act.observation.value.ST.value}" readonly="true"></h:outputText>
+				
 			</h:panelGrid>
+			<c:if test="#{vitalsignsHistory.history != null}">
+    				<div style="width:100%;height:100%; padding: 5px;">
+					<a href="#" onclick="$('historyDisplayTable').toggle();return false;">History</a>
+						<table cellspacing="0" cellpadding="0" style="display: none;" id="historyDisplayTable" width="60%">
+							<thead>
+			    				<tr>
+			    					<th>User</th>
+			    					<th>Timestamp</th>
+			    					<th>Value</th>
+			    					<th>Units</th>
+			    					<th>Status</th>
+			    				</tr>
+							</thead>
+							<tbody style="width: 100%;">
+				    			<c:forEach var="tmp" items="#{vitalsignsHistory.history}" varStatus="indx">
+				    				<tr>
+				    					<td style="width: 20%;">#{tmp['user']}</td>
+				    					<td style="width: 20%;">#{tmp['timestamp']}</td>
+				    					<td style="width: 20%;">#{tmp['value']}</td>
+				    					<td style="width: 20%;">#{tmp['units']}</td>
+				    					<td style="width: 20%;">#{tmp['status']}</td>
+				    				</tr>
+				    			</c:forEach>
+							</tbody>
+		    			</table>
+					</div>
+				</c:if>
 		</wiz:body>
 	</ui:composition>
 </body>

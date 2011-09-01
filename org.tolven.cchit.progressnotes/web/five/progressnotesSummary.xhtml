@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:ui="http://java.sun.com/jsf/facelets" 
+      xmlns:f="http://java.sun.com/jsf/core" 
+      xmlns:h="http://java.sun.com/jsf/html" 
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<head>
+		<title>List of progress notes for this patient</title>
+	</head>
+	
+	<body>
+		<ui:composition template="portletList.xhtml">
+			<ui:param name="id" value="progressnotessum"/>
+			<ui:define name="tableBody">
+				<h:column>
+					<h:outputText value="#{md.date01}">
+						<f:convertDateTime type="date" pattern="yyyy" timeZone="#{top.timeZone}"/>
+					</h:outputText>
+				</h:column>
+				<h:column>
+	           		<h:outputText value="#{md.string01}"/>
+	           	</h:column>
+	           	<h:column>
+		           	<h:outputText value="#{md.string02}"/>
+	           	</h:column>
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>

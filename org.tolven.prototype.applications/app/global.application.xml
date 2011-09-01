@@ -8,6 +8,17 @@
 		<field name="name" internal="string02" >
 			<from>#{trim.name}</from>
 		</field>
+		<field name="code" internal="string03" >
+			<from>#{trim.act.observation.value.CE.code}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:progressnotesMenu">
+		<field name="progressnotes" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
 	</trimMenu>
 	<trimMenu name="global:appointmentMenu">
 		<field name="appointment" internal="string01" >
@@ -67,8 +78,24 @@
 			<from>#{trim.name}</from>
 		</field>
 	</trimMenu>
+	<trimMenu name="global:codMenu">
+		<field name="causeofdeath" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
 	<trimMenu name="global:encounterMenu">
 		<field name="encounter" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:annualPhysicalMenu">
+		<field name="annualPhysical" internal="string01" >
 			<from>#{trim.description}</from>
 		</field>
 		<field name="name" internal="string02" >
@@ -123,6 +150,14 @@
 			<from>#{trim.name}</from>
 		</field>
 	</trimMenu>
+	<trimMenu name="global:progressnotesDocMenu">
+		<field name="name" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
 	<trimMenu name="global:medicationDocMenu">
 		<field name="name" internal="string01" >
 			<from>#{trim.description}</from>
@@ -146,6 +181,28 @@
 		<field name="description" internal="string02" >
 			<from>#{trim.name}</from>
 		</field>
+		<field name="code" internal="string06" >
+			<from>#{trim.act.observation.value.CE.code}</from>
+		</field>	
+	</trimMenu>
+	<trimMenu name="global:symptomsMenu">
+		<field name="symptoms" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+		<field name="code" internal="string03" >
+            <from>#{trim.act.observation.value.CE.code}</from>
+        </field>
+	</trimMenu>
+	<trimMenu name="global:symptomsDocMenu">
+		<field name="name" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
 	</trimMenu>
 	<trimMenu name="global:pxMenu">
 		<field name="description" internal="string01" >
@@ -156,12 +213,12 @@
 		</field>
 	</trimMenu>	
 	<trimMenu name="global:pxDocMenu" initialSort="description ASC">
-		<field name="name" internal="string01" >
-			<from>#{trim.name}</from>
-		</field>
-		<field name="description" internal="string02" >
+		<field name="description" internal="string01" >
 			<from>#{trim.description}</from>
 		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>		
 	</trimMenu>	
 	<trimMenu name="global:reminderMenu"/>
 	<trimMenu name="global:resultMenu">
@@ -173,6 +230,9 @@
 		</field>	
 	</trimMenu>
 	<trimMenu name="global:sampleMenu"/>
+	
+	<trimMenu name="global:reportMenu"/>
+	
 	<trimMenu name="global:shareMenu">
 		<field name="share" internal="string01" >
 			<from>#{trim.description}</from>
@@ -213,6 +273,56 @@
 			<from>#{trim.name}</from>
 		</field>
 	</trimMenu>
-
-
+	<trimMenu name="global:icd9DiagnosisMenu">		
+		<field name="diagnosis" internal="string01" >
+			<from>#{trim.act.observation.value.CE.translations[0].code} - #{trim.act.observation.value.CE.displayName} - #{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+		<field name="name" internal="string04" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="code" internal="string03" >
+			<from>#{trim.act.observation.value.CE.translations[0].code}</from>
+		</field>	
+	</trimMenu>
+	<trimMenu name="global:icd9ProcedureMenu">
+		<field name="description" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+		<field name="code" internal="string03" >
+			<from>#{trim.act.code.CE.translations[0].code}</from>
+		</field>
+	</trimMenu>
+	<trimMenu name="global:icd9Menu"/>
+	<trimMenu name="global:providerSettingMenu"/>
+	<trimMenu name="global:providerSettingMenu"/>
+		<trimMenu name="global:contactMenu">
+		<field name="contact" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+		<trimMenu name="global:eaaccountMenu">
+			<field name="eaaccount" internal="string01">
+				<from>#{trim.description}</from>
+			</field>
+			<field name="name" internal="string02">
+				<from>#{trim.name}</from>
+			</field>
+	</trimMenu>
+	<trimMenu name="global:newOrderMenu">
+		<field name="orderDescription" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
 </application>

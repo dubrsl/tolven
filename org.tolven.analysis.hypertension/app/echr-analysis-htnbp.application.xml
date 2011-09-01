@@ -163,7 +163,7 @@
 	</extends>
 	<extends path="echr:analysis">
 		<menu name="htnbpsnapshot" title="Hypertension" sequence="200" page="/five/bar2.xhtml" visible="true">
-			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
 				</column>
@@ -194,9 +194,12 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bpsnapshotresult.bpsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="normbp" title="&lt; Blood Pressure" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+			<list name="normbp" title="&lt; Blood Pressure" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
 				</column>
@@ -227,9 +230,12 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bpsnapshotresult.bpsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="abnormbp" title="> Blood Pressure" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+			<list name="abnormbp" title="> Blood Pressure" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
 				</column>
@@ -260,6 +266,9 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bpsnapshotresult.bpsnapshot.effectiveTime}</from>
 				</column>
 			</list>
 		</menu>

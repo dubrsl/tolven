@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Encounter - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+	 		<c:if test="#{menu.xmlNS != 'urn:tolven-org:trim:4.0'}">
+				<h:panelGrid columns="2" >
+					<h:outputText value="#{msg.Purpose}: "/>
+					<h:outputText value="#{menu.menuDataItem.purpose}"/>
+					<h:outputText value="#{msg.Status}: "/>
+					<h:outputText value="#{menu.menuDataItem.status}"/>
+					<h:outputText value="#{msg.AdmitDate}: "/>
+					<h:outputText value="#{menu.menuDataItem.effectiveTimeLow}">
+						<f:convertDateTime timeStyle="short" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+					</h:outputText>
+					<h:outputText value="#{msg.DischargeDate}: "/>
+					<h:outputText value="#{menu.menuDataItem.effectiveTimeHigh}">
+						<f:convertDateTime timeStyle="short" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+					</h:outputText>
+					<h:outputText value="#{msg.AdmittingPhysician}: "/>
+					<h:panelGroup>
+		            	<h:outputText value="#{menu.menuDataItem.admitter.lastName}"/>
+		            	<h:outputText value="#{menu.menuDataItem.otherAdmitter}"/>
+					</h:panelGroup>
+					<h:outputText value="#{msg.AttendingPhysician}: "/>
+					<h:panelGroup>
+		            	<h:outputText value="#{menu.menuDataItem.attender.lastName}"/>
+		            	<h:outputText value="#{menu.menuDataItem.otherAttender}"/>
+					</h:panelGroup>
+					<h:outputText value="#{msg.Location}: "/>
+					<h:panelGroup>
+		            	<h:outputText value="#{menu.menuDataItem.location.name}"/>
+		            	<h:outputText value="#{menu.menuDataItem.otherLocation}"/>
+					</h:panelGroup>
+					<h:outputText value="#{msg.DataEnterer}: "/>
+					<h:outputText value="#{menu.menuDataItem.enteredBy}"/>
+	            </h:panelGrid>
+			</c:if>
+	 		<c:if test="#{menu.xmlNS == 'urn:tolven-org:trim:4.0'}">		
+				<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+		           
+				<h:panelGrid columns="2" rendered="#{menu.menuDataItem.status=='NEW'}" >
+					<c:if test="#{trim.trim.act.effectiveTime.IVLTS!=null}">
+						<h:outputText value="#{trim.trim.act.effectiveTime.IVLTS.low.label.value}: "/>					
+						<trim:TS value="#{trim.trim.act.effectiveTime.IVLTS.low.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+						<h:outputText value="#{trim.trim.act.effectiveTime.IVLTS.high.label.value}: "/>
+						<trim:TS value="#{trim.trim.act.effectiveTime.IVLTS.high.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+					</c:if>
+					<c:if test="#{trim.trim.act.effectiveTime.IVLTS==null}">
+						<h:outputText value="#{act.effectiveTime.label.value}: "/>
+						<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short"  readonly="true" />
+					</c:if>
+		            <c:if test="#{trim.trim.act.participation['admitter']!=null}">				
+						<h:outputText value="Admitting physician: "/>
+		            	<wiz:selectWithOther id="admitDD"  role="#{trim.trim.act.participation['admitter'].role}" list="#{trim.list['echr:admin:staff:all']}" readonly="true" />
+			    	</c:if>
+				
+				    <c:if test="#{trim.trim.act.participation['attender']!=null}">
+				    	<h:outputText value="Attending physician: "/>
+		            	<wiz:selectWithOther id="attendDD"  role="#{trim.trim.act.participation['attender'].role}" list="#{trim.list['echr:admin:staff:all']}" readonly="true" />
+			    	</c:if>
+		            <c:if test="#{trim.trim.act.participation['location']!=null}">
+		            	<h:outputText value="Location: "/>
+		            	<wiz:selectWithOther id="locDD"  role="#{trim.trim.act.participation['location'].role}" list="#{trim.list['echr:admin:locations:all']}" readonly="true" />
+		    		</c:if>
+	
+					<h:outputText value="Source: "/>
+					<h:outputText value="#{menu.menuDataItem.enteredBy}"/>
+				</h:panelGrid>
+				<h:panelGrid columns="2" rendered="#{menu.menuDataItem.status!='NEW'}" >
+				
+					<c:if test="#{trim.trim.act.effectiveTime.IVLTS!=null}">
+						<h:outputText value="#{msg.AdmitDate}: "/>
+		           		<trim:TS value="#{trim.trim.act.effectiveTime.IVLTS.low.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+						<h:outputText value="#{msg.DischargeDate}: "/>
+		           		<trim:TS value="#{trim.trim.act.effectiveTime.IVLTS.high.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+		         	</c:if>
+				
+					<c:if test="#{trim.trim.act.effectiveTime.IVLTS==null}">
+						<h:outputText value="#{act.effectiveTime.label.value}: "/>
+						 <trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short"  readonly="true" />
+					</c:if>
+	
+		            <c:if test="#{trim.trim.act.participation['admitter']!=null}">				
+						<h:outputText value="#{msg.AdmittingPhysician}: "/>
+		            	<c:forEach var="obj" items="#{trim.list['echr:admin:staff:all~Name']}">
+                             	<c:if test="#{obj.value==trim.trim.act.participation['admitter'].role.id.for[top.accountUser.account].extension}">
+                                     #{obj.label}
+                                </c:if>
+                        	</c:forEach>
+			    	</c:if>
+				    <c:if test="#{trim.trim.act.participation['attender']!=null}">				
+				    	<h:outputText value="#{msg.AttendingPhysician}: "/>
+		            	<c:if test="#{trim.trim.act.participation['attender'].role.id.for[top.accountUser.account].extension !=null}">
+			            	<c:forEach var="obj" items="#{trim.list['echr:admin:staff:all~Name']}">
+                             	<c:if test="#{obj.value==trim.trim.act.participation['attender'].role.id.for[top.accountUser.account].extension}">
+                                     #{obj.label}
+                                </c:if>
+                        	</c:forEach>
+		            	</c:if>	            	
+		            	<c:if test="#{trim.trim.act.participation['attender'].role.id.for[top.accountUser.account].extension ==null}">
+		            		<h:outputText value="#{trim.trim.act.participation['attender'].role.player.name.ENS[0].parts[0].ST.value}"/>
+		            	</c:if>	            	
+			    	</c:if>
+			    	<c:if test="#{trim.trim.act.participation['location']!=null}">
+		            	<h:outputText value="#{msg.Location}: "/>
+		            	<c:if test="#{trim.trim.act.participation['location'].role.id.for[top.accountUser.account].extension !=null}">
+		            		<c:forEach var="obj" items="#{trim.list['echr:admin:locations:all~Name']}">
+                             	<c:if test="#{obj.value==trim.trim.act.participation['location'].role.id.for[top.accountUser.account].extension}">
+                                     #{obj.label}
+                                </c:if>
+                        	</c:forEach>
+		            	</c:if>	            	
+		            	<c:if test="#{trim.trim.act.participation['location'].role.id.for[top.accountUser.account].extension ==null}">
+		            		<h:outputText value="#{trim.trim.act.participation['location'].role.player.name.ENS[0].parts[0].ST.value}"/>
+		            	</c:if>
+		    		</c:if>
+					<h:outputText value="#{msg.Source}: "/>
+					<h:outputText value="#{trim.trim.act.participation['dataEnterer'].role.id.for[top.accountUser.account].extension}"/>
+				</h:panelGrid>
+			</c:if>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

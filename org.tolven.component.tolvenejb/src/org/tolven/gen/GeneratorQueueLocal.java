@@ -14,11 +14,14 @@
 package org.tolven.gen;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 public interface GeneratorQueueLocal {
 
     public String getQueueName();
+    
+    public X509Certificate getQueueOwnerX509Certificate();
 
     /**
      * Queue a payload.

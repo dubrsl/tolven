@@ -43,7 +43,8 @@ import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.security.key.UserPrivateKey;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.util.ExceptionFormatter;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -78,11 +79,11 @@ public class VestibuleResources {
     }
 
     protected Response prepareUserAccountList(String username) throws Exception {
-        TolvenUser tolvenUser = activationBean.findUser(username);
+        TolvenUser tolvenUser = getActivationBean().findUser(username);
         if (tolvenUser == null) {
             return Response.status(Status.NOT_FOUND).entity("TolvenUser not found").build();
         }
-        List<AccountUser> accountUsers = activationBean.findUserAccounts(tolvenUser);
+        List<AccountUser> accountUsers = getActivationBean().findUserAccounts(tolvenUser);
         XFacadeAccountUsers uas = XFacadeAccountUserFactory.createXFacadeAccountUsers(accountUsers, tolvenUser, (Date) request.getAttribute("tolvenNow"));
         Response response = Response.ok().entity(uas).build();
         return response;
@@ -98,7 +99,8 @@ public class VestibuleResources {
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     public Response enterVestibule() {
         logger.info("Vestibule entered: " + request.getUserPrincipal());
-        boolean inAccount = "account".equals(TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.USER_CONTEXT, request));
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        boolean inAccount = "account".equals((String) sessionWrapper.getAttribute(GeneralSecurityFilter.USER_CONTEXT));
         if (inAccount) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Cannot access vestibule while in an account").build();
         }
@@ -107,10 +109,10 @@ public class VestibuleResources {
             start = System.currentTimeMillis();
         }
         Date now = (Date) request.getAttribute("tolvenNow");
-        TolvenUser user = activationBean.findUser(request.getUserPrincipal().getName());
+        TolvenUser user = getActivationBean().findUser(request.getUserPrincipal().getName());
         XAccountUser xAccountUser = XAccountUserFactory.createXAccountUser(user, now);
         String xAccountUserXML = APIXMLUtil.marshalXAccountUser(xAccountUser);
-        List<AccountUser> accountUsers = activationBean.findUserAccounts(user);
+        List<AccountUser> accountUsers = getActivationBean().findUserAccounts(user);
         XFacadeAccountUsers xFacadeAccountUsers = XFacadeAccountUserFactory.createXFacadeAccountUsers(accountUsers, user, now);
         String xFacadeAccountUsersXML = APIXMLUtil.marshalXFacadeAccountUsers(xFacadeAccountUsers);
         MultivaluedMap<String, String> mvMap = new MultivaluedMapImpl();
@@ -118,17 +120,16 @@ public class VestibuleResources {
         mvMap.putSingle(GeneralSecurityFilter.ACCOUNTUSERS, xFacadeAccountUsersXML);
         mvMap.putSingle(GeneralSecurityFilter.VESTIBULE_PASS, "true");
         mvMap.putSingle(GeneralSecurityFilter.USER_CONTEXT, "vestibule");
-        AccountUser defaultAccountUser = activationBean.findDefaultAccountUser(user);
+        AccountUser defaultAccountUser = getActivationBean().findDefaultAccountUser(user);
         if (defaultAccountUser == null) {
-            TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.VESTIBULE_PASS, "true", request);
-            TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.USER_CONTEXT, "vestibule", request);
-            TolvenSSO.getInstance().updateAccountUserTimestamp(request);
+            sessionWrapper.setAttribute(GeneralSecurityFilter.VESTIBULE_PASS, "true");
+            sessionWrapper.setAttribute(GeneralSecurityFilter.USER_CONTEXT, "vestibule");
             if (logger.isDebugEnabled()) {
                 logger.debug("TOLVEN_PERF: @Path(vestibule/enter): " + (System.currentTimeMillis() - start));
             }
             return Response.ok(mvMap).build();
         } else {
-            TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, Long.toString(defaultAccountUser.getId()), request);
+            sessionWrapper.setAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, Long.toString(defaultAccountUser.getId()));
             return exitVestibule();
         }
     }
@@ -141,7 +142,8 @@ public class VestibuleResources {
     @GET
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
     public Response exitVestibule() {
-        boolean inAccount = "account".equals(TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.USER_CONTEXT, request));
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        boolean inAccount = "account".equals((String) sessionWrapper.getAttribute(GeneralSecurityFilter.USER_CONTEXT));
         if (inAccount) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("You are not in the Vestibule").build();
         }
@@ -166,10 +168,10 @@ public class VestibuleResources {
             }
             return Response.ok(mvMap).build();
         } catch (VestibuleException ex) {
-            TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, request);
-            TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.ACCOUNTUSER_ID, request);
-            TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.ACCOUNT_ID, request);
-            TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.USER_CONTEXT, "vestibule", request);
+            sessionWrapper.removeAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID);
+            sessionWrapper.removeAttribute(GeneralSecurityFilter.ACCOUNTUSER_ID);
+            sessionWrapper.removeAttribute(GeneralSecurityFilter.ACCOUNT_ID);
+            sessionWrapper.setAttribute(GeneralSecurityFilter.USER_CONTEXT, "vestibule");
             for (Vestibule vestibule : vestibules) {
                 try {
                     vestibule.abort(request);
@@ -183,10 +185,10 @@ public class VestibuleResources {
                 return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Logout & redirect: " + ex.getRedirect() + " " + ExceptionFormatter.toSimpleString(ex, "\\n")).build();
             }
         } catch (Exception ex) {
-            TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, request);
-            TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.ACCOUNTUSER_ID, request);
-            TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.ACCOUNT_ID, request);
-            TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.USER_CONTEXT, "vestibule", request);
+            sessionWrapper.removeAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID);
+            sessionWrapper.removeAttribute(GeneralSecurityFilter.ACCOUNTUSER_ID);
+            sessionWrapper.removeAttribute(GeneralSecurityFilter.ACCOUNT_ID);
+            sessionWrapper.setAttribute(GeneralSecurityFilter.USER_CONTEXT, "vestibule");
             for (Vestibule vestibule : vestibules) {
                 try {
                     vestibule.abort(request);
@@ -199,46 +201,47 @@ public class VestibuleResources {
     }
 
     private MultivaluedMap<String, String> exitVestibule(List<Vestibule> vestibules) throws VestibuleException {
-        String proposedAccountUserIdString = TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, request);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        String proposedAccountUserIdString = (String) sessionWrapper.getAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID);
         if (proposedAccountUserIdString == null || proposedAccountUserIdString.length() == 0) {
             throw new RuntimeException(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID + " not set by vestibule");
         }
         Long accountUserId = Long.parseLong(proposedAccountUserIdString);
-        AccountUser accountUser = activationBean.findAccountUser(accountUserId);
+        AccountUser accountUser = getActivationBean().findAccountUser(accountUserId);
         if (accountUser == null) {
             throw new RuntimeException("accountUser does not exist with Id: " + accountUserId);
         }
-        String userKeysOptional = propertyBean.getProperty(GeneralSecurityFilter.USER_KEYS_OPTIONAL);
+        String userKeysOptional = getPropertyBean().getProperty(GeneralSecurityFilter.USER_KEYS_OPTIONAL);
         if (!Boolean.parseBoolean(userKeysOptional)) {
-            String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-            PrivateKey privateKey = TolvenSSO.getInstance().getUserPrivateKey(request, keyAlgorithm);
+            String keyAlgorithm = getPropertyBean().getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
+            PrivateKey privateKey = sessionWrapper.getUserPrivateKey(keyAlgorithm);
             if (privateKey == null) {
                 throw new RuntimeException("User requires a UserPrivateKey to log into account: " + accountUser.getAccount().getId());
             }
         }
         // Save ACCOUNTUSER in session for subsequent request so the security filters can intercept appropriately
-        TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.ACCOUNTUSER_ID, String.valueOf(accountUser.getId()), request);
-        TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.ACCOUNT_ID, String.valueOf(accountUser.getAccount().getId()), request);
+        sessionWrapper.setAttribute(GeneralSecurityFilter.ACCOUNTUSER_ID, String.valueOf(accountUser.getId()));
+        sessionWrapper.setAttribute(GeneralSecurityFilter.ACCOUNT_ID, String.valueOf(accountUser.getAccount().getId()));
         for (Vestibule vestibule : vestibules) {
             vestibule.exit(request);
         }
-        TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, request);
-        TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNT_HOME, request);
-        TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.VESTIBULE_PASS, request);
+        sessionWrapper.removeAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID);
+        sessionWrapper.removeAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNT_HOME);
+        sessionWrapper.removeAttribute(GeneralSecurityFilter.VESTIBULE_PASS);
         /*
          * SAFETY CHECK HERE - Don't trust the accountUserId alone, it must match user.
          */
-        TolvenUser user = activationBean.findUser(request.getUserPrincipal().getName());
+        TolvenUser user = getActivationBean().findUser(request.getUserPrincipal().getName());
         if (accountUser.getUser().getId() != user.getId()) {
             throw new RuntimeException("ACCOUNTUSER DOES NOT BELONG TO USER");
         }
         // Record the time when the user logged into this particular account
         Date now = (Date) request.getAttribute("tolvenNow");
         accountUser.setLastLoginTime(now);
-        String proposedDefaultAccount = TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.PROPOSED_DEFAULT_ACCOUNT, request);
+        String proposedDefaultAccount = (String) sessionWrapper.getAttribute(GeneralSecurityFilter.PROPOSED_DEFAULT_ACCOUNT);
         if ("true".equals(proposedDefaultAccount)) {
-            activationBean.setDefaultAccountUser(accountUser);
-            TolvenSSO.getInstance().removeSessionProperty(GeneralSecurityFilter.PROPOSED_DEFAULT_ACCOUNT, request);
+            getActivationBean().setDefaultAccountUser(accountUser);
+            sessionWrapper.removeAttribute(GeneralSecurityFilter.PROPOSED_DEFAULT_ACCOUNT);
         }
         Account account = accountUser.getAccount();
         if (account.isDisableAutoRefresh() == null || account.isDisableAutoRefresh() == false) {
@@ -246,10 +249,10 @@ public class VestibuleResources {
         }
         XAccountUser xAccountUser = XAccountUserFactory.createXAccountUser(accountUser, now);
         String xAccountUserXML = APIXMLUtil.marshalXAccountUser(xAccountUser);
-        List<AccountUser> accountUsers = activationBean.findUserAccounts(accountUser.getUser());
+        List<AccountUser> accountUsers = getActivationBean().findUserAccounts(accountUser.getUser());
         XFacadeAccountUsers xFacadeAccountUsers = XFacadeAccountUserFactory.createXFacadeAccountUsers(accountUsers, accountUser.getUser(), now);
         String xFacadeAccountUsersXML = APIXMLUtil.marshalXFacadeAccountUsers(xFacadeAccountUsers);
-        String accountHome = (String) TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNT_HOME, request);
+        String accountHome = (String) (String) sessionWrapper.getAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNT_HOME);
         if (accountHome == null || accountHome.length() == 0) {
             accountHome = DEFAULT_ACCOUNT_HOME;
         }
@@ -258,8 +261,7 @@ public class VestibuleResources {
         mvMap.putSingle(GeneralSecurityFilter.ACCOUNTUSERS, xFacadeAccountUsersXML);
         mvMap.putSingle(GeneralSecurityFilter.USER_CONTEXT, "account");
         mvMap.putSingle(GeneralSecurityFilter.VESTIBULE_REDIRECT, accountHome);
-        TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.USER_CONTEXT, "account", request);
-        TolvenSSO.getInstance().updateAccountUserTimestamp(request);
+        sessionWrapper.setAttribute(GeneralSecurityFilter.USER_CONTEXT, "account");
         return mvMap;
     }
 
@@ -295,16 +297,17 @@ public class VestibuleResources {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response selectAccount(@FormParam("accountId") String accountId) {
         Principal principal = request.getUserPrincipal();
-        AccountUser accountUser = accountBean.findAccountUser(principal.getName(), Long.parseLong(accountId));
+        AccountUser accountUser = getAccountBean().findAccountUser(principal.getName(), Long.parseLong(accountId));
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
         // Now make sure that the accountUser we selected matches this user
-        TolvenUser tolvenUser = activationBean.findUser(principal.getName());
+        TolvenUser tolvenUser = getActivationBean().findUser(principal.getName());
         if (accountUser.getUser().getId() != tolvenUser.getId()) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not associated with this user").build();
         }
-        TolvenSSO.getInstance().setSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, String.valueOf(accountUser.getId()), request);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        sessionWrapper.setAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, String.valueOf(accountUser.getId()));
         return exitVestibule();
     }
 
@@ -317,9 +320,10 @@ public class VestibuleResources {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response selectAccountUser(@FormParam("accountUserId") String accountUserId) {
         Principal principal = request.getUserPrincipal();
-        TolvenUser tolvenUser = activationBean.findUser(principal.getName());
-        TolvenSSO.getInstance().removeSessionProperty("accountUserId", request);
-        AccountUser accountUser = activationBean.findAccountUser(Long.parseLong(accountUserId));
+        TolvenUser tolvenUser = getActivationBean().findUser(principal.getName());
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        sessionWrapper.removeAttribute("accountUserId");
+        AccountUser accountUser = getActivationBean().findAccountUser(Long.parseLong(accountUserId));
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
@@ -328,8 +332,8 @@ public class VestibuleResources {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not associated with this user").build();
         }
         // Save ACCOUNTUSER_ID in session for subsequent requests
-        TolvenSSO.getInstance().setSessionProperty("accountUserId", String.valueOf(accountUser.getId()), request);
-        TolvenSSO.getInstance().setSessionProperty("accountId", String.valueOf(accountUser.getAccount().getId()), request);
+        sessionWrapper.setAttribute("accountUserId", String.valueOf(accountUser.getId()));
+        sessionWrapper.setAttribute("accountId", String.valueOf(accountUser.getAccount().getId()));
         return Response.ok().type(MediaType.TEXT_PLAIN).entity("Account " + accountUser.getAccount().getId() + " selected  based on accountUserId " + accountUser.getId()).build();
     }
 
@@ -395,4 +399,56 @@ public class VestibuleResources {
             }
         }
     }
+    protected AccountDAOLocal getAccountBean() {
+        if (accountBean == null) {
+            String jndiName = "java:app/tolvenEJB/AccountDAOBean!org.tolven.core.AccountDAOLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                accountBean = (AccountDAOLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return accountBean;
+    }
+    
+    protected ActivationLocal getActivationBean() {
+        if (activationBean == null) {
+            String jndiName = "java:app/tolvenEJB/ActivationBean!org.tolven.core.ActivationLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                activationBean = (ActivationLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return activationBean;
+    }
+    
+    protected MenuLocal getMenuBean() {
+        if (menuBean == null) {
+            String jndiName = "java:app/tolvenEJB/MenuBean!org.tolven.app.MenuLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                menuBean = (MenuLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return menuBean;
+    }
+
+    protected TolvenPropertiesLocal getPropertyBean() {
+        if (propertyBean == null) {
+            String jndiName = "java:app/tolvenEJB/MenuBean!org.tolven.app.TolvenPropertiesLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                propertyBean = (TolvenPropertiesLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return propertyBean;
+    }
+    
 }

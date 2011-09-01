@@ -36,6 +36,8 @@
 				<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
 				<h:outputText value="Product: " />
 				<trim:CE id="material" layout="pageDirection" readonly="true" valueSet="material" value="#{trim.trim.act.participation['consumable'].role.player.code}"/>
+				<h:outputText value="#{trim.trim.act.relationship['LOTnumber'].act.title.ST.value}: " />
+				<h:outputText value="#{trim.trim.act.relationship['LOTnumber'].act.observation.value.ST.value}" />
 			</h:panelGrid>
 			</c:if>
 		</wiz:body>

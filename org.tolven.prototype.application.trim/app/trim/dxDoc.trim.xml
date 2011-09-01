@@ -4,6 +4,7 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
 	<name>docclin/evn/diagnosis</name>
 	<page>dx.xhtml</page>
 	<drilldown>dxDD.xhtml</drilldown>
@@ -51,26 +52,6 @@
 		<title>
 			<ST>Diagnosis</ST>
 		</title>
-		<participation name="subject" typeCode="SBJ">
-			<role classCode="PAT">
-				<bind application="echr">
-					<placeholder>
-						<path>echr:patient</path>
-					</placeholder>
-				</bind>
-				<bind application="ephr">
-					<placeholder>
-						<path>ephr:patient</path>
-					</placeholder>
-				</bind>
-				<id>
-					<II>
-						<root>#{computeIDRoot(account)}</root>
-						<extension>#{patient.path}</extension>
-					</II>
-				</id>				
-			</role>
-		</participation>
 		<participation name="dataEnterer" typeCode="ENT">
 			<role classCode="ROL">
 				<id>
@@ -81,6 +62,29 @@
 				</id>
 			</role>
 		</participation>
+		<relationship name="type" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Diagnosis</ST>
+				</title>
+				<text>
+					<ST>Diagnosis</ST>					
+				</text>
+			</act>
+		</relationship>
+		<relationship name="encounter" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Encounter</ST>
+				</title>
+				<observation>
+		 			<value>
+		 				<label>Associate with Encounter</label>
+		 				<valueSet>encounter</valueSet>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
 		<compute>
 			<type>org.tolven.process.InsertAct</type>
 			<property name="enabled">
@@ -105,7 +109,28 @@
 		        <value xsi:type="xs:string">0</value>
 			</property>
 		</compute>
+		<compute>
+			<type>org.tolven.process.CCHITOrderCompute</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">true</value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">dxDoc</value>
+			</property>
+		</compute>		
 	</act>
+	<!-- TEMPLATE VALUESET START-->
+	<valueSet name="encounterTemplate">
+		<CE>
+			<displayName></displayName>
+            <code>C0389100</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- TEMPLATE VALUESET END -->
+	<!-- VALUESET START-->
+	<valueSet name="encounter"></valueSet>
 	<valueSet name="episodicity">
 		<CE>
 			<displayName>New episode</displayName>
@@ -210,4 +235,8 @@
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 	</valueSet>
+	<!-- VALUESET END-->
+	<field name="formType">	
+		<value xsi:type="xs:string">diagnosis</value>
+	</field>
 </trim>

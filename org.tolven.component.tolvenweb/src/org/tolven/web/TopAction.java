@@ -16,6 +16,7 @@ package org.tolven.web;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +37,6 @@ import org.tolven.core.util.TolvenPropertiesMap;
 import org.tolven.locale.ResourceBundleHelper;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.security.TolvenPerson;
-import org.tolven.sso.TolvenSSO;
 import org.tolven.util.ExceptionFormatter;
 import org.tolven.web.security.GeneralSecurityFilter;
 import org.tolven.web.util.TSDateFormat;
@@ -93,7 +93,7 @@ public class TopAction extends TolvenAction implements GlobalLocaleText {
     public TolvenPropertiesMap getProperties( ) {
         FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
         return getProperties( ((ServletRequest)fc.getExternalContext().getRequest()) );
-    }   
+    }
 
     public TolvenPropertiesMap getProperties( ServletRequest req) {
         if (tolvenPropertiesMap==null) {
@@ -180,7 +180,14 @@ public class TopAction extends TolvenAction implements GlobalLocaleText {
                 tp.setSn(getTolvenPersonString("sn"));
                 tp.setStateOrProvince(getTolvenPersonString("st"));
                 tp.setUid(getTolvenPersonString("uid"));
-                tp.setMail(TolvenSSO.getInstance().getTolvenPersonList("mail", getRequest()));
+                List<String> mail = null;
+                Set<String> set = (Set<String>) getRequest().getAttribute("mail");
+                if (set == null || set.isEmpty()) {
+                    mail = new ArrayList<String>();
+                } else {
+                    mail = new ArrayList<String>(set);
+                }
+                tp.setMail(mail);
             }
         }
         return tp;

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+	<head>
+	    <title>Provider Settings</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	
+	<body>
+	    <ui:composition>
+			<wiz:step title="#{trim.trim.description}">
+				<wiz:body>
+					<table width="100%">
+						<tr>
+							<td>
+								<h:selectBooleanCheckbox id="diagnosis" value="#{trim.trim.act.relationship['diagnosis'].enableRelationship}"/>
+								<h:outputText value="#{trim.trim.act.relationship['diagnosis'].act.title.ST.value}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:selectBooleanCheckbox id="treatments" value="#{trim.trim.act.relationship['treatments'].enableRelationship}"/>
+								<h:outputText value="#{trim.trim.act.relationship['treatments'].act.title.ST.value}"/>
+							</td>
+						</tr>						
+						<tr>
+							<td>
+								<h:selectBooleanCheckbox id="medications" value="#{trim.trim.act.relationship['medications'].enableRelationship}"/>
+								<h:outputText value="#{trim.trim.act.relationship['medications'].act.title.ST.value}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:selectBooleanCheckbox id="referrals" value="#{trim.trim.act.relationship['referrals'].enableRelationship}"/>
+								<h:outputText value="#{trim.trim.act.relationship['referrals'].act.title.ST.value}"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:selectBooleanCheckbox id="testOrdersAndResults" value="#{trim.trim.act.relationship['testOrdersAndResults'].enableRelationship}"/>
+								<h:outputText value="#{trim.trim.act.relationship['testOrdersAndResults'].act.title.ST.value}"/>
+							</td>
+						</tr>
+					</table>
+				</wiz:body>
+			</wiz:step>
+		</ui:composition>
+	</body>
+</html>
+			

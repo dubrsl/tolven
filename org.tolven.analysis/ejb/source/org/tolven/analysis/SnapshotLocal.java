@@ -12,7 +12,7 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id$
+ * @version $Id: SnapshotLocal.java 486 2011-03-29 00:51:12Z kanag.kuttiannan $
  */
 package org.tolven.analysis;
 
@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.jfree.chart.JFreeChart;
+import org.tolven.app.AppEvalAdaptor;
 import org.tolven.app.entity.MenuData;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountUser;
@@ -27,7 +28,7 @@ import org.tolven.core.entity.AccountUser;
 public interface SnapshotLocal {
 
     public void snapshotNow(String cohortType, String snapshotType, Account account);
-    
+        
     public void scheduleSnapshot(String cohortType, String snapshotType, Account account);
     
     public Date getNextScheduledDate(String cohortType, String snapshotType, Date now, Account account);
@@ -59,4 +60,23 @@ public interface SnapshotLocal {
     public JFreeChart getChart(String cohortType, String snapshotType, String chartType, AccountUser accountUser, Date now);
 
     public void upateMenuDataVersion(String path, Account account, Date now);
+   
+    public void deleteAnalysisList(Account account,String snapshotType);    
+    
+    public Boolean validateCohortProperties(String type,MenuData patient,AppEvalAdaptor app);
+    
+    public void deletePatientCohortList(Account account,String analysisType);  
+    
+    public void deleteCohortPlaceholder(Account account,String cohortType); 
+    
+    public void deleteCohortList(Account account,String analysisType, String cohortType);  
+    
+    public void deleteAnalysisCohortList(Account account,String analysisType);  
+    
+    public void deleteFalseAnalysisCohortList(Account account,String analysisType);  
+    
+    public void deleteFalseCohortList(Account account,String analysisType, String cohortType);  
+    
+    public Boolean validateCodeStatusCohortProperties(String type,MenuData patient,AppEvalAdaptor app,String code);
+    
 }

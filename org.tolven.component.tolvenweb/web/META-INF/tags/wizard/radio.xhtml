@@ -13,7 +13,7 @@
 <body>
     <ui:composition>
     	<wiz:question id="#{id}" >
-			<h:selectOneRadio id="#{id}Field" value="#{value}" layout="#{layout}" onclick="#{onclick}">
+			<h:selectOneRadio id="#{id}Field" value="#{value}" layout="#{layout}" onclick="#{onclick}" required="#{required}">
 	    		<ui:insert/>
 			</h:selectOneRadio>
     	</wiz:question>

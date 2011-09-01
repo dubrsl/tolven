@@ -38,7 +38,7 @@
 		</title>
 		<effectiveTime>
 			<label>Time of Problem</label>
-			<new datatype="TS" function="now" />
+			<new datatype="TS" function="now"/>
 		</effectiveTime>
 		<participation name="author" typeCode="AUT">
 			<role classCode="ASSIGNED">
@@ -50,19 +50,6 @@
 				<id />
 			</role>
 		</participation>
-		<relationship name="episodicity" direction="OUT" typeCode="PERT">
-			<act classCode="OBS" moodCode="EVN">
-				<title>
-					<ST>Episodicity</ST>
-				</title>
-				<observation>
-					<value>
-						<label>Episodicity</label>
-						<valueSet>episodicity</valueSet>
-					</value>
-				</observation>
-			</act>
-		</relationship>
 		<relationship name="severity" direction="OUT" typeCode="PERT">
 			<act classCode="OBS" moodCode="EVN">
 				<title>
@@ -89,40 +76,37 @@
 				</observation>
 			</act>
 		</relationship>
-		<relationship name="onset" direction="OUT" typeCode="PERT">
+		<relationship name="outcome" direction="OUT" typeCode="PERT">
 			<act classCode="OBS" moodCode="EVN">
 				<title>
-					<ST>Onset</ST>
+					<ST>Outcome</ST>
 				</title>
 				<observation>
 					<value>
-						<label>Onset</label>
-						<valueSet>onset</valueSet>
+						<label>Outcome</label>
+						<valueSet>outcome</valueSet>
 					</value>
 				</observation>
 			</act>
 		</relationship>
-		<relationship name="encounter" direction="IN" typeCode="COMP">
+		<relationship name="treatment" direction="OUT" typeCode="PERT" >
 			<act classCode="OBS" moodCode="EVN">
-				<bind application="echr" phase="create">
-					<placeholder bindAction="exist" optional="true">
-						<path>echr:patient:encounter</path>
-					</placeholder>
-				</bind>
-				<bind application="ephr" phase="create">
-					<placeholder bindAction="exist" optional="true">
-						<path>ephr:patient:encounter</path>
-					</placeholder>
-				</bind>
-				<bind application="echr" phase="request">
-					<list cardinality="single">
-						<path>echr:patient:encounters:active</path>
-					</list>
-				</bind>
-				<id />
 				<title>
-					<ST>Encounter</ST>
+					<ST>Treatment</ST>
 				</title>
+				<text>
+					<ST></ST>
+				</text>
+			</act>
+		</relationship>
+		<relationship name="comments" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Comments</ST>
+				</title>
+				<text>
+					<ST></ST>
+				</text>
 			</act>
 		</relationship>
 		<compute>
@@ -135,20 +119,6 @@
 			</property>
 		</compute>
 	</act>
-	<valueSet name="episodicity">
-		<CE>
-			<displayName>New episode</displayName>
-			<code>C0565959</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
-			<codeSystemVersion>2007AA</codeSystemVersion>
-		</CE>
-		<CE>
-			<displayName>Ongoing episode</displayName>
-			<code>C0580798</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
-			<codeSystemVersion>2007AA</codeSystemVersion>
-		</CE>
-	</valueSet>
 	<valueSet name="severity">
 		<CE>
 			<displayName>Mild</displayName>
@@ -207,35 +177,47 @@
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 	</valueSet>
-	<valueSet name="onset">
+	<valueSet name="outcome">
 		<CE>
-			<displayName>Gradual onset</displayName>
-			<code>C0332164</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Sequelae</displayName>
+			<code>C0543419</code>
+			<codeSystem>HL7V2.5	S</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 		<CE>
-			<displayName>Sudden onset</displayName>
-			<code>C1272517</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Died</displayName>
+			<code>C1546956</code>
+			<codeSystem>HL7V2.5	D</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 		<CE>
-			<displayName>Acute onset</displayName>
-			<code>C1276802</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Fully recovered</displayName>
+			<code>C1546957</code>
+			<codeSystem>HL7V2.5	F</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 		<CE>
-			<displayName>Insidious onset</displayName>
-			<code>C1298634</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Not recovering/unchanged</displayName>
+			<code>C1546958</code>
+			<codeSystem>HL7V2.5	N</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 		<CE>
-			<displayName>Subacute onset</displayName>
-			<code>C1298635</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Recovering</displayName>
+			<code>C1546959</code>
+			<codeSystem>HL7V2.5	R</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Worsening</displayName>
+			<code>C1546960</code>
+			<codeSystem>HL7V2.5	W</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown</displayName>
+			<code>C1556127</code>
+			<codeSystem>HL7V2.5	U</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 	</valueSet>

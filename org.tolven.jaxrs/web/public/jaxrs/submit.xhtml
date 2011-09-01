@@ -7,7 +7,7 @@
     <body>
         <table style="width:60%">
             <tr><td>
-                <form action="/Tolven/api/document/submit" method="post" target="results">
+                <form action="/api/document/submit" method="post" target="results">
                   XMLNS: <input type="text" name="xmlns" value="urn:astm-org:CCR" /><br />
                   Payload: <textarea cols="50" rows="10" type="text" name="payload"></textarea><br />
                            <input type="submit" value="Submit" /> (asynchronous)
@@ -17,7 +17,7 @@
         <br/>
         <table style="width:60%">
             <tr><td>
-                <form action="/Tolven/api/document/process" method="post" target="results">
+                <form action="/api/document/process" method="post" target="results">
                   XMLNS: <input type="text" name="xmlns" value="urn:astm-org:CCR" /><br />
                   Payload: <textarea cols="50" rows="10" type="text" name="payload"></textarea><br />
                            <input type="submit" value="Process" /> (synchronous)

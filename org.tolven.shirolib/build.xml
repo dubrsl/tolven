@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.shirolib">
+	<!-- 
+	Build file for org.tolven.shirolib
+	-->
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+
+	<property name="include.java" value="false" />
+	<property name="include.java.source.code" value="true" />
+	<!-- 
+	Source code will be included in the devLib jar file if true. Otherwise, source code
+	known to this build script will not be in the plugin
+	 -->
+	<property name="includeSourceInDevLib" value="true" />
+
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+		<!-- Each section adds itself to the zip file-->
+		<antcall target="buildSection">
+			<param name="section" value="client" />
+			<param name="lib" value="lib/shiro-core-1.1.0.jar" />
+			<param name="sectionZipExcludes" value="**/*" />
+		</antcall>
+		<jar destfile="${buildFolder}/shiroLIB.jar">
+			<manifest>
+				<attribute name="Built-By" value="Tolven Healthcare Innovations" />
+			</manifest>
+			<zipfileset dir="${buildFolder}/client/classes" includes="**/*.class" />
+		</jar>
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar" />
+				<include name="shiroLIB.jar" />
+			</zipfileset>
+			<zipfileset dir="lib">
+				<include name="shiro-core-1.1.0.jar" />
+				<include name="shiro-web-1.1.0.jar" />
+			</zipfileset>
+		</zip>
+	</target>
+</project>

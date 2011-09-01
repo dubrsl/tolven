@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.tolven.app.bean.MenuPath;
 import org.tolven.app.entity.AccountMenuStructure;
+import org.tolven.app.entity.MenuData;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountUser;
 
@@ -57,8 +58,18 @@ public interface DataExtractLocal {
      */
     public DataQueryResults setupQuery(String menupath, Account account);
     
+    /**
+     * Setup for a query. Can be used to get a list of available column headings for a particular menu id
+     * @param id
+     * @param accountUser
+     * @return Query structure
+     */
+    public DataQueryResults setupQueryById(long id, AccountUser accountUser);
+    
     public List<String> getSQLDialects();
     
 	public AccountMenuStructure findAccountMenuStructure( Account account, MenuPath mp);
+
+	public List<MenuData> findMenuDataByDocumentId( Account account, long documentId);
 
 }

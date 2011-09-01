@@ -26,6 +26,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.tolven.app.QueryBuilderLocal;
+import org.tolven.app.el.ELFunctions;
 import org.tolven.app.el.TrimExpressionEvaluator;
 import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuData;
@@ -76,6 +77,10 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 			Object value = ctrl.getFilters().get(col.getHeading());
 			String colName;
 			colName = col.getInternal();
+            //CCHIT merge
+			if (col.isInstantiate() || col.isReference()) {
+				colName = col.getDisplayFunction();
+			}
 			// In the case of combination fields, the column name comes from DisplayFunctionArgs
 			if (col.getDisplayFunctionArguments()!=null) {
 				String dfas[] = col.getDisplayFunctionArguments().split("\\,");
@@ -86,7 +91,9 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 				if (((String)value).length() > 0) {
 					filterNo += 2;
 					sbWhere.append( " AND lower(md." + colName + ") BETWEEN :fltr" + filterNo + " AND :fltr" + (filterNo+1)  );
-					params.put( "fltr"+filterNo, ((String)value).trim().toLowerCase() );
+					//params.put( "fltr"+filterNo, ((String)value).trim().toLowerCase() );
+					//CCHIT merge					
+					params.put( "fltr"+filterNo, "%"+((String)value).trim().toLowerCase()+"%" );
 					params.put( "fltr"+(filterNo+1),  ((String)value).trim().toLowerCase() + "zzzzzzzzzzzzzzzzzzzzzzzzzzzz" );
 				}
 			}
@@ -99,12 +106,12 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 		   }
 		}
 
-//		logger.debug( "Sort: " + ctrl.getSortOrder());
+		//logger.debug( "Sort: " + ctrl.getSortOrder());
 		// See about sort criteria. Similar to filters: For safety, we pull from the request list rather 
 		// than letting the request list drive our behavior.
 		if (ctrl.getSortOrder()!=null) {
 			for (MSColumn col : msActual.getColumns()) {
-//				logger.debug( "Sort - checking " + col);
+				//logger.debug( "Sort - checking " + col);
 				// Ignore computed and invisible fields
 				if (col.isComputed()) continue;
 				if (!col.isVisible()) continue;
@@ -134,7 +141,9 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 							sbOrder.append(", ");
 						}
 						if (sortCol.startsWith("string")) {
-							sbOrder.append("md.");sbOrder.append(sortCol);
+							//sbOrder.append("md.");sbOrder.append(sortCol);
+							//CCHIT merge
+							sbOrder.append("lower(");sbOrder.append("md.");sbOrder.append(sortCol);sbOrder.append(")");
 						} else {
 							sbOrder.append("md.");//that should do it. redeploy? yes.s
 							sbOrder.append(sortCol);
@@ -157,7 +166,7 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 	 * @param sbWhere
 	 * @param params
 	 */
-	protected void addGlobalFilter(  MenuQueryControl ctrl, StringBuffer sbWhere ) {
+	public void addGlobalFilter(  MenuQueryControl ctrl, StringBuffer sbWhere ) {
 		String rawFilter = ctrl.getMenuStructure().getFilter();
 		if (rawFilter==null) return;
 		TrimExpressionEvaluator evaluator = new TrimExpressionEvaluator();
@@ -166,6 +175,8 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 			evaluator.addVariable("account", ctrl.getAccountUser().getAccount());
 			evaluator.addVariable("user", ctrl.getAccountUser().getUser());
 		}
+        //CCHIT merge    
+		evaluator.addFunctions("", new ELFunctions().getClass());
 		evaluator.addVariable( "now", ctrl.getNow());
 		evaluator.addVariable( "ctrl", ctrl);
 		String filter = (String) evaluator.evaluate(rawFilter);
@@ -213,7 +224,7 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 		}
 	}
 
-	protected void addWordFilter2( String filter, StringBuffer sbWhere, Map<String, Object>params ) {
+	public void addWordFilter2( String filter, StringBuffer sbWhere, Map<String, Object>params ) {
 		if (filter==null) return;
 		String words[] = filter.split("\\W");
 		int wordNo = 0;

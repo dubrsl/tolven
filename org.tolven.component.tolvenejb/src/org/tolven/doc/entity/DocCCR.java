@@ -15,6 +15,7 @@ package org.tolven.doc.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -26,6 +27,10 @@ public class DocCCR extends DocXML implements Serializable{
 	 * Version number used for serialization
 	 */
 	private static final long serialVersionUID = 2L;
+
+    //CCHIT merge
+    @Column
+    private int uniqueIDSeq;
 
 //    @Transient
 //    private ContinuityOfCareRecord newCCR;

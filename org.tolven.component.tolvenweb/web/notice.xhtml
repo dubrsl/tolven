@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>Notices on login page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+ 
+<body>
+    <ui:composition>
+		<h:dataTable styleClass="notices"
+			value="#{login.notices}"
+			var="notice" 
+			columnClasses="effective,notice"
+			rendered="#{login.notices[0] != null}">
+			<h:column>
+				<p>
+			    <h:outputText value="#{notice.effectiveDate}">
+					<f:convertDateTime dateStyle="medium" timeStyle="short" type="both" />
+			    </h:outputText>
+			    </p>
+			</h:column>
+			<h:column>
+				<h:outputText value="#{notice.notice}" escape="false"/>
+			</h:column>
+		</h:dataTable>
+    </ui:composition>
+</body>
+</html>

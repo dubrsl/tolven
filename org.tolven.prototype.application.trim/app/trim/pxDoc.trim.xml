@@ -6,6 +6,7 @@
 	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
 	<extends>patientAct</extends>
 	<name>pxDoc</name>
+	<description>Procedure</description>
 	<page>pxDoc.xhtml</page>
 	<drilldown>pxDocDD.xhtml</drilldown>
 	<menu>global:pxDocMenu</menu>
@@ -19,16 +20,40 @@
 		<wip>echr:activity:all</wip>
 	</application>
 	<transitions path="trim.act.statusCodeValue">
-		<transition name="create" to="active">
-			<label language="en">New Patient</label>
-		</transition>
-		<transition name="reviseActive" from="active" to="active">
-			<label language="en">Revise</label>
-		</transition>
-		<transition name="reviseActive" from="active" to="nullified">
-			<label language="en">Inactive</label>
-		</transition>
-	</transitions>	
+	  <transition name="suspended" from="active" to="suspended">
+	   <label language="en">Suspended</label>
+	  </transition>
+	  <transition name="held" from="active" to="held">
+	  	<label language="en">Held</label>
+	  </transition>
+	  <transition name="nullified" from="active" to="nullified">
+	   <label language="en">Nullify</label>
+	  </transition>
+	  <transition name="completed" from="active" to="completed">
+	   <label language="en">Complete</label>
+	  </transition>
+	  <transition name="aborted" from="active" to="aborted">
+	   <label language="en">Abort</label>
+	  </transition>
+	  <transition name="active" from="suspended" to="active">
+	   <label language="en">Active</label>
+	  </transition>
+	  <transition name="nullified" from="suspended" to="nullified">
+	   <label language="en">Nullify</label>
+	  </transition>
+	  <transition name="aborted" from="suspended" to="aborted">
+	   <label language="en">Abort</label>
+	  </transition>
+	  <transition name="active" from="held" to="active">
+	   <label language="en">Active</label>
+	  </transition>
+	  <transition name="nullified" from="held" to="nullified">
+	   <label language="en">Nullify</label>
+	  </transition>
+	  <transition name="aborted" from="held" to="aborted">
+	   <label language="en">Abort</label>
+	  </transition>
+	 </transitions>	
 	<act classCode="DOCCLIN" moodCode="EVN">
 		<statusCode>active</statusCode>		
 		<title>
@@ -54,6 +79,33 @@
 				</text>
 			</act>
 		</relationship>
+		<relationship name="encounter" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Encounter</ST>
+				</title>
+				<observation>
+		 			<value>
+		 				<label>Associate with Encounter</label>
+		 				<valueSet>encounter</valueSet>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="COMP" direction="OUT" name="problems">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Problems</ST>
+				</title>
+			</act>
+		</relationship>
+		<relationship typeCode="COMP" direction="OUT" name="diagnoses">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Diagnoses</ST>
+				</title>
+			</act>
+		</relationship>
 		<compute>
 			<type>org.tolven.process.InsertAct</type>
 			<property name="enabled">
@@ -77,6 +129,183 @@
 			<property name="position">
 		        <value xsi:type="xs:string">0</value>
 			</property>
-		</compute>		
+		</compute>
+		<!--Do we need this 
+			<compute>
+			<type>org.tolven.process.CCHITOrderCompute</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">true</value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">pxDoc</value>
+			</property>
+		</compute>
+		<compute>
+			<type>org.tolven.process.RetrieveSharingDetails</type> 
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">true</value>
+			</property>
+		</compute> -->
 	</act>
+	<!-- TEMPLATE VALUESET START-->
+	<valueSet name="encounterTemplate">
+		<CE>
+			<displayName></displayName>
+            <code>C0389100</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- TEMPLATE VALUESET END -->
+	<!-- VALUESET START-->
+	<valueSet name="encounter"></valueSet>
+	 <valueSet name="severity">
+		<CE>
+			<displayName>Mild</displayName>
+			<code>C0547040</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Mild to moderate</displayName>
+			<code>C1299392</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Moderate</displayName>
+			<code>C0205081</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Moderate to severe</displayName>
+			<code>C1299393</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Severe</displayName>
+			<code>C0205082</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fatal</displayName>
+			<code>C1302234</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="course">
+		<CE>
+			<displayName>Acute</displayName>
+			<code>C0205178</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Chronic</displayName>
+			<code>C0205191</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Recurrent</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="outcome">
+		<CE>
+			<displayName>Sequelae</displayName>
+			<code>C0543419</code>
+			<codeSystem>HL7V2.5	S</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Died</displayName>
+			<code>C1546956</code>
+			<codeSystem>HL7V2.5	D</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fully recovered</displayName>
+			<code>C1546957</code>
+			<codeSystem>HL7V2.5	F</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Not recovering/unchanged</displayName>
+			<code>C1546958</code>
+			<codeSystem>HL7V2.5	N</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Recovering</displayName>
+			<code>C1546959</code>
+			<codeSystem>HL7V2.5	R</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Worsening</displayName>
+			<code>C1546960</code>
+			<codeSystem>HL7V2.5	W</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown</displayName>
+			<code>C1556127</code>
+			<codeSystem>HL7V2.5	U</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="episodicity">
+		<CE>
+			<displayName>New episode</displayName>
+			<code>C0565959</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Ongoing episode</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="onset">
+		<CE>
+			<displayName>Gradual onset</displayName>
+			<code>C0332164</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Sudden onset</displayName>
+			<code>C1272517</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Acute onset</displayName>
+			<code>C1276802</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Insidious onset</displayName>
+			<code>C1298634</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Subacute onset</displayName>
+			<code>C1298635</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- VALUESET END-->
 </trim>

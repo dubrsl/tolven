@@ -31,7 +31,7 @@
 				<h:panelGroup rendered="#{top.accountUser!=null}">
 					<fieldset>
 						<legend>Account</legend>
-				          <h:panelGrid columns="3" cellpadding="5">
+				          <h:panelGrid columns="3" cellpadding="5" rendered="#{top.accountUserId!=0}">
 				           <h:outputLabel for="aID" value="Account Id" />
 				           <h:outputText value=":" />
 				           <h:outputText id="aID" value="#{reg.account.id}" />
@@ -76,7 +76,7 @@
 				</h:panelGroup>
 				<fieldset>
 					<legend>User</legend>
-						<h:outputText value="Note: This is a demo user" rendered="#{reg.user.isDemoUser()}"/>
+						<h:outputText value="Note: This is a demo user" rendered="#{reg.user.demoUser}"/>
 			                    
 						<h:panelGrid columns="3" cellpadding="5" >  
 				           <h:outputLabel for="uTitle" value="User Id" />

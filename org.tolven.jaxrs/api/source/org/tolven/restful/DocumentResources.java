@@ -18,12 +18,12 @@
 package org.tolven.restful;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.Date;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -46,7 +46,8 @@ import org.tolven.doc.ProcessLocal;
 import org.tolven.doc.entity.DocBase;
 import org.tolven.security.DocProtectionLocal;
 import org.tolven.security.key.UserPrivateKey;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.util.ExceptionFormatter;
 
 @Path("document")
@@ -68,7 +69,9 @@ public class DocumentResources {
     @Context
     UriInfo uriInfo;
 
-    @Context
+  
+
+	@Context
     HttpServletRequest request;
 
     @Path("body")
@@ -78,12 +81,13 @@ public class DocumentResources {
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
-        DocBase doc = documentBean.findDocument(Long.parseLong(id));
+        DocBase doc = getDocumentBean().findDocument(Long.parseLong(id));
         if (doc.getAccount().getId() != accountUser.getAccount().getId()) {
             return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Document not found in this account").build();
         }
-        String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-        String body = docProtectionBean.getDecryptedContentString(doc, accountUser, TolvenSSO.getInstance().getUserPrivateKey(request, keyAlgorithm));
+        String keyAlgorithm = getPropertyBean().getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        String body = getDocProtectionBean().getDecryptedContentString(doc, accountUser, sessionWrapper.getUserPrivateKey(keyAlgorithm));
         Response response = Response.ok().type(doc.getMediaType()).entity(body).build();
         return response;
     }
@@ -96,7 +100,7 @@ public class DocumentResources {
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
-        DocBase doc = documentBean.findDocument(Long.parseLong(id));
+        DocBase doc = getDocumentBean().findDocument(Long.parseLong(id));
         if (doc.getAccount().getId() != accountUser.getAccount().getId()) {
             return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Document not found in this account").build();
         }
@@ -112,12 +116,13 @@ public class DocumentResources {
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
-        DocBase doc = documentBean.findDocument(Long.parseLong(id));
+        DocBase doc = getDocumentBean().findDocument(Long.parseLong(id));
         if (doc.getAccount().getId() != accountUser.getAccount().getId()) {
             return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Document not found in this account").build();
         }
-        String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-        String signature = docProtectionBean.getDocumentSignaturesString(doc, accountUser, TolvenSSO.getInstance().getUserPrivateKey(request, keyAlgorithm));
+        String keyAlgorithm = getPropertyBean().getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        String signature = getDocProtectionBean().getDocumentSignaturesString(doc, accountUser, sessionWrapper.getUserPrivateKey(keyAlgorithm));
         if (signature == null || signature.length() == 0) {
             return Response.noContent().build();
         }
@@ -137,7 +142,7 @@ public class DocumentResources {
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
-        documentBean.queueWSMessage(payload.getBytes(), xmlns, accountUser.getAccount().getId(), accountUser.getUser().getId());
+        getDocumentBean().queueWSMessage(payload.getBytes(), xmlns, accountUser.getAccount().getId(), accountUser.getUser().getId());
         Response response = Response.ok().entity("Document submitted").build();
         return response;
     }
@@ -154,7 +159,7 @@ public class DocumentResources {
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
-        long documentId = processLocal.processMessage(payload.getBytes(), "text/xml", xmlns, accountUser.getAccount().getId(), accountUser.getUser().getId(), new Date());
+        long documentId = getProcessLocal().processMessage(payload.getBytes(), "text/xml", xmlns, accountUser.getAccount().getId(), accountUser.getUser().getId(), new Date());
         URI uri = null;
         try {
             uri = new URI(URLEncoder.encode(Long.toString(documentId), "UTF-8"));
@@ -164,5 +169,57 @@ public class DocumentResources {
         Response response = Response.created(uri).entity(String.valueOf(documentId)).build();
         return response;
     }
+    
+    protected DocumentLocal getDocumentBean() {
+        if (documentBean == null) {
+            String jndiName = "java:app/tolvenEJB/DocumentBean!org.tolven.doc.DocumentLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                documentBean = (DocumentLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return documentBean;
+    }
+    
+    protected DocProtectionLocal getDocProtectionBean() {
+    	if (docProtectionBean == null) {
+            String jndiName = "java:app/tolvenEJB/DocProtectionBean!org.tolven.security.DocProtectionLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                docProtectionBean = (DocProtectionLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+  		return docProtectionBean;
+  	}
+
+  	protected TolvenPropertiesLocal getPropertyBean() {
+  		if (propertyBean == null) {
+            String jndiName = "java:app/tolvenEJB/TolvenProperties!org.tolven.core.TolvenPropertiesLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                propertyBean = (TolvenPropertiesLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+  		return propertyBean;
+  	}
+
+  	protected ProcessLocal getProcessLocal() {
+  		if (processLocal == null) {
+            String jndiName = "java:app/tolvenEJB/ProcessBean!org.tolven.doc.ProcessLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                processLocal = (ProcessLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+  		return processLocal;
+  	}
 
 }

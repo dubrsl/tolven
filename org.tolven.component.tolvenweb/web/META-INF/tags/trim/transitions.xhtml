@@ -14,7 +14,21 @@
 <body>
     <ui:composition>
     <c:forEach var="transition" items="#{trim.eventTransitions}">
+		<c:if test="#{transition.name =='nullifiedActive' or transition.name =='nullifiedCompleted'}">
+			<input id="nullifiedActive" type="submit" value="#{transition.label.value}" onclick="wizNullify('#{menu.element}','#{transition.name}');return false;"/>
+		</c:if>
+		<c:if test="#{transition.name =='completedActive' or transition.name =='completedSuspend'}">
+			<input id="nullifiedActive" type="submit" value="#{transition.label.value}" onclick="wizComplete('#{menu.element}','#{transition.name}');return false;"/>
+		</c:if>
+	 	<c:if test="#{transition.name=='suspendActive' or transition.name =='suspendCompleted'}">
+			<input id="suspendActive" type="submit" value="#{transition.label.value}" onclick="wizSuspend('#{menu.element}','#{transition.name}');return false;"/>
+		</c:if>
+		<c:if test="#{transition.name=='editActive'}">
+			<input id="editActive" type="submit" value="#{transition.label.value}" onclick="reviseVitalSign('#{menu.element}','#{transition.name}');return false;"/>
+		</c:if>
+		<c:if test="#{!(transition.name =='nullifiedActive' or transition.name =='suspendActive' or transition.name =='editActive' or transition.name =='nullifiedCompleted' or transition.name =='suspendCompleted' or transition.name =='completedActive' or transition.name =='completedSuspend')}">	
 		<input id="#{menu.elementLabel}#{transition.from}#{transition.to}" type="submit" value="#{transition.label.value}" onclick="wizTransition('#{menu.element}','#{transition.name}');return false;"/>
+		</c:if>	
     </c:forEach>
     </ui:composition>
 </body>

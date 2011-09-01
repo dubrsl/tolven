@@ -8,6 +8,32 @@
 	<page>respiration.xhtml</page>
 	<drilldown>respirationDD.xhtml</drilldown>
 	<reference>http://www.wikihit.org/wiki/index.php/Respiration</reference>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="editActive" from="active" to="edit">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="suspendActive" from="active" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>		
+		<transition name="suspendCompleted" from="completed" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>	
+		<transition name="nullifiedActive" from="active" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>
+		<transition name="nullifiedCompleted" from="completed" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>		
+		<transition name="completedActive" from="active" to="completed">
+			<label language="en">Resolved</label>
+		</transition>
+		<transition name="completedSuspend" from="suspended" to="completed">
+			<label language="en">Resolved</label>
+		</transition>	
+	</transitions>
 	<act classCode="OBS" moodCode="EVN">
 		<code>
 			<CD>
@@ -25,10 +51,8 @@
 		</effectiveTime>
 		<observation>
 			<value>
-				<PQ>
-					<value>0.0</value>
-					<unit>RPM</unit>
-				</PQ>
+				<label>RPM</label>
+				<ST></ST>
 			</value>
 		</observation>
 		<relationship name="rhythm" direction="OUT" typeCode="PERT" >
@@ -66,7 +90,7 @@
 				<observation>
 					<value>
 						<label>Comment</label>
-						<ED/>
+						<ST></ST>
 					</value>
 				</observation>
 			</act>

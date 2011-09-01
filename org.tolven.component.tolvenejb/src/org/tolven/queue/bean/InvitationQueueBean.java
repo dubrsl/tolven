@@ -17,10 +17,12 @@
 package org.tolven.queue.bean;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.jms.Connection;
@@ -32,6 +34,7 @@ import javax.jms.Queue;
 import javax.jms.Session;
 
 import org.tolven.core.InvitationQueueLocal;
+import org.tolven.key.QueueKeyLocal;
 
 @Stateless
 @Local(InvitationQueueLocal.class)
@@ -43,6 +46,9 @@ public class InvitationQueueBean implements InvitationQueueLocal {
     @Resource(name = "queue/invitation")
     private Queue invitationQueue;
 
+    @EJB
+    private QueueKeyLocal queueKeyLocal;
+    
     private String queueName;
 
     @Override
@@ -57,15 +63,9 @@ public class InvitationQueueBean implements InvitationQueueLocal {
         return queueName;
     }
 
-    /**
-     * Queue a payload.
-     * @param payload
-     */
     @Override
-    public void send(Serializable payload) {
-        List<Serializable> payloads = new ArrayList<Serializable>(1);
-        payloads.add(payload);
-        send(payloads);
+    public X509Certificate getQueueOwnerX509Certificate() {
+        return queueKeyLocal.getUserX509Certificate(getQueueName());
     }
 
     /**
@@ -96,6 +96,17 @@ public class InvitationQueueBean implements InvitationQueueLocal {
                 throw new RuntimeException("Failed to close connection to queue" + getQueueName(), e);
             }
         }
+    }
+
+    /**
+     * Queue a payload.
+     * @param payload
+     */
+    @Override
+    public void send(Serializable payload) {
+        List<Serializable> payloads = new ArrayList<Serializable>(1);
+        payloads.add(payload);
+        send(payloads);
     }
 
 }

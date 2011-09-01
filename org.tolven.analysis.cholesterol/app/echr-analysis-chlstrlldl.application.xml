@@ -150,7 +150,7 @@
 	</extends>
 	<extends path="echr:analysis">
 		<menu name="chlstrlldlsnapshot" title="Cholesterol" sequence="300" page="/five/bar2.xhtml" visible="true">
-			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:ldlsnapshot:ldlsnapshotresult">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:ldlsnapshot:ldlsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{ldlsnapshotresult.patient.lastName}, #{ldlsnapshotresult.patient.firstName} #{ldlsnapshotresult.patient.middleName}</from>
 				</column>
@@ -178,9 +178,12 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{ldlsnapshotresult.ldlUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{ldlsnapshotresult.ldlsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="normldl" title="&lt; LDL" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:ldlsnapshot:ldlsnapshotresult">
+			<list name="normldl" title="&lt; LDL" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:ldlsnapshot:ldlsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{ldlsnapshotresult.patient.lastName}, #{ldlsnapshotresult.patient.firstName} #{ldlsnapshotresult.patient.middleName}</from>
 				</column>
@@ -208,9 +211,12 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{ldlsnapshotresult.ldlUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{ldlsnapshotresult.ldlsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="abnormldl" title="> LDL" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:ldlsnapshot:ldlsnapshotresult">
+			<list name="abnormldl" title="> LDL" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:ldlsnapshot:ldlsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{ldlsnapshotresult.patient.lastName}, #{ldlsnapshotresult.patient.firstName} #{ldlsnapshotresult.patient.middleName}</from>
 				</column>
@@ -238,6 +244,9 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{ldlsnapshotresult.ldlUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{ldlsnapshotresult.ldlsnapshot.effectiveTime}</from>
 				</column>
 			</list>
 		</menu>

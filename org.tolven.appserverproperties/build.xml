@@ -34,9 +34,6 @@
 		<antcall target="buildSection">
 			<param name="section" value="api"/>
 		</antcall>
-		<antcall target="buildSection">
-			<param name="section" value="web"/>
-		</antcall>
 		<!-- End of list of sections to build -->
 		<!-- Add DevLib.jar to plugin zip -->
 		<zip destfile="${zipFileName}" update="true">

@@ -73,7 +73,7 @@
 				<wiz:group title="Share"> 
 					<table>
             			<c:forEach var="comp" items="#{trim.activeComputes}">
-            				<c:if test="#{comp.type=='org.tolven.process.Harvest'}">
+            				<c:if test="#{comp.type=='org.tolven.process.Harvest' or comp.type=='org.tolven.process.ShareHarvest' }">
 								<tr><td>
 									<h:selectBooleanCheckbox id="#{comp.property['relationship']}X" value="#{comp.property['enabled']}" converter="javax.faces.Boolean">
 										<h:outputLabel for="#{comp.property['relationship']}X">

@@ -64,9 +64,9 @@ import org.tolven.rules.WMLogger;
 import org.tolven.security.AccountProcessingProtectionLocal;
 import org.tolven.security.DocProtectionLocal;
 import org.tolven.security.key.DocumentSecretKey;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.trim.CE;
 import org.tolven.trim.ex.TrimFactory;
-
 /**
  * Provide general callback functions from rules.
  * @author John Churin
@@ -160,9 +160,11 @@ public abstract class AppEvalAdaptor implements MessageProcessorLocal {
 	/**
 	 * Associate the document and attachments in the message with documents in the database either by
 	 * finding document(s) or creating document(s).
-	 * As a side effect of this method, the document id will be set in the message header if not already set.
-	 * @param tm The message header containing the payload
-	 * @param now The "transaction time"
+	 * @param tm
+	 * @return
+	 * @throws LoginException
+	 * @throws GeneralSecurityException
+	 * @throws IOException
 	 */
 	public void associateDocument( TolvenMessage tm, Date now ) throws Exception {
 		// setup callback variables
@@ -234,7 +236,6 @@ public abstract class AppEvalAdaptor implements MessageProcessorLocal {
 			tm.setDocumentId(docBase.getId());
 		}
 	}
-	
 	protected abstract DocBase scanInboundDocument(DocBase doc) throws Exception;
 	
 	public void addMyProvider( Object providerId ) {
@@ -614,7 +615,7 @@ public abstract class AppEvalAdaptor implements MessageProcessorLocal {
     public void initSourceAccount() {
     	sourceAccount = null;
     }
-	
+		
     public void info( String message ) {
         logger.info( "AccountId: " + getAccount().getId() + " " + message);
     }
@@ -650,7 +651,7 @@ public abstract class AppEvalAdaptor implements MessageProcessorLocal {
 	 * @return The decrypted byte array 
 	 */
 	public byte[] getDocumentContent(long documentId, PrivateKey userPrivateKey) {
-		String principal = ejbContext.getCallerPrincipal().getName();
+		String principal = (String)TolvenSessionWrapperFactory.getInstance().getPrincipal();
 		long accountId = getAccount().getId();
 		AccountUser accountUser = accountBean.findAccountUser(principal, accountId);
 		if (accountUser==null) {

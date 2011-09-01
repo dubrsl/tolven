@@ -27,7 +27,6 @@ import javax.ejb.EJB;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.core.NewCookie;
 
 import org.apache.log4j.Logger;
 import org.tolven.core.ActivationLocal;
@@ -35,7 +34,7 @@ import org.tolven.core.TolvenPropertiesLocal;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.security.key.UserPrivateKey;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapperFactory;
 
 public abstract class AbstractVestibule implements Vestibule {
 
@@ -78,8 +77,8 @@ public abstract class AbstractVestibule implements Vestibule {
         return contextMap;
     }
 
-    protected Long getSessionTolvenUserId(ServletRequest servletRequest) {
-        String idString = getSessionProperty(GeneralSecurityFilter.TOLVENUSER_ID, servletRequest);
+    protected Long getSessionTolvenUserId() {
+        String idString = getSessionProperty(GeneralSecurityFilter.TOLVENUSER_ID);
         if (idString == null || idString.length() == 0) {
             return null;
         } else {
@@ -87,12 +86,12 @@ public abstract class AbstractVestibule implements Vestibule {
         }
     }
 
-    protected void setSessionTolvenUserId(Long tolvenUserId, ServletRequest servletRequest) {
-        setSessionProperty(GeneralSecurityFilter.TOLVENUSER_ID, String.valueOf(tolvenUserId), servletRequest);
+    protected void setSessionTolvenUserId(Long tolvenUserId) {
+        setSessionProperty(GeneralSecurityFilter.TOLVENUSER_ID, String.valueOf(tolvenUserId));
     }
 
-    protected Long getSessionProposedAccountUserId(ServletRequest servletRequest) {
-        String idString = getSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, servletRequest);
+    protected Long getSessionProposedAccountUserId() {
+        String idString = getSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID);
         if (idString == null || idString.length() == 0) {
             return null;
         } else {
@@ -104,23 +103,23 @@ public abstract class AbstractVestibule implements Vestibule {
         removeSessionAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, servletRequest);
     }
 
-    protected void setSessionProposedAccountUserId(Long proposedAccountUserId, ServletRequest servletRequest) {
-        setSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, String.valueOf(proposedAccountUserId), servletRequest);
+    protected void setSessionProposedAccountUserId(Long proposedAccountUserId) {
+        setSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, String.valueOf(proposedAccountUserId));
     }
 
-    protected PrivateKey getUserPrivateKey(ServletRequest servletRequest) {
+    protected PrivateKey getUserPrivateKey() {
         String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-        return TolvenSSO.getInstance().getUserPrivateKey((HttpServletRequest) servletRequest, keyAlgorithm);
+        return TolvenSessionWrapperFactory.getInstance().getUserPrivateKey(keyAlgorithm);
     }
 
-    protected X509Certificate getUserX509Certificate(ServletRequest servletRequest) {
-        return TolvenSSO.getInstance().getUserX509Certificate((HttpServletRequest) servletRequest);
+    protected X509Certificate getUserX509Certificate() {
+        return TolvenSessionWrapperFactory.getInstance().getUserX509Certificate();
     }
 
-    protected PublicKey getUserPublicKey(ServletRequest servletRequest) {
-        return TolvenSSO.getInstance().getUserPublicKey((HttpServletRequest) servletRequest);
+    protected PublicKey getUserPublicKey() {
+        return TolvenSessionWrapperFactory.getInstance().getUserPublicKey();
     }
-    
+
     protected TolvenUser findPrincipalTolvenUser(ServletRequest servletRequest) {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         Principal principal = request.getUserPrincipal();
@@ -131,20 +130,16 @@ public abstract class AbstractVestibule implements Vestibule {
         return activationBean.findDefaultAccountUser(user);
     }
 
-    protected String getSessionProperty(String name, ServletRequest servletRequest) {
-        return TolvenSSO.getInstance().getSessionProperty(name, (HttpServletRequest)servletRequest);
+    protected String getSessionProperty(String name) {
+        return (String) TolvenSessionWrapperFactory.getInstance().getAttribute(name);
     }
 
-    protected void setSessionProperty(String name, String value, ServletRequest servletRequest) {
-        TolvenSSO.getInstance().setSessionProperty(name, value, (HttpServletRequest)servletRequest);
+    protected void setSessionProperty(String name, String value) {
+        TolvenSessionWrapperFactory.getInstance().setAttribute(name, value);
     }
 
-    protected void removeSessionProperty(String name, ServletRequest servletRequest) {
-        TolvenSSO.getInstance().setSessionProperty(name, null, (HttpServletRequest)servletRequest);
-    }
-
-    protected NewCookie getSSOCookie(ServletRequest servletRequest) {
-        return TolvenSSO.getInstance().getSSOCookie((HttpServletRequest)servletRequest);
+    protected void removeSessionProperty(String name) {
+        TolvenSessionWrapperFactory.getInstance().removeAttribute(name);
     }
 
 }

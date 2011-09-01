@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.passwordrecovery" version="2.0.12" class="org.tolven.passwordrecovery.PasswordRecoveryPlugin" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.passwordrecovery" version="2.1.0" class="org.tolven.passwordrecovery.PasswordRecoveryPlugin" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<attributes>
 		<attribute id="guiComponentParentId" value="#{pluginProperty['guiComponentParentId']}" />
 	</attributes>

@@ -44,8 +44,8 @@
 					<from>#{inflnzvccnsnapshotresult.patient.sex}</from>
 					<from>#{inflnzvccnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="InfluenzaVaccineRecorded" width="12.0" align="right" visible="true">
-					<from>#{inflnzvccnsnapshotresult.result.pqValue01}</from>
+				<column name="InfluenzaVaccineRecorded" width="6.0" visible="true" format="MM/dd/yyyy" internal="date02">
+					<from>#{inflnzvccnsnapshotresult.influenzaVaccineRecorded}</from>
 				</column>
 			</list>
 			<list name="inflnzvccn" title="Influenza Vaccine Recorded" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:inflnzvccnsnapshot:inflnzvccnsnapshotresult">
@@ -71,8 +71,8 @@
 					<from>#{inflnzvccnsnapshotresult.patient.sex}</from>
 					<from>#{inflnzvccnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="Influenza Vaccine Recorded" width="6.0" align="right" visible="true">
-					<from>#{inflnzvccnsnapshotresult.result.pqValue01}</from>
+				<column name="InfluenzaVaccineRecorded" width="6.0" visible="true" format="MM/dd/yyyy" internal="date02">
+					<from>#{inflnzvccnsnapshotresult.influenzaVaccineRecorded}</from>
 				</column>
 			</list>
 			<list name="noinflnzvccn" title="Influenza Vaccine Not Recorded" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:inflnzvccnsnapshot:inflnzvccnsnapshotresult">
@@ -98,7 +98,7 @@
 					<from>#{inflnzvccnsnapshotresult.patient.sex}</from>
 					<from>#{inflnzvccnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="Influenza Vaccine Recorded" width="6.0" align="right" visible="true">
+				<column name="InfluenzaVaccineRecorded" width="6.0" align="right" visible="true">
 					<from>#{inflnzvccnsnapshotresult.result.pqValue01}</from>
 				</column>
 			</list>
@@ -119,6 +119,8 @@
 			<field name="result" internal="parent03">
 				<from>#{result}</from>
 			</field>
+			<field name="influenzaVaccineRecorded" internal="date02">
+			</field>
 		</placeholder>
 	</extends>
 	<extends path="echr:cohort:snapshots">
@@ -136,7 +138,7 @@
 	</extends>
 	<extends path="echr:analysis">
 		<menu name="inflnzinflnzvccnsnapshot" title="Influenza Vaccine" sequence="800" page="/five/bar2.xhtml" visible="true">
-			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:inflnzvccnsnapshot:inflnzvccnsnapshotresult">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:inflnzvccnsnapshot:inflnzvccnsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{inflnzvccnsnapshotresult.patient.lastName}, #{inflnzvccnsnapshotresult.patient.firstName} #{inflnzvccnsnapshotresult.patient.middleName}</from>
 				</column>
@@ -159,11 +161,14 @@
 					<from>#{inflnzvccnsnapshotresult.patient.sex}</from>
 					<from>#{inflnzvccnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="InfluenzaVaccineRecorded" width="12.0" align="right" visible="true">
-					<from>#{inflnzvccnsnapshotresult.result.pqValue01}</from>
+				<column name="InfluenzaVaccineRecorded" width="12.0" visible="true" format="MMM-dd-yyyy" internal="date02">
+					<from>#{inflnzvccnsnapshotresult.influenzaVaccineRecorded}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{inflnzvccnsnapshotresult.inflnzvccnsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="inflnzvccn" title="Influenza Vaccine Recorded" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:inflnzvccnsnapshot:inflnzvccnsnapshotresult">
+			<list name="inflnzvccn" title="Influenza Vaccine Recorded" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:inflnzvccnsnapshot:inflnzvccnsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{inflnzvccnsnapshotresult.patient.lastName}, #{inflnzvccnsnapshotresult.patient.firstName} #{inflnzvccnsnapshotresult.patient.middleName}</from>
 				</column>
@@ -186,11 +191,14 @@
 					<from>#{inflnzvccnsnapshotresult.patient.sex}</from>
 					<from>#{inflnzvccnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="InfluenzaVaccineRecorded" width="12.0" align="right" visible="true">
-					<from>#{inflnzvccnsnapshotresult.result.pqValue01}</from>
+				<column name="InfluenzaVaccineRecorded" width="12.0" visible="true" format="MMM-dd-yyyy" internal="date02">
+					<from>#{inflnzvccnsnapshotresult.influenzaVaccineRecorded}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{inflnzvccnsnapshotresult.inflnzvccnsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="noinflnzvccn" title="Influenza Vaccine Not Recorded" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:inflnzvccnsnapshot:inflnzvccnsnapshotresult">
+			<list name="noinflnzvccn" title="Influenza Vaccine Not Recorded" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:inflnzvccnsnapshot:inflnzvccnsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{inflnzvccnsnapshotresult.patient.lastName}, #{inflnzvccnsnapshotresult.patient.firstName} #{inflnzvccnsnapshotresult.patient.middleName}</from>
 				</column>
@@ -215,6 +223,9 @@
 				</column>
 				<column name="InfluenzaVaccineRecorded" width="12.0" align="right" visible="true">
 					<from>#{inflnzvccnsnapshotresult.result.pqValue01}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{inflnzvccnsnapshotresult.inflnzvccnsnapshot.effectiveTime}</from>
 				</column>
 			</list>
 		</menu>

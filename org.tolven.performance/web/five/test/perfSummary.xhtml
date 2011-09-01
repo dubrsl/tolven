@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Request URI  Interactions  Summary Of Elapsed Time </title>
+  </head>
+  <body>
+	 	<ui:composition>
+ 		<p>Summary of server transactions for account #{top.accountId}. 
+ 		 Includes the count, the Average, Minimum and Maximum for the elapsed server time  
+         for each Request URI. </p>
+         <p><a href="javascript:getRemoteContent(visiblePage);" >[refresh]</a>. </p>
+		 <p>Elapsed time is measured from the moment an HTTP request is received at the server until after the transaction and rendering have occurred for the page.</p>
+		 <p>This display does not measure end-user response time, which is measured in the Tolven benchmark project. 
+		 Many end-user interactions have no server involvement at all, such as moving back and forth between tabs and viewing a page that has
+		 already been fetched from the server. On the other hand, some complex pages require several server interactions. When this happens, the requests are
+		 handled in parallel and thus the elapsed time of all of the server requests could be much larger than what the
+		 user sees as response time. Therefore, rarely does <i>server</i> interactions equate 
+		 to the number or duration of <i>user interactions</i>. </p>
+
+		 <h:dataTable id="perfHX" value="#{performance.accountSummary}" var="ph" cellspacing="0" border="1" cellpadding="3"
+		 		columnClasses="timeCol,msCol,textCol,textCol">
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Request URI"/>
+           		</f:facet>
+           		<h:outputText value="#{ph[0]}"/>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Count"/>
+           		</f:facet>
+           		<h:outputText value="#{ph[1]}">
+           			<f:convertNumber minIntegerDigits="1" maxIntegerDigits="7" minFractionDigits="0" maxFractionDigits="0"/>
+           		</h:outputText>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Minimum (ms)" />
+           		</f:facet>
+           		<h:outputText value="#{ph[2]}">
+           			  <f:convertNumber minIntegerDigits="1" maxIntegerDigits="7" minFractionDigits="4" maxFractionDigits="4"/>
+           		</h:outputText>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Maximum (ms)"/>
+           		</f:facet>
+           		<h:outputText value="#{ph[3]}">
+           			  <f:convertNumber minIntegerDigits="1" maxIntegerDigits="7" minFractionDigits="4" maxFractionDigits="4"/>
+           		</h:outputText>
+           	</h:column>
+           	           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Average (ms)"/>
+           		</f:facet>
+           		<h:outputText value="#{ph[4]}">
+           			<f:convertNumber minIntegerDigits="1" maxIntegerDigits="7" minFractionDigits="4" maxFractionDigits="4"/>
+           		</h:outputText>
+           	</h:column>
+         </h:dataTable>
+	
+ 	</ui:composition>
+  </body>
+</html>

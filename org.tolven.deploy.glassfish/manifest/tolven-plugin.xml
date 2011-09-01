@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.deploy.glassfish" version="2.0.2" class="org.tolven.deploy.glassfish.GlassFishDeploy" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.deploy.glassfish" version="2.1.0" class="org.tolven.deploy.glassfish.GlassFishDeploy" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<!-- DEPRECATED -->
 	<attributes>
 		<attribute id="deployDir" value="glassfish/domains/tolven/autodeploy" />
 	</attributes>

@@ -17,6 +17,7 @@
 
 package org.tolven.doc;
 
+import java.util.Date;
 import java.util.List;
 
 import org.drools.RuleBase;
@@ -64,4 +65,10 @@ public interface RulesLocal {
 	 */
 	public List<RulePackage> findActivePackages( String knownType );
 	
+	/**CCHIT merge
+	 * Added to set time from out side class.
+	 * @author valsaraj
+	 * added on 08/03/2010
+	 */
+	public void setSavedTime(Date savedTime);
 }

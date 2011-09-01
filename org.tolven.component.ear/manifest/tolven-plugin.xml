@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.ear" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+
+	<extension-point id="abstractEAR" extension-multiplicity="none" />
+
+	<extension-point id="ear-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" />
+	</extension-point>
+
+	<extension-point id="META-INF-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+		<parameter-def id="dir" />
+	</extension-point>
+
+	<extension-point id="ejbModule-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="ejbFile" />
+	</extension-point>
+	<extension-point id="ejbModuleProduct-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+
+	<extension-point id="connectorModuleProduct-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+
+	<extension-point id="libProduct-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+
+	<extension-point id="localeModule-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+	</extension-point>
+	<extension-point id="localeModuleProduct-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+
+	<extension-point id="warModule-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="web-uri" />
+		<parameter-def id="context-root" />
+	</extension-point>
+	<extension-point id="warModuleProduct-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="web-uri" />
+		<parameter-def id="context-root" />
+	</extension-point>
+
+	<!-- The following extension points are (or are to be) deprecated -->
+	<extension-point id="compositeExtensionPoint">
+		<parameter-def id="name" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="localeModuleProduct">
+		<parameter-def id="jar" multiplicity="one" />
+	</extension-point>
+	<extension-point id="localeModule">
+		<parameter-def id="jar" multiplicity="one" />
+	</extension-point>
+	<extension-point id="javaModuleProduct">
+		<parameter-def id="jar" multiplicity="none-or-one" />
+		<parameter-def id="dir" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="javaModuleProductPlugin">
+		<parameter-def id="target-plugin-id" />
+		<parameter-def id="extension-point">
+			<parameter-def id="name" multiplicity="any" />
+		</parameter-def>
+	</extension-point>
+	<extension-point id="javaModule">
+		<parameter-def id="jar" multiplicity="one" />
+	</extension-point>
+	<extension-point id="connectorModuleProduct">
+		<parameter-def id="rar" />
+	</extension-point>
+	<extension-point id="ejbModuleProduct">
+		<parameter-def id="jar" />
+	</extension-point>
+	<extension-point id="ejbModule">
+		<parameter-def id="jar" />
+	</extension-point>
+	<extension-point id="warModuleProduct">
+		<parameter-def id="web-uri" />
+		<parameter-def id="context-root" />
+	</extension-point>
+	<extension-point id="warModule">
+		<parameter-def id="web-uri" />
+		<parameter-def id="context-root" />
+	</extension-point>
+	<extension-point id="security-role">
+		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="role-name" />
+	</extension-point>
+	<extension-point id="META-INF">
+		<parameter-def id="dir" />
+	</extension-point>
+
+</plugin>

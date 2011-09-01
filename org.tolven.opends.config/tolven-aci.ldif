@@ -8,6 +8,13 @@ changetype: modify
 add: aci
 aci: (target="ldap:///*,ou=groups,dc=tolven,dc=com")(targetattr="*") (version 3.0; acl "Tolven Manager"; allow (all) groupdn="ldap:///cn=Administrator,ou=groups,dc=tolven,dc=com";)
 
+dn: ou=people,dc=tolven,dc=com
+changetype: modify
+add: aci
+aci: (target="ldap:///*,ou=people,dc=tolven,dc=com")(targetattr="*") (version 3.0; acl "Tolven Anonymous"; allow (all) groupdn="ldap:///cn=tolvenAnonymous,ou=groups,dc=tolven,dc=com";)
+aci: (target="ldap:///*,ou=people,dc=tolven,dc=com")(targetattr="userPassword||authPassword||userCertificate||userPKCS12") (version 3.0; acl "Tolven Self Modifiable"; allow(read,search,compare) userdn="ldap:///self";)
+aci: (targetattr="audio||authPassword||description||displayName||givenName||homePhone||homePostalAddress||initials||jpegPhoto||labeledURI||mobile||pager||postalAddress||postalCode||preferredLanguage||telephoneNumber||userPassword||userCertificate||userPKCS12") (version 3.0; acl "Tolven Self entry modification"; allow (write) userdn="ldap:///self";)
+
 dn:ou=people,dc=tolven,dc=com
 changetype:modify
 add:aci

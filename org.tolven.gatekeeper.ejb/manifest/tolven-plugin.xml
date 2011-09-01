@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.gatekeeper.ejb" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.ejb" />
+		<import plugin-id="org.tolven.assembler.ejbmodule" />
+	</requires>
+
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+
+	<extension-point id="ejbModule-declaration" parent-plugin-id="org.tolven.component.ejb" parent-point-id="ejbModule-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" default-value="gatekeeper-ejb" />
+	</extension-point>
+	<!-- EJB Services -->
+	<extension-point id="classes-adaptor" parent-plugin-id="org.tolven.component.ejb" parent-point-id="classes-adaptor" />
+	<extension-point id="META-INF-adaptor" parent-plugin-id="org.tolven.component.ejb" parent-point-id="META-INF-adaptor" />
+
+	<extension-point parent-point-id="persistence-unit" parent-plugin-id="org.tolven.assembler.ejbmodule" id="persistence-unit">
+		<parameter-def id="target-plugin-id" default-value="org.tolven.gatekeeper.ejb" multiplicity="none-or-one" />
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="provider" multiplicity="none-or-one" />
+		<parameter-def id="mapping-file" />
+		<parameter-def id="property" multiplicity="any">
+			<parameter-def id="name" />
+			<parameter-def id="value" />
+		</parameter-def>
+	</extension-point>
+	<extension-point parent-point-id="persistence-unit-metadata" parent-plugin-id="org.tolven.assembler.ejbmodule" id="persistence-unit-metadata">
+		<parameter-def id="target-plugin-id" default-value="org.tolven.gatekeeper.ejb" multiplicity="none-or-one" />
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="persistence-unit-defaults" multiplicity="none-or-one">
+			<parameter-def id="schema" multiplicity="none-or-one" />
+		</parameter-def>
+	</extension-point>
+	<extension-point parent-point-id="table-generator" parent-plugin-id="org.tolven.assembler.ejbmodule" id="table-generator">
+		<parameter-def id="target-plugin-id" default-value="org.tolven.gatekeeper.ejb" multiplicity="none-or-one" />
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="name" />
+		<parameter-def id="table" multiplicity="none-or-one" />
+		<parameter-def id="schema" multiplicity="none-or-one" />
+		<parameter-def id="pk-column-name" multiplicity="none-or-one" />
+		<parameter-def id="value-column-name" multiplicity="none-or-one" />
+		<parameter-def id="pk-column-value" multiplicity="none-or-one" />
+		<parameter-def id="initial-value" multiplicity="none-or-one" />
+		<parameter-def id="allocation-size" multiplicity="none-or-one" />
+		<parameter-def id="unique-constraint" multiplicity="any">
+			<parameter-def id="column-name" multiplicity="one-or-more" />
+		</parameter-def>
+	</extension-point>
+	<extension-point parent-point-id="entity" parent-plugin-id="org.tolven.assembler.ejbmodule" id="entity">
+		<parameter-def id="target-plugin-id" default-value="org.tolven.gatekeeper.ejb" multiplicity="none-or-one" />
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="class" />
+		<parameter-def id="table" multiplicity="none-or-one">
+			<parameter-def id="name" multiplicity="none-or-one" />
+			<parameter-def id="schema" multiplicity="none-or-one" />
+			<parameter-def id="unique-constraint" multiplicity="any">
+				<parameter-def id="column-name" multiplicity="one-or-more" />
+			</parameter-def>
+		</parameter-def>
+		<parameter-def id="discriminator-column" multiplicity="none-or-one">
+			<parameter-def id="name" multiplicity="none-or-one" />
+			<parameter-def id="length" type="number" multiplicity="none-or-one" />
+		</parameter-def>
+		<parameter-def id="attributes" multiplicity="none-or-one">
+			<parameter-def id="id" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="basic" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+				<parameter-def id="lob" multiplicity="none-or-one" />
+				<parameter-def id="temporal" multiplicity="none-or-one" />
+				<parameter-def id="enumerated" multiplicity="none-or-one" />
+			</parameter-def>
+			<parameter-def id="version" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="many-to-one" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="join-column" multiplicity="any">
+					<parameter-def id="name" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="embedded" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="attribute-override" multiplicity="any">
+					<parameter-def id="name" />
+					<parameter-def id="column" multiplicity="any">
+						<parameter-def id="name" multiplicity="none-or-one" />
+						<parameter-def id="length" type="number" multiplicity="none-or-one" />
+						<parameter-def id="column-definition" multiplicity="none-or-one" />
+					</parameter-def>
+				</parameter-def>
+			</parameter-def>
+		</parameter-def>
+	</extension-point>
+	<!-- EJB Services End -->
+
+	<!-- LOCAL Resources -->
+	<extension-point id="EJB-META-INF" extension-multiplicity="none">
+		<parameter-def id="dir" default-value="ejb/META-INF" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="EJB-classes" extension-multiplicity="none">
+		<parameter-def id="dir" default-value="ejb/classes" multiplicity="none-or-one" />
+	</extension-point>
+	<!-- LOCAL Resources End -->
+
+	<!-- EJB Contributions -->
+	<extension id="EJB-META-INF-adaptor" plugin-id="org.tolven.gatekeeper.ejb" point-id="META-INF-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.gatekeeper.ejb" />
+		<parameter id="extension-point" value="EJB-META-INF" />
+	</extension>
+	<extension id="EJB-classes-adaptor" plugin-id="org.tolven.gatekeeper.ejb" point-id="classes-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.gatekeeper.ejb" />
+		<parameter id="extension-point" value="EJB-classes" />
+	</extension>
+	
+	<extension id="legacypostgresql-CORE_SEQ_GEN-table-generator" plugin-id="org.tolven.gatekeeper.ejb" point-id="table-generator">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="name" value="CORE_SEQ_GEN" />
+		<parameter id="table" value="SEQUENCE_GENERATOR" />
+		<parameter id="schema" value="core" />
+		<parameter id="pk-column-name" value="SEQ_NAME" />
+		<parameter id="value-column-name" value="NEXT_VAL" />
+		<parameter id="pk-column-value" value="CORE" />
+		<parameter id="initial-value" value="1000" />
+		<parameter id="allocation-size" value="1000" />
+		<parameter id="unique-constraint">
+			<parameter id="column-name" value="SEQ_NAME" />
+		</parameter>
+	</extension>
+
+	<extension id="legacypostgresql-persistence-unit" plugin-id="org.tolven.gatekeeper.ejb" point-id="persistence-unit">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="provider" value="org.hibernate.ejb.HibernatePersistence" />
+		<parameter id="mapping-file" value="orm.xml" />
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation" />
+			<parameter id="value" value="create-tables" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation.output-mode" />
+			<parameter id="value" value="database" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.logging.levelxxxx" />
+			<parameter id="value" value="FINEST" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.target-database" />
+			<parameter id="value" value="PostgreSQL" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.dialect" />
+			<parameter id="value" value="org.hibernate.dialect.PostgreSQLDialect" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.show_sql" />
+			<parameter id="value" value="false" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.hbm2ddl.auto" />
+			<parameter id="value" value="update" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.cache.provider_class" />
+			<parameter id="value" value="org.hibernate.cache.NoCacheProvider" />
+		</parameter>
+	</extension>
+
+	<extension id="oracle-CORE_SEQ_GEN-table-generator" plugin-id="org.tolven.gatekeeper.ejb" point-id="table-generator">
+		<parameter id="ormId" value="oracle" />
+		<parameter id="name" value="CORE_SEQ_GEN" />
+		<parameter id="table" value="CORE_SEQUENCE_GENERATOR" />
+		<parameter id="pk-column-name" value="SEQ_NAME" />
+		<parameter id="value-column-name" value="NEXT_VAL" />
+		<parameter id="pk-column-value" value="CORE" />
+		<parameter id="initial-value" value="1000" />
+		<parameter id="allocation-size" value="1000" />
+		<parameter id="unique-constraint">
+			<parameter id="column-name" value="SEQ_NAME" />
+		</parameter>
+	</extension>
+
+	<extension id="oracle-persistence-unit" plugin-id="org.tolven.gatekeeper.ejb" point-id="persistence-unit">
+		<parameter id="ormId" value="oracle" />
+		<parameter id="provider" value="org.hibernate.ejb.HibernatePersistence" />
+		<parameter id="mapping-file" value="orm.xml" />
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation" />
+			<parameter id="value" value="create-tables" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation.output-mode" />
+			<parameter id="value" value="database" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.logging.levelxxxx" />
+			<parameter id="value" value="FINEST" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.target-database" />
+			<parameter id="value" value="Oracle" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.dialect" />
+			<parameter id="value" value="org.hibernate.dialect.Oracle10gDialect" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.show_sql" />
+			<parameter id="value" value="false" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.hbm2ddl.auto" />
+			<parameter id="value" value="update" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.cache.provider_class" />
+			<parameter id="value" value="org.hibernate.cache.NoCacheProvider" />
+		</parameter>
+	</extension>
+	<extension id="oracle-persistence-unit-metadata" plugin-id="org.tolven.gatekeeper.ejb" point-id="persistence-unit-metadata">
+		<parameter id="ormId" value="oracle" />
+	</extension>
+
+	<extension id="legacypostgresql-org.tolven.gatekeeper.entity.DefaultPasswordBackup-entity" plugin-id="org.tolven.gatekeeper.ejb" point-id="entity">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="class" value="org.tolven.gatekeeper.entity.DefaultPasswordBackup" />
+		<parameter id="table">
+			<parameter id="name" value="PASSWORD_BACKUP" />
+			<parameter id="schema" value="core" />
+		</parameter>
+		<parameter id="attributes">
+			<parameter id="basic">
+				<parameter id="name" value="encryptedPassword" />
+				<parameter id="column">
+					<parameter id="name" value="ENCRYPTED_PASSWORD" />
+				</parameter>
+				<parameter id="lob" />
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="iterationCount" />
+				<parameter id="column">
+					<parameter id="name" value="PBE_KEY_ITERATION_COUNT" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="securityQuestion" />
+				<parameter id="column">
+					<parameter id="name" value="SECURITY_QUESTION" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="passwordPurpose" />
+				<parameter id="column">
+					<parameter id="name" value="PASSWORD_PURPOSE" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="salt" />
+				<parameter id="column">
+					<parameter id="name" value="PBE_KEY_SALT" />
+				</parameter>
+				<parameter id="lob" />
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="userId" />
+				<parameter id="column">
+					<parameter id="name" value="USER_ID" />
+				</parameter>
+			</parameter>
+		</parameter>
+	</extension>
+	<extension id="legacypostgresql-org.tolven.gatekeeper.entity.DefaultSecurityQuestion-entity" plugin-id="org.tolven.gatekeeper.ejb" point-id="entity">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="class" value="org.tolven.gatekeeper.entity.DefaultSecurityQuestion" />
+		<parameter id="table">
+			<parameter id="name" value="SECURITY_QUESTION" />
+			<parameter id="schema" value="core" />
+		</parameter>
+	</extension>
+	<!-- EJB Contributions -->
+
+</plugin>

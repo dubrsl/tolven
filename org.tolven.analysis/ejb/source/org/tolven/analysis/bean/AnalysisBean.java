@@ -12,7 +12,7 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id$
+ * @version $Id: AnalysisBean.java 1085 2011-05-24 03:11:08Z srini.kandula $
  */
 package org.tolven.analysis.bean;
 
@@ -43,7 +43,7 @@ public class AnalysisBean implements AnalysisLocal {
             tm.setFromAccountId(account.getId());
             tm.setMediaType("text/xml");
             tm.setXmlNS("org.tolven.analysis");
-            tmSchedulerBean.schedule(tm, messageProperties, queueOnDate);
+            tmSchedulerBean.schedule(tm, messageProperties,queueOnDate );
         } catch (Exception ex) {
             throw new RuntimeException("Could not submit snapshot for queue", ex);
         }

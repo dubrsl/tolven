@@ -1,0 +1,121 @@
+@page {
+	size: A4;
+	margin: 0.90in 0.30in 0.50in 0.40in;  
+	-fs-flow-top: "header";
+	-fs-flow-bottom: "footer";
+	-fs-flow-left: "left";
+	-fs-flow-right: "right";
+	padding: 1em 1em 1em 1em;
+	font-family: Arial; 
+	font-size: 9px;
+
+	@top-left { 
+		content: element(header)  
+	};
+	@bottom-left { 
+		content: element(footer) ; 
+	}; 
+}
+#header {
+	position: running(header);
+	display: block;
+	margin:0;
+	padding:0px; 
+	border-bottom: medium groove #000;
+}
+#reportheader{ 
+	margin:0;
+	padding:10px;
+	width: 100%;
+	text-align: center;
+}
+
+#footer {
+	position: running(footer);
+	display: block;
+	margin:0;
+	padding:0px;
+}
+#reportfooter {
+	margin:0;
+	padding:3px 5px 0 0;
+	border-top: medium groove #000;
+	width: 100%;
+	font-size: 9pt;
+}
+#pagecount:before {
+	content: counter(pages);  
+}
+#pagenumber:before {
+	content: counter(page); 
+}
+body {
+	margin: 0px;
+	padding: 0px; 
+	font-family: Arial; 
+}  
+h1,h2,h3,p{
+	margin: 0px;
+	padding: 0px;  
+}
+#reportName{
+	background-color: #666666;
+	color: #fff;
+	padding: 3px;
+}
+h3{
+	text-transform:uppercase;
+	font-size: 15px;
+	text-decoration:underline;
+	background: #999;
+	padding: 0 0 0 3px;
+	color: #fff;
+	margin-top: 5px;
+}
+h2{
+	text-transform:uppercase;
+	font-size: 12px;
+	background: #CCC;
+	padding: 0 0 0 3px;
+	color: #000;
+	margin-top: 5px;
+}
+td{
+	vertical-align: top;
+}
+.cpreport{
+	text-align: center;
+}
+.lineheight18{
+	 line-height:18px;
+}	
+.widget{
+	margin-left: 10px;
+	border-left: 1px solid #999999;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+}
+.widget th {
+	padding:0em;
+	overflow:hidden; 
+	border-right:1px solid #999999;
+	background:  #cccccc; color: #444444; 
+}
+
+.widget td {
+	padding-left:0.25em;
+	padding-right:0.25em;
+	overflow:hidden; 
+	border-right:1px solid #999999;
+}
+
+.widget tr.even {
+	background:#F0F0F0; 
+}
+
+.widget tr.odd {
+	background:#FFFFFF; 
+}
+.newPage{
+	page-break-before: always; 
+}

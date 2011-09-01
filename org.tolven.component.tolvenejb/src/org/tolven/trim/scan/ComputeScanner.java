@@ -50,6 +50,7 @@ public class ComputeScanner extends Scanner {
 	private TolvenPropertiesLocal propertyBean;
 	private DocProtectionLocal docProtectionBean;
 	private Map<String, Object> computeInstances;
+
 	
 	private ResourceBundle globalBundle;
 	private List<String> validationMessages = new ArrayList<String>();
@@ -127,6 +128,7 @@ public class ComputeScanner extends Scanner {
 					statement.execute();
 					statement = new Statement(target, "setDocumentType", new Object[]{getDocumentType()});
 					statement.execute();
+					
 					// Pass any properties specified in the XML to the compute class
 					// meaning the class must have appropriate set methods.
 					for (Compute.Property property : compute.getProperties()) {
@@ -249,6 +251,4 @@ public class ComputeScanner extends Scanner {
 	public List<String> getValidationMessages() {
 		return this.validationMessages;
 	}
-	
-	
 }

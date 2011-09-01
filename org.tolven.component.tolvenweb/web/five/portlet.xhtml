@@ -28,17 +28,23 @@
 				<a class="ddbox" onclick="openOptionBox(this, '#{menu.thisMenu.path}', #{menu.thisMenu.numSummaryItems});return false;" href="javascript:Tolven.Util.voidFn();">
 						<img src="../images/arrow_blue.gif" style="padding-top:none;margin-bottom: 3px;" border="0" height="100%"/>
 				</a>
-				<c:if test="#{menu.thisMenu.actions != null}">
+	               <c:set var="isEmergencyAccount" value="false"/>
+		        <c:forEach items="#{top.accountUser.account.accountProperties}" var="property">
+		        	<c:if test="#{property.propertyName=='tolven.cchit.emergencyAccount'}">
+		        		<c:set var="isEmergencyAccount" value="true"/>
+		        	</c:if>
+		        </c:forEach>
+				<c:if test="#{menu.thisMenu.actions != null and isEmergencyAccount=='false'}">
 					<c:forEach var="action" items="#{menu.thisMenu.actions}">
+						<span style="float:right;margin-top:28px;padding-left:20px;">
+			            <element id='#{action.path}_dropdown_loc' style='position:relative;'/>
+			            <div id='#{action.path}_drpDwn' class='drpDwn' style='display:none;'></div>
+			            </span>
 						<a class="actionBox" id='showDropDown' href="javascript:showActionOptions('#{menu.element}:menu_dropdown_loc','#{menu.element}:menu','#{menu.drilldown}')"  
             				title="#{action.localeText[top.appBundle]}">
               				#{action.localeText[top.appBundle]}
 						</a>		
-			            <span style="float:right;margin-top:28px;">
-			            <element id='#{action.path}_dropdown_loc' style='position:relative;'/>
-			            <div id='#{action.path}_drpDwn' class='drpDwn' style='display:none;'></div>
-			            </span>
-					</c:forEach>
+			            	</c:forEach>
 				</c:if>
 			</span>
 			</div>

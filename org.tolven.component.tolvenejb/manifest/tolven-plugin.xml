@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.component.tolvenejb" version="2.0.94" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.component.tolvenejb" version="2.1.1" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.assembler.ejbmodule" />
 		<import plugin-id="org.tolven.component.tolvenear" />
-		<import plugin-id="org.tolven.component.composite" />
 		<import plugin-id="org.tolven.component.ejb" />
-		<import plugin-id="org.tolven.mqkeystore" />
 		<import plugin-id="org.tolven.library.javaee" />
 	</requires>
-	<extension id="component" point-id="component" plugin-id="org.tolven.assembler.ejbmodule">
-		<parameter value="tolvenEJB.jar" id="jar" />
-	</extension>
+
+	<extension-point id="ejbModule-declaration" parent-plugin-id="org.tolven.component.ejb" parent-point-id="ejbModule-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" default-value="tolvenejb" />
+	</extension-point>
+	
 	<extension-point parent-point-id="classes" parent-plugin-id="org.tolven.assembler.ejbmodule" id="classes">
 		<parameter-def id="dir" />
 	</extension-point>
@@ -25,10 +25,7 @@
 	<extension-point parent-point-id="persistence-unit" parent-plugin-id="org.tolven.assembler.ejbmodule" id="persistence-unit">
 		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenejb" multiplicity="none-or-one" />
 		<parameter-def id="ormId" multiplicity="any" />
-		<parameter-def id="name" />
-		<parameter-def id="transaction-type" />
 		<parameter-def id="provider" multiplicity="none-or-one" />
-		<parameter-def id="jta-data-source" multiplicity="none-or-one" />
 		<parameter-def id="mapping-file" />
 		<parameter-def id="property" multiplicity="any">
 			<parameter-def id="name" />
@@ -227,15 +224,6 @@
 	<extension id="metaInfFiles" plugin-id="org.tolven.component.tolvenejb" point-id="META-INF">
 		<parameter id="dir" value="ejb/META-INF" />
 	</extension>
-	<extension id="ejbModule" point-id="ejbModule" plugin-id="org.tolven.component.tolvenear">
-		<parameter value="tolvenEJB.jar" id="jar" />
-	</extension>
-	<extension id="composite" point-id="composite" plugin-id="org.tolven.component.composite">
-		<parameter value="tolvenEJB" id="name" />
-	</extension>
-	<extension id="org.tolven.component.tolvenejb.compositeExtensionPoint.ejb" point-id="compositeExtensionPoint" plugin-id="org.tolven.component.ejb">
-		<parameter value="ejb" id="name" />
-	</extension>
 	<extension-point extension-multiplicity="none" id="devLib">
 		<parameter-def default-value="devLib.jar" id="jar" />
 	</extension-point>
@@ -244,11 +232,8 @@
 	</extension>
 	<extension id="legacypostgresql-persistence-unit" plugin-id="org.tolven.component.tolvenejb" point-id="persistence-unit">
 		<parameter id="ormId" value="legacypostgresql" />
-		<parameter id="name" value="em" />
-		<parameter id="transaction-type" value="JTA" />
 		<parameter id="provider" value="org.hibernate.ejb.HibernatePersistence" />
-		<!--<parameter id="jta-data-source" value="jdbc/__default" /> -->
-		<parameter id="mapping-file" value="META-INF/orm.xml" />
+		<parameter id="mapping-file" value="orm.xml" />
 		<parameter id="property">
 			<parameter id="name" value="eclipselink.ddl-generation" />
 			<parameter id="value" value="create-tables" />
@@ -2816,11 +2801,8 @@
 	</extension>
 	<extension id="oracle-persistence-unit" plugin-id="org.tolven.component.tolvenejb" point-id="persistence-unit">
 		<parameter id="ormId" value="oracle" />
-		<parameter id="name" value="em" />
-		<parameter id="transaction-type" value="JTA" />
 		<parameter id="provider" value="org.hibernate.ejb.HibernatePersistence" />
-		<!--<parameter id="jta-data-source" value="jdbc/__default" /> -->
-		<parameter id="mapping-file" value="META-INF/orm.xml" />
+		<parameter id="mapping-file" value="orm.xml" />
 		<parameter id="property">
 			<parameter id="name" value="eclipselink.ddl-generation" />
 			<parameter id="value" value="create-tables" />
@@ -2857,9 +2839,6 @@
 	</extension>
 	<extension id="oracle-persistence-unit-metadata" plugin-id="org.tolven.component.tolvenejb" point-id="persistence-unit-metadata">
 		<parameter id="ormId" value="oracle" />
-		<parameter id="persistence-unit-defaults">
-			<parameter id="schema" value="tolven" />
-		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
 	</extension>
 	<extension id="oracle-APP_SEQ_GEN-table-generator" plugin-id="org.tolven.component.tolvenejb" point-id="table-generator">

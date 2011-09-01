@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugins xmlns="urn:tolven-org:plugins:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:plugins:1.0 http://tolven.org/xsd/plugins.xsd">
+
+	<!-- TPF Plugins -->
+	<plugin id="org.tolven.assembler.pluginframework">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.command">
+		<root />
+	</plugin>
+	<!-- End TPF Plugins -->
+
+	<!-- Application Server Plugins -->
+	<plugin id="org.tolven.assembler.${tolven.appserver.code}.${tolven.database.code}">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.deploy.${tolven.appserver.code}">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.${tolven.security.code}">
+		<root />
+	</plugin>
+	<!-- End Server Plugins -->
+
+	<!-- Core Plugins -->
+	<plugin id="org.tolven.appserverproperties">
+		<root />
+		<property name="appserver.default.propertiesFile" value="server-default-config.properties.xml" />
+	</plugin>
+	<plugin id="org.tolven.component.application">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.component.tolvenlocale">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.component.tolvenlocale_en">
+		<root />
+	</plugin>
+	<!-- End Core Plugins -->
+
+	<!-- Application Plugins -->
+
+	<plugin id="org.tolven.api">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.component.tolvenweb">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.ws">
+		<root />
+	</plugin>
+	<plugin id="org.tolven.ccr">
+		<root />
+	</plugin>
+
+	<!-- End Application Plugins -->
+
+	<!-- Main properties -->
+	<property name="installation.dir" value="your-installationDir" />
+	<property name="config.dir" value="your-tolven-configDir" />
+	<property name="appserver.home" value="your-appserver-homeDir" />
+	<property name="client.web.hostname" value="localhost" />
+	<property name="client.web.http.port" value="8080" />
+	<property name="client.web.https.port" value="8443" />
+	<property name="repositoryLibrary">
+		<property name="v21">
+			<property name="trunkMetadata" value="http://tolven.org/download/v21/catalog/plugins.xml" />
+		</property>
+		<property name="repositoryLocal">
+			<property name="trunkMetadata" value="file:///#{globalProperty['config.dir']}/repositoryLocal/plugins.xml" />
+		</property>
+	</property>
+	<!-- End Main properties -->
+
+	<!-- Auxillary properties -->
+	<property name="repositoryRuntime" value="#{globalProperty['config.dir']}/repositoryRuntime" />
+	<property name="repositoryDevLib" value="#{globalProperty['config.dir']}/devLib" />
+	<property name="repositoryStage" value="#{globalProperty['config.dir']}/build/repositoryStage" />
+	<property name="repositoryTmp" value="#{globalProperty['config.dir']}/build/repositoryTmp" />
+	<property name="repositoryRuntimeUnpacked" value="#{globalProperty['config.dir']}/build/temp/.jpf-shadow" />
+	<property name="log4JConfiguration" value="#{globalProperty['installation.dir']}/bin/tolven-log4j.xml" />
+	<property name="logFile" value="#{globalProperty['installation.dir']}/log/tolven.log" />
+	<!-- End Auxillary properties -->
+
+	<!-- TolvenContext properties -->
+	<property name="tolven.contextId">
+		<property name="tolven.contextId" value="${tolven.contextId}" />
+		<property name="tolvenContext.ssocookie.name" value="${tolvenContext.ssocookie.name}" />
+		<property name="tolvenContext.ssocookie.domain" value="${tolvenContext.ssocookie.domain}" />
+		<property name="tolvenContext.ssocookie.path" value="${tolvenContext.ssocookie.path}" />
+		<property name="tolvenContext.ssocookie.secure" value="${tolvenContext.ssocookie.secure}" />
+		<property name="tolvenContext.ssocookie.maxAge" value="${tolvenContext.ssocookie.maxAge}" />
+		<property name="tolvenContext.gatekeeper.web.html.id" value="${tolvenContext.gatekeeper.web.html.id}" />
+		<property name="tolvenContext.gatekeeper.web.rs.id" value="${tolvenContext.gatekeeper.web.rs.id}" />
+		<property name="tolvenContext.gatekeeper.web.ws.id" value="${tolvenContext.gatekeeper.web.ws.id}" />
+		<property name="web.ids" value="${web.ids}" />
+		<property name="gatekeeperhtml.web.contextPath" value="${gatekeeperhtml.web.contextPath}" />
+		<property name="gatekeeperhtml.web.html.loginPath" value="${gatekeeperhtml.web.html.loginPath}" />
+		<property name="gatekeeperhtml.web.html.loginUrl" value="${gatekeeperhtml.web.html.loginUrl}" />
+		<property name="gatekeeperhtml.web.sslPort" value="${gatekeeperhtml.web.sslPort}" />
+		<property name="gatekeeperrs.web.contextPath" value="${gatekeeperrs.web.contextPath}" />
+		<property name="gatekeeperrs.web.rs.interface" value="${gatekeeperrs.web.rs.interface}" />
+		<property name="gatekeeperrs.web.rs.loginPath" value="${gatekeeperrs.web.rs.loginPath}" />
+		<property name="gatekeeperrs.web.rs.loginUrl" value="${gatekeeperrs.web.rs.loginUrl}" />
+		<property name="gatekeeperrs.web.sslPort" value="${gatekeeperrs.web.sslPort}" />
+		<property name="gatekeeperws.web.contextPath" value="${gatekeeperws.web.contextPath}" />
+		<property name="gatekeeperws.web.ws.loginPath" value="${gatekeeperws.web.ws.loginPath}" />
+		<property name="gatekeeperws.web.ws.loginUrl" value="${gatekeeperws.web.ws.loginUrl}" />
+		<property name="gatekeeperws.web.sslPort" value="${gatekeeperws.web.sslPort}" />
+		<property name="tolvenweb.web.contextPath" value="${tolvenweb.web.contextPath}" />
+		<property name="tolvenweb.web.html.loginUrl" value="${tolvenweb.web.html.loginUrl}" />
+		<property name="tolvenweb.web.sslPort" value="${tolvenweb.web.sslPort}" />
+		<property name="tolvenapi.web.contextPath" value="${tolvenapi.web.contextPath}" />
+		<property name="tolvenapi.web.rs.interface" value="${tolvenapi.web.rs.interface}" />
+		<property name="tolvenapi.web.rs.loginUrl" value="${tolvenapi.web.rs.loginUrl}" />
+		<property name="tolvenapi.web.sslPort" value="${tolvenapi.web.sslPort}" />
+		<property name="tolvenws.web.contextPath" value="${tolvenws.web.contextPath}" />
+		<property name="tolvenws.web.ws.loginUrl" value="${tolvenws.web.ws.loginUrl}" />
+		<property name="tolvenws.web.sslPort" value="${tolvenws.web.sslPort}" />
+		<!-- End TolvenContext properties -->
+
+	</property>
+
+</plugins>

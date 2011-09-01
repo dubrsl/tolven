@@ -111,6 +111,18 @@
 				</id>
 			</role>
 		</participation>
+		<relationship name="notificationPreference" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Notification Preference</ST>
+				</title>
+				<observation>
+					<value>
+						<valueSet>notificationPreferenceVS</valueSet>
+					</value>
+				</observation>	
+			</act>
+		</relationship>	
 	</act>
 	<valueSet name="genders">
 		<CE>
@@ -124,6 +136,26 @@
 			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 			<displayName>Female</displayName>
+		</CE>
+	</valueSet>
+	<valueSet name="notificationPreferenceVS">
+		<CE>
+			<displayName>Drug - Drug</displayName>
+			<code>C0024558</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Drug - Food</displayName>
+			<code>C0015759</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Drug - Allergy</displayName>
+			<code>C0015760</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 	</valueSet>
 </trim>

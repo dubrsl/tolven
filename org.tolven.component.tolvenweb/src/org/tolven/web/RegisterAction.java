@@ -28,11 +28,13 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.TimeZone;
 
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.auth.Subject;
 import javax.security.jacc.PolicyContext;
@@ -52,9 +54,9 @@ import org.tolven.doc.entity.Invitation;
 import org.tolven.el.ExpressionEvaluator;
 import org.tolven.gen.bean.GenControlCHRAccount;
 import org.tolven.gen.bean.GenControlPHRAccount;
+import org.tolven.naming.TolvenContext;
 import org.tolven.security.TolvenPerson;
 import org.tolven.security.hash.SSHA;
-import org.tolven.sso.TolvenSSO;
 import org.tolven.util.ExceptionFormatter;
 import org.tolven.web.security.GeneralSecurityFilter;
 import org.tolven.web.util.AccountProperties;
@@ -70,7 +72,9 @@ public class RegisterAction extends TolvenAction {
     public static final String FORMATTED = "Formatted";
 
     protected TolvenPerson tp;
+    private List<SelectItem> realms;
     private String uid;
+    private String invitedUserRealm;
     private String repeatUid;
     private String repeatUserPassword;
     private String oldUserPassword;
@@ -127,6 +131,8 @@ public class RegisterAction extends TolvenAction {
     
     private String userLevelPref;
     private String sendErrorEmailTo;
+    private boolean emergencyAccessAccount;
+    
     private String userCertificateUpload;
     private boolean formattedUserCertificate = true;
     private static CertificateFactory certificateFactory;
@@ -152,6 +158,7 @@ public class RegisterAction extends TolvenAction {
             getAccountBean().addAccountUser(account, getUser(), getNow(), true, getUserPublicKey());
             logger.info("Added first admin to: " + account.getId() + ", acct type " + getNewAccountType().getKnownType());
         } catch (Exception ex) {
+            ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("newAccountForm:createAccount", new FacesMessage("Failed to create Account: " + ExceptionFormatter.toSimpleStringMessage(ex, ",", true)));
             return "fail";
         }
@@ -180,7 +187,6 @@ public class RegisterAction extends TolvenAction {
 	        	getGeneratorBean().queueGeneration(control);
         	}
         }
-        TolvenSSO.getInstance().updateAccountUserTimestamp(getRequest());
 		return "success";
 	}
 
@@ -212,16 +218,45 @@ public class RegisterAction extends TolvenAction {
     	account.setTitle(accountTitle);// Don't use accessor, doesn't work right when resetting locale to null
     	account.setTimeZone(accountTimeZone);// Don't use accessor, doesn't work right when resetting locale to null
     	account.setLocale(accountLocale); // Don't use accessor, doesn't work right when resetting locale to null
-    	account.setEnableBackButton( enableBackButton );
+        account.setEnableBackButton( enableBackButton );
     	account.setDisableAutoRefresh( disableAutoRefresh );
     	account.setManualMetadataUpdate(manualMetadataUpdate);
     	getTop().getAccountUser().getAccount().getProperty().put(AccountProperties.ERROR_EMAIL_TO,sendErrorEmailTo);
 //    	TolvenLogger.info( "disableAutoRefresh: " + disableAutoRefresh, RegisterAction.class );
+    	//updateEmergencyAccountStatus();
     	getAccountBean().updateAccount(account);
 //    	getTop().setAccountTitle(getAccountTitle());
 //    	getTop().setAccountTimeZone(getAccount().getTimeZone());
     	return "success";
     }
+    
+   /* *//**
+     * Updates emergency account status.
+     * 
+     * added on 02/08/2011
+     * @author valsaraj
+     *//*
+    public void updateEmergencyAccountStatus() {
+    	if (isEmergencyAccessAccount()) {
+    		emergencyAccountBean.setEmergencyAccount(account.getId());
+        } else {
+        	Set<org.tolven.core.entity.AccountProperty> accountProperties = account.getAccountProperties();
+        	org.tolven.core.entity.AccountProperty emergencyAccountProperty = null;
+        	
+        	for (org.tolven.core.entity.AccountProperty accountProperty : accountProperties) {
+        		if (AccountProperties.EMERGENCY_ACCOUNT_PROPERTY.equals(accountProperty.getPropertyName())) {
+        			emergencyAccountProperty = accountProperty;
+        		}
+    		}
+        	
+        	if (emergencyAccountProperty != null) {
+        		accountProperties.remove(emergencyAccountProperty);
+        	}
+        	
+        	emergencyAccountBean.unsetEmergencyAccount(account.getId());
+        }
+	}
+    */
     public String saveUserPreferences(){
     	getTop().getAccountUser().getProperty().put(AccountUserProperties.USER_LEVEL_PREF,userLevelPref);
     	return "success";
@@ -599,7 +634,14 @@ public class RegisterAction extends TolvenAction {
                 tp.setSn(getTolvenPersonString("sn"));
                 tp.setStateOrProvince(getTolvenPersonString("st"));
                 tp.setUid(getTolvenPersonString("uid"));
-                tp.setMail(TolvenSSO.getInstance().getTolvenPersonList("mail", getRequest()));
+                List<String> mail = null;
+                Set<String> set = (Set<String>) getRequest().getAttribute("mail");
+                if (set == null || set.isEmpty()) {
+                    mail = new ArrayList<String>();
+                } else {
+                    mail = new ArrayList<String>(set);
+                }
+                tp.setMail(mail);
             }
         }
         return tp;
@@ -719,17 +761,19 @@ public class RegisterAction extends TolvenAction {
 
     public String getUserCertificateString() {
         if(isFormattedUserCertificate()) {
-            X509Certificate x509Certificate = TolvenSSO.getInstance().getUserX509Certificate(getRequest());
+            X509Certificate x509Certificate = getUserX509Certificate();
             if(x509Certificate == null) {
                 return null;
             } else {
                 return x509Certificate.toString();
             }
         } else {
-            return TolvenSSO.getInstance().getUserX509CertificateString(getRequest());
+            return getUserX509CertificateString();
         }
     }
-
+	public void setUser(TolvenUser user) {
+		this.user = user;
+	}
 	public List<AccountUser> getAccountUsers() {
 		if (accountUsers==null) accountUsers = getActivationBean().findAccountUsers( getAccount() );
 			for ( AccountUser accUser : accountUsers ) {
@@ -810,14 +854,19 @@ public class RegisterAction extends TolvenAction {
         return inviteUser(false);
     }
 
+    public String inviteUser() {
+        return inviteUser(false);
+    }
+
+    public String reinviteUser() {
+        return inviteUser(true);
+    }
+
     public String updateAccountUserCertificate() {
         return inviteUser(true);
     }
 
     private String inviteUser(boolean isReinvite) {
-        if (getNewDemoUser() == null) {
-            return "success";
-        }
         String uid = getNewDemoUser().toLowerCase().trim();
         TolvenUser invitedUser = getActivationBean().findUser(uid);
         if (invitedUser == null) {
@@ -836,24 +885,17 @@ public class RegisterAction extends TolvenAction {
                 return "fail";
             }
         }
-        PublicKey publicKey = null;
         try {
-            if (getUserCertificateUpload() != null && getUserCertificateUpload().length() > 0) {
-                byte[] userX509CertificateBytes = getUserCertificateUpload().getBytes("UTF-8");
-                X509Certificate x509Certificate = (X509Certificate) getCertificateFactory().generateCertificate(new ByteArrayInputStream(userX509CertificateBytes));
-                publicKey = x509Certificate.getPublicKey();
-            }
-        } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("Failed to convert to X509Certificate: " + ExceptionFormatter.toSimpleStringMessage(ex, ",", true)));
-            return "fail";
-        }
-        try {
-            getAccountBean().inviteAccountUser(getAccount(), getAccountUser(), invitedUser, getUserPrivateKey(), getNow(), false, publicKey, isReinvite);
+            getAccountBean().inviteAccountUser(getAccount(), getAccountUser(), invitedUser, getInvitedUserRealm(), getUserPrivateKey(), getNow(), false, isReinvite);
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("Failed to invite user to Account: " + ExceptionFormatter.toSimpleStringMessage(ex, ",", true)));
             return "fail";
         }
-        FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("User " + uid + " added to this account"));
+        if (isReinvite) {
+            FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("User " + uid + " reinvited to this account"));
+        } else {
+            FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("User " + uid + " added to this account"));
+        }
         // force a refresh of the list
         accountUsers = null;
         uid = null;
@@ -1165,5 +1207,30 @@ public class RegisterAction extends TolvenAction {
             return UNFORMATTED;
         }
     }
-    
+
+    public String getInvitedUserRealm() {
+        return invitedUserRealm;
+    }
+
+    public void setInvitedUserRealm(String invitedUserRealm) {
+        this.invitedUserRealm = invitedUserRealm;
+    }
+
+    public List<SelectItem> getRealms() {
+        if (realms == null) {
+            TolvenContext tolvenContext;
+            try {
+                InitialContext ictx = new InitialContext();
+                tolvenContext = (TolvenContext) ictx.lookup("tolvenContext");
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup tolvenContext", ex);
+            }
+            realms = new ArrayList<SelectItem>();
+            for (String realmId : tolvenContext.getRealmIds()) {
+                realms.add(new SelectItem(realmId));
+            }
+        }
+        return realms;
+    }
+
 }

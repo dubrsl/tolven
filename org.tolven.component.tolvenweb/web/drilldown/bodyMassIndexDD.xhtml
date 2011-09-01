@@ -14,17 +14,44 @@
 <body>
     <ui:composition>
 		<wiz:body>
-			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
-			<h:panelGrid columns="2" >
-				<h:outputText value="#{msg.DateOfObservation}: "/>
+    	 <table width="100%">
+    	   <tr>
+          		<td width="25%" style="text-align: left;">#{trim.trim.act.effectiveTime.label.value}</td>
+          		<td width="5%" style="text-align: left;">
 				<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
-				<h:outputText value="#{trim.trim.act.relationships[0].act.observation.value.label.value}"/>
-				<trim:PQ id="sys" value="#{trim.trim.act.relationships[0].act.observation.value}" readonly="true"/>
-				<h:outputText value="#{trim.trim.act.relationships[1].act.observation.value.label.value}"/>
-				<trim:PQ id="dia" value="#{trim.trim.act.relationships[1].act.observation.value}" readonly="true"/>
-				<h:outputText value="#{act.observation.value.label.value}: "/>
-				<h:outputText value="#{act.observation.value.PQ.value} #{act.observation.value.PQ.unit}"/>
-			</h:panelGrid>
+          		</td>
+          		<td width="25%" style="text-align: left;"></td>
+          	</tr>
+          	<tr>
+          		<td width="25%" style="text-align: left;">
+          		 	<h:outputText value="#{trim.trim.act.relationship['height'].act.title.ST.value}"/>
+          		 </td>
+          		<td width="5%" style="text-align: left;">
+          			#{trim.trim.act.relationship['height'].act.observation.values[0].ST.value} feet
+          			#{trim.trim.act.relationship['height'].act.observation.values[1].ST.value} inches
+          		</td>
+          		<td width="25%" style="text-align: left;"></td>
+          	</tr>
+          	<tr>
+          	    <td width="25%" style="text-align: left;">
+          			<h:outputText value="#{trim.trim.act.relationship['weight'].act.observation.value.label.value}"/>
+          		</td>
+          		<td width="5%" style="text-align: left;">
+          		    <h:outputText value="#{trim.trim.act.relationship['weight'].act.observation.value.ST.value}"></h:outputText> lbs         		   
+          		</td >
+          		<td width="25%" style="text-align: left;"></td>
+          	</tr>
+          	<tr>
+          	    <td width="25%" style="text-align: left;">
+          			<h:outputText value="#{trim.trim.act.observation.value.label.value}"/>
+          		</td>
+          		<td width="5%" style="text-align: left;">
+          		    <h:outputText value="#{trim.trim.act.observation.value.PQ.originalText}"></h:outputText>          		   
+          		</td>
+          		<td width="25%" style="text-align: left;"></td>
+          	</tr>
+         </table>
+        
 		</wiz:body>
 	</ui:composition>
 </body>

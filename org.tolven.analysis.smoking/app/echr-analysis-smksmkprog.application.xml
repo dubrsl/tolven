@@ -44,8 +44,8 @@
 					<from>#{smkprogsnapshotresult.patient.sex}</from>
 					<from>#{smkprogsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="SmokingProgram" width="12.0" align="right" visible="true">
-					<from>#{smkprogsnapshotresult.result.pqValue01}</from>
+				<column name="SmokingProgram" width="12.0" visible="true" internal="string07">
+					<from>#{smkprogsnapshotresult.smokingProgram}</from>
 				</column>
 			</list>
 			<list name="prog" title="On Smoking Program" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
@@ -71,8 +71,8 @@
 					<from>#{smkprogsnapshotresult.patient.sex}</from>
 					<from>#{smkprogsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="SmokingProgram" width="12.0" align="right" visible="true">
-					<from>#{smkprogsnapshotresult.result.pqValue01}</from>
+				<column name="SmokingProgram" width="12.0" visible="true" internal="string07">
+					<from>#{smkprogsnapshotresult.smokingProgram}</from>
 				</column>
 			</list>
 			<list name="noprog" title="Not On Smoking Program" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
@@ -119,6 +119,8 @@
 			<field name="result" internal="parent03">
 				<from>#{result}</from>
 			</field>
+			<field name="smokingProgram" internal="string07">
+			</field>
 		</placeholder>
 	</extends>
 	<extends path="echr:cohort:snapshots">
@@ -136,7 +138,7 @@
 	</extends>
 	<extends path="echr:analysis">
 		<menu name="smksmkprogsnapshot" title="Smoking Cessation" sequence="400" page="/five/bar2.xhtml" visible="true">
-			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
 				</column>
@@ -159,11 +161,14 @@
 					<from>#{smkprogsnapshotresult.patient.sex}</from>
 					<from>#{smkprogsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="SmokingProgram" width="12.0" align="right" visible="true">
-					<from>#{smkprogsnapshotresult.result.pqValue01}</from>
+				<column name="SmokingProgram" width="12.0" visible="true" internal="string07">
+					<from>#{smkprogsnapshotresult.smokingProgram}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{smkprogsnapshotresult.smkprogsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="prog" title="Normal A1c" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+			<list name="prog" title="Normal A1c" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
 				</column>
@@ -186,11 +191,14 @@
 					<from>#{smkprogsnapshotresult.patient.sex}</from>
 					<from>#{smkprogsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="SmokingProgram" width="12.0" align="right" visible="true">
-					<from>#{smkprogsnapshotresult.result.pqValue01}</from>
+				<column name="SmokingProgram" width="12.0" visible="true" internal="string07">
+					<from>#{smkprogsnapshotresult.smokingProgram}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{smkprogsnapshotresult.smkprogsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="noprog" title="High A1c" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+			<list name="noprog" title="High A1c" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
 				</column>
@@ -215,6 +223,9 @@
 				</column>
 				<column name="SmokingProgram" width="12.0" align="right" visible="true">
 					<from>#{smkprogsnapshotresult.result.pqValue01}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{smkprogsnapshotresult.smkprogsnapshot.effectiveTime}</from>
 				</column>
 			</list>
 		</menu>

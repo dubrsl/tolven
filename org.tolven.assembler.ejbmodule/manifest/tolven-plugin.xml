@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.assembler.ejbmodule" version="2.0.18" class="org.tolven.assembler.ejbmodule.EJBModuleAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.assembler.ejbmodule" version="2.1.0" class="org.tolven.assembler.ejbmodule.EJBModuleAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<requires>
+		<import plugin-id="org.tolven.component.ejb" />
+	</requires>
 	<runtime>
 		<library type="code" path="tpf/classes/" id="tpfclasses" />
 	</runtime>
 	<extension-point extension-multiplicity="none" id="devLib">
 		<parameter-def default-value="devLib.jar" id="jar" />
 	</extension-point>
-	<extension-point id="component">
-		<parameter-def id="jar" />
-	</extension-point>
+	
+	<extension-point id="abstractEJB" parent-plugin-id="org.tolven.component.ejb" parent-point-id="abstractEJB" extension-multiplicity="none" />
+	
 	<extension-point id="classes" extension-multiplicity="none">
 		<parameter-def id="dir" />
 	</extension-point>
@@ -33,13 +36,13 @@
 	</extension-point>
 	<extension-point id="orm" extension-multiplicity="one">
 		<parameter-def id="ormId" />
+		<parameter-def id="name" />
+		<parameter-def id="transaction-type" />
+		<parameter-def id="jta-data-source" />
 	</extension-point>
 	<extension-point id="persistence-unit">
 		<parameter-def id="ormId" multiplicity="any" />
-		<parameter-def id="name" />
-		<parameter-def id="transaction-type" />
 		<parameter-def id="provider" multiplicity="none-or-one" />
-		<parameter-def id="jta-data-source" />
 		<parameter-def id="mapping-file" />
 		<parameter-def id="property" multiplicity="any">
 			<parameter-def id="name" />

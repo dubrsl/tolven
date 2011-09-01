@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<name>emergencyAccount</name>
+	<description>Emergency Access Account</description>
+	<page>emergencyAccount.xhtml</page>
+	<drilldown>emergencyAccountDD.xhtml</drilldown>
+	<menu>global:emergencyAccountMenu</menu>
+	<application name="echr" signatureRequired="true">
+		<instance>echr:admin:wip</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="merge">
+			<placeholder bindAction="merge">
+				<path>echr:admin:emergencyAccount</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>OINT</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3.0</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Emergency Access Account</ST>
+		</title>
+		<effectiveTime>
+	      	<new datatype="TS" function="now"/>
+	    </effectiveTime>
+		<relationship typeCode="PERT" direction="OUT" name="accountDetails">
+			<act>
+				<observation>
+					<value>
+						<label>Account ID</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Account Name</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Email Id</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Account ID / Account Name</label>
+						<valueSet>accounts</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<compute forAccountType="echr" forTrimName="emergencyAccount">
+	        <type>org.tolven.process.GetUsersAndIds</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">true</value>
+			</property>
+	    </compute>
+	</act>
+	<valueSet name="template">
+		<CE>
+			<displayName></displayName>
+            <code>C0189100</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="accounts">
+	</valueSet>
+</trim>

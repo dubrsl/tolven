@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.tolven.app.CreatorRemote;
 import org.tolven.app.MenuRemote;
 import org.tolven.app.TrimRemote;
+import org.tolven.core.AccountDAORemote;
 import org.tolven.core.ActivationRemote;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
@@ -40,6 +41,7 @@ public abstract class TolvenClient {
     public LoginContext lc;
 
     private DocumentRemote docBean;
+    private AccountDAORemote accountBean;
     private ActivationRemote activationBean;
     private LoginRemote loginBean;
     private MenuRemote menuBean;
@@ -158,6 +160,13 @@ public abstract class TolvenClient {
         }
     }
 
+    public AccountUser loginToAccount(long accountId) {
+        if (uid == null)
+            throw new IllegalStateException("UID must be set before connecting to an account");
+        accountUser = getAccountBean().findAccountUser(uid, accountId);
+        return accountUser;
+    }
+
     public void beginTransaction() {
         try {
             ut = (UserTransaction) getCtx().lookup("UserTransaction");
@@ -224,6 +233,17 @@ public abstract class TolvenClient {
             }
         }
         return docBean;
+    }
+
+    public AccountDAORemote getAccountBean() {
+        if (accountBean == null) {
+            try {
+            accountBean = (AccountDAORemote) getCtx().lookup("java:global/tolven/tolvenEJB/AccountDAOBean!org.tolven.core.bean.AccountDAOBean");
+            } catch (NamingException ex) {
+                throw new RuntimeException("Failed to look up tolven/AccountDAOBean/remote", ex);
+            }
+        }
+        return accountBean;
     }
 
     public ActivationRemote getActivationBean() {

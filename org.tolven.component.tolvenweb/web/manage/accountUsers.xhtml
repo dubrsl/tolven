@@ -23,16 +23,20 @@
 				<h:outputText value="${msg.AccountUsers}" />
 			</div>
 			<fieldset><legend>#{msg.AddUserToAccount}</legend>
-				<h:panelGrid columns="3" rendered="#{top.accountAdmin}">
+				<h:panelGrid columns="2" rendered="#{top.accountAdmin}">
+	               	<h:outputText value="Realm"/>
+	 				<h:selectOneMenu id="realm" value="#{reg.invitedUserRealm}" >
+	                	<f:selectItems value="#{reg.realms}" />
+	                </h:selectOneMenu>
 					<h:outputText value="User Id " />
-					<h:inputText id="uid" value="#{reg.newDemoUser}" size="30" />
-					<h:commandButton action="#{reg.addDemoUser}" value="#{msg.Add}" />
-					<h:outputText value="Certificate: " />
-					<h:inputTextarea id="userCertificate" value="#{reg.userCertificateUpload}" cols="80" rows="12" />
-					<h:commandButton action="#{reg.updateAccountUserCertificate}" value="Update User Certificate" />
+					<h:panelGrid>
+						<h:inputText id="uid" value="#{reg.newDemoUser}" size="30" required="true" />
+						<h:message for="userAccess:uid" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+					</h:panelGrid>
+					<h:commandButton action="#{reg.inviteUser}" value="Invite User" />
+					<h:commandButton action="#{reg.reinviteUser}" value="Reinvite User" />
 				</h:panelGrid>
 			</fieldset>
-			<h:message for="userAccess:uid" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
 		      <h:dataTable id="accountUser" value="#{reg.accountUsers}" var="au" styleClass="general">
 	            <!--h:column>
 	                <f:facet name="header">

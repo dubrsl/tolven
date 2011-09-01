@@ -8,6 +8,32 @@
 	<page>bodyMassIndex.xhtml</page>
 	<drilldown>bodyMassIndexDD.xhtml</drilldown>
 	<reference>http://www.wikihit.org/wiki/index.php/Body_Mass_Index</reference>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="editActive" from="active" to="edit">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="suspendActive" from="active" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>		
+		<transition name="suspendCompleted" from="completed" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>	
+		<transition name="nullifiedActive" from="active" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>
+		<transition name="nullifiedCompleted" from="completed" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>		
+		<transition name="completedActive" from="active" to="completed">
+			<label language="en">Resolved</label>
+		</transition>
+		<transition name="completedSuspend" from="suspended" to="completed">
+			<label language="en">Resolved</label>
+		</transition>	
+	</transitions>
 	<act classCode="OBS" moodCode="EVN">
 		<code>
 			<CD>
@@ -16,6 +42,7 @@
 				<codeSystemVersion>2006AC</codeSystemVersion>
 			</CD>
 		</code>
+		<statusCode>active</statusCode>
 		<title>
 			<ST>Body Mass Index</ST>
 		</title>
@@ -46,11 +73,8 @@
 				</title>
 				<observation>
 					<value>
-						<label>Weight</label>
-						<PQ>
-							<value>0</value>
-							<unit>kg</unit>
-						</PQ>
+						<label>Weight in Pounds</label>
+						<ST></ST>
 					</value>
 				</observation>
 			</act>
@@ -65,18 +89,22 @@
 					</CD>
 				</code>
 				<title>
-					<ST>Height</ST>
+					<ST>Height in Feet-Inches</ST>
 				</title>
+				<text>
+					<ST>Height</ST>
+				</text>
 				<observation>
 					<value>
-						<label>Height</label>
-						<PQ>
-							<value>0.0</value>
-							<unit>cm</unit>
-						</PQ>
+						<label>Heightfeet </label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Heightinches </label>
+						<ST></ST>
 					</value>
 				</observation>
 			</act>
 		</relationship>
-	</act>
+		</act>
 </trim>

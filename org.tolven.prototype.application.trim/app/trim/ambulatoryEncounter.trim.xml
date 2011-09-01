@@ -72,26 +72,6 @@
 			<admissionReferralSourceCode />
 			<dischargeDispositionCode />
 		</patientEncounter>
-		<participation name="subject" typeCode="SBJ">
-			<role classCode="PAT">
-				<bind application="echr">
-					<placeholder>
-						<path>echr:patient</path>
-					</placeholder>
-				</bind>
-				<bind application="ephr">
-					<placeholder>
-						<path>ephr:patient</path>
-					</placeholder>
-				</bind>
-				<id>
-					<II>
-						<root>#{computeIDRoot(account)}</root>
-						<extension>#{patient.path}</extension>
-					</II>
-				</id>					
-			</role>
-		</participation>
 		<participation name="attender" typeCode="ATND">
 			<role classCode="ASSIGNED">
 				<bind application="echr" phase="request">

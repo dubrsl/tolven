@@ -16,13 +16,16 @@
  */  
 
 package org.tolven.restful;
+import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -35,11 +38,23 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
+import org.apache.log4j.Logger;
 import org.tolven.api.security.GeneralSecurityFilter;
+import org.tolven.app.AppResolverLocal;
 import org.tolven.app.DataExtractLocal;
 import org.tolven.app.DataQueryResults;
 import org.tolven.app.MenuLocal;
@@ -52,6 +67,8 @@ import org.tolven.util.ExceptionFormatter;
 @Path("application")
 @ManagedBean
 public class ApplicationResources {
+	
+	private Logger logger = Logger.getLogger(this.getClass());
 
     @EJB
     private ActivationLocal activationBean;
@@ -60,10 +77,14 @@ public class ApplicationResources {
     private DataExtractLocal dataExtractBean;
     
     @EJB
+    private AppResolverLocal appResolver;
+    
+    @EJB
     private MenuLocal menuBean;
     
     @Context
     private HttpServletRequest request;
+    
 		
 	/**
 	 * Perform a general application query. 
@@ -91,14 +112,15 @@ public class ApplicationResources {
         if (accountUserId == null) {
             return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Account required").build();
         }
-        AccountUser accountUser = activationBean.findAccountUser(accountUserId);
+        AccountUser accountUser = getActivationBean().findAccountUser(accountUserId);
+        
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
         //			MenuPath menuPath = new MenuPath( path );
         //			long accountId = accountUser.getAccount().getId();
         Date now = (Date) request.getAttribute("tolvenNow");
-        DataQueryResults dataQueryResults = dataExtractBean.setupQuery(path, accountUser);
+        DataQueryResults dataQueryResults = getDataExtractBean().setupQuery(path, accountUser);
         dataQueryResults.setNow(now);
         if (order != null) {
             dataQueryResults.setOrder(order.split(","));
@@ -130,6 +152,9 @@ public class ApplicationResources {
 	 * @param limit With a (default) limit of 0, no query is performed, only metadata is returned. A limit of -1 returns all rows.
 	 * @return
 	 */
+    @Path("item")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
     public Response getApplicationItem (
             @QueryParam("path") String path, 
             @QueryParam("fields") String fields
@@ -138,12 +163,13 @@ public class ApplicationResources {
         if (accountUserId == null) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Account required").build();
         }
-        AccountUser accountUser = activationBean.findAccountUser(accountUserId);
+        AccountUser accountUser = getActivationBean().findAccountUser(accountUserId);
+        
         if (accountUser == null) {
             return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
         Date now = (Date) request.getAttribute("tolvenNow");
-        DataQueryResults dataQueryResults = dataExtractBean.setupQuery(path, accountUser);
+        DataQueryResults dataQueryResults = getDataExtractBean().setupQuery(path, accountUser);
         dataQueryResults.setNow(now);
         if (fields != null && fields.length() > 0) {
             dataQueryResults.disableAllFields();
@@ -160,6 +186,63 @@ public class ApplicationResources {
         Response response = Response.ok().entity(dataQueryResults).build();
         return response;
     }
+    
+    /**
+	 * Perform a general application query. 
+	 * @param path Specify the path to query, includes placeholder ids where appropriate.
+	 * @param fields A list of fields to include in the query or null to include all fields
+	 * @param order A list of fields to sort on. Maybe include " asc" or " desc" to specify direction
+	 * @param offset Starting row to return, defaults to zero (first row)
+	 * @param limit With a (default) limit of 0, no query is performed, only metadata is returned. A limit of -1 returns all rows.
+	 * @return
+	 */
+    @Path("xslt")
+    @GET
+    @Produces(MediaType.APPLICATION_XML)
+    public Response getXSLT (
+            @QueryParam("path") String path,
+            @QueryParam("xslt") String xsltFile,
+            @QueryParam("context") String context
+            ) throws Exception  {
+        Long accountUserId = (Long) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER_ID);
+        if (accountUserId == null) {
+            return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Account required").build();
+        }
+        AccountUser accountUser = getActivationBean().findAccountUser(accountUserId);
+
+        if (accountUser == null) {
+            return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
+        }
+        return generateXSLTResponse(accountUser.getProperty().get(xsltFile), accountUser, context);
+    }
+    
+    public Response generateXSLTResponse(String pvalue, AccountUser accountUser, String context) {
+
+        try {
+	        Source source = new StreamSource( new StringReader(pvalue) );
+			Writer writer = new StringWriter();
+			Result outputTarget = new StreamResult( writer);
+			logger.info(outputTarget.toString());
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			getAppResolver().setAccountUser(accountUser);
+		    transformerFactory.setURIResolver(getAppResolver());
+		    //transformerFactory.setAttribute("indent-number", 2);
+		    Transformer transformer = transformerFactory.newTransformer(source);
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			DOMSource domsrc = new DOMSource(db.newDocument());
+			if(context != null) {
+				transformer.setParameter("context", context);
+			}
+			transformer.transform(domsrc, outputTarget);
+			//transformer.transform(new DOMSource(DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()), outputTarget);
+	        Response response = Response.ok().type(MediaType.APPLICATION_XML).entity(writer.toString()).build(); 
+	        return response;
+        } catch (Exception ex) {
+            return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
+        }
+	}
 
 	/**
 	 * Get column metadata for a specific metadata item. 
@@ -176,7 +259,8 @@ public class ApplicationResources {
         if (accountUserId == null) {
             return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Account required").build();
         }
-        AccountUser accountUser = activationBean.findAccountUser(accountUserId);
+        AccountUser accountUser = getActivationBean().findAccountUser(accountUserId);
+
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
@@ -185,7 +269,7 @@ public class ApplicationResources {
         //			Date now = (Date) request.getAttribute("tolvenNow");
         AccountMenuStructure ams;
         try {
-            ams = dataExtractBean.findAccountMenuStructure(accountUser.getAccount(), menuPath);
+            ams = getDataExtractBean().findAccountMenuStructure(accountUser.getAccount(), menuPath);
         } catch (Exception e1) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Metadata not found: " + menuPath).build();
         }
@@ -206,7 +290,8 @@ public class ApplicationResources {
         if (accountUserId == null) {
             return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("Account required").build();
         }
-        AccountUser accountUser = activationBean.findAccountUser(accountUserId);
+        AccountUser accountUser = getActivationBean().findAccountUser(accountUserId);
+
         if (accountUser == null) {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("AccountUser not found").build();
         }
@@ -257,5 +342,43 @@ public class ApplicationResources {
         Response response = Response.ok().entity(sw.toString()).build();
         return response;
     }
-
+    
+    protected ActivationLocal getActivationBean() {
+        if (activationBean == null) {
+            String jndiName = "java:app/tolvenEJB/ActivationBean!org.tolven.core.ActivationLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                activationBean = (ActivationLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return activationBean;
+    }
+    
+    protected DataExtractLocal getDataExtractBean() {
+        if (dataExtractBean == null) {
+            String jndiName = "java:app/tolvenEJB/DataExtractBean!org.tolven.app.DataExtractLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                dataExtractBean = (DataExtractLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return dataExtractBean;
+    }
+    
+    protected AppResolverLocal  getAppResolver() {
+        if (appResolver == null) {
+            String jndiName = "java:app/tolvenEJB/AppResolverBean!org.tolven.app.AppResolverLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                appResolver = (AppResolverLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return appResolver;
+    }
 }

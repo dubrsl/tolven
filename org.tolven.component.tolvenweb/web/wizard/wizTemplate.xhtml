@@ -67,7 +67,14 @@
 		<c:if test="#{menu.menuDataItem.statusName=='NEW'}">
             <h:commandButton action="#{trim.upload}" value="#{msg.Upload}" style="display:none"/>
 			<div class="submit">
+				<!-- Added close button on 07/23/2010 - Valsaraj -->
+				<input id="#{menu.elementLabel}closeButton" type="submit" value="#{msg.Close}" onclick="closeTab('#{menu.element}');"/>
+				<c:if test="#{trim.trim.act.text.ST!=null and trim.trim.act.text.ST.value!='' and trim.trim.name=='act/evn/vital'}">
+					<input id="#{menu.elementLabel}cancelButton" type="submit" value="#{msg.Cancel}" onclick="cancelVitalSign('#{menu.element}');"/>
+				</c:if>
+				<c:if test="#{!(trim.trim.act.text.ST!=null and trim.trim.act.text.ST.value!='' and trim.trim.name=='act/evn/vital')}">
 				<input id="#{menu.elementLabel}cancelButton" type="submit" value="#{msg.Cancel}" onclick="wizCancel('#{menu.element}');"/>
+				</c:if>
 				<input id="#{menu.elementLabel}prevButton" type="submit" value="#{msg.Previous}" onclick="prevStep('#{menu.elementLabel}' );self.scrollTo(0, 0);return false;"/>
 				<input id="#{menu.elementLabel}nextButton" type="submit" value="#{msg.Next}"  onclick="nextStep('#{menu.elementLabel}' );self.scrollTo(0, 0);return false;"/>
 				<c:if test="#{!trim.signatureRequired}">
@@ -75,10 +82,14 @@
 				</c:if>
 			</div>
 			<c:if test="#{trim.signatureRequired}">
-				<div class="signature">
+				<!-- 
+  	 				Modified to hide signature block in all steps except 'complete' step.
+  	 				added on 25/08/2010 by Valsaraj
+ 				 -->
+				<div id="signatureContainer" class="signature">
 					<h:panelGroup>
 						<h:outputText value=" #{msg.UserId}: " />
-                        <h:inputText id="uid" value="#{top.getTolvenPersonString('uid')}" size="20" readonly="true"/>
+                        <h:inputText id="uid" value="#{reg.tp.uid}" size="20" readonly="true"/>
 					</h:panelGroup>
 					<h:panelGroup>
 						<h:outputText value=" #{msg.Password}: " />
@@ -91,7 +102,17 @@
 		<c:if test="#{menu.menuDataItem.statusName!='NEW'}">
 			<div class="transitions">
 	            <h:commandButton action="#{trim.upload}" value="Upload" style="display:none"/>
+	            <!-- Added close button on 07/23/2010 - Valsaraj -->
+	            <input id="#{menu.elementLabel}closeButton" type="submit" value="#{msg.Close}" onclick="closeTab('#{menu.element}');"/>
+				<c:set var="isEmergencyAccount" value="false"/>
+	            <c:forEach items="#{top.accountUser.account.accountProperties}" var="property">
+	            	<c:if test="#{property.propertyName=='tolven.cchit.emergencyAccount'}">
+	            		<c:set var="isEmergencyAccount" value="true"/>
+	            	</c:if>
+	            </c:forEach>
+	            <c:if test="#{isEmergencyAccount=='false'}">
 	            <trim:transitions trim="#{trim.trim}"/>
+	            </c:if>
 			</div>
 		</c:if>
 	</div>

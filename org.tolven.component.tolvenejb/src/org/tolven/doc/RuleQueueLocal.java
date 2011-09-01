@@ -14,18 +14,23 @@
 package org.tolven.doc;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 
 public interface RuleQueueLocal {
-    
-    public String getQueueName();
 
     /**
-     * Queue a payload
-     * @param payload
+     * Return the name of the rule key, which is the queueId
+     * @return
      */
-    public void send(Serializable payload);
+    public String getQueueName();
+    
+    /**
+     * Return the X509Certificate of the user, whose key is used to descrypt the rule queue messages.
+     * @return
+     */
+    public X509Certificate getQueueOwnerX509Certificate();
 
     /**
      * Queue payloads
@@ -35,14 +40,6 @@ public interface RuleQueueLocal {
     public void send(List<Serializable> payloads);
 
     /**
-     * Queue a payload along with its JMS properties
-     * A separate connection is used for each payload
-     * @param payload
-     * @param properties
-     */
-    public void send(Serializable payload, Map<String, Object> properties);
-
-    /**
      * Queue a list of payloads along with their JMS properties. Each payload must have a corresponding
      * properties map, even if that map is empty
      * One connection is used to send the List of payloads
@@ -50,5 +47,19 @@ public interface RuleQueueLocal {
      * @param listOfProperties
      */
     public void send(List<Serializable> payloads, List<Map<String, Object>> listOfProperties);
+
+    /**
+     * Queue a payload
+     * @param payload
+     */
+    public void send(Serializable payload);
+
+    /**
+     * Queue a payload along with its JMS properties
+     * A separate connection is used for each payload
+     * @param payload
+     * @param properties
+     */
+    public void send(Serializable payload, Map<String, Object> properties);
     
 }

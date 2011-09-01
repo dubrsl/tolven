@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.assembler.admin" version="2.0.15" class="org.tolven.assembler.admin.AdminAssembler" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.assembler.admin" version="2.1.0" class="org.tolven.assembler.admin.AdminAssembler" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.library.bouncy-castle" />
 	</requires>
@@ -14,12 +14,6 @@
 	</extension-point>
 	<extension-point id="bcprov" parent-plugin-id="org.tolven.library.bouncy-castle" parent-point-id="runtimeLib" extension-multiplicity="none">
 		<parameter-def id="bcprov" multiplicity="none-or-one" />
-	</extension-point>
-	<extension-point id="authRestful" extension-multiplicity="one">
-		<parameter-def id="authRestful.url" />
-	</extension-point>
-	<extension-point id="appRestful" extension-multiplicity="one">
-		<parameter-def id="appRestful.url" />
 	</extension-point>
 	<extension-point id="devLib" extension-multiplicity="none">
 		<parameter-def id="jar" default-value="devLib.jar" />

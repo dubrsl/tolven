@@ -82,7 +82,6 @@ public class TolvenProperties implements TolvenPropertiesLocal {
         public int size() {
             return accountUser.getAccountUserProperties().size();
         }
-
         /**
          * Put or update a property in this accountUser's list of properties.
          */
@@ -116,6 +115,7 @@ public class TolvenProperties implements TolvenPropertiesLocal {
             throw new UnsupportedOperationException("Property operation not supported in AccountUser");
         }
 
+       
         @Override
         public void putAll(Map<? extends String, ? extends String> m) {
             throw new UnsupportedOperationException("Property operation not supported in AccountUser");

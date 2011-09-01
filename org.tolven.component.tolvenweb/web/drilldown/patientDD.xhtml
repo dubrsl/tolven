@@ -16,20 +16,50 @@
 		<div class="pagesm">
 			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
 			<h:panelGrid columns="2" >
-				<h:outputText value="#{msg.Dated}: "/>
-				<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+				<h:outputText value="Dated: "/>
+				<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+				<!-- <trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/> -->
 			</h:panelGrid>
-			<trim:personSummary entity="#{trim.trim.act.participation['subject'].role.player}"/>
+			<trim:personSummary entity="#{trim.trim.act.participation['patient'].role.player}"/>
 	    	<wiz:group title="#{msg.Physicians}">
 				<p>
 		    	<h:outputText value="#{msg.PrimaryMD}: "/>
-		    	<wiz:selectWithOther id="primarymd"  role="#{trim.trim.act.participation['subject'].role.participation['subject'].act.participation['primary'].role}" readonly="true" />
+		    	<wiz:selectWithOther id="primarymd"  role="#{trim.trim.act.participation['patient'].role.participation['primaryCarePhysician'].act.participation['primaryMD'].role}" readonly="true" />
 		    	</p>
 		    	<p>
 		    	<h:outputText value="#{msg.Surgeon}: "/>
-		    	<wiz:selectWithOther id="surgeon"  role="#{trim.trim.act.participation['subject'].role.participation['subject'].act.participation['surgeon'].role}"  readonly="true" />
+		    	<wiz:selectWithOther id="surgeon"  role="#{trim.trim.act.participation['patient'].role.participation['primarySurgeon'].act.participation['primarySurgeon'].role}"  readonly="true" />
 		    	</p>
 	    	</wiz:group>
+			<c:if test="#{top.accountType=='echr'}">
+				<wiz:group title="Other Info">
+					<table width="100%">
+						<tr>
+							<td width="15%">
+								Race:
+							</td>
+							<td>			
+								#{trim.trim.act.participation['patient'].role.player.person.raceCode}									
+							</td>
+							</tr>
+							<tr>
+							<td >
+								Ethnicity:
+							</td>
+								<td>#{trim.trim.act.participation['patient'].role.player.person.ethnicGroupCode}
+							</td>
+						</tr>
+						<tr>
+							<td>
+								Preferred Language : 
+							</td>
+							<td>
+								#{trim.trim.act.participation['patient'].role.player.languageCommunications[0].languageCode}
+							</td>
+						</tr>
+					</table>
+				</wiz:group>
+			</c:if>
 		</div>
 		<div class="help">
 			<c:if test="#{menu.menuDataItem.status=='NEW'}">

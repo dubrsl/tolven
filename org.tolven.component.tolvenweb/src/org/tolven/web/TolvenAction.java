@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.NewCookie;
+import javax.servlet.http.HttpSession;
 
 import org.tolven.core.TolvenPropertiesLocal;
 import org.tolven.core.entity.AccountUser;
@@ -32,11 +32,13 @@ import org.tolven.locale.ResourceBundleHelper;
 import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.security.key.UserPrivateKey;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.web.security.GeneralSecurityFilter;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+
 /**
  * An abstract class from which Tolven Faces backing beans inherit. Provides frequently used utilities such as getNow and getTop.
  * @author John Churin
@@ -46,9 +48,9 @@ public abstract class TolvenAction extends TolvenBean {
 
     @EJB
     private TolvenPropertiesLocal propertyBean;
-    
+
     private Locale locale;
-    
+
     public TolvenAction() {
         super();
         // J2EE 1.5 has not yet defined exact XML <ejb-ref> syntax for EJB3
@@ -56,17 +58,17 @@ public abstract class TolvenAction extends TolvenBean {
     }
 
     protected Object getSessionAttribute(String name) {
-        Map<String,Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        return sessionMap.get( name );
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        return sessionMap.get(name);
     }
 
     protected HttpServletRequest getRequest() {
         return (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
     }
 
-    protected Object getRequestAttribute( String name ) {
-//      TolvenLogger.info( "Request attribute: " + name + "=" + req.getAttribute(name), TolvenAction.class);
-        return getRequest().getAttribute( name );
+    protected Object getRequestAttribute(String name) {
+        //      TolvenLogger.info( "Request attribute: " + name + "=" + req.getAttribute(name), TolvenAction.class);
+        return getRequest().getAttribute(name);
     }
 
     protected void setRequestAttribute(String name, Object value) {
@@ -74,23 +76,24 @@ public abstract class TolvenAction extends TolvenBean {
     }
 
     protected void setSessionAttribute(String name, Object anObject) {
-        Map<String,Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.put(name, anObject);
     }
 
     protected void removeSessionAttribute(String name) {
-        Map<String,Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
+        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
         sessionMap.remove(name);
     }
 
-    protected Object getRequestParameter( String name ) {
-//      TolvenLogger.info( "Request parameter: " + name + "=" + req.getParameter(name), TolvenAction.class);
-        return getRequest().getParameter( name );
+    protected Object getRequestParameter(String name) {
+        //      TolvenLogger.info( "Request parameter: " + name + "=" + req.getParameter(name), TolvenAction.class);
+        return getRequest().getParameter(name);
     }
 
-    protected long getRequestParameterAsLong( String name ) {
-        String param = (String)getRequestParameter( name );
-        if (param==null) return 0;
+    protected long getRequestParameterAsLong(String name) {
+        String param = (String) getRequestParameter(name);
+        if (param == null)
+            return 0;
         return Long.parseLong(param);
     }
 
@@ -98,10 +101,10 @@ public abstract class TolvenAction extends TolvenBean {
         Date now = (Date) getRequestAttribute("tolvenNow");
         return now;
     }
-    
+
     protected TopAction getTop() {
-        TopAction top = (TopAction) getRequestAttribute( "top");
-        if(top == null) {
+        TopAction top = (TopAction) getRequestAttribute("top");
+        if (top == null) {
             top = new TopAction();
             setRequestAttribute("top", top);
         }
@@ -162,6 +165,16 @@ public abstract class TolvenAction extends TolvenBean {
     public String logout() {
         return dispatchingLogout("loggedOut");
     }
+   /**
+     * This get method actually invalidates the current session thus insuring that the user
+     * is logged out.
+     * @return
+     */
+    public String getInvalidateSession(){
+        FacesContext fc = javax.faces.context.FacesContext.getCurrentInstance();
+        ((HttpSession)fc.getExternalContext().getSession(false)).invalidate();
+        return "";
+    }
 
     protected String dispatchingLogout(String outcome) {
         return outcome;
@@ -169,31 +182,38 @@ public abstract class TolvenAction extends TolvenBean {
 
     protected PrivateKey getUserPrivateKey() {
         String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-        return TolvenSSO.getInstance().getUserPrivateKey(getRequest(), keyAlgorithm);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        return sessionWrapper.getUserPrivateKey(keyAlgorithm);
     }
 
     protected X509Certificate getUserX509Certificate() {
-        return TolvenSSO.getInstance().getUserX509Certificate(getRequest());
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        return sessionWrapper.getUserX509Certificate();
+    }
+
+    protected String getUserX509CertificateString() {
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        return sessionWrapper.getUserX509CertificateString();
     }
 
     protected PublicKey getUserPublicKey() {
-        return TolvenSSO.getInstance().getUserPublicKey(getRequest());
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        return sessionWrapper.getUserPublicKey();
     }
-    
+
     protected String getSessionProperty(String name) {
-        return TolvenSSO.getInstance().getSessionProperty(name, getRequest());
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        return (String) sessionWrapper.getAttribute(name);
     }
 
     protected void setSessionProperty(String name, String value) {
-        TolvenSSO.getInstance().setSessionProperty(name, value, getRequest());
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        sessionWrapper.setAttribute(name, value);
     }
 
     protected void removeSessionProperty(String name) {
-        TolvenSSO.getInstance().setSessionProperty(name, null, getRequest());
-    }
-
-    protected NewCookie getSSOCookie() {
-        return TolvenSSO.getInstance().getSSOCookie(getRequest());
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        sessionWrapper.removeAttribute(name);
     }
 
     protected WebResource getAppWebResource() {
@@ -202,7 +222,7 @@ public abstract class TolvenAction extends TolvenBean {
     }
 
     protected Client getRESTfulClient() {
-        Client client = (Client)getRequest().getSession().getServletContext().getAttribute("restfulClient");
+        Client client = (Client) getRequest().getSession().getServletContext().getAttribute("restfulClient");
         return client;
     }
 
@@ -237,7 +257,7 @@ public abstract class TolvenAction extends TolvenBean {
     }
 
     public String getTolvenPersonString(String name) {
-        return TolvenSSO.getInstance().getTolvenPersonString(name, getRequest());
+        return getSessionProperty(name);
     }
 
 }

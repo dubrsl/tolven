@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>proc/rqo/surgery/breast</name>
+	<description>Breast Surgery Occurrence</description>
+	<reference></reference>
+	<act classCode="PROC" moodCode="RQO">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:procedure</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:procedure</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CE>
+				<displayName>#{source.code.CE.displayName}</displayName>
+				<code>#{source.code.CE.code}</code>
+				<codeSystem>#{source.code.CE.codeSystem}</codeSystem>
+				<codeSystemVersion>#{source.code.CE.codeSystemVersion}</codeSystemVersion>
+			</CE>
+		</code>
+		<title>
+			<ST>#{source.title.ST}</ST>
+		</title>
+		<effectiveTime>
+			<TS><value>#{TS(occurrenceTime)}</value></TS>
+		</effectiveTime>
+	</act>
+</trim>

@@ -17,6 +17,7 @@
 
 package org.tolven.doc;
 
+import java.util.Date;
 import java.util.List;
 
 import org.tolven.doc.entity.RulePackage;
@@ -28,6 +29,12 @@ import org.tolven.doc.entity.RulePackage;
  */
 public interface RulesRemote {
 
+	/** CCHIT merge
+	 * A remote-friendly method that creates a new Rule package from source and requires no special classes on the remote-end
+	 * @param packageBody
+	 */
+	public void loadRulePackage(String packageBody);
+	
 	/**
 	 * Find the version of a named package that is active. 
 	 * @param name Of the rule package
@@ -42,4 +49,11 @@ public interface RulesRemote {
 	 * @return A list of rule packages
 	 */
 	public List<RulePackage> findActivePackages( String knownType );
+	
+	/** CCHIT merge
+	 * Added to set time from out side class.
+	 * @author valsaraj
+	 * added on 08/03/2010
+	 */
+	public void setSavedTime(Date savedTime);
 }

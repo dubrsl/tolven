@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<extends>patientDet</extends>	
+	<name>obs/evn/medicationReconciliation</name>
+	<description>Medication Reconciliation</description>
+	<page>medicationReconciliation.xhtml</page>
+	<drilldown>medicationReconciliationDD.xhtml</drilldown>
+	<menu>global:medicationDocMenu</menu>
+ 	<tolvenId application="#{knownType}" accountId="#{account.id}"/>
+ 	<tolvenEventId application="#{knownType}" path="#{patient.path}" id="#{patient.id}" accountId="#{account.id}"/>
+	<application name="echr" signatureRequired="true">
+		<instance>echr:patient:wip</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="REG" moodCode="EVN">
+		<label>Medication Reconciliation</label>
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+    			<path>echr:patient:currentMedication</path>
+			</placeholder>
+    	</bind>
+    	<id>
+			<II>
+				<label>Internal ID (do not change)</label>
+				<root>#{computeIDRoot(account)}</root>
+				<extension>#{currentMedication.path}</extension>
+			</II>
+		</id>
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>tolven</codeSystemName>
+				<codeSystemVersion>4.0</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Medication Reconciliation</ST>
+		</title>
+		<effectiveTime>
+			<label>Effective time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<compute>
+			<type>org.tolven.process.InsertActiveMedications</type>
+			<property name="enabled">
+				<value xsi:type="xs:boolean">true</value>
+			</property>
+		</compute>	
+		<relationship name="activeMedications" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Active Medications</ST>
+				</title>
+			</act>
+		</relationship>
+		<relationship name="medication" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST></ST>
+				</title>
+				<observation>
+					<value/>
+				</observation>
+			</act>
+		</relationship>
+	</act>	
+</trim>

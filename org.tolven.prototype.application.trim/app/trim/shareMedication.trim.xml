@@ -19,9 +19,9 @@
 		</bind>
 		<id>
 			<II>
-				<root>#{computeIDRoot(account)}</root>
-				<extension>#{medication.path}</extension>			
-			</II>
+				<root>#{computeIDRoot(account)}</root>				
+				<extension>#{medication.path}</extension>
+			</II>			
 		</id>
 		<code>
 			<CD>
@@ -32,20 +32,38 @@
 		</code>
 		<statusCode>active</statusCode>
 		<text>
-			<label>Medication</label>
-			<ST>#{medication.title}</ST>
-		</text>
-		<effectiveTime>
-			<IVL_TS>
-				<low>
-					<label>From Date</label>
-					<TS><value>#{TS(medication.effectiveTimeLow)}</value></TS>
-				</low>
-				<high>
-					<label>To Date</label>
-					<TS><value>#{TS(medication.effectiveTimeHigh)}</value></TS>
-				</high>
-			</IVL_TS>
-		</effectiveTime>
+			<label>Medication History</label>
+			<ST>#{medication.title}</ST>			
+		</text>		
+		<observation>			
+			<value>
+				<label>Route</label>
+				<ST>#{medication.route}</ST>
+			</value>
+			<value>
+				<label>Frequency</label>
+				<ST>#{medication.frequency}</ST>		
+			</value>
+			<value>
+				<label>Start Date</label>				
+				<TS><value>#{TS(medication.start)}</value></TS>
+			</value>
+			<value>
+				<label>End Date</label>
+				<TS><value>#{TS(medication.end)}</value></TS>
+			</value>
+			<value>
+				<label>Status</label>
+				<ST>#{medication.status}</ST>
+			</value>
+			<value>
+				<label>Instructions</label>
+				<ST>#{medication.instructions}</ST>		
+			</value>
+			<value>
+				<label>Comments</label>
+				<ST>#{medication.comments}</ST>		
+			</value>						
+		</observation>
 	</act>
 </trim>

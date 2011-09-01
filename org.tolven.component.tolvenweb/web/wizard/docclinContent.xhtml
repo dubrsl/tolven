@@ -18,7 +18,9 @@
 			<div class="delete"> 
 				<a href="#" onclick="javascript:removeTemplate('#{menu.elementLabel}',#{rel.sequenceNumber})">Remove this #{type}</a>
         			&nbsp;&nbsp;
+	        	<c:if test="#{type!='Consent'}"> 
 				<a class="addnew" href="#" onclick="javascript:openTemplate('#{top.accountType}:#{trim.fieldMap['formType']}','#{top.accountType}:#{trim.fieldMap['formType']}', 'addTemplate', '#{menu.elementLabel}', 0)">Add Additional #{type}</a>
+				</c:if>
 			</div>
 			<wiz:group title="#{rel.act.observation.value.CE.displayName}">
         <table style="width:100%;">

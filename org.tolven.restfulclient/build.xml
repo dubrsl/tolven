@@ -4,10 +4,6 @@
 	<import file="../plugin/buildImport.xml" />
 
 	<property name="buildFolder" value="build" />
-
-	<property file="../tolven/resources/ant-build-default.properties" />
-	<property name="include.java" value="false" />
-	<property name="include.java.source.code" value="true" />
 	<!-- 
 	Source code will be included in the devLib jar file if true. Otherwise, source code
 	known to this build script will not be in the plugin
@@ -36,5 +32,12 @@
 				<include name="tolven-restful-client.jar" />
 			</zipfileset>
 		</zip>
+
+		<!--Copy client jars to devLib -->
+		<copy todir="${tolven.devLib}">
+			<fileset dir="client/lib">
+			</fileset>
+			<mapper type="glob" from="*.jar" to="${plugin(id)}.*.jar" />
+		</copy>
 	</target>
 </project>

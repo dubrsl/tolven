@@ -12,7 +12,7 @@
 <body>
     <ui:composition>
     	<c:if test="#{readonly!='true'}">
-			<h:selectOneMenu id="#{id}" value="#{role.id.for[top.accountUser.account].extension}" onchange="{
+			<h:selectOneMenu id="#{id}" required="#{required}" value="#{role.id.for[top.accountUser.account].extension}" onchange="{
 					if($('#{menu.elementLabel}:#{id}').selectedIndex + 1 != $('#{menu.elementLabel}:#{id}').childElements().size())
 					{
 						$('#{menu.elementLabel}:#{id}selectWithOtherTextId').value='';
@@ -25,7 +25,7 @@
 			<br/><br/>
 	    	<div tvisible="$('#{menu.elementLabel}:#{id}').selectedIndex + 1 == $('#{menu.elementLabel}:#{id}').childElements().size()">
 				<h:outputText value="#{role.player.name.ENS[0].parts[0].label.value}: " />
-				<h:inputText id="#{id}selectWithOtherTextId" value="#{role.player.name.ENS[0].parts[0].ST.value}" />
+				<h:inputText id="#{id}selectWithOtherTextId" value="#{role.player.name.ENS[0].parts[0].ST.value}" maxlength="35"/>
 			</div>
 		</c:if>
     	<c:if test="#{readonly=='true'}">

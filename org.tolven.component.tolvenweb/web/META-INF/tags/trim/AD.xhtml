@@ -14,12 +14,19 @@
 <body> 
     <ui:composition>
 		<wiz:group title="#{value.label.value}">
-	    	<h:dataTable value="#{value.parts}" var="adxp">
+	    	<h:dataTable value="#{value.parts}" var="adxp" id="address">
 				<h:column>
-					<h:outputText value="#{adxp.label.value}" />
+					<h:outputText value="#{adxp.label.value}*" rendered="#{adxp.label.value!='Address Line 2' and adxp.label.value!='Country'}" readonly="true" style="width:125px;border:0px"/>
+					<h:outputText value="#{adxp.label.value}" rendered="#{adxp.label.value=='Address Line 2' or adxp.label.value=='Country'}" readonly="true" style="width:125px;border:0px"/>
 				</h:column>
 				<h:column>
-					<h:inputText value="#{adxp.ST.value}" rendered="#{readonly!='true'}"/>
+					<h:inputText id="zipCode" value="#{adxp.ST.value}" maxlength="9" rendered="#{adxp.label.value=='Zip' and readonly!='true'}">
+    					<f:validator validatorId="zipCodeValidator" />
+    				</h:inputText>
+					<h:selectOneMenu id="states" value="#{adxp.ST.value}" rendered="#{adxp.label.value=='State' and readonly!='true'}" style="width:125px;" onclick="setState(this,'#{menu.elementLabel}','#{menu.element}')">
+						<f:selectItems value="#{trim.valueSets['states']}"/>
+					</h:selectOneMenu>
+					<h:inputText value="#{adxp.ST.value}" rendered="#{adxp.label.value!='Zip'and adxp.label.value!='State' and readonly!='true'}"/>
 					<h:outputText value="#{adxp.ST.value}" rendered="#{readonly=='true'}"/>
 				</h:column>
 	    	</h:dataTable> 

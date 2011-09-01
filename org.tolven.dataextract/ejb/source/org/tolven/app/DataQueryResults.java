@@ -18,6 +18,7 @@
 package org.tolven.app;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -34,18 +35,20 @@ import org.tolven.core.entity.Account;
 public class DataQueryResults {
 	
 	private List<DataField> fields;
+	private List<DataField> parentFilterFields;	// Added a new attribute to retrieve the specified parent fields
 	private AccountMenuStructure ms;
 	private Iterator<Object> iterator;
 	private Date now;
 	private int offset;
 	private int limit;
 	private String order[];
+	private String filter;
 	private MenuPath menuPath;
 	private boolean itemQuery = false;
 	private boolean returnTotalCount = false;
 	private boolean returnFilterCount = false;
 	private int count = 0;
-	
+	private int level;	
 	/**
 	 * Construct a Data Query structure
 	 * @param ms
@@ -66,7 +69,7 @@ public class DataQueryResults {
 	 * These are processed from back to front (and explicit field wins over an implicit field)
 	 * Each field that references a parent internal field will then examine all it's fields, etc.
 	 */
-	public static void populateFieldSet(AccountMenuStructure ms, String externalPrefix, String internalPrefix, Set<DataField> dataFieldSet ) {
+	public void populateFieldSet(AccountMenuStructure ms, String externalPrefix, String internalPrefix, Set<DataField> dataFieldSet ) {
 		if (ms==null) {
 			throw new RuntimeException( "Missing AccountMenuStructure in " + DataQueryResults.class.getSimpleName());
 		}
@@ -88,8 +91,12 @@ public class DataQueryResults {
 				dataFieldSet.add(new DataField( external+".code", internal+"Code", enabled));
 				dataFieldSet.add(new DataField( external+".codeSystem", internal+"CodeSystem", enabled));
 			} else {
-				if (!col.isComputed() && !col.isExtended() && !col.isReference()) {
-					String internal = internalPrefix + col.getInternal();
+				if (!col.isComputed() && !col.isReference()) {
+					String internal;
+					if(col.getInternal()!=null)
+						internal = internalPrefix + col.getInternal();
+					else
+						internal = internalPrefix + "_extended";
 					dataFieldSet.add(new DataField( external, internal, enabled));
 				}
 				if (col.isReference()) {
@@ -113,6 +120,7 @@ public class DataQueryResults {
 			dataFieldSet.add(new DataField( externalPrefix + "id", internalPrefix + "id", true));
 		}
 		dataFieldSet.add(new DataField( externalPrefix + "documentId", internalPrefix + "documentId", true));
+		dataFieldSet.add(new DataField( externalPrefix + "actStatus", internalPrefix + "actStatus", true));
 		// Get owners
 		AccountMenuStructure msParent = ms.getParent();
 		StringBuffer sbInternal = new StringBuffer();
@@ -124,7 +132,9 @@ public class DataQueryResults {
 //				dataFieldSet.add(new DataField( sbExternal.toString() + msParent.getNode() + ".id", sbInternal.toString()+ ".id"));
 				sbExternal.append(msParent.getNode());
 				sbExternal.append(".");
-				sbInternal.append("parent01.");
+				String element = "p"+level+".";
+				sbInternal.replace(0,sbInternal.length(),element);
+				level++;
 				populateFieldSet( msParent, sbExternal.toString(), sbInternal.toString(), dataFieldSet);
 				break;
 			}
@@ -139,9 +149,16 @@ public class DataQueryResults {
 	public String getSelectString () {
 		StringBuffer sb = new StringBuffer();
 		for (DataField df : getFields()) {
-			if (df.isEnabled()) {
+			if (df.isEnabled() && !Arrays.asList(df.getInternalSegments()).contains("_extended") ) {
 				if (sb.length()!=0) {
 					sb.append(", ");
+				}
+				// If the dfSegments has only one element (say path, name) need to append with md
+				// Otherwise, for the elements of parent (say parent01.path), no need to append md.
+				String dfSegments[] = df.getInternalSegments();
+				if(dfSegments.length<=1 || dfSegments[0].startsWith("parent"))
+				{
+					sb.append("md.");
 				}
 				sb.append(df.getInternal());
 			}
@@ -153,25 +170,30 @@ public class DataQueryResults {
 	 * Construct a string suitable for use in a an EJBQuery order by clause
 	 * @return
 	 */
-	public String getSortString () {
+	public void getSortString (StringBuffer sb) {
 		String orderStrings[] = getOrder();
 		if (orderStrings==null) {
-			return null;
+			return;
 		}
-		StringBuffer sb = new StringBuffer();
+        sb.append("ORDER BY ");
+        boolean first = true;
 		for (String order : orderStrings) {
 			String orderParts[] = order.split(" ");
 			DataField dataField = findExternalField( orderParts[0] );
-			if (sb.length()>0) {
+			if (first) {
+				first = false;
+			} else {
 				sb.append(", ");
 			}
+			sb.append( "md.");
 			sb.append(dataField.getInternal());
 			if (orderParts.length>1) {
 				sb.append(" ");
 				sb.append(orderParts[1]);
 			}
 		}
-		return sb.toString();
+    	sb.append(" ");
+		return;
 	}
 	
 	/**
@@ -180,6 +202,7 @@ public class DataQueryResults {
 	 */
 	public List<DataField> getFields() {
 		if (fields==null) {
+			level = 1;
 			Set<DataField> dataFieldSet = new HashSet<DataField>();
 			populateFieldSet( ms, "", "", dataFieldSet);
 			fields = new ArrayList<DataField>(dataFieldSet);
@@ -222,7 +245,7 @@ public class DataQueryResults {
 				return field;
 			}
 		}
-		throw new RuntimeException( "External field " +external+ " not found in " + ms);
+		return null;
 	}
 	
 	/**
@@ -369,5 +392,22 @@ public class DataQueryResults {
 	public void setCount(int count) {
 		this.count = count;
 	}
+	
+	public String getFilter() {
+		return filter;
+	}
+
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+
+	public void setParentFilterFields(List<DataField> parentFilterFields) {
+		this.parentFilterFields = parentFilterFields;
+	}
+
+	public List<DataField> getParentFilterFields() {
+		return parentFilterFields;
+	}
+
 	
 }

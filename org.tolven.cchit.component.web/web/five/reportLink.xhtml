@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Contents of the tab in a report</title>
+  </head>
+  <body>
+  	<ui:composition>  		
+  		
+ <table  class="stripe" width="478"   border="0" style=" height:360px; margin-left: 20px;margin-top: 20px">
+  <tr>
+    <td width="306" height="30" >Diabetic Patients with A1C under control</td>
+    <td width="79" align="center" ><a href="../report/?reportName=diabeticsList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:dma1csnapshot:norma1c&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=pdf"><img border="0" src="/Tolven/images/pdf.png"/></a></td>
+    <td width="79" align="center" ><a href="../report/?reportName=diabeticsList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:dma1csnapshot:norma1c&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=xls"><img border="0" width="22" height="22"  src="/Tolven/images/excel.png"/></a> </td>
+  </tr>
+  <tr>
+    <td height="30" >Hypertensive patients with BP under control </td>
+    <td align="center" ><a href="../report/?reportName=bpList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:htnbpsnapshot:normbp&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=pdf"><img border="0" src="/Tolven/images/pdf.png"/></a></td>
+    <td align="center" ><a href="../report/?reportName=bpList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:htnbpsnapshot:normbp&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=xls"><img border="0" width="22" height="22" src="/Tolven/images/excel.png"/></a></td>
+  </tr>
+  <tr>
+    <td height="30" >Patients with LDL under control </td>
+    <td align="center" ><a href="../report/?reportName=ldlList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:chlstrlldlsnapshot:normldl&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=pdf"><img border="0" src="/Tolven/images/pdf.png"/></a></td>
+    <td align="center" ><a href="../report/?reportName=ldlList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:chlstrlldlsnapshot:normldl&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=xls"><img border="0" width="22" height="22" src="/Tolven/images/excel.png"/></a></td>
+  </tr>
+  <tr>
+    <td height="30" >Patients on Smoking Cessation program </td>
+    <td align="center" ><a href="../report/?reportName=smokingcessationprogList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:smksmkprogsnapshot:prog&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=pdf"><img border="0" src="/Tolven/images/pdf.png"/></a></td>
+    <td align="center" ><a href="../report/?reportName=smokingcessationprogList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:smksmkprogsnapshot:prog&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=xls"><img border="0" width="22" height="22" src="/Tolven/images/excel.png"/></a></td>
+  </tr>
+  <tr>
+    <td height="30" >Patients with recorded BMI </td>
+    <td align="center" ><a href="../report/?reportName=bmiList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:obstbmisnapshot:bmi&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=pdf"><img border="0" src="/Tolven/images/pdf.png"/></a></td>
+    <td align="center" ><a href="../report/?reportName=bmiList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:obstbmisnapshot:bmi&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=xls"><img border="0" width="22" height="22" src="/Tolven/images/excel.png"/></a></td>
+  </tr>
+  <tr>
+    <td height="30" >
+      Patients with annual Colorectal Screenings </td>
+      <td align="center" ><a href="../report/?reportName=colorectalList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:clrctlclrctlscrnsnapshot:scrn&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=pdf"><img border="0" src="/Tolven/images/pdf.png"/></a></td>
+    <td align="center" ><a href="../report/?reportName=colorectalList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:clrctlclrctlscrnsnapshot:scrn&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=xls"><img border="0" width="22" height="22" src="/Tolven/images/excel.png"/></a></td>
+  </tr>
+  <tr>
+    <td height="30" >Patients receiving annual Mammogram  </td>
+    <td align="center" ><a href="../report/?reportName=mamographyList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:mmmgrphmmmgrphscrnsnapshot:scrn&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=pdf"><img border="0" src="/Tolven/images/pdf.png"/></a></td>
+    <td align="center" ><a href="../report/?reportName=mamographyList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:mmmgrphmmmgrphscrnsnapshot:scrn&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=xls"><img border="0" width="22" height="22" src="/Tolven/images/excel.png"/></a></td>
+  </tr>
+  <tr>
+    <td height="30"  >
+      Patients who received Influenza Vaccination </td>
+    <td align="center" ><a href="../report/?reportName=influenzavaccList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:inflnzinflnzvccnsnapshot:inflnzvccn&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=pdf"><img border="0" src="/Tolven/images/pdf.png"/></a></td>
+    <td align="center" ><a href="../report/?reportName=influenzavaccList&amp;reportType=jrxml&amp;tolvenQuery=echr:analysis:inflnzinflnzvccnsnapshot:inflnzvccn&amp;tolvenQueryParameter=&amp;sortOrder=Name&amp;reportFormat=xls"><img border="0" width="22" height="22" src="/Tolven/images/excel.png"/></a></td>
+  </tr>
+</table>
+  	</ui:composition>
+  	<script>
+	  	/*$$('table.stripe tbody tr:nth-child(even)').each(function(tr) {
+		  tr.addClassName('even');
+		});*/
+</script>
+  </body>
+</html>

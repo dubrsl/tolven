@@ -1,0 +1,6 @@
+<mbean code="org.jboss.naming.JNDIBindingServiceMgr" name="tolven.org:name=tolven-jndi-temp">
+	<attribute name="BindingsConfig" serialDataType="jbxb">
+		<jndi:bindings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jndi="urn:jboss:jndi-binding-service:1.0" xsi:schemaLocation="urn:jboss:jndi-binding-service:1.0 resource:jndi-binding-service_1_0.xsd">
+			<jndi:binding name="${tolven.contextId}">
+				<tolven:tolvenContext xmlns:tolven="http://tolven.org/ns/gatekeeper/tolvenContext" xmlns="http://tolven.org/ns/gatekeeper/tolvenContext" xsi:schemaLocation="http://tolven.org/ns/gatekeeper/tolvenContext file:///${jboss6.dir}/server/tolven/deploy/tolven-jndi-schemas/tolvenContext.xsd">
+					<tolven:mapping>

@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,12 +33,14 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
-import org.tolven.el.ExpressionEvaluator;
-import org.tolven.logging.TolvenLogger;
+import org.apache.log4j.helpers.Loader;
+import org.apache.log4j.xml.DOMConfigurator;
 import org.tolven.plugin.repository.bean.PluginDetail;
 import org.tolven.plugin.repository.bean.PluginPropertyDetail;
 import org.tolven.plugin.repository.bean.Plugins;
+import org.tolven.plugin.repository.el.ExpressionEvaluator;
 
 /**
  * This class acts as a wrapper for the JAXB Plugins class.
@@ -62,6 +66,9 @@ public class ConfigPluginsWrapper {
     public static final String LOGFILE = "logFile";
     public static final String LIBRARY_PLUGS_DIR = "plugins";
     public static final String INSTALL_DIR = "installation.dir";
+
+    public static final String DEFAULT_LOG_FILE = System.getProperty("user.dir") + "/tolven.log";
+    public static final String LOG_FILE_PROPERTY = "tolven.log.file";
 
     private File pluginsFile;
     private Plugins plugins;
@@ -250,7 +257,7 @@ public class ConfigPluginsWrapper {
         if (!logFile.getPath().equals(logFile.getAbsolutePath())) {
             logFile = new File(System.getProperty("user.dir"), logFile.getName());
         }
-        TolvenLogger.initialize(log4JConfiguration.getPath(), logFile);
+        initialize(log4JConfiguration.getPath(), logFile);
     }
 
     public void storeMetadata(File pluginsXMLFile) {
@@ -335,6 +342,50 @@ public class ConfigPluginsWrapper {
             } else {
                 pluginIds.add(plugin.getId());
             }
+        }
+    }
+
+    public static void initialize(String log4jConfiguration, File logFile) {
+        try {
+            File configFile = new File(log4jConfiguration );
+            initialize(configFile.toURI().toURL().toExternalForm(), logFile.getPath());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Could not convert logFile: '" + logFile.getPath() + "' to a URI");
+        }
+    }
+    
+    /**
+     * <p>Initialize log4j logging using the Tolven appender specification.</p>
+     * <p>Note: This method should <i>not</i> be called within an environment such as JBoss that has a separate
+     * log4j configuration.</p>
+     * @param log4jConfiguration The name of the file containing the log4j configuration. If null, the
+     * a file named tolven-log4j.xml on the classpath will be used.
+     * @param logFilename The name of the log file. This file will be created if it does not already exist. If null, 
+     * a default file named <code>${user.dir}/tolven.log</code> will be used.
+     */
+    public static void initialize(String log4jConfiguration, String logFilename ) {
+        try {
+            File logFile;
+            if (logFilename != null) {
+                logFile = new File(logFilename);
+            } else {
+                logFile = new File(DEFAULT_LOG_FILE);
+            }
+            System.setProperty(LOG_FILE_PROPERTY, logFile.getAbsolutePath());
+            logFile.getParentFile().mkdirs();
+            logFile.createNewFile();
+            BasicConfigurator.configure();
+            Logger.getRootLogger().info("Start log4j - Configuration: " + log4jConfiguration + ", logFileName: " + logFile.getAbsolutePath());
+            BasicConfigurator.resetConfiguration();
+            URL configURL;
+            try {
+                configURL = new URL( log4jConfiguration );
+            } catch (Exception e) {
+                configURL = Loader.getResource(log4jConfiguration);
+            }
+            DOMConfigurator.configure(configURL);
+        } catch (Exception e) {
+            throw new RuntimeException( "Exception while initializing Tolven log4j. log4jConfiguration: " + log4jConfiguration + " logFilename: " + logFilename, e);
         }
     }
 

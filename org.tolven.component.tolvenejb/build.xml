@@ -2,12 +2,8 @@
 <project basedir="." default="deploy-to-local-repository" name="org.tolven.component.tolvenejb">
 
 	<import file="../plugin/buildImport.xml"/>
+	
 	<property name="buildFolder" value="build"/>
-
-	<!-- 
-	Source code will be included in the devLib jar file if true. Otherwise, source code
-	known to this build script will not be in the plugin
-	 -->
 	<property name="includeSourceInDevLib" value="true"/>
 
 	<target name="build-plugin" depends="jar" description="Build all sections of this plugin">

@@ -1,5 +1,6 @@
 package org.tolven.trim.scan;
 
+import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -36,6 +37,8 @@ public abstract class Scanner {
 	private BindPhase phase;
 	private String knownType;
 	private DocumentType documentType;
+	
+	
 	
 	private Stack<String> location = new Stack<String>();
 	private Stack<InfrastructureRoot> rimObjectPath = new Stack<InfrastructureRoot>();

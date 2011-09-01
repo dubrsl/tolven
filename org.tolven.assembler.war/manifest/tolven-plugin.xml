@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.assembler.war" version="2.0.19" class="org.tolven.assembler.war.WARAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.assembler.war" version="2.1.0" class="org.tolven.assembler.war.WARAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<requires>
 		<import plugin-id="org.tolven.assembler.webxml" />
 		<import plugin-id="org.tolven.assembler.facesconfig" />
+		<import plugin-id="org.tolven.component.war" />
 	</requires>
 	<runtime>
 		<library type="code" path="tpf/classes/" id="tpfclasses" />
@@ -11,6 +12,7 @@
 		<parameter-def default-value="devLib.jar" id="jar" />
 	</extension-point>
 	<extension-point id="abstractWAR" parent-plugin-id="org.tolven.component.war" parent-point-id="abstractWAR" extension-multiplicity="none" />
+	
 	<extension id="webXMLAssemblerExtension" point-id="warExtensionPoint" plugin-id="org.tolven.assembler.webxml">
 		<parameter value="org.tolven.assembler.war@component" id="id" />
 	</extension>

@@ -47,6 +47,7 @@ import org.tolven.provider.ProviderLocal;
 import org.tolven.security.AccountProcessingProtectionLocal;
 import org.tolven.security.DocProtectionLocal;
 import org.tolven.security.key.DocumentSecretKey;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.trim.Application;
 import org.tolven.trim.BindPhase;
 import org.tolven.trim.Transition;
@@ -97,7 +98,7 @@ public class CreatorBean implements CreatorLocal, CreatorRemote {
 	 * @param now
 	 * @return The new event
 	 */
-	protected MenuData createEvent( Account account, String instancePath, Trim trim, Date now, Map<String, Object> variables ) {
+	public MenuData createEvent( Account account, String instancePath, Trim trim, Date now, Map<String, Object> variables ) {
 		MenuData mdEvent;
 		try {
 			mdEvent = new MenuData();
@@ -132,7 +133,7 @@ public class CreatorBean implements CreatorLocal, CreatorRemote {
 			}
 	//		mdToDo.setParent01(md.getParent01());
 //			mdToDo.setString02("Unfinished: " + mdEvent.getString01());
-			mdToDo.setString03(ejbContext.getCallerPrincipal().getName());
+			mdToDo.setString03((String)TolvenSessionWrapperFactory.getInstance().getPrincipal());
 			mdToDo.setDocumentId(mdEvent.getDocumentId());
 			menuBean.populateMenuData(variables, mdToDo);
 			menuBean.persistMenuData(mdToDo);
@@ -398,11 +399,15 @@ public class CreatorBean implements CreatorLocal, CreatorRemote {
 		MenuData mdEvent = createEvent( account, instancePath, trim, now, variables );
 		mdEvent.setActStatus(status);
 		// Reference the event in the Trim (add to event history)
-		trim.addTolvenEventId(createTolvenId( mdEvent, null, now, status, ejbContext.getCallerPrincipal().getName() ));
+		trim.addTolvenEventId(createTolvenId( mdEvent, null, now, status, (String)TolvenSessionWrapperFactory.getInstance().getPrincipal() ));
 		return mdEvent;
 	}
 		
-	
+/*	
+	public MenuData createTRIMPlaceholder( AccountUser accountUser, String trimPath, String context, Date now, String alias) throws JAXBException, TRIMException {
+		return createTRIMPlaceholder(accountUser, trimPath, context, now, alias,null);
+	}
+*/	
 	/**
 	 * Instantiate a new document and new event pointing to it. The event also points to the eventual placeholder.
 	 * @param accountUser
@@ -427,8 +432,13 @@ public class CreatorBean implements CreatorLocal, CreatorRemote {
 		if (trimHeader==null) throw new IllegalArgumentException( "No TRIM found for " + trimPath);
 		TrimEx trim = null;
 		try {
-			trim = trimBean.parseTrim(trimHeader.getTrim(), accountUser, context, now, alias );
-		} catch (RuntimeException e) {
+                    //trim = trimBean.parseTrim(trimHeader.getTrim(), accountUser, context, now, alias );
+	       //CCHIT merge	
+            String trimStr=new String (trimHeader.getTrim());
+            trimStr = trimStr.replace("&", "&amp;");
+            byte[] btrim=trimStr.getBytes();
+            trim = trimBean.parseTrim(btrim, accountUser, context, now, alias );
+	    } catch (RuntimeException e) {
 			throw new RuntimeException( "Error parsing TRIM '" + trimHeader.getName() + "'", e );
 		}
 		// Setup variables we'll need for populate evaluations

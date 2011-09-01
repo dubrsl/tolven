@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<name>path/progressnoteTemplate</name>
+	<description>Progress Note Template</description>
+	<author>Tolven</author>
+	<act moodCode="EVN" classCode="PROC">		
+		<relationship typeCode="PERT" direction="OUT" name="appointment">
+			<act moodCode="EVN" classCode="OBS">
+				<bind application="echr" phase="create">
+					<placeholder bindAction="merge">
+						<path>echr:patient:appointment</path>
+					</placeholder>
+				</bind>
+				<statusCode>active</statusCode>
+				<title>
+					<ST>Appointment</ST>
+				</title>
+				<effectiveTime>
+					<label>Appointment Date</label>
+					<TS></TS>
+				</effectiveTime>
+				<observation>
+					<value>
+						<label>Attender</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Location</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+</trim>

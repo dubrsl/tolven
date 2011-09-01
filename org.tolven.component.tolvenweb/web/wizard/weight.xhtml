@@ -22,13 +22,13 @@
 				<wiz:group title="Update Value Set"> 
 					<wiz:dataTypeSelect value="#{trim.trim.act.observation.value}" destination="trim.act.observation.value" valueSet="weightValue" id="weightDataType" compute="#{trim.trim.act.computes[0]}"/>
 				</wiz:group>				
-				<wiz:group title="Action">
+				<!-- <wiz:group title="Action">
 					<h:selectOneMenu id="#{menu.elementLabel}status" value="#{trim.trim.act.statusCodeValue}">
 					    <c:forEach var="trans" items="#{trim.trim.act.eventTransitions}">
 							<f:selectItem itemLabel="#{trans.label.value}" itemValue="#{trans.to}"/>
 					    </c:forEach>
 					</h:selectOneMenu>
-				</wiz:group>
+				</wiz:group> -->
 				<wiz:group title="Additional Details" >
 					<wiz:yesno id="weightDetails">Add?</wiz:yesno>
 					<wiz:group title="Device" visible="$('#{menu.elementLabel}:weightDetails').isTrue();">

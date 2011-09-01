@@ -22,6 +22,9 @@ import org.tolven.core.entity.Account;
  */
 
 public interface CohortAnalysisLocal {
+	public String findGender(String cohortType, Account account);
+	
+	public void setGender(String cohortType, String gender, Account account);
 
     public List<String> getIncludeCodes(String cohortType, Account account);
 
@@ -34,4 +37,13 @@ public interface CohortAnalysisLocal {
     public void addExcludeCode(String cohortType, String code, Account account);
 
     public void removeExcludeCode(String cohortType, String code, Account account);
+    
+    public void addAgeRange(String cohortType, String code, Account account);
+    
+    public List<String> getAgeRanges(String cohortType, Account account);
+    
+    public void removeAgeRange(String cohortType, String code, Account account);
+    
+    public void refreshCohortList(String cohortType, String snapshotType, Account account);
+
 }

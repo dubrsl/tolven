@@ -14,7 +14,7 @@
 	<h:form id="ldlForm">
 		<fieldset><legend>Properties</legend>
 			<fieldset><legend>Target</legend>
-				<h:inputText id="ldlTarget" value="#{cohortAnalysis.properties[ldlTargetProperty]}" size="1"
+				<h:inputText id="ldlTarget" value="#{top.accountUser.account.property[ldlTargetProperty]}" size="1"
 					required="true"
 					validatorMessage=" Target must be a number from 0 to 100 inclusive"
 					requiredMessage=" A Target is required">
@@ -25,7 +25,7 @@
 			<h:message for="ldlTarget" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
 			<fieldset><legend>Threshold</legend>
 				<h:outputText value="High LDL: " />
-				<h:inputText id="ldlHigh" value="#{cohortAnalysis.properties[ldlHighProperty]}" size="1"
+				<h:inputText id="ldlHigh" value="#{top.accountUser.account.property[ldlHighProperty]}" size="1"
 					required="true"
 					validatorMessage=" High LDL must be a number greater than or equal to 0"
 					requiredMessage=" High LDL value is required">

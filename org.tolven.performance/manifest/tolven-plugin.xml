@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.performance" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.tolvenejb" />
+		<import plugin-id="org.tolven.component.faces" />
+		<import plugin-id="org.tolven.component.war" />
+		<import plugin-id="org.tolven.component.tolvenweb" />
+		<import plugin-id="org.tolven.component.application" />
+	</requires>
+	<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+		<parameter id="dir" value="app" />
+	</extension>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+	</extension>
+	<extension id="classes" plugin-id="org.tolven.component.tolvenweb" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+	</extension>
+	<extension id="fiveDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="fiveDirectory">
+		<parameter id="sourceDirectory" value="web/five" />
+	</extension>
+	<extension id="scriptsDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="scriptsDirectory">
+	     <parameter id="sourceDirectory" value="web/scripts" />
+	</extension>
+	<extension id="myJavaScript" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="web/scriptInclude/performanceScripts.txt" />
+	</extension>
+	<extension id="password-property" plugin-id="org.tolven.component.tolvenweb" point-id="property">
+		<parameter id="class" value="org.tolven.web.PerformanceFilter" />
+		<parameter id="name" value="exclude-request-param" />
+		<parameter id="value" value=".*(?i:password).*" />
+	</extension>
+	<extension id="performance-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Performance Measure related Actions" />
+		<parameter id="managed-bean-name" value="performance" />
+		<parameter id="managed-bean-class" value="org.tolven.web.PerformanceAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="PerformanceFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="PerformanceFilter" />
+		<parameter id="filter-class" value="org.tolven.web.PerformanceFilter" />
+		<parameter id="filter-sequence" value="4000" />
+		<parameter id="transaction" value="true" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="PerformanceFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="PerformanceFilter" />
+		<parameter id="url-pattern" value="*.jsf" />
+		<parameter id="url-pattern" value="*.jsp" />
+		<parameter id="url-pattern" value="*.ajaxi" />
+		<parameter id="url-pattern" value="*.ajax" />
+		<parameter id="url-pattern" value="*.ajaxc" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="legacypostgresql-org.tolven.core.entity.PerformanceData-entity" plugin-id="org.tolven.component.tolvenejb" point-id="entity">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="class" value="org.tolven.core.entity.PerformanceData" />
+		<parameter id="table">
+			<parameter id="name" value="PERFORMANCE_DATA" />
+			<parameter id="schema" value="core" />
+		</parameter>
+		<parameter id="attributes">
+			<parameter id="basic">
+				<parameter id="name" value="eventTime" />
+				<parameter id="column">
+					<parameter id="name" value="EVENT_TIME" />
+				</parameter>
+				<parameter id="temporal" value="TIMESTAMP" />
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="sessionID" />
+				<parameter id="column">
+					<parameter id="name" value="SESSION_ID" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="remoteUserName" />
+				<parameter id="column">
+					<parameter id="name" value="REMOTE_USERNAME" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="accountUserID" />
+				<parameter id="column">
+					<parameter id="name" value="ACCOUNTUSER_ID" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="remoteIP" />
+				<parameter id="column">
+					<parameter id="name" value="REMOTE_IP" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="localIP" />
+				<parameter id="column">
+					<parameter id="name" value="LOCAL_IP" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="requestURI" />
+				<parameter id="column">
+					<parameter id="name" value="REQUEST_URI" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="queryParams" />
+				<parameter id="column">
+					<parameter id="name" value="QUERY_PARAMS" />
+					<parameter id="length" value="1000000" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="facesViewState" />
+				<parameter id="column">
+					<parameter id="name" value="FACES_VIEW_STATE" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="method" />
+				<parameter id="column">
+					<parameter id="name" value="METHOD" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="elapsed" />
+				<parameter id="column">
+					<parameter id="name" value="ELAPSED_TIME" />
+				</parameter>
+			</parameter>
+			<parameter id="basic">
+				<parameter id="name" value="exceptions" />
+				<parameter id="column">
+					<parameter id="name" value="EXCEPTIONS" />
+				</parameter>
+				<parameter id="lob" />
+			</parameter>
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
+	</extension>
+	<extension id="oracle-org.tolven.core.entity.PerformanceData-entity" plugin-id="org.tolven.component.tolvenejb" point-id="entity">
+		<parameter id="ormId" value="oracle" />
+		<parameter id="class" value="org.tolven.core.entity.PerformanceData" />
+		<parameter id="attributes">
+			<parameter id="basic">
+				<parameter id="name" value="queryParams" />
+				<parameter id="column">
+					<parameter id="length" value="1000000" />
+				</parameter>
+			</parameter>
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
+	</extension>
+	
+	<extension id="warclasses" plugin-id="org.tolven.component.war" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+   	<extension id="PerformanceAjaxServlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="PerformanceAjaxServlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.PerformanceAjaxServlet" />
+		<parameter id="web-resource-name" value="Protected Area" />
+		<parameter id="transaction" value="true" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="PerformanceAjaxServletMapping" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="PerformanceAjaxServlet" />
+  		<parameter id="url-pattern" value="*.ajaxper" />
+  		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+ 	</extension>
+ 	<extension id="auditLogPersister" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="org.tolven.app.bean.MenuBean" />
+		<parameter id="name" value="persisterJNDI" />
+		<parameter id="value" value="java:global/tolven/tolvenEJB/PerformanceAuditPersister!org.tolven.app.PersisterLocal" />
+	</extension>
+ 	
+</plugin>

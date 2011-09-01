@@ -1,0 +1,616 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<extends path="echr:admin">
+		<placeholder name="emergencyAccount" eventInstance="echr:patient:wip" page="" heading="/five/treatmentLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="accountName" internal="string01">
+				<from>#{act.relationship['accountDetails'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="accountId" internal="string02">
+				<from>#{act.relationship['accountDetails'].act.observation.values[0].ST.value}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient">
+		<placeholder name="uniqueId" eventInstance="echr:patients:wip" page="" heading="/five/treatmentLink.xhtml">
+			<field name="uniqueId" internal="string01">
+				<from>#{act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="studyName" internal="string02">
+				<from>#{act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="patientName" internal="string03">
+				<from>#{act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+		</placeholder>		
+	</extends>
+	<extends path="echr">
+		<placeholder name="newInfoInShare" title="Received Share" page="/wizard/wizard.xhtml" heading="/five/shareLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{trim.act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="senderName" internal="string01">
+				<from>#{trim.message.sender.accountName}</from>
+			</field>
+			<field name="senderComment" internal="string02">
+				<from>#{trim.message.sender.comment}</from>
+			</field>
+			<field name="receiverName" internal="string03">
+				<from>#{trim.message.receiver.accountName}</from>
+			</field>
+			<field name="receiverComment" internal="string04">
+				<from>#{trim.message.receiver.comment}</from>
+			</field>
+			<field name="subject" internal="string05">
+				<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<!-- Also, pull demographics from message -->
+			<field name="lastName">
+				<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formattedParts['FAM']}</from>
+			</field>
+			<field name="firstName">
+				<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formattedParts['GIV[0]']}</from>
+			</field>
+			<field name="middleName">
+				<from>#{trim.act.participation['subject'].role.player.name.EN['L'].formattedParts['GIV[1]']}</from>
+			</field>
+			<field name="familyName" internal="string08" >
+				<from>#{role.player.name.EN['L'].formattedParts['GIV[2]']}</from>
+			</field>
+			<field name="prefix" internal="_extended" type="string">
+				<from>#{role.player.name.EN['L'].formattedParts['PFX']}</from>
+			</field>
+			<field name="suffix" internal="_extended" type="string">
+				<from>#{role.player.name.EN['L'].formattedParts['SFX']}</from>
+			</field>
+			<field name="ssn" internal="_extended" type="string">
+				<from>#{role.player.id.for['SSN'].extension}</from>
+			</field>
+			<field name="dob" internal="date01" >
+				<from>#{TStoDate(xpath['patient/birthTime/@value'])}</from>
+				<from>#{role.player.livingSubject.birthTime.TS.date}</from>
+				<from>#{nuh["birth_d"]}</from>
+			</field>
+			<field name="sex" internal="string04" >
+				<from>#{xpath['patient/administrativeGenderCode/@code']}</from>
+				<from>#{role.player.livingSubject.administrativeGenderCode.CE.displayName}</from>
+				<from>#{nuh["sex_d"]}</from>
+			</field>
+			<field name="mrn" internal="string05">
+				<from>#{role.id.for['MRN'].extension}</from>
+				<from>#{nuh["hrn_n"]}</from>
+			</field>
+			<field name="vip"  internal="_extended">
+				<from>#{trim.act.participation['subject'].role.patient.veryImportantPersonCode.value}</from>
+				<from>#{nuh["vip_d"]}</from>
+			</field>
+			<field name="nationality"  internal="string07">
+				<from>#{nuh["nationality_d"]}</from>
+			</field>
+			<field name="gender"  internal="_extended">
+				<from>#{trim.act.participation['subject'].role.player.livingSubject.administrativeGenderCode.value}</from>
+			</field>
+			<field name="homeAddr1" internal="_extended" type="string">
+				<from>#{xpath["addr[@use='H']/streetName/text()"]}</from>
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['AL[0]'].ST.value}</from>
+				<from>#{nuh["street1_t"]}</from>
+			</field>
+			<field name="homeAddr2"  internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['AL[1]'].ST.value}</from>
+				<from>#{nuh["street2_t"]}</from>
+			</field>
+			<field name="homeCity"  internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['CTY[0]'].ST.value}</from>
+			</field>
+			<field name="homeCounty"  internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['CTY[1]'].ST.value}</from>
+			</field>
+			<field name="homeState"  internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['STA'].ST.value}</from>
+			</field>
+			<field name="homeZip"  internal="_extended" type="string">
+				<from>#{xpath["addr[@use='H']/postalCode"]}</from>
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['ZIP'].ST.value}</from>
+				<from>#{nuh["postal_c"]}</from>
+			</field>
+			<field name="homeCountry"  internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['CNT'].ST.value}</from>
+			</field>
+			<field name="emailId"  internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.addr.AD['H'].part['UNID'].ST.value}</from>
+			</field>
+			<field name="homeTelecom" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.telecom.TEL['H'].value}</from>
+				<from>#{nuh["res_tel_n"]}</from>
+			</field>
+			<field name="workTelecom" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.telecom.TEL['WP'].value}</from>
+			</field>
+			<field name="cellTelecom" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.telecom.TEL['MC'].value}</from>
+			</field>
+			<field name="eMail"  internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.telecom.TEL['DIR'].value}</from>
+			</field>
+			<field name="seMail"  internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.telecom.TEL['TMP'].value}</from>
+			</field>
+			<field name="ethnicity" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['subject'].role.player.person.ethnicGroupCode.value}</from>
+			</field>
+			<field name="race" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['patientOtherInfo'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="comments" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['patientOtherInfo'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="language" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['patientOtherInfo'].act.observation.values[3].CE.displayName}</from>
+			</field>
+			<field name="languageCode" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['patientOtherInfo'].act.observation.values[3].CE.code}</from>
+			</field>
+			<field name="primaryName" internal="_computed">
+				<from>#{patient.primary.lastName}</from>
+				<from>#{patient.otherPrimary}</from>
+			</field>
+			<field name="primary" internal="parent03">
+				<from>#{internalId( account, trim.act.participation['subject'].role.participation['subject'].act.participation['primary'].role.id)}</from>
+			</field>
+			<field name="otherPrimary" internal="_extended">
+				<from>#{trim.act.participation['subject'].role.participation['subject'].act.participation['primary'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<field name="surgeonName" internal="_computed">
+				<from>#{patient.surgeon.lastName}</from>
+				<from>#{patient.otherSurgeon}</from>
+			</field>
+			<field name="surgeon" internal="parent04">
+				<from>#{internalId( account, trim.act.participation['subject'].role.participation['subject'].act.participation['surgeon'].role.id)}</from>
+			</field>
+			<field name="otherSurgeon" internal="_extended">
+				<from>#{trim.act.participation['subject'].role.participation['subject'].act.participation['surgeon'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<field name="allergyCount" internal="long01">
+			</field>
+			<!-- Primary Insurance Details -->
+			<field name="primaryHolderName" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="primaryHolderAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="primaryHolderAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="primaryHolderAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="primaryHolderTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="primaryHolderRel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[5].ST.value}</from>
+			</field>
+			<field name="primaryHolderDOB" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[6].TS.date}</from>
+			</field>
+			<field name="primaryHolderSex" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[7].value}</from>
+			</field>
+			<field name="primaryHolderSSN" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyHolder'].act.observation.values[8].ST.value}</from>
+			</field>
+			<field name="primaryEmpName" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyEmployer'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="primaryEmpAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyEmployer'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="primaryEmpAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyEmployer'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="primaryEmpAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyEmployer'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="primaryEmpTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['policyEmployer'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="primaryCompanyName" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="primaryCompanyAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="primaryCompanyAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="primaryCompanyAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="primaryCompanyTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="primaryCompanyPolicy" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[5].ST.value}</from>
+			</field>
+			<field name="primaryCompanyGroup" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['primaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[6].ST.value}</from>
+			</field>
+			<!-- Secondary Insurance Details -->
+			<field name="secondaryHolderName" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="secondaryHolderAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="secondaryHolderAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="secondaryHolderAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="secondaryHolderTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="secondaryHolderRel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[5].ST.value}</from>
+			</field>
+			<field name="secondaryHolderDOB" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[6].TS.date}</from>
+			</field>
+			<field name="secondaryHolderSex" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[7].value}</from>
+			</field>
+			<field name="secondaryHolderSSN" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyHolder'].act.observation.values[8].ST.value}</from>
+			</field>
+			<field name="secondaryEmpName" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyEmployer'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="secondaryEmpAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyEmployer'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="secondaryEmpAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyEmployer'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="secondaryEmpAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyEmployer'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="secondaryEmpTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['policyEmployer'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="secondaryCompanyName" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="secondaryCompanyAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="secondaryCompanyAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="secondaryCompanyAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="secondaryCompanyTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="secondaryCompanyPolicy" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[5].ST.value}</from>
+			</field>
+			<field name="secondaryCompanyGroup" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['secondaryInsurance'].act.relationship['insuranceCompany'].act.observation.values[6].ST.value}</from>
+			</field>
+			<!-- Workers Compensation -->
+			<field name="workersCompEmpName" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['employerInformation'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="workersCompEmpAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['employerInformation'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="workersCompEmpAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['employerInformation'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="workersCompEmpAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['employerInformation'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="workersCompEmpTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['employerInformation'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="workersCompEmpContact" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['employerInformation'].act.observation.values[5].ST.value}</from>
+			</field>
+			<field name="workersCompCompanyName" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['insuranceCompany'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="workersCompCompanyAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['insuranceCompany'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="workersCompCompanyAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['insuranceCompany'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="workersCompCompanyAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['insuranceCompany'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="workersCompCompanyTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['insuranceCompany'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="workersCompCompanyAdjustor" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['insuranceCompany'].act.observation.values[5].ST.value}</from>
+			</field>
+			<field name="workersCompCompanyClaim" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['workersCompensation'].act.relationship['insuranceCompany'].act.observation.values[6].ST.value}</from>
+			</field>
+			<!-- Other Insurance -->
+			<field name="otherInsuranceType" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="otherInsuranceProvider" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="otherInsuranceAdd1" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="otherInsuranceAdd2" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="otherInsuranceAdd3" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="otherInsuranceTel" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[5].ST.value}</from>
+			</field>
+			<field name="otherInsuranceContact" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[6].ST.value}</from>
+			</field>
+			<field name="otherInsuranceGroup" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[7].ST.value}</from>
+			</field>
+			<field name="otherInsurancePolicy" internal="_extended">
+				<from>#{trim.isName['reg/evn/patient.*'].act.relationship['otherInsurance'].act.observation.values[8].ST.value}</from>
+			</field>
+			<field name="preferenceName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.observation.values[0].CE.displayName}</from>
+			</field>
+			<field name="preferenceCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.observation.values[0].CE.code}</from>
+			</field>
+			<field name="preferenceSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.observation.values[0].CE.codeSystem}</from>
+			</field>
+			<field name="preferenceVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.observation.values[0].CE.codeSystemVersion}</from>
+			</field>
+			<field name="doc" internal="date02">
+				<from>#{trim.act.relationship['preference'].act.observation.values[1].TS.date}</from>
+			</field>
+			<field name="notifMethdsName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.observation.value.CE.displayName}</from>
+			</field>
+			<field name="notifMethdsCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.observation.value.CE.code}</from>
+			</field>
+			<field name="notifMethdsSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.observation.value.CE.codeSystem}</from>
+			</field>
+			<field name="notifMethdsVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.observation.value.CE.codeSystemVersion}</from>
+			</field>
+			<field name="emailId" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['emailNotification'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="confEmailID" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['emailNotification'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="addLine1" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['mailNotification'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="addLine2" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['mailNotification'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="city" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['mailNotification'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="country" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['mailNotification'].act.observation.values[3].ST.value}</from>
+			</field>
+			<field name="zipcode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['mailNotification'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="accountId" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['phrNotification'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="accountName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['notificationMethods'].act.relationship['phrNotification'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="sendEncounter" internal="_extended" type="string">
+				<from>#{trim.act.relationship['preference'].act.relationship['sendEncounter'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="annualName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[0].CE.displayName}</from>
+			</field>
+			<field name="annualCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[0].CE.code}</from>
+			</field>
+			<field name="annualSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[0].CE.codeSystem}</from>
+			</field>
+			<field name="annualVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[0].CE.codeSystemVersion}</from>
+			</field>
+			<field name="tetanusName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[1].CE.displayName}</from>
+			</field>
+			<field name="tetanusCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[1].CE.code}</from>
+			</field>
+			<field name="tetanusSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[1].CE.codeSystem}</from>
+			</field>
+			<field name="tetanusVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[1].CE.codeSystemVersion}</from>
+			</field>
+			<field name="fluName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[2].CE.displayName}</from>
+			</field>
+			<field name="fluCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[2].CE.code}</from>
+			</field>
+			<field name="fluSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[2].CE.codeSystem}</from>
+			</field>
+			<field name="fluVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[2].CE.codeSystemVersion}</from>
+			</field>
+			<field name="bmiName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[3].CE.displayName}</from>
+			</field>
+			<field name="bmiCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[3].CE.code}</from>
+			</field>
+			<field name="bmiSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[3].CE.codeSystem}</from>
+			</field>
+			<field name="bmiVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[3].CE.codeSystemVersion}</from>
+			</field>
+			
+			<field name="coloName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[4].CE.displayName}</from>
+			</field>
+			<field name="coloCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[4].CE.code}</from>
+			</field>
+			<field name="coloSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[4].CE.codeSystem}</from>
+			</field>
+			<field name="coloVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[4].CE.codeSystemVersion}</from>
+			</field>
+			<field name="brstName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[5].CE.displayName}</from>
+			</field>
+			<field name="brstCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[5].CE.code}</from>
+			</field>
+			<field name="brstSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[5].CE.codeSystem}</from>
+			</field>
+			<field name="brstVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[5].CE.codeSystemVersion}</from>
+			</field>
+			<field name="ac1Name" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[6].CE.displayName}</from>
+			</field>
+			<field name="ac1Code" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[6].CE.code}</from>
+			</field>
+			<field name="ac1System" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[6].CE.codeSystem}</from>
+			</field>
+			<field name="ac1Version" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[6].CE.codeSystemVersion}</from>
+			</field>
+			<field name="rcmdTetimmmu" internal="_extended" type="string">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="preferenceStatus" internal="_extended" type="string">
+				<from>#{trim.act.relationship['notification'].act.observation.values[8].ST.value}</from>
+			</field>
+			<field name="tetanusReminderDate" internal="date03">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[3].TS.date}</from>
+			</field>
+			<field name="annPhysical" internal="_extended" type="string">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="annPhysicalDate" internal="date04">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[1].TS.date}</from>
+			</field>
+			<field name="fluShot" internal="_extended" type="string">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="fluShotDate" internal="_extended" type="TS">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[5].TS.date}</from>
+			</field>
+			<field name="bmi" internal="_extended" type="string">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[6].ST.value}</from>
+			</field>
+			<field name="bmiDate" internal="_extended" type="date">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[7].TS.date}</from>
+			</field>
+			<field name="colorectalScreen" internal="_extended" type="string">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[8].ST.value}</from>
+			</field>
+			<field name="colorectalScreenDate" internal="_extended" type="TS">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[9].TS.date}</from>
+			</field>
+			<field name="breastScreen" internal="_extended" type="string">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[10].ST.value}</from>
+			</field>
+			<field name="breastScreenDate" internal="_extended" type="TS">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[11].TS.date}</from>
+			</field>
+			<field name="a1cTest" internal="_extended" type="string">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[12].ST.value}</from>
+			</field>
+			<field name="a1cDate" internal="_extended" type="date">
+				<from>#{trim.act.relationship['reminderStatus'].act.observation.values[13].TS.date}</from>
+			</field>
+			<field name="deathDate" internal="_extended" type="TS">
+				<from>#{trim.act.relationship['deathDetails'].act.observation.values[0].TS.date}</from>
+			</field>
+			<field name="deathDiagnosisName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['deathDetails'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="deathDiagnosisCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['deathDetails'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="uniqueId" internal="_extended" type="string">
+				<from>#{trim.act.relationship['uniqueId'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="deathDate" internal="_extended" type="date">
+				<from>#{trim.act.relationship['deathDetails'].act.observation.values[0].TS.date}</from>
+			</field>
+			<field name="deathCause" internal="_extended" type="string">
+				<from>#{trim.act.relationship['deathDetails'].act.observation.values[2].ST.value}</from>
+			</field>
+		</placeholder>
+	</extends>
+	
+	<extends path="echr:admin">
+		<menu name="emergencyAccounts" title="DCC Account" page="/five/bar2.xhtml" visible="true">
+			<list name="account" title="Account" page="/five/emergencyAccountList.xhtml" visible="true" drilldown="echr:admin">
+				<column name="Date" internal="date01" width="15.0">
+					<from>#{emergencyAccount.effectiveTime}</from>
+				</column>
+				<column name="AccountName" internal="string01" width="15.0">
+					<from>#{emergencyAccount.accountName}</from>
+				</column>
+				<column name="AccountId" internal="string02"  width="15.0">
+					<from>#{emergencyAccount.accountId}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:emergencyAccountMenu">
+					<column name="Title" internal="string01" instantiate="true" width="20.0"/>
+				</action>
+			</list>
+		</menu>
+	</extends>
+	<extends path="echr">
+		<menu name="patients" title="Patients" page="/five/patients.xhtml" visible="true">
+			<list name="uniqueIds" title="UniqueIds" page="/five/list.xhtml" visible="true" drilldown="echr:patient:uniqueId">
+				<column name="UniqueId" internal="string01" width="12.0" reference="true">
+					<from>#{uniqueId.uniqueId}</from>
+				</column>
+				<column name="StudyName" internal="string02" width="12.0" visible="false">
+					<from>#{uniqueId.studyName}</from>
+				</column>
+				<column name="PatientName" internal="string03" width="12.0" visible="false">
+					<from>#{uniqueId.patientName}</from>
+				</column>
+			</list>			
+		</menu>
+	</extends>
+</application>

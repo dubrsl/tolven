@@ -42,6 +42,7 @@ import org.apache.log4j.Logger;
 import org.tolven.app.entity.AccountMenuStructure;
 import org.tolven.app.entity.MenuStructure;
 import org.tolven.core.AccountDAOLocal;
+import org.tolven.core.AccountDAORemote;
 import org.tolven.core.SponsoredUser;
 import org.tolven.core.TolvenPropertiesLocal;
 import org.tolven.core.entity.Account;
@@ -57,10 +58,12 @@ import org.tolven.core.entity.Sponsorship;
 import org.tolven.core.entity.Status;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.doc.entity.Invitation;
+import org.tolven.key.UserKeyLocal;
 import org.tolven.locale.ResourceBundleHelper;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.security.key.AccountPrivateKey;
 import org.tolven.security.key.AccountSecretKey;
+import org.tolven.session.TolvenSessionWrapperFactory;
 
 /**
  * This is the bean class for the AccountDAOBean enterprise bean.
@@ -69,7 +72,7 @@ import org.tolven.security.key.AccountSecretKey;
  */
 @Stateless
 @Local(AccountDAOLocal.class)
-public class AccountDAOBean implements AccountDAOLocal {
+public class AccountDAOBean implements AccountDAOLocal,AccountDAORemote {
     
     public static final String USER_KEYS_OPTIONAL = "tolven.security.user.keysOptional";
     
@@ -81,6 +84,9 @@ public class AccountDAOBean implements AccountDAOLocal {
     
     @EJB
     private TolvenPropertiesLocal propertyBean;
+    
+    @EJB
+    private UserKeyLocal userKeyBean;
     
     private Logger logger = Logger.getLogger(AccountDAOBean.class);
 
@@ -285,6 +291,17 @@ public class AccountDAOBean implements AccountDAOLocal {
     public Account findAccount(long accountId) {
         return em.find(Account.class, accountId);
     }
+    /** CCHIT merge
+     * Return a list of all accounts of a particular accountType
+     * @param accountType
+     * @return
+     */
+    public List<Account> findAccounts(AccountType accountType) {
+        Query q = em.createQuery("SELECT a FROM Account a WHERE a.accountType = :accountType");
+        q.setParameter("accountType", accountType);
+        List<Account> accounts = q.getResultList();
+    	return accounts;
+    }
     
     /**
      * Return a template Account, which is defined as an Account with no AccountTemplate associated (and technically, no users)
@@ -328,8 +345,8 @@ public class AccountDAOBean implements AccountDAOLocal {
     * @param accountPermission boolean indicating if this user has account administration permission
     */
     @Override
-    public AccountUser inviteAccountUser(Account account, AccountUser inviterAccountUser, TolvenUser invitedUser, PrivateKey anInviterUserPrivateKey, Date now, boolean accountPermission, PublicKey invitedUserPublicKey) {
-        return inviteAccountUser(account, inviterAccountUser, invitedUser, anInviterUserPrivateKey, now, accountPermission, invitedUserPublicKey, false);
+    public AccountUser inviteAccountUser(Account account, AccountUser inviterAccountUser, TolvenUser invitedUser, String invitedUserRealm, PrivateKey anInviterUserPrivateKey, Date now, boolean accountPermission) {
+        return inviteAccountUser(account, inviterAccountUser, invitedUser, invitedUserRealm, anInviterUserPrivateKey, now, accountPermission, false);
     }
 
     /**
@@ -345,7 +362,7 @@ public class AccountDAOBean implements AccountDAOLocal {
     * @param accountPermission boolean indicating if this user has account administration permission
     */
     @Override
-    public AccountUser inviteAccountUser(Account account, AccountUser inviterAccountUser, TolvenUser invitedUser, PrivateKey anInviterUserPrivateKey, Date now, boolean accountPermission, PublicKey invitedUserPublicKey, boolean isReinvite) {
+    public AccountUser inviteAccountUser(Account account, AccountUser inviterAccountUser, TolvenUser invitedUser, String invitedUserRealm, PrivateKey anInviterUserPrivateKey, Date now, boolean accountPermission, boolean isReinvite) {
         if (invitedUser==null) throw new NullPointerException("Missing TolvenUser object");
         if (inviterAccountUser==null) throw new NullPointerException("Missing AccountUser object");
         if (account==null) throw new NullPointerException("Missing Account object");
@@ -355,9 +372,8 @@ public class AccountDAOBean implements AccountDAOLocal {
                 if(invitedAccountUser == null) {
                     throw new RuntimeException("Invited user " + invitedUser.getLdapUID() + " is not currently a user of account: " + account.getId());
                 }
-                if (invitedUserPublicKey == null) {
-                    throw new RuntimeException("Invited user " + invitedUser.getLdapUID() + " must have a PublicKey to protect the AccountPrivateKey in account: " + account.getId());
-                }
+                String principal = (String) TolvenSessionWrapperFactory.getInstance().getPrincipal();
+                logger.info("User: " + principal + " is reinviting user: " + invitedUser.getLdapUID() + " to Account: " + account.getId());
             } else {
                 if(invitedAccountUser != null) {
                     throw new RuntimeException("Invited user " + invitedUser.getLdapUID() + " is already a user of account: " + account.getId());
@@ -367,6 +383,7 @@ public class AccountDAOBean implements AccountDAOLocal {
             if (inviterAccountPrivateKey == null) {
                 throw new RuntimeException("No AccountPrivateKey found for " + ejbContext.getCallerPrincipal() + " for account: " + account.getId());
             }
+            PublicKey invitedUserPublicKey = userKeyBean.getUserPublicKey(invitedUser.getLdapUID(), invitedUserRealm);
             AccountPrivateKey invitedAccountPrivateKey = AccountPrivateKey.getInstance();
             String kbeKeyAlgorithm = propertyBean.getProperty(AccountSecretKey.ACCOUNT_USER_KBE_KEY_ALGORITHM_PROP);
             int kbeKeyLength = Integer.parseInt(propertyBean.getProperty(AccountSecretKey.ACCOUNT_USER_KBE_KEY_LENGTH));
@@ -543,7 +560,7 @@ public class AccountDAOBean implements AccountDAOLocal {
      * @return The AccountUser
      */
     public AccountUser getSystemAccountUser(Account account, boolean createIf, Date now ) {
-        String principal = ejbContext.getCallerPrincipal().getName();
+        String principal = (String)TolvenSessionWrapperFactory.getInstance().getPrincipal();
         String status = "system";
         propertyBean.setAllProperties();
         TolvenUser tolvenUser = findSystemUser( principal, status);
@@ -630,6 +647,13 @@ public class AccountDAOBean implements AccountDAOLocal {
         // TODO: At this point the AccountUser cannot have a PrivateKey
         setupAccountKeys(account, au, invitation, user, invitedUserPublicKey);
         em.persist(au);
+        String principal = (String) TolvenSessionWrapperFactory.getInstance().getPrincipal();
+        logger.info("User: " + principal + " has invited user: " + au.getUser().getLdapUID() + " to Account: " + au.getAccount().getId() + " (AccountUser Id: " + au.getId() + ")");
+        if(invitedUserPublicKey == null) {
+            logger.info("User: " + au.getUser().getLdapUID() + " has NO UserPublicKey to protect the AccountPrivateKey");
+        } else {
+            logger.info("AccountPrivateKey is protected by the UserPublicKey of user: " + au.getUser().getLdapUID());
+        }
         return au;
     }
 
@@ -746,6 +770,7 @@ public class AccountDAOBean implements AccountDAOLocal {
     * @return AccountType
     */
     public AccountType findAccountTypebyKnownType(String knownType) {
+        try {
             List<AccountType> accountTypes;
             Query q = em.createQuery("SELECT acty " +
                     "FROM AccountType acty " +
@@ -757,6 +782,10 @@ public class AccountDAOBean implements AccountDAOLocal {
                 return accountTypes.get(0);
             else
                 return null;
+        } catch (RuntimeException e) {
+            TolvenLogger.info(" Caught error in [findAccountTypebyKnownType]", AccountDAOBean.class);
+            throw e;
+        }
     }
 
     /**
@@ -1013,7 +1042,17 @@ public class AccountDAOBean implements AccountDAOLocal {
         String oldValue = account.getProperty().put(name, value);
         return oldValue;
     }
-
+    //CCHIT merge
+    public List<AccountUser> getCurrentAccountUserList(TolvenUser tolvenUser) {
+		String activeStatus = Status.ACTIVE.value();
+		String oldActiveStatus = Status.OLD_ACTIVE.value(); 
+	   Query query = em.createQuery("SELECT au FROM AccountUser au WHERE au.user = :user " +
+			   "and ( au.status = '" + activeStatus + "' or au.status = '" + oldActiveStatus + "') " +
+	   		   "ORDER BY au.account.title, au.id");
+	   query.setParameter("user", tolvenUser);
+	   List<AccountUser> items = query.getResultList();
+	   return items;
+    }
     /**
     * Create or update an account property
     * @param accountId The account to update

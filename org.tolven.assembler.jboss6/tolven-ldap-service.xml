@@ -1,0 +1,22 @@
+<server>
+	<!-- ==================================================================== -->
+	<!-- LDAP Service                                                         -->
+	<!-- ==================================================================== -->
+
+	<mbean code="org.jboss.naming.ExternalContext"
+		name="jboss.jndi:service=TolvenLDAPContext,jndiName=${tolven.realm.ldap.jndiName}">
+		<attribute name="JndiName">${tolven.realm.ldap.jndiName}</attribute>
+		<attribute name="Properties">
+			java.naming.factory.initial=com.sun.jndi.ldap.LdapCtxFactory
+			java.naming.provider.url=${tolven.realm.ldap.providerUrl}
+			java.naming.ldap.attributes.binary=userPKCS12
+			java.naming.security.authentication=simple
+		</attribute>
+		<attribute name="InitialContext">
+			javax.naming.ldap.InitialLdapContext
+		</attribute>
+		<attribute name="CacheContext">false</attribute>
+	</mbean>
+
+</server>
+

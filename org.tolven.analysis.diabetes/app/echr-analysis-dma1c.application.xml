@@ -13,8 +13,6 @@
 		<placeholder name="a1csnapshot" title="A1c" page="/five/snapshot.xhtml" heading="/five/snapshotLink.xhtml">
 			<field name="name" internal="string01" />
 			<field name="effectiveTime" internal="date01">
-				<from>#{act.effectiveTime.TS.date}</from>
-				<from>#{act.effectiveTime.IVLTS.low.date}</from>
 			</field>
 			<field name="cohort" internal="parent01">
 				<from>#{cohort}</from>
@@ -153,7 +151,7 @@
 	</extends>
 	<extends path="echr:analysis">
 		<menu name="dma1csnapshot" title="Diabetes" sequence="100" page="/five/bar2.xhtml" visible="true">
-			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
 				</column>
@@ -181,9 +179,12 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="false">
+					<from>#{a1csnapshotresult.a1csnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="norma1c" title="&lt; A1c Level" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+			<list name="norma1c" title="&lt; A1c Level" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
 				</column>
@@ -211,9 +212,12 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="false">
+					<from>#{a1csnapshotresult.a1csnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="abnorma1c" title="> A1c Level" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+			<list name="abnorma1c" title="> A1c Level" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
 				</column>
@@ -241,6 +245,9 @@
 				</column>
 				<column name="Units" width="6.0" visible="true">
 					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="false">
+					<from>#{a1csnapshotresult.a1csnapshot.effectiveTime}</from>
 				</column>
 			</list>
 		</menu>

@@ -32,6 +32,16 @@
 		<h:inputText  id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
 		<h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
 		<h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />										
+		<c:if test="#{empty trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}">
+		  <h:inputHidden id="disableSubmitButton" value="true" />										
+		
+			<script language="JavaScript" type="text/javascript">
+				// <![CDATA[					
+					$('#{menu.elementLabel}submitButton').disabled='true';	
+					$('#{menu.elementLabel}nextButton').disabled='true';						
+				// ]]>
+			</script>
+		</c:if>
 
  		<c:forEach var="rel" items="#{trim.trim.act.relationships}" varStatus="diagnosis">
 			<c:if test="#{rel.name=='entry'}">

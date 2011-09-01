@@ -19,7 +19,9 @@ package org.tolven.app.entity;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -121,35 +123,55 @@ public class ExtendedMenuData {
 				name=reader.getAttributeValue(a);
 			}
 		}
-		text = reader.getElementText();
-//		TolvenLogger.info( "Read extendedField: " + name + " (" + type + ")=" + text, MenuData.class);
+		
 		Object value = null;
-		if (type==null || "null".equals(type)) {
-			extendedFields.put(name, null);
-		}
-		else if ("String".equals(type)) {
-			value = text;
-			extendedFields.put(name, text);
-		}
-		else if ("Date".equals(type)) {
-			value = new Date(Long.parseLong(text));
-		}
-		else if ("Long".equals(type)) {
-			value = Long.parseLong(text);
-		}
-		else if ("Boolean".equals(type)) {
-			value = Boolean.parseBoolean(text);
-		}
-		else if ("Double".equals(type)) {
-			value = Double.parseDouble(text);
-		}
-		else if ("MenuData".equals(type)) {
-			value = getMenuBean().findMenuDataItem(Long.parseLong(text));
-		}
-		else if ("DataType".equals(type)) {
-			value = trimFactory.stringToDataType(text);
+		if("ListCE".equals(type)) {
+			List<CE> vals = new ArrayList<CE>();
+			while ( reader.hasNext() ) {				
+				reader.next();
+				if (reader.getEventType()==XMLStreamReader.END_ELEMENT) {
+					break;
+				}
+				if (reader.getEventType()==XMLStreamReader.START_ELEMENT) {
+					String textval = reader.getElementText();
+					vals.add((CE)trimFactory.stringToDataType(textval));
+					//reader.next();
+				}				
+			}
+			
+			value = vals;
 		} else {
-			throw new RuntimeException( "Unknown Extended field type: " + type + " in field " + name);
+			text = reader.getElementText();
+	//		TolvenLogger.info( "Read extendedField: " + name + " (" + type + ")=" + text, MenuData.class);
+			
+			if (type==null || "null".equals(type)) {
+				extendedFields.put(name, null);
+			}
+			else if ("String".equals(type)) {
+				value = text;
+				extendedFields.put(name, text);
+			}
+			else if ("Date".equals(type)) {
+				value = new Date(Long.parseLong(text));
+			}
+			else if ("Long".equals(type)) {
+				value = Long.parseLong(text);
+			}
+			else if ("Boolean".equals(type)) {
+				value = Boolean.parseBoolean(text);
+			}
+			else if ("Double".equals(type)) {
+				value = Double.parseDouble(text);
+			}
+			else if ("MenuData".equals(type)) {
+				value = getMenuBean().findMenuDataItem(Long.parseLong(text));
+			}
+			else if ("DataType".equals(type)) {
+				value = trimFactory.stringToDataType(text);
+			} 
+			else {		
+				throw new RuntimeException( "Unknown Extended field type: " + type + " in field " + name);
+			}
 		}
 		if (value==null) {
 			value = genderHack( md, name );
@@ -218,6 +240,13 @@ public class ExtendedMenuData {
             writer.writeAttribute("type", "DataType");
             writer.writeCData(trimFactory.dataTypeToString((DataType) value));
             return;
+        } else if (value instanceof List<?>) {
+        	writer.writeAttribute("type", "ListCE");
+        	for(CE val : ((List<CE>) value)) {
+        		writer.writeStartElement("item");
+        		writer.writeCData(trimFactory.dataTypeToString(val));
+        		writer.writeEndElement();
+        	}
         } else {
             throw new RuntimeException(value.getClass() + " is not a recognized extended field type");
         }

@@ -2,8 +2,8 @@
 <trim xmlns="urn:tolven-org:trim:4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
 	<name>accountMedicationList</name>
 	<description>Account Medication List</description>
-	<page>createFavoritesList.xhtml</page>
-	<drilldown>favortiesListDD.xhtml</drilldown>
+	<page>createMedicationsFavoritesList.xhtml</page>
+	<drilldown>medicationFavortiesListDD.xhtml</drilldown>
 	<menu>global:accountListsMenu</menu>
 	<application name="ephr">
 		<instance>ephr:accountList</instance>

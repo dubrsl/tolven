@@ -319,7 +319,7 @@ public class ActivationBean implements ActivationLocal, ActivationRemote {
          List<TolvenUser> items = query.getResultList();
          return items;
       }
- 
+     
     /**
      * Count the number of users knows to the DB (not LDAP). No actual purpose for this function.
      */
@@ -328,6 +328,6 @@ public class ActivationBean implements ActivationLocal, ActivationRemote {
         Query query = em.createQuery("SELECT COUNT(u) FROM TolvenUser u");
         Long rslt = (Long) query.getSingleResult();
         return rslt.longValue();
-    }
-    
+    }    
+   
  }

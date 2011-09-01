@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.ejb" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+
+	<extension-point id="abstractEJB" extension-multiplicity="none" />
+
+	<extension-point id="ejbModule-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" />
+	</extension-point>
+
+	<extension-point id="META-INF-adaptor">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+
+	<extension-point id="classes-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one"/>
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+
+</plugin>

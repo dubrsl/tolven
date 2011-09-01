@@ -7,13 +7,14 @@
 <head>
 <title>Analysis Admin</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
 </head>
 
 <body>
 <ui:composition template="/templates/simplePage.xhtml">
 	<ui:param name="pageTitle" value="Admin Analysis" />
 	<ui:define name="body" rendered="#{top.accountAdmin}">
-		<h:form id="analysis">
+		<h:form id="analysis" >
 			<div class="breadcrumbs">
 				<h:commandLink value="Application" action="dispatch" immediate="true" />
 				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false" />
@@ -21,10 +22,14 @@
 				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false" />
 				<h:outputText value="Analysis Admin" /><br />
 			</div>
+			
 			<fieldset><legend>Diabetes</legend>
+			
 				<h:panelGrid>
 					<h:commandLink value="Cohort Properties" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.dm" />
+						<f:param name="cohortName" value="Diabetes" />
+						<f:param name="cohortType" value="org.tolven.cohort.dm" />
 					</h:commandLink>
 					<h:commandLink value="A1c Level" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.dm.a1csnapshot" />
@@ -37,6 +42,7 @@
 				<h:panelGrid>
 					<h:commandLink value="Cohort Properties" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.htn" />
+						<f:param name="cohortType" value="org.tolven.cohort.htn" />
 					</h:commandLink>
 					<h:commandLink value="Blood Pressure" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.htn.bpsnapshot" />
@@ -49,6 +55,7 @@
 				<h:panelGrid>
 					<h:commandLink value="Cohort Properties" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.chlstrl" />
+						<f:param name="cohortType" value="org.tolven.cohort.chlstrl" />
 					</h:commandLink>
 					<h:commandLink value="LDL" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.chlstrl.ldlsnapshot" />
@@ -61,6 +68,7 @@
 				<h:panelGrid>
 					<h:commandLink value="Cohort Properties" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.smk" />
+						<f:param name="cohortType" value="org.tolven.cohort.smk" />
 					</h:commandLink>
 					<h:commandLink value="Cessation Programs" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.smk.smkprogsnapshot" />
@@ -73,6 +81,7 @@
 				<h:panelGrid>
 					<h:commandLink value="Cohort Properties" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.obst" />
+						<f:param name="cohortType" value="org.tolven.cohort.obst" />
 					</h:commandLink>
 					<h:commandLink value="BMI Recording" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.obst.bmisnapshot" />
@@ -85,6 +94,7 @@
 				<h:panelGrid>
 					<h:commandLink value="Cohort Properties" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.clrctl" />
+						<f:param name="cohortType" value="org.tolven.cohort.clrctl" />
 					</h:commandLink>
 					<h:commandLink value="Screening" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.clrctl.clrctlscrnsnapshot" />
@@ -97,6 +107,7 @@
 				<h:panelGrid>
 					<h:commandLink value="Cohort Properties" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.mmmgrph" />
+						<f:param name="cohortType" value="org.tolven.cohort.mmmgrph" />
 					</h:commandLink>
 					<h:commandLink value="Screening" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.mmmgrph.mmmgrphscrnsnapshot" />
@@ -109,6 +120,7 @@
 				<h:panelGrid>
 					<h:commandLink value="Cohort Properties" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.inflnz" />
+						<f:param name="cohortType" value="org.tolven.cohort.inflnz" />
 					</h:commandLink>
 					<h:commandLink value="Vaccine" action="#{top.navAction}">
 						<f:param name="navAction" value="org.tolven.cohort.inflnz.inflnzvccnsnapshot" />

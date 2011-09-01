@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import javax.annotation.ManagedBean;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -62,7 +63,8 @@ public class PlaceholderResources {
     @EJB
     private ApplicationMetadataLocal appMetadata;
 
-    @EJB
+  
+	@EJB
     private MenuLocal menuBean;
     
     @Context
@@ -111,8 +113,8 @@ public class PlaceholderResources {
         Account account = null;
         try {
             long id = Long.parseLong(accountId);
-            if(accountBean.isTemplateAccount(id)) {
-                account = accountBean.findTemplateAccount(Long.parseLong(accountId));
+            if(getAccountBean().isTemplateAccount(id)) {
+                account = getAccountBean().findTemplateAccount(Long.parseLong(accountId));
             } else {
                 AccountUser accountUser = (AccountUser) request.getAttribute("accountUser");
                 if(accountUser == null) {
@@ -127,7 +129,7 @@ public class PlaceholderResources {
             return Response.status(Status.NOT_FOUND).type(MediaType.TEXT_PLAIN).entity("Template account not found: " + accountId).build();
         }
         try {
-            AccountMenuStructure ms = appMetadata.createPlaceholder(name, parent, account);
+            AccountMenuStructure ms = getAppMetadata().createPlaceholder(name, parent, account);
             updatePlaceholder(ms, page, sequence, title, visible, eventInstance, heading, initialSort);
             URI uri = new URI(URLEncoder.encode(ms.getPath(), "UTF-8"));
             return Response.created(uri).entity(ms.getPath()).build();
@@ -172,8 +174,8 @@ public class PlaceholderResources {
         try {
             long accountIdLong = Long.parseLong(accountId);
             Account account = null;
-            if (accountBean.isTemplateAccount(accountIdLong)) {
-                account = accountBean.findTemplateAccount(Long.parseLong(accountId));
+            if (getAccountBean().isTemplateAccount(accountIdLong)) {
+                account = getAccountBean().findTemplateAccount(Long.parseLong(accountId));
             } else {
                 AccountUser accountUser = (AccountUser) request.getAttribute("accountUser");
                 if (accountUser == null) {
@@ -184,7 +186,7 @@ public class PlaceholderResources {
             if (account == null) {
                 return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("Could not find account: " + accountId).build();
             }
-            AccountMenuStructure ms = menuBean.findAccountMenuStructure(accountIdLong, path);
+            AccountMenuStructure ms = getMenuBean().findAccountMenuStructure(accountIdLong, path);
             updatePlaceholder(ms, page, sequence, title, visible, eventInstance, heading, initialSort);
             return Response.noContent().build();
         } catch (Exception ex) {
@@ -255,5 +257,44 @@ public class PlaceholderResources {
             ) {
         return Response.status(501).build();
     }
+
+    protected AccountDAOLocal getAccountBean() {
+        if (accountBean == null) {
+            String jndiName = "java:app/tolvenEJB/AccountDAOBean!org.tolven.core.AccountDAOLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                accountBean = (AccountDAOLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return accountBean;
+    }
+    
+    protected MenuLocal getMenuBean() {
+        if (menuBean == null) {
+            String jndiName = "java:app/tolvenEJB/MenuBean!org.tolven.app.MenuLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                menuBean = (MenuLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return menuBean;
+    }
+    
+    protected ApplicationMetadataLocal getAppMetadata() {
+    	if (appMetadata == null) {
+            String jndiName = "java:app/tolvenEJB/ApplicationMetadata!org.tolven.app.ApplicationMetadataLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                appMetadata = (ApplicationMetadataLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+  		return appMetadata;
+  	}
 
 }

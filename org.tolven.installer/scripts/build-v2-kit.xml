@@ -2,9 +2,9 @@
 <project basedir="." default="install" name="build- v2-kit">
 
 	<property file="build-v2-override.properties" />
+	<property file="build-v2.properties" />
 	<property file="${password.properties.file}" />
 	<property file="${database.properties.file}" />
-	<property file="build-v2.properties" />
 
 	<target name="props">
 		<condition property="root.dir.default" value="c:" else="/usr/local">
@@ -42,7 +42,16 @@
 		</condition>
 	</target>
 
-	<target name="install-requirements" depends="props" description="install-requirements">
+	<target name="requirements-guide" if="INCLUDE.TOLVEN.KIT">
+		<basename property="tolven.kit.zip.full-basename" file="${tolven.kit.zip}" />
+		<guide-echo args="Download Tolven Kit:" />
+		<guide-echo args="${tolven.kit.download.site}/${tolven.kit.zip.full-basename}" />
+		<dirname property="tolven.kit.zip.dirname" file="${tolven.kit.zip}" />
+		<guide-echo args="Place ${tolven.kit.zip.full-basename} in ${tolven.kit.zip.dirname}" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="install-requirements" depends="props" description="install-requirements" if="INCLUDE.TOLVEN.KIT">
 		<fail message="tolven.kit.zip must be set" unless="tolven.kit.zip" />
 		<fail message="common.keystore.src must be set" unless="common.keystore.src" />
 		<fail message="common.truststore.src must be set" unless="common.truststore.src" />
@@ -100,7 +109,7 @@
 		<echo message="${ant.project.name} to uninstall, remove: ${tolven.kit.dir}, ${credentials.dir}" />
 	</target>
 
-	<target name="install" depends="props" description="install">
+	<target name="install" depends="props" description="install" if="INCLUDE.TOLVEN.KIT">
 		<guide-echo args="Install Tolven Kit" />
 		<guide-echo args="" />
 
@@ -116,39 +125,64 @@
 		</move>
 
 		<echo message="Installing ${tolven.kit.filename} with config directory: ${tolven.config.dir}..." />
-		<guide-echo args="Installation must use one of the following: glassfish3-legacypostgresql-plugins.xml OR glassfish3-oracle-plugins.xml" />
-		<echo message="Installation must use one of the following: glassfish3-legacypostgresql-plugins.xml OR glassfish3-oracle-plugins.xml" />
+		<guide-echo args="The selected template is: ${tolven.kit.pluginsxml.template}" />
+		<echo message="The selected template is: ${tolven.kit.pluginsxml.template}" />
 		<guide-echo args="For linux ensure install.sh files in ${tolven.kit.dir}/bin is executable" />
 		<chmod dir="${tolven.kit.dir}/bin" perm="u+x" includes="install.sh" />
 		<guide-echo args="" />
 		<basename property="install.basename" file="${install}" />
 		<guide-echo args="cd ${tolven.kit.dir}/bin" />
-		<guide-echo args="${install.basename} -conf ${tolven.config.dir} -pluginsXMLTemplate glassfish3-legacypostgresql-plugins.xml" />
+		<guide-echo args="${install.basename} -conf ${tolven.config.dir} -pluginsXMLTemplate ${tolven.kit.pluginsxml.template}" />
 		<exec executable="${install}" dir="${tolven.kit.dir}/bin" failonerror="true">
 			<arg line="-conf ${tolven.config.dir} -pluginsXMLTemplate ${tolven.kit.pluginsxml.template}" />
 		</exec>
 		<guide-echo args="" />
+
 		<guide-echo args="Check the default properties in ${tolven.config.dir}/plugins.xml:" />
+
+		<concat destfile="${java.io.tmpdir}/temp-plugins.xml">
+			<path location="${tolven.config.dir}/plugins.xml" />
+			<filterchain>
+				<expandproperties />
+			</filterchain>
+		</concat>
+		<copy file="${java.io.tmpdir}/temp-plugins.xml" tofile="${tolven.config.dir}/plugins.xml" overwrite="true" />
+
+		<guide-echo args="Replace: $${tolven.appserver.code} with ${tolven.appserver.code}" />
+		<guide-echo args="Replace: $${tolven.security.code} with ${tolven.security.code}" />
+		<guide-echo args="Replace: $${tolven.database.code} with ${tolven.database.code}" />
 		<guide-echo args="${tolven.domain.default}:${tolven.https.port.default}" />
-		<replace token="${tolven.domain.default}:${tolven.https.port.default}" value="${tolven.domain}:${tolven.https.port}" file="${tolven.config.dir}/plugins.xml" />
 		<guide-echo args="${sso.domain.default}:${sso.port.default}" />
-		<replace token="${sso.domain.default}:${sso.port.default}" value="${sso.domain}:${sso.port}" file="${tolven.config.dir}/plugins.xml" />
 		<guide-echo args="your-appserver-homeDir" />
 		<guide-echo args="" />
-		<guide-echo args="Replace your-appserver-homeDir with ${glassfish.dir}" />
-		<replace token="your-appserver-homeDir" value="${glassfish.dir}" file="${tolven.config.dir}/plugins.xml" />
+		<guide-echo args="Replace your-appserver-homeDir with ${appserver.home}" />
+		<replace file="${tolven.config.dir}/plugins.xml">
+			<replacefilter token="$${tolven.appserver.code}" value="${tolven.appserver.code}" />
+			<replacefilter token="$${tolven.security.code}" value="${tolven.security.code}" />
+			<replacefilter token="$${tolven.database.code}" value="${tolven.database.code}" />
+			<replacefilter token="${tolven.domain.default}:${tolven.https.port.default}" value="${tolven.domain}:${tolven.https.port}" />
+			<replacefilter token="${sso.domain.default}:${sso.port.default}" value="${sso.domain}:${sso.port}" />
+			<replacefilter token="your-appserver-homeDir" value="${appserver.home}" />
+		</replace>
 		<guide-echo args="" />
+
 		<guide-echo args="Check the default admin password '${admin.password.default}' in ${tpfenv}" />
-		<replace token="${admin.password.default}" value="${admin.password}" file="${tpfenv}" />
+		<replace file="${tpfenv}">
+			<replacefilter token="${admin.password.default}" value="${admin.password}" />
+		</replace>
 		<guide-echo args="" />
+
 		<guide-echo args="Check the default properties in ${tpf}" />
 		<guide-echo args="${tolven.domain.default}" />
-		<replace token="${tolven.domain.default}" value="${tolven.domain}" file="${tpf}" />
 		<guide-echo args="javax.net.ssl.keyStorePassword" />
-		<replace token="javax.net.ssl.keyStorePassword=${tolven.password.default}" value="javax.net.ssl.keyStorePassword=${tolven.kit.keystore.password}" file="${tpf}" />
 		<guide-echo args="javax.net.ssl.trustStorePassword" />
-		<replace token="javax.net.ssl.trustStorePassword=${tolven.password.default}" value="javax.net.ssl.trustStorePassword=${tolven.kit.truststore.password}" file="${tpf}" />
+		<replace file="${tpf}">
+			<replacefilter token="${tolven.domain.default}" value="${tolven.domain}" />
+			<replacefilter token="javax.net.ssl.keyStorePassword=${tolven.password.default}" value="javax.net.ssl.keyStorePassword=${tolven.kit.keystore.password}" />
+			<replacefilter token="javax.net.ssl.trustStorePassword=${tolven.password.default}" value="javax.net.ssl.trustStorePassword=${tolven.kit.truststore.password}" />
+		</replace>
 		<guide-echo args="" />
+
 		<guide-echo args="Copy SSL keystore from ${common.keystore.src} to ${common.keystore}" />
 		<copy file="${common.keystore.src}" tofile="${common.keystore}" overwrite="false" verbose="true" />
 		<guide-echo args="Copy SSL truststore from ${common.truststore.src} to ${common.truststore}" />
@@ -173,18 +207,14 @@
 		<guide-echo args="${checkIntegrity}" />
 		<exec executable="${checkIntegrity}" dir="${tolven.kit.dir}/bin" failonerror="true" />
 		<guide-echo args="" />
-		<guide-echo args="Run Phase 1 Configuration" />
-		<guide-echo args="cd ${tolven.kit.dir}/bin" />
-		<guide-echo args="${configPhase1}" />
-		<exec executable="${configPhase1}" dir="${tolven.kit.dir}/bin" failonerror="true" />
-		<guide-echo args="" />
-		<guide-echo args="Assemble MQKeyStore" />
-		<tpf args="-plugin org.tolven.assembler.connectormodule -rarPlugin org.tolven.mqkeystore" />
-		<guide-echo args="Assemble Tolven EAR File" />
-		<tpf args="-plugin org.tolven.assembler.ear -earPlugin org.tolven.component.tolvenear -earFile tolven.ear" />
 	</target>
 
-	<target name="assemble-tolven" depends="props" description="assemble-tolven">
+	<target name="unzip-opends-plugin" depends="props" if="INCLUDE.TOLVEN.OPENDS">
+		<guide-echo args="Unzip OpenDS Plugin" />
+		<tpf args="-plugin ${tolven.opends.config.plugin} -unzip -dir ${tolven.opends.dir}" />
+	</target>
+
+	<target name="assemble-tolven" depends="props">
 		<guide-echo args="Assemble Tolven" />
 		<guide-echo args="" />
 
@@ -203,24 +233,63 @@
 		<exec executable="${configPhase1}" dir="${tolven.kit.dir}/bin" failonerror="true" />
 		<guide-echo args="" />
 		<antcall target="assemble-tolven-openam" />
-		<guide-echo args="Assemble MQKeyStore" />
-		<tpf args="-plugin org.tolven.assembler.connectormodule -rarPlugin org.tolven.mqkeystore" />
+		<antcall target="assemble-mqkeystore" />
+		<antcall target="assemble-gatekeeper-ear" />
 		<guide-echo args="Assemble Tolven EAR File" />
 		<tpf args="-plugin org.tolven.assembler.ear -earPlugin org.tolven.component.tolvenear -earFile tolven.ear" />
 		<guide-echo args="" />
 	</target>
 
-	<target name="assemble-tolven-openam" unless="exclude.openam">
+	<target name="assemble-gatekeeper-ear" if="INCLUDE.SHIRO">
+		<guide-echo args="Assemble Gatekeeper EAR File" />
+		<tpf args="-plugin org.tolven.assembler.ear -earPlugin org.tolven.gatekeeper -earFile gatekeeper.ear" />
+	</target>
+
+	<target name="assemble-tolven-openam" if="INCLUDE.OPENAM">
 		<guide-echo args="Assemble Tolven OpenAM Library Jar" />
 		<tpf args="-plugin org.tolven.assembler.library -libPlugin org.tolven.openam" />
 	</target>
 
-	<target name="tolven-post-installation" depends="props" description="tolven-post-installation">
+	<target name="assemble-mqkeystore" unless="INCLUDE.SHIRO">
+		<guide-echo args="Assemble MQKeyStore" />
+		<tpf args="-plugin org.tolven.assembler.connectormodule -rarPlugin org.tolven.mqkeystore" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="update-authorization-urls" depends="props" if="INCLUDE.SHIRO">
+		<guide-echo args="Update Authorization URLs" />
+		<tpf args="-plugin ${gatekeeper.authorization.plugin} -dbUrl ${db.url} -driverClass ${db.driver.class} -driverClasspath ${jdbc.driver} -user ${rootdb} -password ${rootdb.password}" />
+	</target>
+
+	<target name="update-db-indexes" depends="props" if="INCLUDE.TOLVENEAR.DEPLOY">
+		<guide-echo args="Update DB Indexes" />
+		<tpf args="-plugin ${db.indexes.plugin} -dbUrl ${db.url} -driverClass ${db.driver.class} -driverClasspath ${jdbc.driver} -user ${rootdb} -password ${rootdb.password}" />
+	</target>
+
+	<target name="update-appserver-properties" depends="props" if="INCLUDE.APPSERVER.UPLOAD">
 		<guide-echo args="Update Server Properties" />
 		<tpf args="-plugin org.tolven.appserverproperties -load" />
 		<guide-echo args="In a Tolven development environment, execute the following to disable the enforced use of user security certificates and keystores" />
 		<guide-echo args="In a Tolven production environment, we recommend that the certificates and keystores should not be optional, and thus all AccountPrivateKeys will be encrypted, as well as the documents they were involved in encrypting. Execute the following to return to using the security certificates and keystores" />
 		<tpf args="-plugin org.tolven.appserverproperties -set tolven.security.user.keysOptional ${tolven.security.user.keysOptional}" />
+	</target>
+
+	<target name="create-system-queue-users" depends="props" if="INCLUDE.TOLVEN.OPENDS">
+		<guide-echo args="Create adminAppQueue User" />
+		<tpf args="-plugin org.tolven.user -create -uid ${adminApp.queue.user} -commonName ${adminApp.queue.user} -surname ${adminApp.queue.user} -realm ${adminApp.queue.realm} -userPassword ${adminApp.queue.password} -emails dev.adminApp@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA -country US" />
+		<guide-echo args="" />
+		<guide-echo args="Create generatorQueue User" />
+		<tpf args="-plugin org.tolven.user -create -uid ${generator.queue.user} -commonName ${generator.queue.user} -surname ${generator.queue.user} -realm ${generator.queue.realm} -userPassword ${generator.queue.password} -emails dev.generator@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA -country US" />
+		<guide-echo args="" />
+		<guide-echo args="Create invitationQueue User" />
+		<tpf args="-plugin org.tolven.user -create -uid ${invitation.queue.user} -commonName ${invitation.queue.user} -surname ${invitation.queue.user} -realm ${invitation.queue.realm} -userPassword ${invitation.queue.password} -emails dev.invitation@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA -country US" />
+		<guide-echo args="" />
+		<guide-echo args="Create ruleQueue User" />
+		<tpf args="-plugin org.tolven.user -create -uid ${rule.queue.user} -commonName ${rule.queue.user} -surname ${rule.queue.user} -userPKCS12 ${rule.queue.keystore} -realm ${rule.queue.realm} -userPassword ${rule.queue.password} -emails dev.rule@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA -country US" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="configPhase3" depends="props">
 		<exec executable="${configPhase3}" dir="${tolven.kit.dir}/bin" failonerror="true" />
 	</target>
 

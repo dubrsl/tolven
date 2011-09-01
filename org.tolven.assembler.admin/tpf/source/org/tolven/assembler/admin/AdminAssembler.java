@@ -26,9 +26,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.java.plugin.registry.Extension;
-import org.java.plugin.registry.ExtensionPoint;
-import org.java.plugin.registry.PluginDescriptor;
 import org.tolven.plugin.TolvenCommandPlugin;
 import org.tolven.plugin.boot.TPFBoot;
 
@@ -48,9 +45,6 @@ public class AdminAssembler extends TolvenCommandPlugin {
     public static final String ENV_TOLVEN_REALM = "TOLVEN_REALM";
     public static final String CMD_LINE_CONF_OPTION = "conf";
 
-    public static final String EXTENSION_POINT_AUTHRESTFUL = "authRestful";
-    public static final String EXTENSION_POINT_APPRESTFUL = "appRestful";
-
     private Logger logger = Logger.getLogger(AdminAssembler.class);
 
     @Override
@@ -68,8 +62,6 @@ public class AdminAssembler extends TolvenCommandPlugin {
         char[] adminPassword = getCommandLinePassword(commandLine);
         getTolvenConfigWrapper().getAdmin().setPassword(new String(adminPassword));
         getTolvenConfigWrapper().getAdmin().setRealm(getCommandLineRealm(commandLine));
-        setupAuthRestfulRootURL();
-        setupAppRestfulRootURL();
     }
 
     private CommandLine getCommandLine() {
@@ -145,30 +137,6 @@ public class AdminAssembler extends TolvenCommandPlugin {
                 throw new RuntimeException("Could not delete build directory: " + tmpDir, ex);
             }
         }
-    }
-
-    private void setupAuthRestfulRootURL() {
-        ExtensionPoint extensionPoint = getDescriptor().getExtensionPoint(EXTENSION_POINT_AUTHRESTFUL);
-        Extension extension = getSingleConnectedExtension(extensionPoint);
-        PluginDescriptor pluginDescriptor = extension.getDeclaringPluginDescriptor();
-        String authRestfulURL = extension.getParameter("authRestful.url").valueAsString();
-        String e_authRestfulURL = evaluate(authRestfulURL, pluginDescriptor);
-        if (e_authRestfulURL == null) {
-            throw new RuntimeException(extension.getUniqueId() + "@authRestful.url evaluated to null using: " + authRestfulURL);
-        }
-        getTolvenConfigWrapper().getApplication().setAuthRestfulURL(e_authRestfulURL);
-    }
-
-    private void setupAppRestfulRootURL() {
-        ExtensionPoint extensionPoint = getDescriptor().getExtensionPoint(EXTENSION_POINT_APPRESTFUL);
-        Extension extension = getSingleConnectedExtension(extensionPoint);
-        PluginDescriptor pluginDescriptor = extension.getDeclaringPluginDescriptor();
-        String appRestfulURL = extension.getParameter("appRestful.url").valueAsString();
-        String e_appRestfulURL = evaluate(appRestfulURL, pluginDescriptor);
-        if (e_appRestfulURL == null) {
-            throw new RuntimeException(extension.getUniqueId() + "@appRestful.url evaluated to null using: " + appRestfulURL);
-        }
-        getTolvenConfigWrapper().getApplication().setAppRestfulURL(e_appRestfulURL);
     }
 
     private Options getCommandOptions() {

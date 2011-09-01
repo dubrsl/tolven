@@ -107,7 +107,7 @@
 			<p>What is your current occupation?</p>
 			<table cellpadding="0" cellspacing="0" border="0">
 				<tr><td>Occupation: </td><td>
-					<input type="text" id="#{menu.element}-occupation" name="occupation" choices="occupations" value="" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
+					<input type="text" id="#{menu.element}-occupation" name="occupation" choices="occupations" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
 				</td></tr>
 				<tr><td>&nbsp; </td><td id="#{menu.element}-occChoices">
 					<select id="#{menu.element}-occupationList" name="occupationList" size="10" onclick="selectionMade('#{menu.element}-occupation', this);" onkeypress="if (event.keyCode==13) selectionMade('#{menu.element}-occupation', this);" style="display:none"/>
@@ -498,7 +498,7 @@
 			<div id="#{menu.element}-motherLivingDetail" style="display:none;margin-left:20px">
 				<table cellpadding="0" cellspacing="0" border="0">
 					<tr><td>Cancer: </td><td>
-						<input type="text" id="#{menu.element}-motherCancer1" name="motherCancer1" choices="cancers" value="" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
+						<input type="text" id="#{menu.element}-motherCancer1" name="motherCancer1" choices="cancers" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
 					</td></tr>
 					<tr><td>&nbsp; </td><td id="#{menu.element}-mcChoices1">
 						<select id="#{menu.element}-motherCancer1List" name="motherCancer1List" size="10" onclick="selectionMade('#{menu.element}-motherCancer1', this);" onkeypress="if (event.keyCode==13) selectionMade('#{menu.element}-motherCancer1', this);" style="display:none"/>
@@ -507,7 +507,7 @@
 				</table>
 				<table cellpadding="0" cellspacing="0" border="0">
 					<tr><td>Cancer: </td><td>
-						<input type="text" id="#{menu.element}-motherCancer2" name="motherCancer2" choices="cancers" value="" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
+						<input type="text" id="#{menu.element}-motherCancer2" name="motherCancer2" choices="cancers" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
 					</td></tr>
 					<tr><td>&nbsp; </td><td id="#{menu.element}-mcChoices2">
 						<select id="#{menu.element}-motherCancer2List" name="motherCancer2List" size="10" onclick="selectionMade('#{menu.element}-motherCancer2', this);" onkeypress="if (event.keyCode==13) selectionMade('#{menu.element}-motherCancer2', this);" style="display:none"/>
@@ -521,7 +521,7 @@
 					<tr>
 						<td>Cancer: </td>
 						<td>
-							<input type="text" id="#{menu.element}-motherCancer3" name="motherCancer3" choices="cancers" value="" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
+							<input type="text" id="#{menu.element}-motherCancer3" name="motherCancer3" choices="cancers" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
 						</td>
 					</tr>
 					<tr>
@@ -537,7 +537,7 @@
 				</table>
 				<table cellpadding="0" cellspacing="0" border="0">
 					<tr><td>Cancer: </td><td>
-						<input type="text" id="#{menu.element}-motherCancer4" name="motherCancer4" choices="cancers" value="" size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
+						<input type="text" id="#{menu.element}-motherCancer4" name="motherCancer4" choices="cancers"  size="40" autocomplete="off" onfocus="fieldChanged(this, this.value);" onblur="validate(this, this.value);" onkeyup="if (event.keyCode==40) $(this.id + 'List').focus();"/>
 					</td></tr>
 					<tr>
 						<td>&nbsp; </td>
@@ -566,7 +566,7 @@
 <div class="step" wizTitle="My current Physical and Mential Health" style="display:none">
         	My current Physical and Mential Health
 </div>
-<wiz:help title="#{trim.trim.description}">
+<div class="step" wizTitle="#{trim.trim.description}" style="display:none">
 	<div class="pagesm">
 		<p><strong>Note: Preliminary, incomplete, non-functioning.</strong></p>
 		<p>Answers to the following questions will help the Breast Cancer Center 
@@ -585,7 +585,7 @@
 		<p>If you would like to see more information about any section, click the <img src="#{facesContext.externalContext.request.contextPath}/images/img_help_t.jpg" border="0" /> button.</p>
 		<p>Click the next button when you're ready to begin.</p>
 	</div>
-	</wiz:help>		
+</div>	
 <script language="JavaScript" type="text/javascript">
 // <![CDATA[
 

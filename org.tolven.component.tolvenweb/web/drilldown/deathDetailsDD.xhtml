@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:wiz="http://www.tolven.org/jsf/wizard"
+	xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+<title>Record Patient Death</title>
+</head>
+<body>
+	<ui:composition>
+		<wiz:body>
+			<table width="30%">
+				<tr>
+					<td width="10%"><h:outputLabel value="#{trim.trim.act.availabilityTime.label.value}"/></td>
+					<td width="10%"><trim:TS value="#{trim.trim.act.availabilityTime.TS}" dateStyle="short" readonly="true"/></td>
+				</tr>
+			</table>
+		</wiz:body>
+  		<c:if test="#{top.accountType=='echr'}">
+  			<wiz:group title="#{act.title.ST.value}">
+				<div>
+					<table width="30%">
+						<tr>
+							<td width="10%">
+								<h:outputLabel value="#{trim.trim.act.effectiveTime.label.value}"/>
+							</td>
+							<td width="10%">
+								<trim:TS id="dateOfDeath"
+								value="#{trim.trim.act.effectiveTime.TS}"
+								dateStyle="short" readonly="true"></trim:TS>
+							</td>
+						</tr>
+	  					<tr>
+							<td width="10%">
+								<h:outputLabel value="#{trim.trim.act.relationship['problem'].act.title.ST}"/>
+							</td>
+							<td width="10%">								
+								<h:outputText style="width:90%;" value="#{trim.trim.act.relationship['problem'].act.observation.value.ST}" />
+							</td>
+	  					</tr>
+					</table>
+				</div>
+			</wiz:group>
+		</c:if>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.war" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+
+	<extension-point id="abstractWAR" extension-multiplicity="none" />
+
+	<extension-point id="warModule-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" />
+	</extension-point>
+
+	<extension-point id="context-param-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one" />
+		<parameter-def id="param-name" />
+		<parameter-def id="param-value" />
+	</extension-point>
+	<extension-point id="WEB-ROOT-FILES-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one" />
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+	<extension-point id="WEB-INF-CLASSES-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one" />
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+	<extension-point id="WEB-INF-LIB-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one" />
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+	<extension-point id="webDirectory-adaptor" extension-multiplicity="none">
+		<parameter-def id="parent-context-id" multiplicity="none-or-one" />
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+		<parameter-def id="targetWebDirectory" />
+	</extension-point>
+
+	<!-- The following extension points are (or are to be) deprecated -->
+	<extension-point id="compositeExtensionPoint">
+		<parameter-def id="name" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="context-param">
+		<parameter-def id="param-name" />
+		<parameter-def id="param-value" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="listener">
+		<parameter-def id="listener-class" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="transaction-filter">
+		<parameter-def id="filter-name" />
+		<parameter-def id="filter-class" />
+		<parameter-def id="filter-sequence" type="number" />
+		<parameter-def id="web-resource-name" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="security-filter">
+		<parameter-def id="filter-name" />
+		<parameter-def id="filter-class" />
+		<parameter-def id="filter-sequence" type="number" />
+		<parameter-def id="url-pattern-excludes" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="filter">
+		<parameter-def id="filter-name" />
+		<parameter-def id="filter-class" />
+		<parameter-def id="init-param" multiplicity="any">
+			<parameter-def id="param-name" />
+			<parameter-def id="param-value" />
+		</parameter-def>
+		<parameter-def id="filter-sequence" type="number" />
+		<parameter-def id="web-resource-name" multiplicity="none-or-one" />
+		<parameter-def id="transaction" type="boolean" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="filter-mapping-contribution">
+		<parameter-def id="filter-name" />
+		<parameter-def id="url-pattern" multiplicity="any" />
+		<parameter-def id="dispatchers" multiplicity="none-or-one" />
+		<parameter-def id="optional" type="boolean" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="servlet">
+		<parameter-def id="servlet-name" />
+		<parameter-def id="servlet-class" />
+		<parameter-def id="init-param" multiplicity="any">
+			<parameter-def id="param-name" />
+			<parameter-def id="param-value" />
+		</parameter-def>
+		<parameter-def id="web-resource-name" multiplicity="none-or-one" />
+		<parameter-def id="transaction" type="boolean" multiplicity="none-or-one" />
+		<parameter-def id="load-on-startup" type="number" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="servlet-mapping-contribution">
+		<parameter-def id="servlet-name" />
+		<parameter-def id="url-pattern" multiplicity="any" />
+		<parameter-def id="optional" type="boolean" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="ejb-local-ref">
+		<parameter-def id="ejb-ref-name" />
+		<parameter-def id="ejb-ref-type" multiplicity="none-or-one" />
+		<parameter-def id="local-home" multiplicity="none-or-one" />
+		<parameter-def id="local" multiplicity="none-or-one" />
+		<parameter-def id="ejb-link" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="session-config">
+		<parameter-def id="session-timeout" type="number" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="welcome-file-list">
+		<parameter-def id="welcome-file" multiplicity="any" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="login-config">
+		<parameter-def id="auth-method" multiplicity="none-or-one" />
+		<parameter-def id="form-login-page" />
+		<parameter-def id="form-error-page" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="security-role">
+		<parameter-def id="role-name" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="env-entry">
+		<parameter-def id="env-entry-name" />
+		<parameter-def id="env-entry-type" />
+		<parameter-def id="env-entry-value" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="error-page">
+		<parameter-def id="error-code" multiplicity="none-or-one" />
+		<parameter-def id="exception-type" multiplicity="none-or-one" />
+		<parameter-def id="location" />
+		<parameter-def id="override" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="classes">
+		<parameter-def id="dir" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="security-constraint">
+		<parameter-def id="web-resource-collection" multiplicity="any">
+			<parameter-def id="web-resource-name" />
+			<parameter-def id="url-pattern" multiplicity="any" />
+			<parameter-def id="http-method" multiplicity="any" />
+		</parameter-def>
+		<parameter-def id="role-name" multiplicity="any" />
+		<parameter-def id="transport-guarantee" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="webDirectory">
+		<parameter-def id="function" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="property">
+		<parameter-def id="class" />
+		<parameter-def id="name" />
+		<parameter-def id="value" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="propertySequence">
+		<parameter-def id="class" />
+		<parameter-def id="name" />
+		<parameter-def id="sequence" multiplicity="none-or-one" />
+		<parameter-def id="defaultSequence" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="remoteProductDir" extension-multiplicity="none">
+		<parameter-def id="dir" />
+	</extension-point>
+	<extension-point id="remoteFile" extension-multiplicity="none">
+		<parameter-def id="file" multiplicity="any" />
+		<parameter-def id="zip" multiplicity="any">
+			<parameter-def id="sourceDir" />
+			<parameter-def id="includes" multiplicity="none-or-one" />
+			<parameter-def id="include" multiplicity="any" />
+			<parameter-def id="excludes" multiplicity="none-or-one" />
+			<parameter-def id="exclude" multiplicity="any" />
+			<parameter-def id="destFile" />
+		</parameter-def>
+	</extension-point>
+	<!-- The following extension points allow an intermediate plugin to contribute war content from a different plugin -->
+</plugin>

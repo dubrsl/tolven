@@ -13,7 +13,7 @@
 
 <body>
     <ui:composition>
-		<wiz:group title="#{slot.label.value}">
+		<wiz:group title="#{slot.label.value} *">
             <c:forEach var="val" items="#{slot.values}">
             	<trim:TEL tel="#{val}" readonly="#{readonly}"/>
             </c:forEach>

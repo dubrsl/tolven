@@ -11,6 +11,7 @@ import javax.faces.validator.Validator;
 import javax.faces.validator.ValidatorException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.tolven.trim.ex.HL7DateFormatUtility;
 import org.tolven.trim.ex.TSEx;
 
@@ -38,7 +39,8 @@ public class ValidateFuture implements Validator, Serializable {
 
 		try {
 			Date now = (Date) ((HttpServletRequest)ctx.getExternalContext().getRequest()).getAttribute("tolvenNow");
-	
+			if(value == null)
+				return;
 
 			Date dateEntered = null;
 			if (value instanceof String)

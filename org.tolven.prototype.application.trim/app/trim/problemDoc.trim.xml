@@ -4,9 +4,10 @@
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
 	<name>docclin/evn/problem</name>
-	<page>docclin.xhtml</page>
-	<drilldown>docclinDD.xhtml</drilldown>
+	<page>problemDoc.xhtml</page>
+	<drilldown>problemDocclinDD.xhtml</drilldown>
 	<menu>global:problemDocMenu</menu>
 	<reference>http://wikihit.org/wiki/index.php/Problem</reference>
 	<application name="ephr">
@@ -21,31 +22,28 @@
 		<transition name="create" to="active">
 			<label language="en">Active</label>
 		</transition>
-		<transition name="suspendedActive" from="active" to="suspended">
-			<label language="en">Suspended</label>
-		</transition>
-		<transition name="heldActive" from="active" to="held">
-			<label language="en">Held</label>
-		</transition>
-		<transition name="nullifiedActive" from="active" to="nullified">
-			<label language="en">Nullified</label>
-		</transition>
-		<transition name="obsoleteActive" from="active" to="obsolete">
-			<label language="en">obsolete</label>
-		</transition>
-		<transition name="completedActive" from="active" to="completed">
-			<label language="en">Completed</label>
-		</transition>		
-		<transition name="abortedActive" from="active" to="aborted">
-			<label language="en">Aborted</label>
-		</transition>
-		<transition name="cancelActive" from="active" to="cancelled">
-			<label language="en">Cancel</label>
-		</transition>
 		<transition name="reviseActive" from="active" to="active">
 			<label language="en">Revise</label>
 		</transition>
-	</transitions>	
+		<transition name="suspendActive" from="active" to="inactive">
+			<label language="en">Inactive</label>
+		</transition>		
+		<transition name="suspendCompleted" from="resolved" to="inactive">
+			<label language="en">Inactive</label>
+		</transition>	
+		<transition name="nullifiedActive" from="active" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>
+		<transition name="nullifiedCompleted" from="resolved" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>
+		<transition name="completedActive" from="active" to="resolved">
+			<label language="en">Resolved</label>
+		</transition>
+		<transition name="completedSuspend" from="inactive" to="resolved">
+			<label language="en">Resolved</label>
+		</transition>
+	</transitions>
 	<act classCode="DOCCLIN" moodCode="EVN">
 		<statusCode>active</statusCode>		
 		<title>
@@ -55,26 +53,6 @@
 			<label>Time of Problem</label>
 			<new datatype="TS" function="now"/>
 		</effectiveTime>
-		<participation name="subject" typeCode="SBJ">
-			<role classCode="PAT">
-				<bind application="echr">
-					<placeholder>
-						<path>echr:patient</path>
-					</placeholder>
-				</bind>
-				<bind application="ephr">
-					<placeholder>
-						<path>ephr:patient</path>
-					</placeholder>
-				</bind>
-				<id>
-					<II>
-						<root>#{computeIDRoot(account)}</root>
-						<extension>#{patient.path}</extension>
-					</II>
-				</id>				
-			</role>
-		</participation>
 		<participation name="dataEnterer" typeCode="ENT">
 			<role classCode="ROL">
 				<id>
@@ -95,29 +73,7 @@
 				<id/>
 			</role>
 		</participation>
-		<relationship name="encounter" direction="IN" typeCode="COMP" >
-			<act classCode="OBS" moodCode="EVN">
-				<bind application="echr" phase="create">
-					<placeholder bindAction="exist" optional="true">
-						<path>echr:patient:encounter</path>
-					</placeholder>
-				</bind>
-				<bind application="ephr" phase="create">
-					<placeholder bindAction="exist" optional="true">
-						<path>ephr:patient:encounter</path>
-					</placeholder>
-				</bind>
-				<bind application="echr" phase="request">
-					<list cardinality="single">
-						<path>echr:patient:encounters:active</path>
-					</list>
-				</bind>
-				<id/>
-				<title>
-					<ST>Encounter</ST>
-				</title>
-			</act>
-		</relationship>
+
 		<relationship name="type" direction="OUT" typeCode="PERT" >
 			<act classCode="OBS" moodCode="EVN">
 				<title>
@@ -128,13 +84,43 @@
 				</text>
 			</act>
 		</relationship>
+		<relationship name="encounter" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Encounter</ST>
+				</title>
+				<observation>
+		 			<value>
+		 				<label>Associate with Encounter</label>
+		 				<valueSet>encounter</valueSet>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
+		<relationship name="submitStatus" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Status</ST>
+				</title>
+				<observation>
+	                <value>
+	                    <label>Count</label>
+	                    <INT><value></value></INT>
+	                </value>
+	                <value>
+	                    <label>isSubmitted</label>
+	                    <ST></ST>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
 		<compute>
 			<type>org.tolven.process.InsertAct</type>
 			<property name="enabled">
 		        <value xsi:type="xs:boolean">false</value>
 			</property>
 			<property name="arName">
-		        <value xsi:type="xs:string">entry</value>
+		        <value xsi:type="xs:string">problem</value>
 			</property>
 			<property name="arDirection">
 				<value xsi:type="xs:string">OUT</value>
@@ -152,6 +138,32 @@
 		        <value xsi:type="xs:string">0</value>
 			</property>
 		</compute>
+		<compute>
+			<type>org.tolven.process.RemoveDisabledAct</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="arName">
+		        <value xsi:type="xs:string">problem</value>
+			</property>			
+		</compute>
+		<!--
+			We don't need these computes which does sharing to emergency account 
+			<compute>
+			<type>org.tolven.process.CCHITOrderCompute</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">true</value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">Problems</value>
+			</property>
+		</compute>
+		<compute forAccountType="echr">
+			<type>org.tolven.process.RetrieveSharingDetails</type> 
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">true</value>
+			</property>
+		</compute> -->
 	</act>
 	<valueSet name="episodicity">
 		<CE>
@@ -225,38 +237,60 @@
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 	</valueSet>
-	<valueSet name="onset">
+	<valueSet name="outcome">
 		<CE>
-			<displayName>Gradual onset</displayName>
-			<code>C0332164</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Sequelae</displayName>
+			<code>C0543419</code>
+			<codeSystem>HL7V2.5	S</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 		<CE>
-			<displayName>Sudden onset</displayName>
-			<code>C1272517</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Died</displayName>
+			<code>C1546956</code>
+			<codeSystem>HL7V2.5	D</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 		<CE>
-			<displayName>Acute onset</displayName>
-			<code>C1276802</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Fully recovered</displayName>
+			<code>C1546957</code>
+			<codeSystem>HL7V2.5	F</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 		<CE>
-			<displayName>Insidious onset</displayName>
-			<code>C1298634</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Not recovering/unchanged</displayName>
+			<code>C1546958</code>
+			<codeSystem>HL7V2.5	N</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 		<CE>
-			<displayName>Subacute onset</displayName>
-			<code>C1298635</code>
-			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<displayName>Recovering</displayName>
+			<code>C1546959</code>
+			<codeSystem>HL7V2.5	R</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Worsening</displayName>
+			<code>C1546960</code>
+			<codeSystem>HL7V2.5	W</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown</displayName>
+			<code>C1556127</code>
+			<codeSystem>HL7V2.5	U</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>
 	</valueSet>
+	<valueSet name="encounterTemplate">
+		<CE>
+			<displayName></displayName>
+            <code>C0389100</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- TEMPLATE VALUESET END -->
+	<valueSet name="encounter"></valueSet>
 	<field name="formType">	
 		<value xsi:type="xs:string">problems</value>
 	</field>

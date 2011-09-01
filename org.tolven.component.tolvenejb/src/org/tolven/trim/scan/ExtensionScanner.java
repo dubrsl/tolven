@@ -90,7 +90,9 @@ public class ExtensionScanner extends Scanner {
 		super.processActRelationship( ar );
 		String parentActPath = getLocation(-1);
 		ActEx targetAct = (ActEx) ee.evaluate("#{" + parentActPath + "}");
+		 if ((targetAct) != null && (!parentActPath.contains("relationships"))) {
 		targetAct.getRelationships().add(ar);
+		 }
 //		processActRelationship( ar );
 //		if (!targetAct.getRelationship().containsKey(ar.getName())) {
 //			targetAct.getRelationship().put(ar.getName(), ar);

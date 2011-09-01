@@ -22,6 +22,7 @@ import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.listener.Log4jListener;
 import org.apache.tools.ant.taskdefs.SQLExec;
+import org.apache.tools.ant.types.Path;
 
 /**
  * A class providing functionality of Ant's SQL task
@@ -31,9 +32,20 @@ import org.apache.tools.ant.taskdefs.SQLExec;
  */
 public class TolvenSQL {
 
-    private static Logger logger = Logger.getLogger(TolvenSQL.class);
+    public static final String ABORT = "abort";
+    public static final String CONTINUE = "continue";
+    public static final String STOP = "stop";
+    public static Logger logger = Logger.getLogger(TolvenSQL.class);
 
     public static void sql(File srcFile, String url, String driver, String userId, char[] password) {
+        sql(srcFile, url, driver, userId, password, null, CONTINUE);
+    }
+
+    public static void sql(File srcFile, String url, String driver, String userId, char[] password, String classpath) {
+        sql(srcFile, url, driver, userId, password, classpath, CONTINUE);
+    }
+    
+    public static void sql(File srcFile, String url, String driver, String userId, char[] password, String classpath, String onError) {
         File tmpFile = null;
         try {
             try {
@@ -52,12 +64,16 @@ public class TolvenSQL {
             sqlExec.setAutocommit(true);
             sqlExec.setPrint(true);
             SQLExec.OnError onerror = new SQLExec.OnError();
-            onerror.setValue("continue");
+            onerror.setValue(onError);
             sqlExec.setOnerror(onerror);
             sqlExec.setUserid(userId);
             sqlExec.setShowheaders(true);
             sqlExec.setShowtrailers(true);
             sqlExec.setPassword(new String(password));
+            if (classpath != null) {
+                Path path = sqlExec.createClasspath();
+                path.setPath(classpath);
+            }
             //sqlExec closes the System.out !!! So here it's given something else to close
             sqlExec.setOutput(tmpFile);
             project.addBuildListener(new Log4jListener());

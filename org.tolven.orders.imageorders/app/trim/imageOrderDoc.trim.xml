@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<extends>patientAct</extends>
+	<name>imageOrderDoc</name>
+	<description>New Image Order</description>
+	<page>imageOrderDoc.xhtml</page>
+	<drilldown>imageOrderDocDD.xhtml</drilldown>
+	<menu>global:newOrderMenu</menu>
+	<application name="echr" signatureRequired="false">
+		<instance>echr:patient:imageOrder</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Activate</label>
+		</transition>
+		<transition name="completedActive" from="active" to="completed">
+			<label language="en">Complete</label>
+		</transition>		
+		<transition name="suspendActive" from="active" to="suspended">
+			<label language="en">Suspend</label>
+		</transition>
+		<transition name="reactivate" from="suspended" to="active">
+			<label language="en">Reactivate</label>
+		</transition>
+		<transition name="cancelActive" from="active" to="cancelled">
+			<label language="en">Cancel</label>
+		</transition>
+		<transition name="nullifyActive" from="active" to="nullified">
+			<label language="en">Entered in Error</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+	 </transitions>	
+	<act classCode="OBS" moodCode="RQO">
+		<code>
+			<CD>
+				<code>OINT</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3.0</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Image Orders</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of Order</label>
+	      	<new datatype="TS" function="now"/>
+	    </effectiveTime>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<relationship name="encounter" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="RQO">
+				<title>
+					<ST>Encounter</ST>
+				</title>
+				<observation>
+		 			<value>
+		 				<label>Associate with Encounter</label>
+		 				<valueSet>encounter</valueSet>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.EditImageOrderAct</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="arName">
+		        <value xsi:type="xs:string">imageOrder</value>
+			</property>
+			<property name="arDirection">
+				<value xsi:type="xs:string">OUT</value>
+			</property>
+			<property name="arTypeCode">
+		        <value xsi:type="xs:string">COMP</value>
+			</property>
+			<property name="template">
+		       <value xsi:type="xs:string">obs/evn/imageOrder</value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">add</value>
+			</property>
+			<property name="position">
+		        <value xsi:type="xs:string">0</value>
+			</property>
+			<property name="listPath">
+		        <value xsi:type="xs:string">imageOrderList</value>
+			</property>
+			<property name="arType">
+		        <value xsi:type="xs:string">Image Order</value>
+			</property>
+		</compute>
+	</act>
+	<valueSet name="encounter">
+	</valueSet>
+	<valueSet name="priority">
+		<CE>
+			<displayName>Routine</displayName>
+			<code>C2316030</code>
+			<codeSystem>SNOMEDCT</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>ASAP</displayName>
+			<code>C2316421</code>
+			<codeSystem>SNOMEDCT</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>STAT</displayName>
+			<code>C2316422</code>
+			<codeSystem>SNOMEDCT</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<field name="seqNo">	
+		<value xsi:type="xs:string">0</value>
+	</field>
+</trim>

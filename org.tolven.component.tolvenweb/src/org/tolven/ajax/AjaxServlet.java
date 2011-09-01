@@ -129,7 +129,19 @@ public class AjaxServlet extends HttpServlet {
 				String stringValue = value.toString().trim();
 				if (stringValue.length()==0) {
 					fow.writeVerbatim(" ");	// NB Space
-				} else if (msColumn.isReference()) {
+				}else if (lMethodName.equals("patientPopupRefReq")) {	//For patient popup in refillReq wizard. Modified by uks.
+					fow.writeVerbatim( "<a href=\"javascript:patientPopupRefReq('" + rowData.get("referencePath") +
+							"','"+req.getParameter("element")+"')\">" );
+					fow.writeEscape( stringValue );
+					fow.writeVerbatim("</a>");
+					if(null != rowData.get("sourceAccountId")) {
+						AccountUser accountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+						Long accountId = accountUser.getAccount().getId();
+						if(Long.parseLong(rowData.get("sourceAccountId").toString()) != (accountId)) {
+							fow.writeVerbatim(" <img src='../images/vcard.gif' class='shareInfo' title='Data shared from account:"+rowData.get("sourceAccountId")+"'/>");						
+						}
+					}
+				}else if (msColumn.isReference()) {
 					fow.writeVerbatim( "<a href=\"javascript:showPane('" + rowData.get("referencePath") +
 							"',false,'"+req.getParameter("element")+"')\">" );
 					fow.writeEscape( stringValue );
@@ -152,13 +164,17 @@ public class AjaxServlet extends HttpServlet {
 						long id;
 						id = (Long)rowData.get( "id" );
 						MenuData md1 = menuLocal.findMenuDataItem(id);
-						instantiateValue =  "<a href=\"#\" onclick=\"" + lMethodName + "('" + md1.getString02() + "','"+ element+ "','" + lMethodArgs + "')\">";
+						if (lMethodArgs.contains("withCode")) 
+							instantiateValue =  "<span style='float:left;width:100px;'>"+md1.getString02().split("-")[1]+"</span><span style='float:left;'>";
+						instantiateValue +=  "<a href=\"#\" onclick=\"" + lMethodName + "('" + md1.getString02() + "','"+ element+ "','" + lMethodArgs + "')\">";
 					}else{
 						instantiateValue =  "<a href=\"#\" onclick=\"instantiate('" + path + "','"+ element+ "')\">";	
 					}		
 					fow.writeVerbatim(instantiateValue);
 					fow.writeEscape( stringValue ); 
 					fow.writeVerbatim("</a>");
+					if (lMethodArgs.contains("withCode")) 
+						fow.writeVerbatim("</span>");
 				} else if(lMethodArgs != null && lMethodArgs.contains("enableCopy")){
 					/* this to populate a grid which will be used to create favorites lists
 					 basically on clicking an item in the grid a custom script function will be called */

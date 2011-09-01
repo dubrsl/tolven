@@ -227,6 +227,8 @@ function ajaxUpdatingSubmit(action, rslt) {
 			 var parentDiv = getFirstAncestorByTagName( menuItm, "DIV", "div" );
 			 if(adjustableElements.length < 1)
 			   adjustableElements = findAdjustableElements();// save time if the array has been already initialized
+			 if(!adjustableElements)
+			    	return false;			  
 			 for(var i=0;i<adjustableElements.length;i++){
 				 if(parentDiv.id == adjustableElements[i].id){
 					 wrapTabsInElement(parentDiv,menuItm);
@@ -1283,6 +1285,7 @@ function doTruncate( root ){
 	}
 }
 
+
 function doSubstr(root){
 	var _ths = root.getElementsByTagName("th");
 	var headerRowWidth = {};
@@ -1291,52 +1294,48 @@ function doSubstr(root){
 //		Tolven.Util.log(headerRowWidth[ i ]);
 	}
 	var testChars = "AAAAAAAAAA";
-      $('testFontSize').innerHTML = testChars;
+		$('testFontSize').innerHTML = testChars;
+	// calculate the charWidth on the browser
+		
 	var charWidth = Math.round( $('testFontSize').offsetWidth / testChars.length );
-
 	var trs = root.getElementsByTagName("tr");
-
-	if( trs.length > 2){
-	 for( var i = 1; i < trs.length; i++){
- 	  if(trs[ i ].offsetHeight > currentTextsize * 1.5){
-	   var tds = trs[ i ].getElementsByTagName("td");
-	   for( var j = 0; j < tds.length; j++){
-	    var td_text = tds[ j ].innerHTML;
-	    var allowedChars = Math.round ( headerRowWidth[ j ] / charWidth );
-
-//	    Tolven.Util.log( td_text.length + " , " + allowedChars );
-
-	     if( td_text.indexOf("<a") >= 0 || td_text.indexOf("<A") >= 0 ) {
-	     	var td_original_content = "";
-		var startIndex = td_text.indexOf(">") + 1;
-		var endIndex = td_text.indexOf("</", startIndex );
-		if( endIndex <= startIndex) td_text = "";
-		else
-		td_text = td_text.substring( startIndex, endIndex );
-
-		td_original_content = td_text;
-
-	      if( td_text.length > allowedChars ){
-		  if( allowedChars > 5 ) allowedChars -= 5;
-		  td_text = td_text.substring(0, allowedChars ) + " ...";
-
-   		  var innerhtml = tds[ j ].innerHTML;
-		  tds[ j ].innerHTML = innerhtml.replace(td_original_content, td_text);
-	      }
-	     }else{
-
-	     if( td_text.length > allowedChars ){
-		 if( allowedChars > 5 ) allowedChars -= 5;
-		 tds[ j ].innerHTML = td_text.substring(0, allowedChars ) + " ...";
-	     }
-	    }
-	   if( trs[ i ].offsetHeight < currentTextsize * 1.5 ) break;
-	   }
-	  }
-	 }
+	if( trs.length > 3){
+		for( var i = 2; i < trs.length; i++){
+			if(trs[ i ].offsetHeight > currentTextsize * 1.5){
+				var tds = trs[ i ].getElementsByTagName("td");
+				for( var j = 0; j < tds.length; j++){
+					var td_text = tds[ j ].innerHTML;
+					var allowedChars = Math.round ( headerRowWidth[ j ] / charWidth );
+					//	    Tolven.Util.log( td_text.length + " , " + allowedChars );
+					//replace the table cell's content with truncated strings
+					if( td_text.indexOf("<a") >= 0 || td_text.indexOf("<A") >= 0 ) {
+						var td_original_content = "";
+						var startIndex = td_text.indexOf(">") + 1;
+						var endIndex = td_text.indexOf("</", startIndex );
+						if( endIndex <= startIndex) td_text = "";
+						else
+							td_text = td_text.substring( startIndex, endIndex );
+						td_original_content = td_text;
+						if( td_text.length > allowedChars ){
+							tds[ j ].title = td_original_content;
+							if( allowedChars > 5 ) allowedChars -= 5;
+							td_text = td_text.substring(0, allowedChars ) + " ...";
+							var innerhtml = tds[ j ].innerHTML;
+							tds[ j ].innerHTML = innerhtml.replace(td_original_content, td_text);
+						}
+					}else{
+						if( td_text.length > allowedChars ){
+							if( allowedChars > 5 ) allowedChars -= 5;
+								tds[ j ].title = td_text;
+								tds[ j ].innerHTML = td_text.substring(0, allowedChars ) + " ...";
+							}
+					}
+					//if( trs[i].offsetHeight < currentTextsize * 1.5 ) break;
+				}	
+			}
+		}
 	}
 }
-
 function updateSortInfo( liveGrid ) {
 	var sortCol = liveGrid.sort.getSortedColumnIndex();
 	var root = $(liveGrid.metaData.options.rootId);
@@ -1399,6 +1398,45 @@ function toggleVisibility( elem ){
 function getPreferencesMenuItems( element, role ){
 	var userPrefFunction = function(){
 		getPreferencesMenuItemsFromServer(element, role);
+	};
+	DynaLoad.downloadAndCallScript(userPrefFunction, undefined, 'USERPREF');
+}
+
+/**
+ * To get patient list designer information.
+ *
+ * Author Valsaraj
+ * Added on 04/27/2010 
+ */
+function getPatientListDesigner( element, role ){
+	var userPrefFunction = function(){
+		getPatientListFromServer(element, role);
+	};
+	DynaLoad.downloadAndCallScript(userPrefFunction, undefined, 'USERPREF');
+}
+
+/**
+ * To get summary and display it in overlay.
+ *
+ * Author Valsaraj
+ * Added on 05/25/2010 
+ */
+function showSummary(element, extension) {
+	var userPrefFunction = function(){
+		showSummaryFromServer(element, extension);
+	};
+	DynaLoad.downloadAndCallScript(userPrefFunction, undefined, 'USERPREF');
+}
+
+/**
+ * To check patient list exists or not.
+ *
+ * Author Valsaraj
+ * Added on 07/13/2010 
+ */
+function checkDuplicate(obj, msgContainerId, path, role){
+	var userPrefFunction = function(){
+		checkDuplicateFromServer(obj.value, msgContainerId, path, role);
 	};
 	DynaLoad.downloadAndCallScript(userPrefFunction, undefined, 'USERPREF');
 }
@@ -1905,7 +1943,22 @@ function gotActionOptions(req,placeholderid,dropDownID){
 		alert(e);
 	}
 }
+
+/**
+ * Modified to get patient list on click of 'More' tab using XMLHTTP request, rest of the
+ * part will work as before.
+ *
+ * modifed on 05/14/2010 by Valsaraj
+ */
 function toggleDrpDwn(placeholderid,dropDownID,returnDialog){
+	if ('echr:patients_bar1_dropdown_loc'==placeholderid) {		
+		var userPrefFunction = function(){
+			updatePatientListFromServer('echr:patients', 'tabs', placeholderid, dropDownID);
+		};
+		
+		DynaLoad.downloadAndCallScript(userPrefFunction, undefined, 'USERPREF');
+	}
+	else {
 	dialog = $("_drpDwn");
 	var show = false;
 	drpDwnElement = $(dropDownID);
@@ -1935,6 +1988,7 @@ function toggleDrpDwn(placeholderid,dropDownID,returnDialog){
 	if(returnDialog)
 		return dialog;
 }
+}
 function updateDialogContent(drpDwnElement){
    dialog.innerHTML = drpDwnElement.innerHTML;
    dialog.name = drpDwnElement.id;
@@ -1946,6 +2000,8 @@ function wrapTabsInPage(tabId){
  if(tabId == undefined){
 	 //Tolven.Util.log("wrapping all ");
     adjustableElements = findAdjustableElements();
+    if(!adjustableElements)
+    	return false;
    for(var i=0; i<adjustableElements.length;i++){
 	 wrapTabsInElement(adjustableElements[i]);
     }
@@ -2030,6 +2086,8 @@ function wrapTabsInElement(divElement,placeholder){
 }
 function unWrapTabsInPage(){
 	adjustableElements = findAdjustableElements();
+	if(!adjustableElements)
+    	return false;  
 	for(var i=0; i<adjustableElements.length;i++){
 		unWrapTabsInElement(adjustableElements[i]);
 	}
@@ -2064,7 +2122,10 @@ function unWrapTabsInElement(divElement,placeholder){
 }
 
 function findAdjustableElements(){
-	return $("pageContent").getElementsBySelector('div[enableOverFlowListener="true"]');
+	if($("pageContent"))
+		return $("pageContent").getElementsBySelector('div[enableOverFlowListener="true"]');
+	else
+		return null;
 }
 function getFirstVisibleChild(parent,tagName){
 	elements = parent.firstDescendant().getElementsBySelector(tagName);

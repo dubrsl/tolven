@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="deploy-to-local-repository" name="org.tolven.assembler.glassfish3.legacypostgresql">
 	<!-- 
-	Build file for org.tolven.assembler.jboss.legacypostgresql 
+	Build file for org.tolven.assembler.glassfish3.legacypostgresql 
 	-->
 	<import file="../plugin/buildImport.xml" />
 

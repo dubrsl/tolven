@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <ui:composition>
+	<c:set var="databodyclass" value="empty"/>
+	<c:set var="moreinfostyle" value="empty"/>
+	<c:set var="windowstyleclass" value="minbox"/>
+	<c:if test="#{menu.thisMenu.windowstyle eq 'false'}">
+		<c:set var="databodyclass" value="hidedataTableBody"/>
+		<c:set var="windowstyleclass" value="maxbox"/>
+		<c:set var="moreinfostyle" value="display:none;"/>
+	</c:if>
+	
+	<div id="header" class="portletHeader">
+			<span style="width:100%;background:transparent;text-align:right;padding:4px;">
+
+				<a href="javascript:showPane('#{menu.thisMenu.path}'.replace(':portal','').replace('sum',''))" style="display:block;float:left;">#{menu.thisMenu.localeText[top.appBundle]}</a>
+				
+				<a class="closetab" href="javascript:removeSummaryBox('#{menu.thisMenu.path}', 'summary-box-#{param.element}');">
+					<img src="../images/x_blue.gif" style="margin-bottom: 3px;" border="0" height="100%"/>
+				</a>
+				<a class="#{windowstyleclass}" onclick="toggleVisibility(this);showHideSummaryBox('#{param.element}', '#{menu.thisMenu.path}');return false;" href="javascript:Tolven.Util.voidFn();">
+					<img src="../images/min_blue.gif" style="padding-top:none;margin-bottom: 3px;" border="0" height="100%"/>
+				</a>
+				<a class="ddbox" onclick="openOptionBox(this, '#{menu.thisMenu.path}', #{menu.thisMenu.numSummaryItems});return false;" href="javascript:Tolven.Util.voidFn();">
+						<img src="../images/arrow_blue.gif" style="padding-top:none;margin-bottom: 3px;" border="0" height="100%"/>
+				</a>
+				<c:if test="#{menu.thisMenu.actions != null}">
+					<c:forEach var="action" items="#{menu.thisMenu.actions}">
+						<span style="float:right;margin-top:28px;padding-left:20px;">
+			            <element id='#{action.path}_dropdown_loc' style='position:relative;'/>
+			            <div id='#{action.path}_drpDwn' class='drpDwn' style='display:none;'></div>
+			            </span>
+						<a class="actionBox" id='showDropDown' href="javascript:showActionOptions('#{menu.element}:menu_dropdown_loc','#{menu.element}:menu','#{menu.drilldown}')"  
+            				title="#{action.localeText[top.appBundle]}">
+              				#{action.localeText[top.appBundle]}
+						</a>		
+					</c:forEach>
+				</c:if>
+			</span>
+			</div>
+	<ui:insert name="content"> </ui:insert>	
+</ui:composition>
+</html>

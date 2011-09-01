@@ -25,6 +25,7 @@ import java.lang.reflect.Type;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -65,11 +66,24 @@ public class ApplicationDataMessageWriter implements MessageBodyWriter<DataQuery
 			Annotation[] annotations, MediaType mediaType,
 			MultivaluedMap<String, Object> httpHeaders, OutputStream out) throws IOException, WebApplicationException {
         try {
-            dataExtractBean.streamResultsXML(new OutputStreamWriter(out, "UTF-8"), dataQueryResults);
+            getDataExtractBean().streamResultsXML(new OutputStreamWriter(out, "UTF-8"), dataQueryResults);
         } catch (Exception e) {
             Response response = Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN_TYPE).entity(ExceptionFormatter.toSimpleString(e, "\n")).build();
             throw new WebApplicationException(e, response);
         }
 	}
+	
+	 protected DataExtractLocal getDataExtractBean() {
+	        if (dataExtractBean == null) {
+	            String jndiName = "java:app/tolvenEJB/DataExtractBean!org.tolven.app.DataExtractLocal";
+	            try {
+	                InitialContext ctx = new InitialContext();
+	                dataExtractBean = (DataExtractLocal) ctx.lookup(jndiName);
+	            } catch (Exception ex) {
+	                throw new RuntimeException("Could not lookup " + jndiName);
+	            }
+	        }
+	        return dataExtractBean;
+	    }
 
 }

@@ -33,6 +33,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
@@ -44,12 +45,13 @@ import org.java.plugin.PluginManager;
 import org.java.plugin.boot.Application;
 import org.java.plugin.boot.ApplicationPlugin;
 import org.java.plugin.registry.ExtensionPoint;
+import org.java.plugin.registry.ExtensionPoint.ParameterDefinition;
 import org.java.plugin.registry.PluginDescriptor;
 import org.java.plugin.registry.PluginPrerequisite;
 import org.java.plugin.registry.PluginRegistry;
-import org.java.plugin.registry.ExtensionPoint.ParameterDefinition;
 import org.java.plugin.util.ExtendedProperties;
 import org.tolven.plugin.boot.TPFBoot;
+import org.tolven.plugin.repository.RepositoryMetadata;
 import org.tolven.security.hash.TolvenMessageDigest;
 
 /**
@@ -60,7 +62,11 @@ import org.tolven.security.hash.TolvenMessageDigest;
  */
 public class TolvenApplication extends ApplicationPlugin implements Application {
 
-    public static final String CMD_LINE_PLUGIN_OPTION = "plugin";
+    public static final String CMD_PLUGIN_OPTION = "plugin";
+    public static final String CMD_RUNTIME_PLUGIN_EXISTS_OPTION = "runtimePluginExists";
+    public static final String CMD_NOOP_OPTION = "noop";
+    public static final String CMD_FORMAT_OPTION = "formatPluginsFile";
+
     public static final String EXTENSION_POINT_RUNTIME_LIB = "runtimeLib";
     public static final String EXTENSION_POINT_DOWNLOAD_WEB = "downLoadWeb";
     public static final String COMMAND_PLUGIN_ID = "org.tolven.command";
@@ -84,37 +90,74 @@ public class TolvenApplication extends ApplicationPlugin implements Application 
         /*
          * The initArgs are used to determine which plugins to execute, while pluginArgs are passed to those plugins
          */
-        String pluginsString = commandLine.getOptionValue(CMD_LINE_PLUGIN_OPTION);
-        loadLibraries(pluginsString);
-        List<String> plugins = getPlugins(pluginsString);
-        String adminPluginId = getDescriptor().getAttribute("adminPluginId").getValue();
-        execute(adminPluginId, getManager(), pluginArgs);
-        plugins.remove(adminPluginId);
-        startPlugins(plugins);
-        String[] pluginIdsWithoutAdminId = new String[plugins.size()];
-        for (int i = 0; i < plugins.size(); i++) {
-            pluginIdsWithoutAdminId[i] = plugins.get(i);
+        if (commandLine.hasOption(CMD_RUNTIME_PLUGIN_EXISTS_OPTION)) {
+            String pluginId = commandLine.getOptionValue(CMD_RUNTIME_PLUGIN_EXISTS_OPTION);
+            boolean exists = getManager().getRegistry().isPluginDescriptorAvailable(pluginId);
+            String output = pluginId + ":exists=" + exists;
+            System.out.println(output);
+            logger.info(output);
+        } else if (commandLine.hasOption(CMD_NOOP_OPTION)) {
+            //Which is the current default anyway i.e. do nothing
+        } else if (commandLine.hasOption(CMD_FORMAT_OPTION)) {
+            String[] optionValues = commandLine.getOptionValues(CMD_FORMAT_OPTION);
+            String inputFilname = optionValues[0];
+            File pluginsXMLFile = new File(inputFilname);
+            if (!pluginsXMLFile.exists()) {
+                throw new RuntimeException("Could not find plugins.xml file: " + pluginsXMLFile.getPath());
+            }
+            if (optionValues.length < 2) {
+                throw new RuntimeException("A second argument is required for the destination of the formatted plugins.xml");
+            }
+            String outputFilename = optionValues[1];
+            File outputFile = new File(outputFilename);
+            if (outputFile.getParentFile() == null) {
+                //A relative path
+                String userDir = System.getProperty("user.dir");
+                outputFile = new File(userDir, outputFile.getPath());
+            }
+            outputFile.getParentFile().mkdirs();
+            String outputPluginsXML = RepositoryMetadata.format(pluginsXMLFile.toURI().toURL());
+            logger.info("Output to: " + outputFile.getPath());
+            FileUtils.writeStringToFile(outputFile, outputPluginsXML);
+        } else {
+            String pluginsString = commandLine.getOptionValue(CMD_PLUGIN_OPTION);
+            if (pluginsString.length() == 0) {
+                throw new RuntimeException("No plugins were supplied at the command line");
+            }
+            loadLibraries(pluginsString);
+            List<String> plugins = getPlugins(pluginsString);
+            String adminPluginId = getDescriptor().getAttribute("adminPluginId").getValue();
+            execute(adminPluginId, getManager(), pluginArgs);
+            plugins.remove(adminPluginId);
+            startPlugins(plugins);
+            String[] pluginIdsWithoutAdminId = new String[plugins.size()];
+            for (int i = 0; i < plugins.size(); i++) {
+                pluginIdsWithoutAdminId[i] = plugins.get(i);
+            }
+            for (String pluginId : plugins) {
+                execute(pluginId, getManager(), pluginArgs);
+            }
+            logger.info("Execution of: " + pluginsString + " completed");
         }
-        for (String pluginId : plugins) {
-            execute(pluginId, getManager(), pluginArgs);
-        }
-        logger.info("Execution of: " + pluginsString + " completed");
     }
 
     private CommandLine getCommandLine(String[] args) {
-        Option pluginOption = new Option(CMD_LINE_PLUGIN_OPTION, "plugin", true, "plugin id");
-        pluginOption.setRequired(true);
         Options cmdLineOptions = new Options();
+        Option pluginOption = new Option(CMD_PLUGIN_OPTION, CMD_PLUGIN_OPTION, true, "\"plugin id\"");
+        pluginOption.setRequired(true);
         cmdLineOptions.addOption(pluginOption);
+        OptionGroup optionGroup = new OptionGroup();
+        Option runtimePluginExistsOption = new Option(CMD_RUNTIME_PLUGIN_EXISTS_OPTION, CMD_RUNTIME_PLUGIN_EXISTS_OPTION, true, "\"runtimePluginExists\"");
+        optionGroup.addOption(runtimePluginExistsOption);
+        Option noopOption = new Option(CMD_NOOP_OPTION, CMD_NOOP_OPTION, false, "no op plugin starts the plugin framework as a test, but does nothing");
+        optionGroup.addOption(noopOption);
+        Option formatOption = new Option(CMD_FORMAT_OPTION, CMD_FORMAT_OPTION, false, "formatPluginsFile inputPlugins.xml outputPlugins.xml");
+        formatOption.setArgs(2);
+        optionGroup.addOption(formatOption);
+        cmdLineOptions.addOptionGroup(optionGroup);
         try {
             GnuParser parser = new GnuParser();
             CommandLine commandLine = parser.parse(cmdLineOptions, args, true);
-            String pluginsString = commandLine.getOptionValue(CMD_LINE_PLUGIN_OPTION);
-            if (pluginsString.length() == 0) {
-                HelpFormatter formatter = new HelpFormatter();
-                formatter.printHelp(getClass().getName(), cmdLineOptions);
-                throw new RuntimeException("No plugins were supplied at the command line");
-            }
             return commandLine;
         } catch (ParseException ex) {
             HelpFormatter formatter = new HelpFormatter();

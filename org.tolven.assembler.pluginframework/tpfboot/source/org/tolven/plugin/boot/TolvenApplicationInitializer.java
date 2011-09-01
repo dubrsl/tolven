@@ -17,9 +17,9 @@
 package org.tolven.plugin.boot;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
 import org.java.plugin.boot.DefaultApplicationInitializer;
 import org.java.plugin.registry.IntegrityCheckReport;
-import org.tolven.logging.TolvenLogger;
 
 /**
  * Initialize the runtime by setting up access to the extended boot.properties.
@@ -29,6 +29,8 @@ import org.tolven.logging.TolvenLogger;
  */
 public class TolvenApplicationInitializer extends DefaultApplicationInitializer {
 
+    private Logger logger = Logger.getLogger(TolvenApplicationInitializer.class);
+    
     protected String integrityCheckReport2str(IntegrityCheckReport report) {
         StringBuilder buf = new StringBuilder();
         BasicConfigurator.configure();
@@ -43,10 +45,10 @@ public class TolvenApplicationInitializer extends DefaultApplicationInitializer 
                 buff.append("; ");
                 buff.append("source=");
                 buff.append(item.getSource());
-                TolvenLogger.error(buff.toString(), TolvenApplicationInitializer.class);
+                logger.error(buff.toString());
             }
         }
-        TolvenLogger.info("Integrity check done. Errors: " + report.countErrors() + ". Warnings: " + report.countWarnings() + ".", TolvenApplicationInitializer.class);
+        logger.info("Integrity check done. Errors: " + report.countErrors() + ". Warnings: " + report.countWarnings() + ".");
         return buf.toString();
     }
 

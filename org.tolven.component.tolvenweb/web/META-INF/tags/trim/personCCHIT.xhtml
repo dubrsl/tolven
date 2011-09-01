@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>TRIM Person Entity</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>    	
+		<wiz:group title="#{trim.trim.act.participation['subject'].role.player.name.label.value}">
+			<wiz:group title="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].label.value}">
+					<table width ="100%" cellpadding="2">
+						<tr>
+							<td width="15%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[0]'].label.value}*
+							</td>
+							<td>
+								<h:inputText onkeyup="validateName('firstName', '#{menu.elementLabel}', 'noSpaceFirst');" id="firstName" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[0]'].ST.value}" size="20" required="true" maxlength="35"/>
+								 <span id="noSpaceFirst" style="display: none; color: red;">
+									<h:outputText value="No space allowed in First Name."/>
+						    	 </span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[1]'].label.value}
+							</td>
+							<td>
+								<h:inputText id="middleName" onkeyup="validateName('middleName', '#{menu.elementLabel}', 'noSpaceMiddle');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[1]'].ST.value}" size="20" maxlength="35" />
+								<span id="noSpaceMiddle" style="display: none; color: red;">
+									<h:outputText value="No space allowed in Middle Name."/>
+						    	</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['FAM'].label.value}*
+							</td>
+							<td>
+								<h:inputText id="lastName" onkeyup="validateName('lastName', '#{menu.elementLabel}', 'noSpaceLast');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['FAM'].ST.value}" size="20" required="true" maxlength="35"/>
+								<span id="noSpaceLast" style="display: none; color: red;">
+									<h:outputText value="No space allowed in Last Name."/>
+						    	 </span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[2]'].label.value}
+							</td>
+							<td>
+								<h:inputText id="familyName" onkeyup="validateName('familyName', '#{menu.elementLabel}', 'noSpaceMiddle');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[2]'].ST.value}" size="20" maxlength="35" />
+								<span id="noSpaceMiddle" style="display: none; color: red;">
+									<h:outputText value="No space allowed in Family Name."/>
+						    	</span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['PFX'].label.value}
+							</td>
+							<td>
+								<h:inputText id="prefix" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['PFX'].ST.value}" size="20" maxlength="10" />
+							</td>
+						</tr>
+						<tr>
+							<td>
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['SFX'].label.value}
+							</td>
+							<td>
+								<h:inputText id="suffix" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['SFX'].ST.value}" size="20" maxlength="10" />
+							</td>
+						</tr>
+					</table>
+				</wiz:group>
+		</wiz:group>
+		<wiz:group title="Social Security Number(SSN)">
+			<table width ="80%" cellpadding="5">
+				<tr>
+					<td width="40%">
+						<h:inputText onkeyup="validateName('ssn', '#{menu.elementLabel}', 'noSpaceSsn');" id="ssn" value="#{trim.trim.act.participation['subject'].role.player.id.for['SSN'].extension}" size="20" maxlength="35"/>
+						 <span id="noSpaceSsn" style="display: none; color: red;">
+							<h:outputText value="No space allowed in SSN."/>
+				    	 </span>
+					</td>
+				</tr>
+			</table>
+		</wiz:group>
+		<!-- Modified to validate gender and DOB, 07/119/2010, Valsaraj -->
+		<wiz:group title="#{entity.livingSubject.administrativeGenderCode.label.value}*">
+			<trim:valueSetMenu id="gender" slot="#{entity.livingSubject.administrativeGenderCode}"/>
+		</wiz:group>
+		<wiz:group title="#{entity.livingSubject.birthTime.label.value}*">
+			<trim:TS id="dob" value="#{entity.livingSubject.birthTime.TS}" dateStyle="short" required="required"/>
+		</wiz:group>
+		<wiz:group title="#{trim.trim.act.participation['subject'].role.player.person.addr.label.value}">
+			<wiz:group title="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].label.value}">
+				<table width ="100%" cellpadding="2">
+					<tr>
+						<td width="15%">
+							#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['AL[0]'].label.value}*
+						</td>
+						<td>
+							<h:inputText id="addressLine1" onkeyup="validateAddress('addressLine1', '#{menu.elementLabel}', 'errorAdd', 'errorAddSpace');" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['AL[0]'].ST.value}" size="20" required="true" maxlength="35"/>
+							 <span id="errorAdd" style="display: none; color: red;">
+								<h:outputText value="PO box number not allowed here."/>
+						    </span>
+						    <span id="errorAddSpace" style="display: none; color: red;">
+								<h:outputText value="Address Line 1 must contain space."/>
+					    	</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['AL[1]'].label.value}
+						</td>
+						<td>
+							<h:inputText id="addressLine2" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['AL[1]'].ST.value}" size="20" maxlength="35" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['CTY[0]'].label.value}*
+						</td>
+						<td>
+							<h:inputText id="homeCity" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['CTY[0]'].ST.value}" size="20" required="true" maxlength="35"/>
+						</td>
+					</tr>
+					<!--  Removed County - for CCHIT - Vineetha -->
+					<tr>
+						<td>
+							#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['STA'].label.value}*
+						</td>
+						<td>
+							<h:selectOneMenu id="state" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['STA'].ST.value}" required="true" >
+						    <f:selectItem itemLabel="Select" itemValue="#{null}" />
+						    <f:selectItems value="#{demographicsAct.statesUsa}" />
+						    </h:selectOneMenu>
+						</td>
+					</tr>
+					<tr>
+						<td evalFunc="checkForErrorsInPatient('#{menu.elementLabel}');">
+							#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['ZIP'].label.value}*
+						</td>
+						<td>
+							<h:inputText id="zip" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['ZIP'].ST.value}" required="true"
+							 size="20" maxlength="9" onkeyup="checkFormat('zip', '#{menu.elementLabel}', 'errorZip');" onkeypress="return onlyNumbers(event);"/>
+							 <span id="errorZip" style="display: none; color: red;">
+								<h:outputText value="Enter zip + 4 code."/>
+						    </span>	
+						</td>
+					</tr>
+					<tr>
+						<td>
+							#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['CNT'].label.value}
+						</td>
+						<td>
+							<h:inputText id="patientCountry" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['H'].part['CNT'].ST.value}" size="20" />
+						</td>
+					</tr>
+				</table>
+			</wiz:group>	
+		</wiz:group>
+		<trim:TELSlot id="telecom" slot="#{entity.telecom}"/>
+	</ui:composition>
+</body>
+</html>

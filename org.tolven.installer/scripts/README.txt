@@ -79,13 +79,13 @@ Clean up can be done in one of the following ways:
 	2. Remove all directories from ${root.dir}, except initial-tolven-components and tolven-config. And in tolven-config remove the credentials directory.
 	3. Or you can use the exclude flags as described in the Exclude Flags section
 	
-Exclude Flags
-The following exclude flags can be used to restart then install and config stages, only if preceding components are known to have installed correctly.
-Previous servers must be started if they are already installed, so that they are ready for downstream use. All the flags are listed here:
-	exclude.tolven.kit=
-	exclude.tolven.opends=
-	exclude.openam=
-	exclude.appserver=
+Inclusion Flags
+The following flags can be used to restart then install and config stages, only if preceding components are known to have installed correctly.
+Previous servers must be started if they are already installed, so that they are ready for downstream use. All the flag defaults are listed here:
+
+	include.tolven.kit=true
+	include.tolven.opends=true
+	include.appserver=true
 	
 	The normal order of installation is: tolven.kit -> opends -> openam -> appserver
 	

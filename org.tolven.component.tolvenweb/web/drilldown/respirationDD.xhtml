@@ -19,7 +19,7 @@
 				<h:outputText value="#{msg.DateOfObservation}: "/>
 				<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
 				<h:outputText value="#{msg.Value}: "/>
-				<h:outputText value="#{act.observation.value.PQ.value} #{act.observation.value.PQ.unit}"/>
+				<h:outputText value="#{trim.trim.act.observation.value.ST.value} #{act.observation.value.label.value}"/>
 
 				<h:outputText value="#{trim.trim.act.relationships[0].act.observation.value.label.value}: "/>
 				<trim:CE id="rhythm" valueSet="rhythm" value="#{trim.trim.act.relationships[0].act.observation.value}" readonly="true"/>
@@ -31,7 +31,7 @@
 				<trim:CE id="ventilationType" valueSet="ventilationType" value="#{trim.trim.act.relationships[2].act.observation.value}" readonly="true"/>
 
 				<h:outputText value="#{trim.trim.act.relationships[3].act.observation.value.label.value}: "/>
-				<trim:ED id="comments" value="#{trim.trim.act.relationships[3].act.observation.value}" readonly="true"/>
+				<h:outputText id="comments" value="#{trim.trim.act.relationships[3].act.observation.value.ST.value}" readonly="true"></h:outputText>
 
 			</h:panelGrid>
 		</wiz:body>

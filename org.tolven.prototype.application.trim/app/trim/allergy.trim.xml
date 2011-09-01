@@ -43,30 +43,8 @@
 			<label>Onset of Symptoms</label>
 			<new datatype="TS" function="now"/>
 		</effectiveTime>
-		<relationship name="reaction" direction="OUT" typeCode="PERT" >
+		<relationship name="allergyDetail" direction="OUT" typeCode="PERT" >
 			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
-				<title>
-					<ST>Reaction</ST>
-				</title>
-				<observation>
-					<value>
-						<label>reaction</label>
-						<valueSet>reaction</valueSet>
-					</value>
-				</observation>
-			</act>
-		</relationship>
-		<relationship name="severity" direction="OUT" typeCode="PERT" >
-			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
-				<title>
-					<ST>Severity</ST>
-				</title>
-				<observation>
-					<value>
-						<label>Severity</label>
-						<valueSet>severity</valueSet>
-					</value>
-				</observation>
 			</act>
 		</relationship>
 		<relationship name="encounter" direction="IN" typeCode="COMP" >

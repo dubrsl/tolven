@@ -19,6 +19,8 @@ package org.tolven.assembler.ear;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -33,9 +35,10 @@ import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.java.plugin.registry.Extension;
-import org.java.plugin.registry.ExtensionPoint;
-import org.java.plugin.registry.PluginDescriptor;
 import org.java.plugin.registry.Extension.Parameter;
+import org.java.plugin.registry.ExtensionPoint;
+import org.java.plugin.registry.ExtensionPoint.ParameterDefinition;
+import org.java.plugin.registry.PluginDescriptor;
 import org.tolven.plugin.TolvenCommandPlugin;
 import org.tolven.tools.ant.TolvenJar;
 
@@ -47,32 +50,722 @@ import org.tolven.tools.ant.TolvenJar;
  */
 public class EARAssembler extends TolvenCommandPlugin {
 
-    public static final String ATTRIBUTE_TEMPLATE_APPLICATIONXML = "template-applicationxml";
-    public static final String EXTENSIONPOINT_JAVAMODULE = "javaModule";
-    public static final String EXTENSIONPOINT_JAVAMODULE_PRODUCT = "javaModuleProduct";
-    public static final String EXTENSIONPOINT_JAVAMODULE_PRODUCT_PLUGIN = "javaModuleProductPlugin";
-    public static final String EXTENSIONPOINT_CONNECTORMODULE_PRODUCT = "connectorModuleProduct";
-    public static final String EXTENSIONPOINT_EJBMODULE = "ejbModule";
-    public static final String EXTENSIONPOINT_EJBMODULE_PRODUCT = "ejbModuleProduct";
-    public static final String EXTENSIONPOINT_WARMODULE = "warModule";
-    public static final String EXTENSIONPOINT_WARMODULE_PRODUCT = "warModuleProduct";
-    public static final String EXTENSIONPOINT_LOCALEMODULE = "localeModule";
-    public static final String EXTENSIONPOINT_LOCALEMODULE_PRODUCT = "localeModuleProduct";
-    public static final String EXTENSIONPOINT_SECURITY_ROLE = "security-role";
-    public static final String EXTENSIONPOINT_METAINF = "META-INF";
-    public static final String EXTENSIONPOINT_ABSTRACT_EAR = "abstractEAR";
+    public static final String ATTRIBUTE_TEMPLATE_APPXML = "template-applicationxml";
 
-    public static final String CMD_LINE_EAR_PLUGIN_OPTION = "earPlugin";
-    public static final String CMD_LINE_EAR_FILE_OPTION = "earFile";
-    public static final String CMD_LINE_DESTDIR_OPTION = "destDir";
+    public static final String CMD_DESTDIR_OPT = "destDir";
+    public static final String CMD_EAR_FILE_OPT = "earFile";
+    public static final String CMD_EAR_PLUGIN_OPT = "earPlugin";
+    public static final String EXNPT_ABSTRACT_EAR = "abstractEAR";
+    public static final String EXNPT_CONNECTORMODULE_ADPTR = "connectorModuleProduct-adaptor";
+    @Deprecated
+    public static final String EXNPT_CONNECTORMODULE_PRODUCT = "connectorModuleProduct";
+    @Deprecated
+    public static final String EXNPT_EJBMODULE = "ejbModule";
+    public static final String EXNPT_EJBMODULE_ADPTR = "ejbModule-adaptor";
+    public static final String EXNPT_EJBMODULE_DECL = "ejbModule-declaration";
+    @Deprecated
+    public static final String EXNPT_EJBMODULE_PRODUCT = "ejbModuleProduct";
+    public static final String EXNPT_EJBMODULEPROD_ADPTR = "ejbModuleProduct-adaptor";
+    public static final String EXNPT_ID = "extension-point";
+    @Deprecated
+    public static final String EXNPT_JAVAMODULE = "javaModule";
+
+    @Deprecated
+    public static final String EXNPT_JAVAMODULE_PRODUCT = "javaModuleProduct";
+    @Deprecated
+    public static final String EXNPT_JAVAMODULE_PRODUCT_PLUGIN = "javaModuleProductPlugin";
+
+    public static final String EXNPT_LIBPROD_ADPTR = "libProduct-adaptor";
+    @Deprecated
+    public static final String EXNPT_LOCALEMODULE = "localeModule";
+    public static final String EXNPT_LOCALEMODULE_ADPTR = "localeModule-adaptor";
+
+    @Deprecated
+    public static final String EXNPT_LOCALEMODULE_PRODUCT = "localeModuleProduct";
+    public static final String EXNPT_LOCALEMODULEPROD_ADPTR = "localeModuleProduct-adaptor";
+    @Deprecated
+    public static final String EXNPT_METAINF = "META-INF";
+    public static final String EXNPT_METAINF_ADPTR = "META-INF-adaptor";
+    public static final String EXNPT_SECURITY_ROLE = "security-role";
+    @Deprecated
+    public static final String EXNPT_WARMODULE = "warModule";
+    public static final String EXNPT_WARMODULE_ADPTR = "warModule-adaptor";
+    public static final String EXNPT_WARMODULE_DECL = "warModule-declaration";
+    public static final String EXNPT_WARMODULEPROD_ADPTR = "warModuleProduct-adaptor";
+    @Deprecated
+    public static final String EXNPT_WARMODULEPRODUCT = "warModuleProduct";
+    public static final String SRC_PLUGIN_ID = "source-plugin-id";
 
     private Logger logger = Logger.getLogger(EARAssembler.class);
 
-    protected PluginDescriptor getAbstractEARPluginDescriptor() {
-        ExtensionPoint extensionPoint = getDescriptor().getExtensionPoint(EXTENSIONPOINT_ABSTRACT_EAR);
-        String parentPluginId = extensionPoint.getParentPluginId();
-        PluginDescriptor pluginDescriptor = getManager().getRegistry().getPluginDescriptor(parentPluginId);
-        return pluginDescriptor;
+    protected void addConnectorModule(String rarFilename, XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:if");
+        writer.writeAttribute("test", "count(module/connector[text() = '" + rarFilename + "']) = 0");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("module");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("connector");
+        writer.writeCharacters(rarFilename);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addConnectorModuleTemplates(PluginDescriptor pd, File localDestDir, XMLStreamWriter writer) throws XMLStreamException, IOException {
+        writer.writeStartElement("xsl:template");
+        writer.writeAttribute("name", "addConnectorModules");
+        writer.writeCharacters("\n");
+        assembleConnectorModuleProducts(pd, writer);
+        assembleConnectorModuleProductAdaptors(pd, localDestDir, writer);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addEJBModuleTemplates(PluginDescriptor pd, File localDestDir, XMLStreamWriter writer) throws XMLStreamException, IOException {
+        writer.writeStartElement("xsl:template");
+        writer.writeAttribute("name", "addEJBModules");
+        writer.writeCharacters("\n");
+        assembleEJBModuleAdaptors(pd, writer);
+        assembleEJBModuleProducts(pd, localDestDir, writer);
+        assembleEJBModuleProductAdaptors(pd, localDestDir, writer);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addEJBModuleXMLEntry(String jarFilename, XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:if");
+        writer.writeAttribute("test", "count(module/ejb[text() = '" + jarFilename + "']) = 0");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("module");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("ejb");
+        writer.writeCharacters(jarFilename);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addJavaLibraryTemplates(PluginDescriptor pd, File localDestDir) throws IOException {
+        assembleLocaleModules(pd, localDestDir);
+        assembleLocaleModuleProducts(pd, localDestDir);
+        assembleJavaModules(pd, localDestDir);
+        assembleJavaModuleProducts(pd, localDestDir);
+        assembleJavaModuleProductPlugins(pd, localDestDir);
+        assembleLibProductAdaptors(pd, localDestDir);
+        assembleLocaleModuleProductAdaptors(pd, localDestDir);
+    }
+
+    protected void addMainTemplate(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:template");
+        writer.writeAttribute("match", "/ | * | @* | text() | comment()");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:copy");
+        writer.writeAttribute("select", ".");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:apply-templates");
+        writer.writeAttribute("select", "* | @* | text() | comment()");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addRootConnectorModuleSelects(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:for-each");
+        writer.writeAttribute("select", "tp:module/tp:connector");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:copy-of");
+        writer.writeAttribute("select", ".");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:apply-templates");
+        writer.writeAttribute("select", "* | @* | text() | comment()");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:call-template");
+        writer.writeAttribute("name", "addConnectorModules");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addRootDisplayName(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:if");
+        writer.writeAttribute("test", "count(display-name) = 0");
+        writer.writeStartElement("xsl:element");
+        writer.writeAttribute("name", "display-name");
+        writer.writeCharacters("Tolven Application");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addRootEJBModuleSelects(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:for-each");
+        writer.writeAttribute("select", "tp:module/tp:ejb");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:copy-of");
+        writer.writeAttribute("select", ".");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:apply-templates");
+        writer.writeAttribute("select", "* | @* | text() | comment()");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:call-template");
+        writer.writeAttribute("name", "addEJBModules");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addRootSecurityRoleSelects(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:for-each");
+        writer.writeAttribute("select", "tp:security-role");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:copy-of");
+        writer.writeAttribute("select", ".");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:apply-templates");
+        writer.writeAttribute("select", "* | @* | text() | comment()");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:call-template");
+        writer.writeAttribute("name", "addSecurityRoles");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addRootTemplate(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:template");
+        writer.writeAttribute("match", "tp:application");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("application");
+        writer.writeAttribute("version", "{@version}");
+        writer.writeAttribute("xmlns", "http://java.sun.com/xml/ns/javaee");
+        writer.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+        writer.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd");
+        writer.writeCharacters("\n");
+        addRootDisplayName(writer);
+        addRootConnectorModuleSelects(writer);
+        addRootEJBModuleSelects(writer);
+        addRootWEBModuleSelects(writer);
+        addRootSecurityRoleSelects(writer);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addRootWEBModuleSelects(XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:for-each");
+        writer.writeAttribute("select", "tp:module/tp:web");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:copy-of");
+        writer.writeAttribute("select", ".");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:apply-templates");
+        writer.writeAttribute("select", "* | @* | text() | comment()");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeStartElement("xsl:call-template");
+        writer.writeAttribute("name", "addWEBModules");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addSecurityRoles(String description, String roleName, XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:if");
+        writer.writeAttribute("test", "count(security-role/role-name[text() = '" + roleName + "']) = 0");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("security-role");
+        writer.writeCharacters("\n");
+        if (description != null) {
+            writer.writeStartElement("description");
+            writer.writeCharacters(description);
+            writer.writeEndElement();
+            writer.writeCharacters("\n");
+        }
+        writer.writeStartElement("role-name");
+        writer.writeCharacters(roleName);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addSecurityRoleTemplates(PluginDescriptor pd, XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:template");
+        writer.writeAttribute("name", "addSecurityRoles");
+        writer.writeCharacters("\n");
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_SECURITY_ROLE);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                String description = null;
+                if (exn.getParameter("description") != null) {
+                    description = exn.getParameter("description").valueAsString();
+                }
+                String roleName = exn.getParameter("role-name").valueAsString();
+                addSecurityRoles(description, roleName, writer);
+            }
+            writer.writeEndElement();
+            writer.writeCharacters("\n");
+        }
+    }
+
+    protected void addWARModuleTemplates(PluginDescriptor pd, File localDestDir, XMLStreamWriter writer) throws XMLStreamException, IOException {
+        writer.writeStartElement("xsl:template");
+        writer.writeAttribute("name", "addWEBModules");
+        writer.writeCharacters("\n");
+        assembleWARModules(pd, writer);
+        assembleWARModuleProducts(pd, localDestDir, writer);
+        assembleWARModuleProductsPlugins(pd, localDestDir, writer);
+        assembleWARModuleAdaptors(pd, writer);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    protected void addWebModules(String webURI, String contextRoot, XMLStreamWriter writer) throws XMLStreamException {
+        writer.writeStartElement("xsl:if");
+        writer.writeAttribute("test", "count(module/web-uri[text() = '" + webURI + "']) = 0");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("module");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("web");
+        writer.writeCharacters("\n");
+        writer.writeStartElement("web-uri");
+        writer.writeCharacters(webURI);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeStartElement("context-root");
+        writer.writeCharacters(contextRoot);
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+        writer.writeEndElement();
+        writer.writeCharacters("\n");
+    }
+
+    /**
+     * Add connector jars located by extension-point connectorModuleProduct-adaptor to an EAR
+     * 
+     * @param pd
+     * @param writer
+     * @throws IOException
+     * @throws XMLStreamException
+     */
+    protected void assembleConnectorModuleProductAdaptors(PluginDescriptor pd, File localDestDir, XMLStreamWriter writer) throws IOException, XMLStreamException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_CONNECTORMODULE_ADPTR);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                for (File src : getAdaptorFiles(exn)) {
+                    File dest = new File(localDestDir, "/" + src.getName());
+                    dest.getParentFile().mkdirs();
+                    logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                    FileUtils.copyFile(src, dest);
+                    addConnectorModule(dest.getName(), writer);
+                }
+            }
+        }
+    }
+
+    protected void assembleConnectorModuleProducts(PluginDescriptor pd, XMLStreamWriter writer) throws XMLStreamException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_CONNECTORMODULE_PRODUCT);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                String rarName = exn.getParameter("rar").valueAsString();
+                addConnectorModule(rarName, writer);
+            }
+        }
+    }
+
+    protected void assembleEAR(PluginDescriptor pd, String earFilename, File destDir) throws IOException, XMLStreamException {
+        File localDestDir = new File(getPluginTmpDir(), pd.getId());
+        localDestDir.mkdirs();
+        File srcXML = new File(localDestDir, "META-INF/application.xml");
+        String templateFilename = getDescriptor().getAttribute(ATTRIBUTE_TEMPLATE_APPXML).getValue();
+        File templateFile = getFilePath(templateFilename);
+        if (!templateFile.exists()) {
+            throw new RuntimeException("Could not locate: '" + templateFile.getPath() + "' in " + getDescriptor().getId());
+        }
+        srcXML.getParentFile().mkdirs();
+        logger.debug("Copy " + templateFile + " to " + srcXML);
+        FileUtils.copyFile(templateFile, srcXML);
+        assemblerMetaInf(pd, localDestDir);
+        assemblerMetaInfAdaptors(pd, localDestDir);
+        StringBuffer originalXML = new StringBuffer();
+        originalXML.append(FileUtils.readFileToString(srcXML));
+        String xslt = getXSLT(pd, localDestDir);
+        File applicationxmlXSLT = new File(getPluginTmpDir(), "applicationxml-xslt.xml");
+        logger.debug("Write application.xml XSLT to " + applicationxmlXSLT.getPath());
+        FileUtils.writeStringToFile(applicationxmlXSLT, xslt);
+        String translatedXMLString = getTranslatedXML(originalXML.toString(), xslt);
+        srcXML.getParentFile().mkdirs();
+        logger.debug("Write translated application.xml to " + srcXML.getPath());
+        FileUtils.writeStringToFile(srcXML, translatedXMLString);
+        buildEAR(earFilename, localDestDir, destDir);
+    }
+
+    /**
+     * Assemble an ejb jar located by ejbModule-adaptor to an EAR
+     * 
+     * @param pd
+     * @param writer
+     * @throws IOException
+     * @throws XMLStreamException
+     */
+    protected void assembleEJBModuleAdaptors(PluginDescriptor pd, XMLStreamWriter writer) throws IOException, XMLStreamException {
+        /*
+         * The first part of assembly should have already been completed by executing the assembler as one of the required plugins
+         */
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_EJBMODULE_ADPTR);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                String ejbFilename = exn.getParameter("ejbFile").valueAsString();
+                if (ejbFilename == null || ejbFilename.length() == 0) {
+                    throw new RuntimeException(exn.getUniqueId() + " must have a value for ejbFile");
+                }
+                addEJBModuleXMLEntry(ejbFilename, writer);
+            }
+        }
+    }
+
+    /**
+     * Add ejb jars located by extension-point ejbModuleProduct-adaptor to an EAR
+     * 
+     * @param pd
+     * @param writer
+     * @throws IOException
+     * @throws XMLStreamException
+     */
+    protected void assembleEJBModuleProductAdaptors(PluginDescriptor pd, File localDestDir, XMLStreamWriter writer) throws IOException, XMLStreamException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_EJBMODULEPROD_ADPTR);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                for (File src : getAdaptorFiles(exn)) {
+                    File dest = new File(localDestDir, "/" + src.getName());
+                    dest.getParentFile().mkdirs();
+                    logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                    FileUtils.copyFile(src, dest);
+                    addEJBModuleXMLEntry(dest.getName(), writer);
+                }
+            }
+        }
+    }
+
+    @Deprecated
+    protected void assembleEJBModuleProducts(PluginDescriptor pd, File localDestDir, XMLStreamWriter writer) throws IOException, XMLStreamException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_EJBMODULE_PRODUCT);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                String ejbModuleJARName = exn.getParameter("jar").valueAsString();
+                File src = getFilePath(exn.getDeclaringPluginDescriptor(), ejbModuleJARName);
+                File dest = new File(localDestDir, "/" + ejbModuleJARName);
+                dest.getParentFile().mkdirs();
+                logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                FileUtils.copyFile(src, dest);
+                addEJBModuleXMLEntry(ejbModuleJARName, writer);
+            }
+        }
+    }
+
+    @Deprecated
+    protected void assembleJavaModuleProductPlugins(PluginDescriptor pd, File localDestDir) throws IOException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_JAVAMODULE_PRODUCT_PLUGIN);
+        if (exnPt != null) {
+            for (Extension exn : pd.getExtensionPoint(EXNPT_JAVAMODULE_PRODUCT_PLUGIN).getConnectedExtensions()) {
+                String pluginId = exn.getParameter("target-plugin-id").valueAsString();
+                PluginDescriptor targetPD = getManager().getRegistry().getPluginDescriptor(pluginId);
+                Parameter exnPtParam = exn.getParameter("extension-point");
+                if (exnPtParam == null || exnPtParam.valueAsString() == null) {
+                    throw new RuntimeException(exn + " must have a parameter called extension-point with a value");
+                }
+                String exnPtId = exnPtParam.valueAsString();
+                ExtensionPoint targetExnPt = targetPD.getExtensionPoint(exnPtId);
+                if (targetExnPt == null) {
+                    throw new RuntimeException(targetPD + " must have an extension point " + exnPtId);
+                }
+                for (Parameter libParam : exnPtParam.getSubParameters("name")) {
+                    String defaultValueParam = libParam.valueAsString();
+                    String defaultValue = targetExnPt.getParameterDefinition(defaultValueParam).getDefaultValue();
+                    if (defaultValue == null) {
+                        throw new RuntimeException(targetExnPt + " must have a parameter-def " + defaultValueParam);
+                    }
+                    File src = getFilePath(targetPD, defaultValue);
+                    File dest = new File(localDestDir, "/lib/" + src.getName());
+                    dest.getParentFile().mkdirs();
+                    logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                    FileUtils.copyFile(src, dest);
+                }
+            }
+        }
+    }
+
+    @Deprecated
+    protected void assembleJavaModuleProducts(PluginDescriptor pd, File localDestDir) throws IOException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_JAVAMODULE_PRODUCT);
+        if (exnPt != null) {
+            assembleLibraries(exnPt, localDestDir);
+        }
+    }
+
+    @Deprecated
+    protected void assembleJavaModules(PluginDescriptor pd, File localDestDir) throws IOException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_JAVAMODULE);
+        if (exnPt != null) {
+            assembleLibraries(exnPt, localDestDir);
+        }
+    }
+
+    /**
+     * Add libraries located by extension-point libProduct-adaptor to an EAR
+     * 
+     * @param pd
+     * @throws IOException
+     */
+    protected void assembleLibProductAdaptors(PluginDescriptor pd, File localDestDir) throws IOException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_LIBPROD_ADPTR);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                for (File src : getAdaptorFiles(exn)) {
+                    File dest = new File(localDestDir, "/lib/" + src.getName());
+                    dest.getParentFile().mkdirs();
+                    logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                    FileUtils.copyFile(src, dest);
+                }
+            }
+        }
+    }
+
+    private void assembleLibraries(ExtensionPoint exnPt, File localDestDir) throws IOException {
+        for (Extension exn : exnPt.getConnectedExtensions()) {
+            List<File> srcs = new ArrayList<File>();
+            Parameter jarParam = exn.getParameter("jar");
+            if (jarParam != null) {
+                String filename = jarParam.valueAsString();
+                File src = getFilePath(exn.getDeclaringPluginDescriptor(), filename);
+                srcs.add(src);
+            }
+            Parameter dirParam = exn.getParameter("dir");
+            if (dirParam != null) {
+                //Adding jars this way will be removed in future to encourage the naming of the jars in the manifest itself
+                //maintained here for backward compatibility for extension-point javaModuleProduct
+                String dirname = dirParam.valueAsString();
+                File srcDir = getFilePath(exn.getDeclaringPluginDescriptor(), dirname);
+                for (Object obj : FileUtils.listFiles(srcDir, new String[] { "jar" }, false)) {
+                    File src = (File) obj;
+                    srcs.add(src);
+                }
+            }
+            for (File src : srcs) {
+                File dest = new File(localDestDir, "/lib/" + src.getName());
+                dest.getParentFile().mkdirs();
+                logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                FileUtils.copyFile(src, dest);
+            }
+        }
+    }
+
+    /**
+     * Add locales (as libraries) located by extension-point libProduct-adaptor to an EAR
+     * 
+     * @param pd
+     * @throws IOException
+     */
+    protected void assembleLocaleModuleProductAdaptors(PluginDescriptor pd, File localDestDir) throws IOException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_LOCALEMODULEPROD_ADPTR);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                for (File src : getAdaptorFiles(exn)) {
+                    File dest = new File(localDestDir, "/lib/" + src.getName());
+                    dest.getParentFile().mkdirs();
+                    logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                    FileUtils.copyFile(src, dest);
+                }
+            }
+        }
+    }
+
+    @Deprecated
+    protected void assembleLocaleModuleProducts(PluginDescriptor pd, File localDestDir) throws IOException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_LOCALEMODULE_PRODUCT);
+        if (exnPt != null) {
+            for (Extension localeModuleProductExtension : exnPt.getConnectedExtensions()) {
+                String srcName = localeModuleProductExtension.getParameter("jar").valueAsString();
+                File src = getFilePath(localeModuleProductExtension.getDeclaringPluginDescriptor(), srcName);
+                File dest = new File(localDestDir, "/lib/" + src.getName());
+                dest.getParentFile().mkdirs();
+                logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                FileUtils.copyFile(src, dest);
+            }
+        }
+    }
+
+    @Deprecated
+    protected void assembleLocaleModules(PluginDescriptor pd, File localDestDir) throws IOException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_LOCALEMODULE);
+        if (exnPt != null) {
+            for (Extension localeModuleExtension : exnPt.getConnectedExtensions()) {
+                File localeModulePluginTmpDir = getPluginTmpDir(localeModuleExtension.getDeclaringPluginDescriptor());
+                String srcName = localeModuleExtension.getParameter("jar").valueAsString();
+                File src = new File(localeModulePluginTmpDir, srcName);
+                File dest = new File(localDestDir, "/lib/" + src.getName());
+                dest.getParentFile().mkdirs();
+                logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                FileUtils.copyFile(src, dest);
+            }
+
+        }
+    }
+
+    @Deprecated
+    protected void assemblerMetaInf(PluginDescriptor pd, File localDestDir) {
+        ExtensionPoint metaInfExnPt = pd.getExtensionPoint(EXNPT_METAINF);
+        if (metaInfExnPt != null) {
+            for (Extension exn : metaInfExnPt.getConnectedExtensions()) {
+                Parameter metaInfParam = exn.getParameter("dir");
+                if (metaInfParam == null || metaInfParam.valueAsString().trim().length() == 0) {
+                    throw new RuntimeException(exn.getUniqueId() + " must supply a value for the dir parameter");
+                }
+                PluginDescriptor metaInfPD = exn.getDeclaringPluginDescriptor();
+                File src = getFilePath(metaInfPD, metaInfParam.valueAsString());
+                File dest = new File(localDestDir, "/META-INF");
+                logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                try {
+                    FileUtils.copyDirectory(src, dest);
+                } catch (IOException ex) {
+                    throw new RuntimeException("Could not copy meta-inf files from " + src.getPath() + " to " + dest.getPath(), ex);
+                }
+            }
+        }
+    }
+
+    /**
+     * Add directory contents located by extension-point META-INF-adaptor to an EAR
+     * 
+     * @param pd
+     */
+    protected void assemblerMetaInfAdaptors(PluginDescriptor pd, File localDestDir) {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_METAINF_ADPTR);
+        if (exnPt != null) {
+            File dest = new File(localDestDir, "/META-INF");
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                for (File src : getAdaptorFiles(exn)) {
+                    logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                    try {
+                        FileUtils.copyDirectory(src, dest);
+                    } catch (IOException ex) {
+                        throw new RuntimeException("Could not copy meta-inf files from " + src.getPath() + " to " + dest.getPath(), ex);
+                    }
+                }
+            }
+        }
+    }
+
+    protected void assembleWARModuleAdaptors(PluginDescriptor pd, XMLStreamWriter writer) throws XMLStreamException {
+        /*
+         * The first part of assembly should have already been completed by executing the assembler as one of the required plugins
+         */
+        ExtensionPoint warAdptrExnPt = pd.getExtensionPoint(EXNPT_WARMODULE_ADPTR);
+        if (warAdptrExnPt != null) {
+            for (Extension warExn : warAdptrExnPt.getConnectedExtensions()) {
+                String contextId = null;
+                Parameter contextIdParam = warExn.getParameter("parent-context-id");
+                if (contextIdParam != null) {
+                    contextId = contextIdParam.valueAsString();
+                }
+                String pluginId = warExn.getParameter(SRC_PLUGIN_ID).valueAsString();
+                if (pluginId == null || pluginId.trim().length() == 0) {
+                    throw new RuntimeException("No parameter value for " + SRC_PLUGIN_ID + " found in " + warExn.getUniqueId());
+                }
+                PluginDescriptor warPD = getManager().getRegistry().getPluginDescriptor(pluginId);
+                if (getWarModuleDeclarationExtensionPoint(warPD, contextId) == null) {
+                    throw new RuntimeException(warPD.getId() + " is does not define a war-declaration extension-point for: " + warExn.getUniqueId());
+                }
+                String webURI = warExn.getParameter("web-uri").valueAsString();
+                String contextRoot = warExn.getParameter("context-root").valueAsString();
+                addWebModules(webURI, contextRoot, writer);
+            }
+        }
+    }
+
+    @Deprecated
+    protected void assembleWARModuleProducts(PluginDescriptor pd, File localDestDir, XMLStreamWriter writer) throws IOException, XMLStreamException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_WARMODULEPRODUCT);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                String webURI = exn.getParameter("web-uri").valueAsString();
+                File src = getFilePath(exn.getDeclaringPluginDescriptor(), webURI);
+                File dest = new File(localDestDir, "/" + src.getName());
+                dest.getParentFile().mkdirs();
+                logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                FileUtils.copyFile(src, dest);
+                String contextRoot = exn.getParameter("context-root").valueAsString();
+                addWebModules(webURI, contextRoot, writer);
+            }
+        }
+    }
+
+    protected void assembleWARModuleProductsPlugins(PluginDescriptor pd, File localDestDir, XMLStreamWriter writer) throws IOException, XMLStreamException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_WARMODULEPROD_ADPTR);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                for (File src : getAdaptorFiles(exn)) {
+                    File dest = new File(localDestDir, "/" + src.getName());
+                    dest.getParentFile().mkdirs();
+                    logger.debug("Copy " + src.getPath() + " to " + dest.getPath());
+                    FileUtils.copyFile(src, dest);
+                    String webURI = exn.getParameter("web-uri").valueAsString();
+                    String contextRoot = exn.getParameter("context-root").valueAsString();
+                    addWebModules(webURI, contextRoot, writer);
+                }
+            }
+        }
+    }
+
+    @Deprecated
+    protected void assembleWARModules(PluginDescriptor pd, XMLStreamWriter writer) throws XMLStreamException {
+        ExtensionPoint exnPt = pd.getExtensionPoint(EXNPT_WARMODULE);
+        if (exnPt != null) {
+            for (Extension exn : exnPt.getConnectedExtensions()) {
+                String webURI = exn.getParameter("web-uri").valueAsString();
+                String contextRoot = exn.getParameter("context-root").valueAsString();
+                addWebModules(webURI, contextRoot, writer);
+            }
+        }
+    }
+
+    protected void buildEAR(String earFilename, File localDestDir, File destDir) {
+        File earFile = new File(destDir, earFilename);
+        earFile.getParentFile().mkdirs();
+        logger.debug("Jar " + localDestDir.getPath() + " to " + earFile.getPath());
+        TolvenJar.jar(localDestDir, earFile);
     }
 
     @Override
@@ -84,20 +777,149 @@ public class EARAssembler extends TolvenCommandPlugin {
     }
 
     @Override
+    protected void doStop() throws Exception {
+        logger.debug("*** stop ***");
+    }
+
+    @Override
     public void execute(String[] args) throws Exception {
         logger.debug("*** execute ***");
         CommandLine commandLine = getCommandLine(args);
-        String earPluginId = commandLine.getOptionValue(CMD_LINE_EAR_PLUGIN_OPTION);
-        String earFilename = commandLine.getOptionValue(CMD_LINE_EAR_FILE_OPTION);
-        String destDirname = commandLine.getOptionValue(CMD_LINE_DESTDIR_OPTION);
+        String pluginId = commandLine.getOptionValue(CMD_EAR_PLUGIN_OPT);
+        String earFilename = commandLine.getOptionValue(CMD_EAR_FILE_OPT);
+        String destDirname = commandLine.getOptionValue(CMD_DESTDIR_OPT);
         if (destDirname == null) {
-            destDirname = new File(getStageDir(), earPluginId).getPath();
+            destDirname = new File(getStageDir(), pluginId).getPath();
         }
-        File deployDir = new File(destDirname);
-        deployDir.mkdirs();
-        PluginDescriptor earPluginDescriptor = getManager().getRegistry().getPluginDescriptor(earPluginId);
-        executeRequiredPlugins(earPluginDescriptor);
-        assembleEAR(earPluginDescriptor, earFilename, deployDir);
+        File destDir = new File(destDirname);
+        destDir.mkdirs();
+        PluginDescriptor pd = getManager().getRegistry().getPluginDescriptor(pluginId);
+        executeRequiredPlugins(pd);
+        assembleEAR(pd, earFilename, destDir);
+    }
+
+    @Deprecated
+    protected void executeRequiredConnectorModuleProducts(PluginDescriptor pd) throws Exception {
+        ExtensionPoint abstractExnPt = getAbstractEARPluginDescriptor().getExtensionPoint(EXNPT_CONNECTORMODULE_PRODUCT);
+        for (ExtensionPoint exnPt : abstractExnPt.getDescendants()) {
+            if (exnPt.getDeclaringPluginDescriptor().getId().equals(pd.getId())) {
+                File destDir = new File(getPluginTmpDir(), pd.getId());
+                destDir.mkdirs();
+                for (Extension exn : exnPt.getConnectedExtensions()) {
+                    PluginDescriptor rarPluginDescriptor = exn.getDeclaringPluginDescriptor();
+                    String rarFilename = exn.getParameter("rar").valueAsString();
+                    File src = getFilePath(rarPluginDescriptor, rarFilename);
+                    logger.debug("Copy " + src.getPath() + " to " + destDir.getPath());
+                    FileUtils.copyFileToDirectory(src, destDir);
+                }
+            }
+        }
+    }
+
+    protected void executeRequiredEJBModuleAdaptors(PluginDescriptor pd) throws Exception {
+        ExtensionPoint abstractExnPt = getAbstractEARPluginDescriptor().getExtensionPoint(EXNPT_EJBMODULE_ADPTR);
+        File destDir = new File(getPluginTmpDir(), pd.getId());
+        destDir.mkdirs();
+        for (ExtensionPoint exnPt : abstractExnPt.getDescendants()) {
+            if (exnPt.getDeclaringPluginDescriptor().getId().equals(pd.getId())) {
+                for (Extension exn : exnPt.getConnectedExtensions()) {
+                    String pluginId = exn.getParameter(SRC_PLUGIN_ID).valueAsString();
+                    if (pluginId == null || pluginId.trim().length() == 0) {
+                        throw new RuntimeException("No parameter value for " + SRC_PLUGIN_ID + " found in " + exn.getUniqueId());
+                    }
+                    PluginDescriptor ejbPD = getManager().getRegistry().getPluginDescriptor(pluginId);
+                    if (ejbPD.getExtensionPoint(EXNPT_EJBMODULE_DECL) == null) {
+                        throw new RuntimeException(ejbPD.getId() + " does not define a ejbModule-declaration extension-point");
+                    }
+                    String ejbFilename = exn.getParameter("ejbFile").valueAsString();
+                    String argString = "-ejbPlugin " + ejbPD.getId() + " -ejbFile " + ejbFilename + " -destDir " + destDir.getPath();
+                    execute("org.tolven.assembler.ejbmodule", argString.split(" "));
+                }
+            }
+        }
+    }
+
+    protected void executeRequiredPlugins(PluginDescriptor pd) throws Exception {
+        String[] args = new String[0];
+        execute("org.tolven.assembler.localemodule", args);
+        execute("org.tolven.assembler.javamodule", args);
+        executeRequiredConnectorModuleProducts(pd);
+        executeRequiredEJBModuleAdaptors(pd);
+        executeRequiredWarModulePlugins(pd);
+        executeRequiredWarModuleAdaptors(pd);
+    }
+
+    protected void executeRequiredWarModuleAdaptors(PluginDescriptor pd) throws Exception {
+        ExtensionPoint warAdptrExnPt = pd.getExtensionPoint(EXNPT_WARMODULE_ADPTR);
+        if (warAdptrExnPt != null) {
+            File destDir = new File(getPluginTmpDir(), pd.getId());
+            destDir.mkdirs();
+            for (Extension warExn : warAdptrExnPt.getConnectedExtensions()) {
+                String warPluginId = warExn.getParameter(SRC_PLUGIN_ID).valueAsString();
+                if (warPluginId == null || warPluginId.trim().length() == 0) {
+                    throw new RuntimeException("No parameter value for " + SRC_PLUGIN_ID + " found in " + warExn.getUniqueId());
+                }
+                PluginDescriptor warPD = getManager().getRegistry().getPluginDescriptor(warPluginId);
+                Parameter parentContextIdParam = warExn.getParameter("parent-context-id");
+                String parentContextId = null;
+                if (parentContextIdParam != null) {
+                    parentContextId = parentContextIdParam.valueAsString();
+                }
+                ExtensionPoint declExnPt = getWarModuleDeclarationExtensionPoint(warPD, parentContextId);
+                if(declExnPt == null) {
+                    throw new RuntimeException(warPD.getId() + " does not define a warModule-declaration extension-point with contextId: " + parentContextId);
+                }
+                String contextId = declExnPt.getParameterDefinition("context-id").getDefaultValue();
+                String webURI = warExn.getParameter("web-uri").valueAsString();
+                String argString = "-warPlugin " + warPD.getId() + " -webURI " + webURI + " -contextId " + contextId + " -destDir " + destDir.getPath();
+                execute("org.tolven.assembler.war", argString.split(" "));
+            }
+        }
+    }
+
+    protected void executeRequiredWarModulePlugins(PluginDescriptor pd) throws Exception {
+        ExtensionPoint abstractExnPt = getAbstractEARPluginDescriptor().getExtensionPoint(EXNPT_WARMODULE);
+        File destDir = new File(getPluginTmpDir(), pd.getId());
+        destDir.mkdirs();
+        for (ExtensionPoint exnPt : abstractExnPt.getDescendants()) {
+            if (exnPt.getDeclaringPluginDescriptor().getId().equals(pd.getId())) {
+                for (Extension exn : exnPt.getConnectedExtensions()) {
+                    PluginDescriptor warPluginDescriptor = exn.getDeclaringPluginDescriptor();
+                    String webURI = exn.getParameter("web-uri").valueAsString();
+                    String argString = "-warPlugin " + warPluginDescriptor.getId() + " -webURI " + webURI + " -destDir " + destDir.getPath();
+                    execute("org.tolven.assembler.war", argString.split(" "));
+                }
+            }
+        }
+    }
+
+    protected PluginDescriptor getAbstractEARPluginDescriptor() {
+        ExtensionPoint exnPt = getDescriptor().getExtensionPoint(EXNPT_ABSTRACT_EAR);
+        String pluginId = exnPt.getParentPluginId();
+        PluginDescriptor pd = getManager().getRegistry().getPluginDescriptor(pluginId);
+        return pd;
+    }
+
+    private List<File> getAdaptorFiles(Extension exn) {
+        String pluginId = exn.getParameter(SRC_PLUGIN_ID).valueAsString();
+        if (pluginId == null || pluginId.trim().length() == 0) {
+            throw new RuntimeException("No parameter value for " + SRC_PLUGIN_ID + " found in " + exn.getUniqueId());
+        }
+        String exnPtId = exn.getParameter(EXNPT_ID).valueAsString();
+        if (exnPtId == null || exnPtId.trim().length() == 0) {
+            throw new RuntimeException("No parameter value for " + EXNPT_ID + " found in " + exn.getUniqueId());
+        }
+        ExtensionPoint exnPt = getManager().getRegistry().getExtensionPoint(pluginId + "@" + exnPtId);
+        List<File> files = new ArrayList<File>();
+        for (ParameterDefinition paramDef : exnPt.getParameterDefinitions()) {
+            String filename = paramDef.getDefaultValue();
+            if (filename == null || filename.trim().length() == 0) {
+                throw new RuntimeException("No default-value for parameter-def found in " + exnPt.getUniqueId());
+            }
+            File src = getFilePath(exnPt.getDeclaringPluginDescriptor(), filename);
+            files.add(src);
+        }
+        return files;
     }
 
     private CommandLine getCommandLine(String[] args) {
@@ -113,555 +935,87 @@ public class EARAssembler extends TolvenCommandPlugin {
 
     private Options getCommandOptions() {
         Options cmdLineOptions = new Options();
-        Option warPluginOption = new Option(CMD_LINE_EAR_PLUGIN_OPTION, CMD_LINE_EAR_PLUGIN_OPTION, true, "ear plugin");
+        Option warPluginOption = new Option(CMD_EAR_PLUGIN_OPT, CMD_EAR_PLUGIN_OPT, true, "ear plugin");
         warPluginOption.setRequired(true);
         cmdLineOptions.addOption(warPluginOption);
-        Option webURIPluginOption = new Option(CMD_LINE_EAR_FILE_OPTION, CMD_LINE_EAR_FILE_OPTION, true, "ear filename");
+        Option webURIPluginOption = new Option(CMD_EAR_FILE_OPT, CMD_EAR_FILE_OPT, true, "ear filename");
         webURIPluginOption.setRequired(true);
         cmdLineOptions.addOption(webURIPluginOption);
-        Option destDirPluginOption = new Option(CMD_LINE_DESTDIR_OPTION, CMD_LINE_DESTDIR_OPTION, true, "destination directory");
+        Option destDirPluginOption = new Option(CMD_DESTDIR_OPT, CMD_DESTDIR_OPT, true, "destination directory");
         cmdLineOptions.addOption(destDirPluginOption);
         return cmdLineOptions;
     }
 
-    protected void executeRequiredPlugins(PluginDescriptor earPluginDescriptor) throws Exception {
-        String[] args = new String[0];
-        execute("org.tolven.assembler.localemodule", args);
-        execute("org.tolven.assembler.javamodule", args);
-        executeRequiredRarModulePlugins(earPluginDescriptor);
-        execute("org.tolven.assembler.ejbmodule", args);
-        executeRequiredWarModulePlugins(earPluginDescriptor);
-    }
-
-    protected void executeRequiredRarModulePlugins(PluginDescriptor earPluginDescriptor) throws Exception {
-        ExtensionPoint abstractExtensionPoint = getAbstractEARPluginDescriptor().getExtensionPoint(EXTENSIONPOINT_CONNECTORMODULE_PRODUCT);
-        for (ExtensionPoint rarModuleExtensionPoint : abstractExtensionPoint.getDescendants()) {
-            if (rarModuleExtensionPoint.getDeclaringPluginDescriptor().getId().equals(earPluginDescriptor.getId())) {
-                File destDir = new File(getPluginTmpDir(), earPluginDescriptor.getId());
-                destDir.mkdirs();
-                for (Extension rarModuleExtension : rarModuleExtensionPoint.getConnectedExtensions()) {
-                    PluginDescriptor rarPluginDescriptor = rarModuleExtension.getDeclaringPluginDescriptor();
-                    String rarFilename = rarModuleExtension.getParameter("rar").valueAsString();
-                    File sourceRAR = getFilePath(rarPluginDescriptor, rarFilename);
-                    logger.debug("Copy " + sourceRAR.getPath() + " to " + destDir.getPath());
-                    FileUtils.copyFileToDirectory(sourceRAR, destDir);
-                }
+    private ExtensionPoint getWarModuleDeclarationExtensionPoint(PluginDescriptor pd, String contextId) {
+        List<ExtensionPoint> declExnPts = getWarModuleDeclarationExtensionPoints(pd);
+        if (declExnPts.isEmpty()) {
+            throw new RuntimeException(pd.getId() + " does not define a warModule-declaration extension-point");
+        }
+        if (contextId == null) {
+            if (declExnPts.size() > 1) {
+                throw new RuntimeException(pd.getId() + " has more than one warModule-declaration. A contextId must be provided");
+            }
+            if (declExnPts.get(0).getParameterDefinition("context-id") == null) {
+                throw new RuntimeException(declExnPts.get(0).getUniqueId() + " must define a context-id parameter");
+            }
+            contextId = declExnPts.get(0).getParameterDefinition("context-id").getDefaultValue();
+        }
+        for (ExtensionPoint declExnPt : declExnPts) {
+            if (declExnPt.getParameterDefinition("context-id") == null) {
+                throw new RuntimeException(declExnPt.getUniqueId() + " must define a context-id parameter");
+            }
+            if (contextId.equals(declExnPt.getParameterDefinition("context-id").getDefaultValue())) {
+                return declExnPt;
             }
         }
+        return null;
     }
 
-    protected void executeRequiredWarModulePlugins(PluginDescriptor earPluginDescriptor) throws Exception {
-        ExtensionPoint abstractExtensionPoint = getAbstractEARPluginDescriptor().getExtensionPoint(EXTENSIONPOINT_WARMODULE);
-        File warDestDir = new File(getPluginTmpDir(), earPluginDescriptor.getId());
-        warDestDir.mkdirs();
-        for (ExtensionPoint warModuleExtensionPoint : abstractExtensionPoint.getDescendants()) {
-            if (warModuleExtensionPoint.getDeclaringPluginDescriptor().getId().equals(earPluginDescriptor.getId())) {
-                for (Extension warModuleExtension : warModuleExtensionPoint.getConnectedExtensions()) {
-                    PluginDescriptor warPluginDescriptor = warModuleExtension.getDeclaringPluginDescriptor();
-                    String webURI = warModuleExtension.getParameter("web-uri").valueAsString();
-                    String argString = "-warPlugin " + warPluginDescriptor.getId() + " -webURI " + webURI + " -destDir " + warDestDir.getPath();
-                    execute("org.tolven.assembler.war", argString.split(" "));
-                }
+    private List<ExtensionPoint> getWarModuleDeclarationExtensionPoints(PluginDescriptor pd) {
+        List<ExtensionPoint> declExnPts = new ArrayList<ExtensionPoint>();
+        for (ExtensionPoint exnPt : pd.getExtensionPoints()) {
+            if (EXNPT_WARMODULE_DECL.equals(exnPt.getParentExtensionPointId())) {
+                declExnPts.add(exnPt);
             }
         }
+        return declExnPts;
     }
 
-    protected void assembleEAR(PluginDescriptor earPluginDescriptor, String earFilename, File destDir) throws IOException, XMLStreamException {
-        File myEARPluginDir = new File(getPluginTmpDir(), earPluginDescriptor.getId());
-        File sourceXMLFile = new File(myEARPluginDir, "META-INF/application.xml");
-        String templateFilename = getDescriptor().getAttribute(ATTRIBUTE_TEMPLATE_APPLICATIONXML).getValue();
-        File templateFile = getFilePath(templateFilename);
-        if (!templateFile.exists()) {
-            throw new RuntimeException("Could not locate: '" + templateFile.getPath() + "' in " + getDescriptor().getId());
-        }
-        sourceXMLFile.getParentFile().mkdirs();
-        logger.debug("Copy " + templateFile + " to " + sourceXMLFile);
-        FileUtils.copyFile(templateFile, sourceXMLFile);
-        assemblerMetaInf(earPluginDescriptor);
-        StringBuffer originalXML = new StringBuffer();
-        originalXML.append(FileUtils.readFileToString(sourceXMLFile));
-        String xslt = getXSLT(earPluginDescriptor);
-        File applicationxmlXSLT = new File(getPluginTmpDir(), "applicationxml-xslt.xml");
-        logger.debug("Write application.xml XSLT to " + applicationxmlXSLT.getPath());
-        FileUtils.writeStringToFile(applicationxmlXSLT, xslt);
-        String translatedXMLString = getTranslatedXML(originalXML.toString(), xslt);
-        sourceXMLFile.getParentFile().mkdirs();
-        logger.debug("Write translated application.xml to " + sourceXMLFile.getPath());
-        FileUtils.writeStringToFile(sourceXMLFile, translatedXMLString);
-        deployToEARConsumers(earPluginDescriptor, earFilename, destDir);
-    }
-
-    protected void deployToEARConsumers(PluginDescriptor earPluginDescriptor, String earFilename, File destEARDir) {
-        File myEARPluginDir = new File(getPluginTmpDir(), earPluginDescriptor.getId());
-        File earFile = new File(destEARDir, earFilename);
-        earFile.getParentFile().mkdirs();
-        logger.debug("Jar " + myEARPluginDir.getPath() + " to " + earFile.getPath());
-        TolvenJar.jar(myEARPluginDir, earFile);
-    }
-
-    protected void assemblerMetaInf(PluginDescriptor earPluginDescriptor) {
-        for (Extension metaInfExtension : earPluginDescriptor.getExtensionPoint(EXTENSIONPOINT_METAINF).getConnectedExtensions()) {
-            Parameter metaInfParameter = metaInfExtension.getParameter("dir");
-            if (metaInfParameter == null || metaInfParameter.valueAsString().trim().length() == 0) {
-                throw new RuntimeException(metaInfExtension.getUniqueId() + " must supply a value for the dir parameter");
-            }
-            PluginDescriptor metaInfPluginDescriptor = metaInfExtension.getDeclaringPluginDescriptor();
-            File metaInfSourceDir = getFilePath(metaInfPluginDescriptor, metaInfParameter.valueAsString());
-            File metaInfDestDir = new File(getPluginTmpDir(), earPluginDescriptor.getId() + "/META-INF");
-            logger.debug("Copy " + metaInfSourceDir.getPath() + " to " + metaInfDestDir.getPath());
-            try {
-                FileUtils.copyDirectory(metaInfSourceDir, metaInfDestDir);
-            } catch (IOException ex) {
-                throw new RuntimeException("Could not copy meta-inf files from " + metaInfSourceDir.getPath() + " to " + metaInfDestDir.getPath(), ex);
-            }
-        }
-    }
-
-    protected String getXSLT(PluginDescriptor pluginDescriptor) throws XMLStreamException, IOException {
+    protected String getXSLT(PluginDescriptor pd, File localDestDir) throws XMLStreamException, IOException {
         StringWriter xslt = new StringWriter();
         XMLOutputFactory factory = XMLOutputFactory.newInstance();
-        XMLStreamWriter xmlStreamWriter = null;
+        XMLStreamWriter writer = null;
         try {
-            xmlStreamWriter = factory.createXMLStreamWriter(xslt);
-            xmlStreamWriter.writeStartDocument("UTF-8", "1.0");
-            xmlStreamWriter.writeCharacters("\n");
-            xmlStreamWriter.writeStartElement("xsl:stylesheet");
-            xmlStreamWriter.writeAttribute("version", "2.0");
-            xmlStreamWriter.writeNamespace("xsl", "http://www.w3.org/1999/XSL/Transform");
-            xmlStreamWriter.writeNamespace("tp", "http://java.sun.com/xml/ns/javaee");
-            xmlStreamWriter.writeCharacters("\n");
-            xmlStreamWriter.writeStartElement("xsl:output");
-            xmlStreamWriter.writeAttribute("method", "xml");
-            xmlStreamWriter.writeAttribute("indent", "yes");
-            xmlStreamWriter.writeAttribute("encoding", "UTF-8");
-            xmlStreamWriter.writeAttribute("omit-xml-declaration", "no");
-            xmlStreamWriter.writeEndElement();
-            xmlStreamWriter.writeCharacters("\n");
-            addMainTemplate(xmlStreamWriter);
-            addRootTemplate(xmlStreamWriter);
-            addJavaLibraryTemplates(pluginDescriptor);
-            addConnectorModuleTemplates(pluginDescriptor, xmlStreamWriter);
-            addEJBModuleTemplates(pluginDescriptor, xmlStreamWriter);
-            addWARModuleTemplates(pluginDescriptor, xmlStreamWriter);
-            addSecurityRoleTemplates(pluginDescriptor, xmlStreamWriter);
-            xmlStreamWriter.writeEndDocument();
-            xmlStreamWriter.writeEndDocument();
+            writer = factory.createXMLStreamWriter(xslt);
+            writer.writeStartDocument("UTF-8", "1.0");
+            writer.writeCharacters("\n");
+            writer.writeStartElement("xsl:stylesheet");
+            writer.writeAttribute("version", "2.0");
+            writer.writeNamespace("xsl", "http://www.w3.org/1999/XSL/Transform");
+            writer.writeNamespace("tp", "http://java.sun.com/xml/ns/javaee");
+            writer.writeCharacters("\n");
+            writer.writeStartElement("xsl:output");
+            writer.writeAttribute("method", "xml");
+            writer.writeAttribute("indent", "yes");
+            writer.writeAttribute("encoding", "UTF-8");
+            writer.writeAttribute("omit-xml-declaration", "no");
+            writer.writeEndElement();
+            writer.writeCharacters("\n");
+            addMainTemplate(writer);
+            addRootTemplate(writer);
+            addJavaLibraryTemplates(pd, localDestDir);
+            addConnectorModuleTemplates(pd, localDestDir, writer);
+            addEJBModuleTemplates(pd, localDestDir, writer);
+            addWARModuleTemplates(pd, localDestDir, writer);
+            addSecurityRoleTemplates(pd, writer);
+            writer.writeEndDocument();
+            writer.writeEndDocument();
         } finally {
-            if (xmlStreamWriter != null) {
-                xmlStreamWriter.close();
+            if (writer != null) {
+                writer.close();
             }
         }
         return xslt.toString();
-    }
-
-    protected void addMainTemplate(XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:template");
-        xmlStreamWriter.writeAttribute("match", "/ | * | @* | text() | comment()");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:copy");
-        xmlStreamWriter.writeAttribute("select", ".");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:apply-templates");
-        xmlStreamWriter.writeAttribute("select", "* | @* | text() | comment()");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addRootTemplate(XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:template");
-        xmlStreamWriter.writeAttribute("match", "tp:application");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("application");
-        xmlStreamWriter.writeAttribute("version", "{@version}");
-        xmlStreamWriter.writeAttribute("xmlns", "http://java.sun.com/xml/ns/javaee");
-        xmlStreamWriter.writeAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        xmlStreamWriter.writeAttribute("xsi:schemaLocation", "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd");
-        xmlStreamWriter.writeCharacters("\n");
-        addRootDisplayName(xmlStreamWriter);
-        addRootConnectorModuleSelects(xmlStreamWriter);
-        addRootEJBModuleSelects(xmlStreamWriter);
-        addRootWEBModuleSelects(xmlStreamWriter);
-        addRootSecurityRoleSelects(xmlStreamWriter);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addRootDisplayName(XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:if");
-        xmlStreamWriter.writeAttribute("test", "count(display-name) = 0");
-        xmlStreamWriter.writeStartElement("xsl:element");
-        xmlStreamWriter.writeAttribute("name", "display-name");
-        xmlStreamWriter.writeCharacters("Tolven Application");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addRootConnectorModuleSelects(XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:for-each");
-        xmlStreamWriter.writeAttribute("select", "tp:module/tp:connector");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:copy-of");
-        xmlStreamWriter.writeAttribute("select", ".");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:apply-templates");
-        xmlStreamWriter.writeAttribute("select", "* | @* | text() | comment()");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:call-template");
-        xmlStreamWriter.writeAttribute("name", "addConnectorModules");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addRootEJBModuleSelects(XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:for-each");
-        xmlStreamWriter.writeAttribute("select", "tp:module/tp:ejb");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:copy-of");
-        xmlStreamWriter.writeAttribute("select", ".");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:apply-templates");
-        xmlStreamWriter.writeAttribute("select", "* | @* | text() | comment()");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:call-template");
-        xmlStreamWriter.writeAttribute("name", "addEJBModules");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addRootWEBModuleSelects(XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:for-each");
-        xmlStreamWriter.writeAttribute("select", "tp:module/tp:web");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:copy-of");
-        xmlStreamWriter.writeAttribute("select", ".");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:apply-templates");
-        xmlStreamWriter.writeAttribute("select", "* | @* | text() | comment()");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:call-template");
-        xmlStreamWriter.writeAttribute("name", "addWEBModules");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addRootSecurityRoleSelects(XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:for-each");
-        xmlStreamWriter.writeAttribute("select", "tp:security-role");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:copy-of");
-        xmlStreamWriter.writeAttribute("select", ".");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:apply-templates");
-        xmlStreamWriter.writeAttribute("select", "* | @* | text() | comment()");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("xsl:call-template");
-        xmlStreamWriter.writeAttribute("name", "addSecurityRoles");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addJavaLibraryTemplates(PluginDescriptor pluginDescriptor) throws IOException {
-        assembleLocaleModules(pluginDescriptor);
-        assembleLocaleModuleProducts(pluginDescriptor);
-        assembleJavaLibraries(pluginDescriptor);
-        assembleJavaLibraryProducts(pluginDescriptor);
-        assembleJavaLibraryProductPlugins(pluginDescriptor);
-    }
-
-    protected void assembleLocaleModules(PluginDescriptor pluginDescriptor) throws IOException {
-        for (Extension localeModuleExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_LOCALEMODULE).getConnectedExtensions()) {
-            File localeModulePluginTmpDir = getPluginTmpDir(localeModuleExtension.getDeclaringPluginDescriptor());
-            String jarName = localeModuleExtension.getParameter("jar").valueAsString();
-            File jarSourceFile = new File(localeModulePluginTmpDir, jarName);
-            File jarDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/lib/" + jarSourceFile.getName());
-            jarDestinationFile.getParentFile().mkdirs();
-            logger.debug("Copy " + jarSourceFile.getPath() + " to " + jarDestinationFile.getPath());
-            FileUtils.copyFile(jarSourceFile, jarDestinationFile);
-        }
-    }
-
-    protected void assembleLocaleModuleProducts(PluginDescriptor pluginDescriptor) throws IOException {
-        for (Extension localeModuleProductExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_LOCALEMODULE_PRODUCT).getConnectedExtensions()) {
-            String jarName = localeModuleProductExtension.getParameter("jar").valueAsString();
-            File jarSourceFile = getFilePath(localeModuleProductExtension.getDeclaringPluginDescriptor(), jarName);
-            File jarDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/lib/" + jarSourceFile.getName());
-            jarDestinationFile.getParentFile().mkdirs();
-            logger.debug("Copy " + jarSourceFile.getPath() + " to " + jarDestinationFile.getPath());
-            FileUtils.copyFile(jarSourceFile, jarDestinationFile);
-        }
-    }
-
-    protected void assembleJavaLibraries(PluginDescriptor pluginDescriptor) throws IOException {
-        for (Extension javaModuleExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_JAVAMODULE).getConnectedExtensions()) {
-            File javaModulePluginTmpDir = getPluginTmpDir(javaModuleExtension.getDeclaringPluginDescriptor());
-            String jarName = javaModuleExtension.getParameter("jar").valueAsString();
-            File jarSourceFile = new File(javaModulePluginTmpDir, jarName);
-            File jarDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/lib/" + jarSourceFile.getName());
-            jarDestinationFile.getParentFile().mkdirs();
-            logger.debug("Copy " + jarSourceFile.getPath() + " to " + jarDestinationFile.getPath());
-            FileUtils.copyFile(jarSourceFile, jarDestinationFile);
-        }
-    }
-
-    protected void assembleJavaLibraryProducts(PluginDescriptor pluginDescriptor) throws IOException {
-        for (Extension javaModuleProductExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_JAVAMODULE_PRODUCT).getConnectedExtensions()) {
-            if (javaModuleProductExtension.getParameter("jar") != null) {
-                String jarName = javaModuleProductExtension.getParameter("jar").valueAsString();
-                File jarSourceFile = getFilePath(javaModuleProductExtension.getDeclaringPluginDescriptor(), jarName);
-                File jarDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/lib/" + jarSourceFile.getName());
-                jarDestinationFile.getParentFile().mkdirs();
-                logger.debug("Copy " + jarSourceFile.getPath() + " to " + jarDestinationFile.getPath());
-                FileUtils.copyFile(jarSourceFile, jarDestinationFile);
-            }
-            if (javaModuleProductExtension.getParameter("dir") != null) {
-                String dirname = javaModuleProductExtension.getParameter("dir").valueAsString();
-                File sourceDir = getFilePath(javaModuleProductExtension.getDeclaringPluginDescriptor(), dirname);
-                for (Object obj : FileUtils.listFiles(sourceDir, new String[] { "jar" }, false)) {
-                    File jarSourceFile = (File) obj;
-                    File jarDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/lib/" + jarSourceFile.getName());
-                    jarDestinationFile.getParentFile().mkdirs();
-                    logger.debug("Copy " + jarSourceFile.getPath() + " to " + jarDestinationFile.getPath());
-                    FileUtils.copyFile(jarSourceFile, jarDestinationFile);
-                }
-            }
-        }
-    }
-
-    protected void assembleJavaLibraryProductPlugins(PluginDescriptor pluginDescriptor) throws IOException {
-        for (Extension javaModuleProductPluginExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_JAVAMODULE_PRODUCT_PLUGIN).getConnectedExtensions()) {
-            String targetPluginId = javaModuleProductPluginExtension.getParameter("target-plugin-id").valueAsString();
-            PluginDescriptor targetPluginDescriptor = getManager().getRegistry().getPluginDescriptor(targetPluginId);
-            Parameter extensionPointParameter = javaModuleProductPluginExtension.getParameter("extension-point");
-            if (extensionPointParameter == null || extensionPointParameter.valueAsString() == null) {
-                throw new RuntimeException(javaModuleProductPluginExtension + " must have a parameter called extension-point with a value");
-            }
-            String extensionPointId = extensionPointParameter.valueAsString();
-            ExtensionPoint targetExtensionPoint = targetPluginDescriptor.getExtensionPoint(extensionPointId);
-            if (targetExtensionPoint == null) {
-                throw new RuntimeException(targetPluginDescriptor + " must have an extension point " + extensionPointId);
-            }
-            for (Parameter libParameter : extensionPointParameter.getSubParameters("name")) {
-                String defaultValueParameter = libParameter.valueAsString();
-                String defaultValue = targetExtensionPoint.getParameterDefinition(defaultValueParameter).getDefaultValue();
-                if (defaultValue == null) {
-                    throw new RuntimeException(targetExtensionPoint + " must have a parameter-def " + defaultValueParameter);
-                }
-                File jarSourceFile = getFilePath(targetPluginDescriptor, defaultValue);
-                File jarDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/lib/" + jarSourceFile.getName());
-                jarDestinationFile.getParentFile().mkdirs();
-                logger.debug("Copy " + jarSourceFile.getPath() + " to " + jarDestinationFile.getPath());
-                FileUtils.copyFile(jarSourceFile, jarDestinationFile);
-            }
-        }
-    }
-
-    protected void addConnectorModuleTemplates(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:template");
-        xmlStreamWriter.writeAttribute("name", "addConnectorModules");
-        xmlStreamWriter.writeCharacters("\n");
-        assembleConnectorModules(pluginDescriptor, xmlStreamWriter);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void assembleConnectorModules(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        for (Extension connectorModuleExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_CONNECTORMODULE_PRODUCT).getConnectedExtensions()) {
-            String rarName = connectorModuleExtension.getParameter("rar").valueAsString();
-            addConnectorModule(rarName, xmlStreamWriter);
-        }
-    }
-
-    protected void addConnectorModule(String rarFilename, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:if");
-        xmlStreamWriter.writeAttribute("test", "count(module/connector[text() = '" + rarFilename + "']) = 0");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("module");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("connector");
-        xmlStreamWriter.writeCharacters(rarFilename);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addEJBModuleTemplates(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws XMLStreamException, IOException {
-        xmlStreamWriter.writeStartElement("xsl:template");
-        xmlStreamWriter.writeAttribute("name", "addEJBModules");
-        xmlStreamWriter.writeCharacters("\n");
-        assembleEJBModules(pluginDescriptor, xmlStreamWriter);
-        assembleEJBModuleProducts(pluginDescriptor, xmlStreamWriter);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void assembleEJBModules(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws IOException, XMLStreamException {
-        for (Extension ejbModuleExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_EJBMODULE).getConnectedExtensions()) {
-            File ejbModulePluginTmpDir = getPluginTmpDir(ejbModuleExtension.getDeclaringPluginDescriptor());
-            String jarName = ejbModuleExtension.getParameter("jar").valueAsString();
-            File jarSourceFile = new File(ejbModulePluginTmpDir, jarName);
-            File jarDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/" + jarSourceFile.getName());
-            jarDestinationFile.getParentFile().mkdirs();
-            logger.debug("Copy " + jarSourceFile.getPath() + " to " + jarDestinationFile.getPath());
-            FileUtils.copyFile(jarSourceFile, jarDestinationFile);
-            addEJBModule(jarName, xmlStreamWriter);
-        }
-    }
-
-    protected void assembleEJBModuleProducts(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws IOException, XMLStreamException {
-        for (Extension ejbModuleProductExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_EJBMODULE_PRODUCT).getConnectedExtensions()) {
-            String ejbModuleJARName = ejbModuleProductExtension.getParameter("jar").valueAsString();
-            File jarSourceFile = getFilePath(ejbModuleProductExtension.getDeclaringPluginDescriptor(), ejbModuleJARName);
-            File jarDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/" + ejbModuleJARName);
-            jarDestinationFile.getParentFile().mkdirs();
-            logger.debug("Copy " + jarSourceFile.getPath() + " to " + jarDestinationFile.getPath());
-            FileUtils.copyFile(jarSourceFile, jarDestinationFile);
-            addEJBModule(ejbModuleJARName, xmlStreamWriter);
-        }
-    }
-
-    protected void addEJBModule(String jarFilename, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:if");
-        xmlStreamWriter.writeAttribute("test", "count(module/ejb[text() = '" + jarFilename + "']) = 0");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("module");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("ejb");
-        xmlStreamWriter.writeCharacters(jarFilename);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addWARModuleTemplates(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws XMLStreamException, IOException {
-        xmlStreamWriter.writeStartElement("xsl:template");
-        xmlStreamWriter.writeAttribute("name", "addWEBModules");
-        xmlStreamWriter.writeCharacters("\n");
-        assembleWARModules(pluginDescriptor, xmlStreamWriter);
-        assembleWARModuleProducts(pluginDescriptor, xmlStreamWriter);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void assembleWARModules(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        for (Extension warModuleExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_WARMODULE).getConnectedExtensions()) {
-            String webURI = warModuleExtension.getParameter("web-uri").valueAsString();
-            String contextRoot = warModuleExtension.getParameter("context-root").valueAsString();
-            addWebModules(webURI, contextRoot, xmlStreamWriter);
-        }
-    }
-
-    protected void assembleWARModuleProducts(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws IOException, XMLStreamException {
-        for (Extension warModuleProductExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_WARMODULE_PRODUCT).getConnectedExtensions()) {
-            String webURI = warModuleProductExtension.getParameter("web-uri").valueAsString();
-            File warSourceFile = getFilePath(warModuleProductExtension.getDeclaringPluginDescriptor(), webURI);
-            File warDestinationFile = new File(getPluginTmpDir(), pluginDescriptor.getId() + "/" + warSourceFile.getName());
-            warDestinationFile.getParentFile().mkdirs();
-            logger.debug("Copy " + warSourceFile.getPath() + " to " + warDestinationFile.getPath());
-            FileUtils.copyFile(warSourceFile, warDestinationFile);
-            String contextRoot = warModuleProductExtension.getParameter("context-root").valueAsString();
-            addWebModules(webURI, contextRoot, xmlStreamWriter);
-        }
-    }
-
-    protected void addWebModules(String webURI, String contextRoot, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:if");
-        xmlStreamWriter.writeAttribute("test", "count(module/web-uri[text() = '" + webURI + "']) = 0");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("module");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("web");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("web-uri");
-        xmlStreamWriter.writeCharacters(webURI);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("context-root");
-        xmlStreamWriter.writeCharacters(contextRoot);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addSecurityRoleTemplates(PluginDescriptor pluginDescriptor, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:template");
-        xmlStreamWriter.writeAttribute("name", "addSecurityRoles");
-        xmlStreamWriter.writeCharacters("\n");
-        for (Extension securityRoleExtension : pluginDescriptor.getExtensionPoint(EXTENSIONPOINT_SECURITY_ROLE).getConnectedExtensions()) {
-            String description = null;
-            if (securityRoleExtension.getParameter("description") != null) {
-                description = securityRoleExtension.getParameter("description").valueAsString();
-            }
-            String roleName = securityRoleExtension.getParameter("role-name").valueAsString();
-            addSecurityRoles(description, roleName, xmlStreamWriter);
-        }
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    protected void addSecurityRoles(String description, String roleName, XMLStreamWriter xmlStreamWriter) throws XMLStreamException {
-        xmlStreamWriter.writeStartElement("xsl:if");
-        xmlStreamWriter.writeAttribute("test", "count(security-role/role-name[text() = '" + roleName + "']) = 0");
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeStartElement("security-role");
-        xmlStreamWriter.writeCharacters("\n");
-        if (description != null) {
-            xmlStreamWriter.writeStartElement("description");
-            xmlStreamWriter.writeCharacters(description);
-            xmlStreamWriter.writeEndElement();
-            xmlStreamWriter.writeCharacters("\n");
-        }
-        xmlStreamWriter.writeStartElement("role-name");
-        xmlStreamWriter.writeCharacters(roleName);
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-        xmlStreamWriter.writeEndElement();
-        xmlStreamWriter.writeCharacters("\n");
-    }
-
-    @Override
-    protected void doStop() throws Exception {
-        logger.debug("*** stop ***");
     }
 
 }

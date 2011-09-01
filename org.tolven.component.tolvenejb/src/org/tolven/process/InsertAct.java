@@ -33,7 +33,7 @@ public class InsertAct extends ComputeBase{
 	private String arDirection;
 	private String position;
 	private String action;
-
+	private boolean enableAct;
 	private String templateBody;
 
 	public void compute( ) throws Exception {
@@ -44,21 +44,17 @@ public class InsertAct extends ComputeBase{
 		
 			Integer position = Integer.valueOf(getPosition());
 			Act act = this.getAct();
-			if (getAction().equals("add"))
-			{
+			if (getAction().equals("add")){
 	            ActRelationship newRelationship = parseTemplate();
-	            act.getRelationships().add(newRelationship);
-					
+	            newRelationship.setEnabled(isEnableAct());
+	            act.getRelationships().add(newRelationship);					
 			}
-			else // Remove
-			{
+			else {// Remove	
 				List<ActRelationship> lActToRemove = new ArrayList<ActRelationship>();
-		        for (ActRelationship lRel : act.getRelationships())
-		        {
+		        for (ActRelationship lRel : act.getRelationships()) {
 		        	if(!lRel.getName().equals(arName)) 
 		        		continue;
-		        	if (lRel.getSequenceNumber() != null && lRel.getSequenceNumber().intValue() == position)
-		        	{
+		        	if (lRel.getSequenceNumber() != null && lRel.getSequenceNumber().intValue() == position){
 		        		lActToRemove.add(lRel);
 		        	}
 		        }
@@ -67,15 +63,13 @@ public class InsertAct extends ComputeBase{
 			
 		    // Reset the Sequence
 	        int index = 1;
-	        for (ActRelationship lRel : act.getRelationships())
-	        {
+	        for (ActRelationship lRel : act.getRelationships()){
 	        	if(!lRel.getName().equals(arName)) // set the sequence number only for the Inserted acts
 	        		continue;
 	        	lRel.setSequenceNumber(new Integer(index));
 	        	index++;
 	        }
 	        
-	       
 	        // Disable the Compute since its job is done.
 	    	for (Property property : getComputeElement().getProperties()) {
 				if (property.getName().equals("enabled")) {
@@ -84,8 +78,6 @@ public class InsertAct extends ComputeBase{
 				}
 			}
 		}
-		
-		
 	}
 	
 	public ActRelationship parseTemplate( ) throws JAXBException {
@@ -115,12 +107,14 @@ public class InsertAct extends ComputeBase{
 		ar.setAct(templateTrim.getAct());
 		
 		// medication trims have value sets. so the following code handles that. 
+		//Merge the value sets from the trim being inserted
 		boolean valueSetFound = false;
         for (ValueSet v_c : templateTrim.getValueSets()) {
         	ValueSetEx v_child = (ValueSetEx) v_c;
         	valueSetFound = false;
         	for (ValueSet v_p :  getTrim().getValueSets()) {
         		ValueSetEx v_parent = (ValueSetEx) v_p;
+        		//If found merge the values in to the trim valueset
         		if (v_parent.getName().equalsIgnoreCase(v_child.getName())) {
         			valueSetFound = true;
         			v_parent.getValues().clear();
@@ -128,6 +122,7 @@ public class InsertAct extends ComputeBase{
         			break;
         		}
         	}
+        	//if not found add the valueset from trim being inserted
         	if (!valueSetFound)
         	   getTrim().getValueSets().add(v_child);
         }
@@ -197,6 +192,14 @@ public class InsertAct extends ComputeBase{
 	public void setAction(String action) {
 		this.action = action;
 	}
+	public boolean isEnableAct() {
+		return enableAct;
+	}
+
+	public void setEnableAct(boolean enableAct) {
+		this.enableAct = enableAct;
+	}
+	
 	
 	
 }

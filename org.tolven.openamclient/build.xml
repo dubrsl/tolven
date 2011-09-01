@@ -23,7 +23,11 @@
 		<!-- Each section adds itself to the zip file-->
 		<antcall target="buildSection">
 			<param name="section" value="client" />
-			<param name="lib" value="lib/openssoclientsdk.jar;lib/agent.jar" />
+			<param name="lib" value="lib/openssoclientsdk.jar:lib/agent.jar" />
+		</antcall>
+		<antcall target="buildSection">
+			<param name="section" value="ejb" />
+			<param name="lib" value="lib/openssoclientsdk.jar:${buildFolder}/client/classes" />
 		</antcall>
 		<jar destfile="build/tolven-openamclient.jar">
 			<manifest>

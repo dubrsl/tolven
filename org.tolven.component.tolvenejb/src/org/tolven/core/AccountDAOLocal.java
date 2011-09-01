@@ -46,6 +46,14 @@ public interface AccountDAOLocal {
      * @return the account object
      */
     public Account findAccount(long accountId );
+   
+    /** CCHIT merge
+     * Return a list of all accounts of a particular accountType
+     * @param accountType
+     * @return
+     */
+    //public List<Account> findAccounts(AccountType accountType);
+    
     
     /**
      * Create a new account. No users are associated with this account.
@@ -151,12 +159,12 @@ public interface AccountDAOLocal {
      /**
       * @see AccountDAOBean
       */
-     public AccountUser inviteAccountUser(Account account, AccountUser accountUser, TolvenUser invidtedUser, PrivateKey anInviterPrivateKey, Date now, boolean accountPermission, PublicKey userPublicKey );
+     public AccountUser inviteAccountUser(Account account, AccountUser accountUser, TolvenUser invitedUser, String invitedUserRealm, PrivateKey anInviterPrivateKey, Date now, boolean accountPermission);
      
      /**
       * Invite or reinvite a user to an Account
       */
-     public AccountUser inviteAccountUser(Account account, AccountUser accountUser, TolvenUser invidtedUser, PrivateKey anInviterPrivateKey, Date now, boolean accountPermission, PublicKey userPublicKey, boolean isReinvite);
+     public AccountUser inviteAccountUser(Account account, AccountUser accountUser, TolvenUser invitedUser, String invitedUserRealm, PrivateKey anInviterPrivateKey, Date now, boolean accountPermission, boolean isReinvite);
 
      /**
       * Find the list of Sponsorships owned by the specified account
@@ -348,4 +356,7 @@ public interface AccountDAOLocal {
      * @return true 
      */
     public boolean isTemplateAccount(Long accountId);
+    //CCHIT merge
+    public List<AccountUser> getCurrentAccountUserList(TolvenUser tolvenUser);
+    
 }

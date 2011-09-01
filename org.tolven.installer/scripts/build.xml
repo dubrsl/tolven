@@ -2,11 +2,69 @@
 <project basedir="." default="install" name="install">
 
 	<property file="build-v2-override.properties" />
+	<property file="build-v2.properties" />
 	<property file="${password.properties.file}" />
 	<property file="${database.properties.file}" />
-	<property file="build-v2.properties" />
 
-	<target name="requirements-guide" description="requirements-guide">
+	<target name="props">
+		<condition property="INCLUDE.LEGACYPOSTGRESQL">
+			<equals arg1="${tolven.database.code}" arg2="legacypostgresql" />
+		</condition>
+		<condition property="INCLUDE.ORACLE">
+			<equals arg1="${tolven.database.code}" arg2="oracle" />
+		</condition>
+		<condition property="INCLUDE.TOLVEN.KIT">
+			<equals arg1="${include.tolven.kit}" arg2="true" />
+		</condition>
+		<condition property="INCLUDE.TOLVEN.OPENDS">
+			<equals arg1="${include.tolven.opends}" arg2="true" />
+		</condition>
+		<condition property="INCLUDE.SHIRO">
+			<equals arg1="${tolven.security.code}" arg2="shiro" />
+		</condition>
+		<condition property="INCLUDE.OPENAM">
+			<equals arg1="${tolven.security.code}" arg2="openam" />
+		</condition>
+		<condition property="INCLUDE.APPSERVER">
+			<equals arg1="${include.appserver}" arg2="true" />
+		</condition>
+		<condition property="INCLUDE.GLASSFISH3">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${tolven.appserver.code}" arg2="glassfish3" />
+			</and>
+		</condition>
+		<condition property="INCLUDE.JBOSS6">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${tolven.appserver.code}" arg2="jboss6" />
+			</and>
+		</condition>
+		<condition property="INCLUDE.GATEKEEPER.DEPLOY">
+			<and>
+				<istrue value="${INCLUDE.SHIRO}" />
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${include.gatekeeperear.deploy}" arg2="true" />
+			</and>
+		</condition>
+		<condition property="INCLUDE.TOLVENEAR.DEPLOY">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${include.tolvenear.deploy}" arg2="true" />
+			</and>
+		</condition>
+		<condition property="INCLUDE.APPSERVER.UPLOAD">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${include.appserver.upload}" arg2="true" />
+			</and>
+		</condition>
+		<condition property="appserver.home" value="${glassfish.dir}" else="${jboss6.dir}">
+			<equals arg1="${tolven.appserver.code}" arg2="glassfish3" />
+		</condition>
+	</target>
+
+	<target name="requirements-guide" depends="props" description="requirements-guide">
 		<tstamp>
 			<format property="timestamp" pattern="yyyyMMddHHmmss" />
 		</tstamp>
@@ -41,32 +99,14 @@
 		<guide-echo args="${java.home.version.output}" />
 		<guide-echo args="" />
 
-		<guide-echo args="Install database using database documentation" />
-		<guide-echo args="If using PostgreSQL, add the PostgreSQL schemas manually (schemas are in wiki) using a vendor tools e.g. pgAdminIII, psql etc)" />
-		<guide-echo args="" />
+		<antcall target="requirements-guide-legacypostgresql" />
 
-		<guide-echo args="Intial Tolven Components Directory" />
+		<guide-echo args="Initial Tolven Components Directory" />
 		<guide-echo args="Use this directory to gather all of the components required for the installation." />
 		<guide-echo args="Create the directory ${initial.tolven.components.dir}" />
-			
-		<basename property="tolven.kit.zip.full-basename" file="${tolven.kit.zip}" />
-		<guide-echo args="Download Tolven Kit:" />
-		<guide-echo args="${tolven.kit.download.site}/${tolven.kit.zip.full-basename}" />
-		<dirname property="tolven.kit.zip.dirname" file="${tolven.kit.zip}" />
-		<guide-echo args="Place ${tolven.kit.zip.full-basename} in ${tolven.kit.zip.dirname}" />
 		<guide-echo args="" />
 
-		<basename property="openam.config.plugin.full-basename" file="${openam.config.plugin}" />
-		<guide-echo args="Download Tolven OpenAM Plugin: ${v2.plugin.download.site}/${openam.config.plugin.full-basename}" />
-		<dirname property="openam.config.plugin.dirname" file="${openam.config.plugin}" />
-		<guide-echo args="Place ${openam.config.plugin.full-basename} in: ${openam.config.plugin.dirname}" />
-		<guide-echo args="" />
-
-		<basename property="opends.plugin.full-basename" file="${opends.plugin}" />
-		<guide-echo args="Download Tolven OpenDS Plugin: ${v2.plugin.download.site}/${opends.plugin.full-basename}" />
-		<dirname property="opends.plugin.dirname" file="${opends.plugin}" />
-		<guide-echo args="Place ${opends.plugin.full-basename} in: ${opends.plugin.dirname}" />
-		<guide-echo args="" />
+		<ant antfile="build-v2-kit.xml" target="requirements-guide" />
 
 		<basename property="jdbc.driver.full-basename" file="${jdbc.driver}" />
 		<guide-echo args="Download JDBC Driver: ${jdbc.driver.full-basename} from database site" />
@@ -74,35 +114,10 @@
 		<guide-echo args="Place ${jdbc.driver.full-basename} in: ${jdbc.driver.dirname}" />
 		<guide-echo args="" />
 
-		<basename property="opends.zip.full-basename" file="${opends.zip}" />
-		<guide-echo args="Download OpenDS Software: ${v2.plugin.download.site}/${opends.zip.full-basename}" />
-		<dirname property="opends.zip.dirname" file="${opends.zip}" />
-		<guide-echo args="Place ${opends.zip.full-basename} in: ${opends.zip.dirname}" />
-		<guide-echo args="" />
-
-		<basename property="openam.zip.full-basename" file="${openam.zip}" />
-		<guide-echo args="Download OpenAM Software: ${v2.plugin.download.site}/${openam.zip.full-basename}" />
-		<dirname property="openam.zip.dirname" file="${openam.zip}" />
-		<guide-echo args="Place ${openam.zip.full-basename} in: ${openam.zip.dirname}" />
-		<guide-echo args="" />
-
-		<basename property="policyagent.zip.full-basename" file="${policyagent.zip}" />
-		<guide-echo args="Download Policy Agent: ${v2.plugin.download.site}/${policyagent.zip.full-basename}" />
-		<dirname property="policyagent.zip.dirname" file="${policyagent.zip}" />
-		<guide-echo args="Place ${policyagent.zip.full-basename} in: ${policyagent.zip.dirname}" />
-		<guide-echo args="" />
-
-		<basename property="glassfish.zip.full-basename" file="${glassfish.zip}" />
-		<guide-echo args="Download Glassfish: ${v2.plugin.download.site}/${glassfish.zip.full-basename}" />
-		<dirname property="glassfish.zip.dirname" file="${glassfish.zip}" />
-		<guide-echo args="Place ${glassfish.zip.full-basename} in: ${glassfish.zip.dirname}" />
-		<guide-echo args="" />
-
-		<basename property="tomcat.zip.full-basename" file="${tomcat.zip}" />
-		<guide-echo args="Download Apache Tomcat: ${v2.plugin.download.site}/${tomcat.zip.full-basename}" />
-		<dirname property="tomcat.zip.dirname" file="${tomcat.zip}" />
-		<guide-echo args="Place ${tomcat.zip.full-basename} in: ${tomcat.zip.dirname}" />
-		<guide-echo args="" />
+		<ant antfile="build-v2-opends.xml" target="requirements-guide" />
+		<ant antfile="build-v2-openam.xml" target="requirements-guide" />
+		<ant antfile="build-v2-glassfish.xml" target="requirements-guide" />
+		<ant antfile="build-v2-jboss6.xml" target="requirements-guide" />
 
 		<guide-echo args="Set Up Your Security Environment" />
 		<guide-echo args="" />
@@ -132,96 +147,68 @@
 		<guide-echo args="cd ${mdbuser.keystore.src.dirname}" />
 		<guide-echo args="keytool -genkeypair -alias mdbuser -keyalg RSA -dname &quot;cn=mdbuser, ou=services, o=tolven, c=US&quot; -keystore tolvendev-mdbuser.p12 -storetype pkcs12 -storepass tolven -keypass tolven -validity 7300" />
 		<guide-echo args="" />
-		
+
+	</target>
+
+	<target name="requirements-guide-legacypostgresql" if="INCLUDE.LEGACYPOSTGRESQL">
+		<guide-echo args="Install database using database documentation" />
+		<guide-echo args="Add the PostgreSQL schemas manually (schemas are in wiki) using a vendor tools e.g. pgAdminIII, psql etc)" />
+		<guide-echo args="" />
 	</target>
 
 	<target name="install-requirements" depends="requirements-guide" description="install-requirements">
-		<antcall target="include-tolven-kit-install-requirements" />
-		<antcall target="include-tolven-opends-install-requirements" />
-		<antcall target="include-openam-install-requirements" />
-		<antcall target="include-appserver-install-requirements" />
-	</target>
-
-	<target name="include-tolven-kit-install-requirements" unless="exclude.tolven.kit">
 		<ant antfile="build-v2-kit.xml" target="install-requirements" />
-	</target>
-
-	<target name="include-tolven-opends-install-requirements" unless="exclude.tolven.opends">
 		<ant antfile="build-v2-opends.xml" target="install-requirements" />
-	</target>
-
-	<target name="include-openam-install-requirements" unless="exclude.openam">
 		<ant antfile="build-v2-openam.xml" target="install-requirements" />
-	</target>
-
-	<target name="include-appserver-install-requirements" unless="exclude.appserver">
 		<ant antfile="build-v2-glassfish.xml" target="install-requirements" />
+		<ant antfile="build-v2-jboss6.xml" target="install-requirements" />
 		<ant antfile="build-v2-policyagent.xml" target="install-requirements" />
 	</target>
 
 	<target name="install" depends="install-requirements" description="install">
-		<antcall target="include-tolven-kit-install" />
-		<antcall target="include-tolven-opends-install" />
-		<antcall target="include-openam-install" />
-		<antcall target="include-appserver-install" />
-	</target>
-
-	<target name="include-tolven-kit-install" unless="exclude.tolven.kit">
 		<ant antfile="build-v2-kit.xml" target="install" />
-	</target>
-
-	<target name="include-tolven-opends-install" unless="exclude.tolven.opends">
 		<ant antfile="build-v2-opends.xml" target="install" />
-	</target>
-
-	<target name="include-openam-install" unless="exclude.openam">
 		<ant antfile="build-v2-openam.xml" target="install" />
+		<antcall target="install-appserver" />
 	</target>
 
-	<target name="include-appserver-install" unless="exclude.appserver">
+	<target name="install-appserver" if="INCLUDE.APPSERVER">
 		<ant antfile="build-v2-glassfish.xml" target="install" />
-		<antcall target="include-policyagent-install" />
-	</target>
-
-	<target name="include-policyagent-install" unless="exclude.policyagent">
 		<ant antfile="build-v2-policyagent.xml" target="install" />
+		<ant antfile="build-v2-jboss6.xml" target="install" />
 	</target>
 
-	<target name="config-tolven" description="config-tolven">
+	<target name="config-tolven" depends="props" description="config-tolven">
 		<ant antfile="build-v2-kit.xml" target="assemble-tolven" />
 		<antcall target="include-config-tolven-opends" />
 		<antcall target="include-config-openam" />
-		<antcall target="include-config-appserver" />
+		<antcall target="config-tolven-appserver" />
 	</target>
 
-	<target name="include-config-tolven-opends" unless="exclude.tolven.opends">
+	<target name="include-config-tolven-opends" if="INCLUDE.TOLVEN.OPENDS">
 		<ant antfile="build-v2-opends.xml" target="start-opends" />
+		<ant antfile="build-v2-kit.xml" target="unzip-opends-plugin" />
 		<ant antfile="build-v2-opends.xml" target="config-opends" />
 	</target>
 
-	<target name="include-config-openam" unless="exclude.openam">
+	<target name="include-config-openam" if="INCLUDE.OPENAM">
 		<ant antfile="build-v2-openam.xml" target="start-openam" />
 		<ant antfile="build-v2-openam.xml" target="config-openam" />
 	</target>
 
-	<target name="include-config-appserver" unless="exclude.appserver">
-		<antcall target="include-config-policyagent" />
-		<ant antfile="build-v2-glassfish.xml" target="update-glassfish-keystore" />
-		<ant antfile="build-v2-glassfish.xml" target="start-glassfish" />
-		<ant antfile="build-v2-glassfish.xml" target="config-glassfish" />
-		<ant antfile="build-v2-glassfish.xml" target="stop-glassfish" />
-		<ant antfile="build-v2-glassfish.xml" target="prepare-tolven-glassfish" />
-		<ant antfile="build-v2-glassfish.xml" target="start-glassfish" />
-		<ant antfile="build-v2-glassfish.xml" target="config-tolven-glassfish" />
+	<target name="config-tolven-appserver" if="INCLUDE.APPSERVER">
+		<ant antfile="build-v2-policyagent.xml" target="config-policyagent" />
+		<ant antfile="build-v2-glassfish.xml" target="config-tolven-appserver" />
+		<ant antfile="build-v2-jboss6.xml" target="config-tolven-appserver" />
 		<antcall target="include-appserver-upload" />
 	</target>
 
-	<target name="include-config-policyagent" unless="exclude.policyagent">
-		<ant antfile="build-v2-policyagent.xml" target="config-policyagent" />
-	</target>
-
-	<target name="include-appserver-upload" unless="exclude.appserver.upload">
-		<ant antfile="build-v2-kit.xml" target="tolven-post-installation" />
+	<target name="include-appserver-upload" if="INCLUDE.APPSERVER.UPLOAD">
+		<ant antfile="build-v2-kit.xml" target="update-authorization-urls" />
+		<ant antfile="build-v2-kit.xml" target="update-db-indexes" />
+		<ant antfile="build-v2-kit.xml" target="update-appserver-properties" />
+		<ant antfile="build-v2-kit.xml" target="create-system-queue-users" />
+		<ant antfile="build-v2-kit.xml" target="configPhase3" />
 	</target>
 
 	<macrodef name="guide-echo">

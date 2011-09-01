@@ -451,7 +451,7 @@ public class ApplicationMetadata implements ApplicationMetadataLocal {
 	 * @param ms
 	 * @return
 	 */
-	public static String fullPath( MenuStructure ms ) {
+	public String fullPath( MenuStructure ms ) {
 		StringBuffer path = new StringBuffer();
 		if (ms.getParent()!=null) {
 			path.append(fullPath( ms.getParent()));
@@ -1267,7 +1267,7 @@ public class ApplicationMetadata implements ApplicationMetadataLocal {
 	 * @param path
 	 * @return
 	 */
-	protected java.util.List<AccountMenuStructure> getMatchingMenuStructures( String path) {
+	public java.util.List<AccountMenuStructure> getMatchingMenuStructures( String path) {
 	    Query query = em.createQuery("SELECT ams FROM AccountMenuStructure ams " +
                 "WHERE ams.account.id in (SELECT at.account.id FROM AccountTemplate at) " +
                 "AND ams.path like :p " +

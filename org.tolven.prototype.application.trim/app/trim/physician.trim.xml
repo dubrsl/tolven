@@ -3,7 +3,8 @@
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
 	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	<name>reg/evn/assigned/md</name>
 	<page>assigned.xhtml</page>
 	<drilldown>assignedDD.xhtml</drilldown>
@@ -76,12 +77,11 @@
 							<label>Phone</label>
 							<use>WP</use>
 							<value>#{assigned.workTelecom}</value>
-						</TEL>
+						</TEL>						
 					</telecom>
 					<livingSubject>
 						<administrativeGenderCode>
 							<label>Gender</label>
-							<new><encoded>#{encode(assigned.gender)}</encoded></new>
 							<valueSet>genders</valueSet>
 						</administrativeGenderCode>
 					</livingSubject>
@@ -127,6 +127,136 @@
 				</player>
 			</role>
 		</participation>
+		<relationship typeCode="NAME" direction="OUT" name="prescriber">
+			<act moodCode="EVN" classCode="ENTRY">
+				<observation>
+					<value>
+						<label>Account ID</label>
+						<INT><value>725</value></INT>
+					</value>
+					<value >
+						<label>Portal ID</label>
+						<INT><value>853</value></INT>
+					</value>
+					<value>
+						<label>Backup Portal ID</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Service Level</label>
+						<ST>#{assigned.serviceLevel}</ST>
+					</value>
+					<value>
+						<label>Active Start Time</label>
+						<TS>
+							<value>#{TS(assigned.activeStartTime)}</value>
+						</TS>
+					</value>
+					<value>
+						<label>Active End Time</label>
+						<TS>
+							<value>#{TS(assigned.activeEndTime)}</value>
+						</TS>
+					</value>
+					<value>
+						<label>SPI</label>
+						<ST>#{assigned.spiRoot}</ST>
+					</value>
+					<value>
+						<label>DEA</label>
+						<ST>#{assigned.dea}</ST>
+					</value>
+					<value>
+						<label>FAX</label>
+						<ST>#{assigned.fax}</ST>
+					</value>
+					<value>
+						<label>Status</label>
+						<ST>#{assigned.prescriberStatus}</ST>
+					</value>
+					<value>
+						<label>MessageID</label>
+						<ST></ST>
+					</value>
+					<value>
+					<label>Email</label>
+						<ST>#{assigned.prescriberEmail}</ST>
+					</value>			
+                    <value>
+						<label>Phone</label> 
+						<ST>#{assigned.phoneNumber}</ST>
+					</value>
+					<value>
+						<label>Extension</label>
+						<ST>#{assigned.extension}</ST>
+					</value>					
+					<value>
+					     <label>NPI Number</label>
+					     <ST>#{from(source.npi,assigned.npi)}</ST>
+					</value>
+					<value>
+					     <label>Original Address</label>
+					     <ST></ST>
+					</value>
+					<value>
+					     <label>Original City</label>
+					     <ST></ST>
+					</value>
+					<value>
+					     <label>Original State</label>
+					     <ST></ST>
+					</value>
+					<value>
+					     <label>Original Zip</label>
+					     <ST></ST>
+					</value>
+					<value>
+					     <label>SPIs in Account</label>
+					     <ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="notificationPreference" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Notification Preference</ST>
+				</title>
+				<observation>
+					<value>
+						<valueSet>notificationPreferenceVS</valueSet>
+					</value>
+				</observation>	
+			</act>
+		</relationship>
+		<relationship typeCode="NAME" direction="OUT" name="serviceLevel">
+			<act moodCode="EVN" classCode="ENTRY">
+				<observation>
+					<value>
+						<label>Service Level</label>
+						<valueSet>serviceLevel</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<compute>
+        	<type>org.tolven.process.MessageID</type>
+        	<property name="enabled">
+            	<value xsi:type="xs:boolean" >true</value>
+        	</property>
+        	<property name="action">
+		        <value xsi:type="xs:string">prescriberRegistration</value>
+			</property>
+   		</compute>
+   		<compute>
+        	<type>org.tolven.process.ComputePrescriber</type>
+        	<property name="enabled">
+            	<value xsi:type="xs:boolean">true</value>
+        	</property>
+        	<property name="action">
+		        <value xsi:type="xs:string">prescriberDetails</value>
+			</property>
+		</compute> 
 	</act>
 	<valueSet name="genders">
 		<CE>
@@ -138,6 +268,70 @@
 		<CE>
 			<displayName>Female</displayName>
 			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="serviceLevel">
+		<CE>
+			<displayName>NewRx</displayName>
+			<code>C0024910</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>RefillResponse</displayName>
+			<code>C0015912</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>RxChangeResponse</displayName>
+			<code>C0024914</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>RxFill</displayName>
+			<code>C0015916</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>CancelRx</displayName>
+			<code>C0024918</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Medication History</displayName>
+			<code>C0015920</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Eligibility</displayName>
+			<code>C0024921</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="notificationPreferenceVS">
+		<CE>
+			<displayName>Drug - Drug</displayName>
+			<code>C0024558</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Drug - Food</displayName>
+			<code>C0015759</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Drug - Allergy</displayName>
+			<code>C0015760</code>
 			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
 			<codeSystemVersion>2007AA</codeSystemVersion>
 		</CE>

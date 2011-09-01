@@ -14,6 +14,7 @@
 package org.tolven.web.util;
 
 import java.io.Writer;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -265,10 +266,24 @@ public class SimileDataBuilder {
 		try {
 			MenuDataVersion bandMDV = menuBean.findMenuDataVersion(activeAccountUser.getAccount().getId(),path);
 			
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-				boolean extended = currentExtent.applyDate(bandMDV.getMinDate()); 
+			SimpleDateFormat smf = new SimpleDateFormat("MM/dd/yyyy");
+			//get the dates for the band on the browser
+			String bandMinDateStr = getReq().getParameter("minDate");
+			String bandMaxDateStr = getReq().getParameter("maxDate");
+			boolean extended = false;
+			//refresh band request will have dates passed from browser
+			//check if the dates range have been changed
+			if(isValidDate(bandMinDateStr) && isValidDate(bandMaxDateStr)){
+				currentExtent.applyDate(smf.parse(bandMinDateStr));
+				currentExtent.applyDate(smf.parse(bandMaxDateStr));
+				extended = currentExtent.applyDate(bandMDV.getMinDate()); 
 				extended |= currentExtent.applyDate(bandMDV.getMaxDate());
-				if (originalExtent.isValid() && extended) {
+			}else{
+				currentExtent.applyDate(bandMDV.getMinDate());
+				currentExtent.applyDate(bandMDV.getMaxDate());
+			}
+			//check if the dates for the band have been extended
+			if (extended) {
 					TolvenLogger.info("Timeline needs to be refreshed due to path " + path, SimileDataBuilder.class);
 					writer.write("refreshTimeline");
 				} else if (!currentExtent.isValid()) {
@@ -280,8 +295,8 @@ public class SimileDataBuilder {
 					TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
 					writer.write(String.format(Locale.US, ",barName:'%s'", ResourceBundleHelper.getString(tolvenResourceBundle, bandMS.getRepeating())));
 					writer.write(String.format(Locale.US, ",minDate:'%s',maxDate:'%s'",
-							simpleDateFormat.format(currentExtent.getMinDate()),
-							simpleDateFormat.format(currentExtent.getMaxDate()) ));
+						smf.format(currentExtent.getMinDate()),
+						smf.format(currentExtent.getMaxDate()) ));
 					writer.write(",events:[");				
 				   	MenuQueryControl ctrl = new MenuQueryControl();
 					ctrl.setAccountUser(activeAccountUser);
@@ -310,4 +325,26 @@ public class SimileDataBuilder {
 			throw new RuntimeException( "Error building timeline band for " +  path, e );
 		}
 	}
+	public boolean isValidDate(String inDate) {
+
+	    if (inDate == null)
+	      return false;
+
+	    //set the format to use as a constructor argument
+	    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	    
+	    if (inDate.trim().length() != dateFormat.toPattern().length())
+	      return false;
+
+	    dateFormat.setLenient(false);
+	    
+	    try {
+	      //parse the inDate parameter
+	      dateFormat.parse(inDate.trim());
+	    }
+	    catch (ParseException pe) {
+	      return false;
+	    }
+	    return true;
+	  }
 }

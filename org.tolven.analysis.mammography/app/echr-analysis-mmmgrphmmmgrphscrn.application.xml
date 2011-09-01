@@ -44,8 +44,8 @@
 					<from>#{mmmgrphscrnsnapshotresult.patient.sex}</from>
 					<from>#{mmmgrphscrnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="MammographyScreen" width="12.0" align="right" visible="true">
-					<from>#{mmmgrphscrnsnapshotresult.result.pqValue01}</from>
+				<column name="MammographyScreen" width="12.0" visible="true" internal="date02" format="MM/dd/yyyy">
+					<from>#{mmmgrphscrnsnapshotresult.mammographyScreen}</from>
 				</column>
 			</list>
 			<list name="scrn" title="Normal A1c" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:mmmgrphscrnsnapshot:mmmgrphscrnsnapshotresult">
@@ -71,8 +71,8 @@
 					<from>#{mmmgrphscrnsnapshotresult.patient.sex}</from>
 					<from>#{mmmgrphscrnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="Mammography Screening" width="6.0" align="right" visible="true">
-					<from>#{mmmgrphscrnsnapshotresult.result.pqValue01}</from>
+				<column name="MammographyScreen" width="12.0" visible="true" internal="date02" format="MM/dd/yyyy">
+					<from>#{mmmgrphscrnsnapshotresult.mammographyScreen}</from>
 				</column>
 			</list>
 			<list name="noscrn" title="High A1c" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:mmmgrphscrnsnapshot:mmmgrphscrnsnapshotresult">
@@ -98,7 +98,7 @@
 					<from>#{mmmgrphscrnsnapshotresult.patient.sex}</from>
 					<from>#{mmmgrphscrnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="Mammography Screening" width="6.0" align="right" visible="true">
+				<column name="MammographyScreen" width="6.0" align="right" visible="true">
 					<from>#{mmmgrphscrnsnapshotresult.result.pqValue01}</from>
 				</column>
 			</list>
@@ -119,6 +119,8 @@
 			<field name="result" internal="parent03">
 				<from>#{result}</from>
 			</field>
+			<field name="mammographyScreen" internal="date02">
+			</field>
 		</placeholder>
 	</extends>
 	<extends path="echr:cohort:snapshots">
@@ -136,7 +138,7 @@
 	</extends>
 	<extends path="echr:analysis">
 		<menu name="mmmgrphmmmgrphscrnsnapshot" title="Mammography Screening" sequence="700" page="/five/bar2.xhtml" visible="true">
-			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:mmmgrphscrnsnapshot:mmmgrphscrnsnapshotresult">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:mmmgrphscrnsnapshot:mmmgrphscrnsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{mmmgrphscrnsnapshotresult.patient.lastName}, #{mmmgrphscrnsnapshotresult.patient.firstName} #{mmmgrphscrnsnapshotresult.patient.middleName}</from>
 				</column>
@@ -159,11 +161,14 @@
 					<from>#{mmmgrphscrnsnapshotresult.patient.sex}</from>
 					<from>#{mmmgrphscrnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="MammographyScreen" width="12.0" align="right" visible="true">
-					<from>#{mmmgrphscrnsnapshotresult.result.pqValue01}</from>
+				<column name="MammographyScreen" width="12.0" visible="true" internal="date02" format="MMM-dd-yyyy">
+					<from>#{mmmgrphscrnsnapshotresult.mammographyScreen}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{mmmgrphscrnsnapshotresult.mmmgrphscrnsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="scrn" title="Normal A1c" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:mmmgrphscrnsnapshot:mmmgrphscrnsnapshotresult">
+			<list name="scrn" title="Normal A1c" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:mmmgrphscrnsnapshot:mmmgrphscrnsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{mmmgrphscrnsnapshotresult.patient.lastName}, #{mmmgrphscrnsnapshotresult.patient.firstName} #{mmmgrphscrnsnapshotresult.patient.middleName}</from>
 				</column>
@@ -186,11 +191,14 @@
 					<from>#{mmmgrphscrnsnapshotresult.patient.sex}</from>
 					<from>#{mmmgrphscrnsnapshotresult.patient.gender}</from>
 				</column>
-				<column name="MammographyScreen" width="12.0" align="right" visible="true">
-					<from>#{mmmgrphscrnsnapshotresult.result.pqValue01}</from>
+				<column name="MammographyScreen" width="12.0" visible="true" internal="date02" format="MMM-dd-yyyy">
+					<from>#{mmmgrphscrnsnapshotresult.mammographyScreen}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{mmmgrphscrnsnapshotresult.mmmgrphscrnsnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="noscrn" title="High A1c" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:mmmgrphscrnsnapshot:mmmgrphscrnsnapshotresult">
+			<list name="noscrn" title="High A1c" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:mmmgrphscrnsnapshot:mmmgrphscrnsnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{mmmgrphscrnsnapshotresult.patient.lastName}, #{mmmgrphscrnsnapshotresult.patient.firstName} #{mmmgrphscrnsnapshotresult.patient.middleName}</from>
 				</column>
@@ -215,6 +223,9 @@
 				</column>
 				<column name="MammographyScreen" width="12.0" align="right" visible="true">
 					<from>#{mmmgrphscrnsnapshotresult.result.pqValue01}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{mmmgrphscrnsnapshotresult.mmmgrphscrnsnapshot.effectiveTime}</from>
 				</column>
 			</list>
 		</menu>

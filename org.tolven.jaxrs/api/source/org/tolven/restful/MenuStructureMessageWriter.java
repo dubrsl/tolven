@@ -24,6 +24,7 @@ import java.lang.reflect.Type;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -76,7 +77,7 @@ public class MenuStructureMessageWriter implements MessageBodyWriter<AccountMenu
             xmlStreamWriter.writeStartElement("metadata");
             xmlStreamWriter.writeAttribute("path", ams.getPath());
             xmlStreamWriter.writeAttribute("account", String.valueOf(ams.getAccount().getId()));
-            xmlStreamWriter.writeAttribute("database", propertiesBean.getProperty("tolven.repository.oid"));
+            xmlStreamWriter.writeAttribute("database", getPropertyBean().getProperty("tolven.repository.oid"));
             for (MSColumn col : ams.getColumns()) {
                 xmlStreamWriter.writeStartElement("column");
                 xmlStreamWriter.writeAttribute("name", col.getHeading());
@@ -99,4 +100,17 @@ public class MenuStructureMessageWriter implements MessageBodyWriter<AccountMenu
             }
         }
     }
+	
+	protected TolvenPropertiesLocal getPropertyBean() {
+  		if (propertiesBean == null) {
+            String jndiName = "java:app/tolvenEJB/TolvenProperties!org.tolven.core.TolvenPropertiesLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                propertiesBean = (TolvenPropertiesLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+  		return propertiesBean;
+  	}
 }

@@ -31,7 +31,8 @@ import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.security.LoginLocal;
 import org.tolven.security.TolvenPerson;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 
 public class GeneralSecurityFilter implements Filter {
 
@@ -63,7 +64,8 @@ public class GeneralSecurityFilter implements Filter {
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String tolvenUserIdString = TolvenSSO.getInstance().getSessionProperty(TOLVENUSER_ID, request);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        String tolvenUserIdString = (String) sessionWrapper.getAttribute(TOLVENUSER_ID);
         if (tolvenUserIdString == null || tolvenUserIdString.length() == 0) {
             /*
              * Just logged in so TolvenUserId must be set
@@ -85,14 +87,14 @@ public class GeneralSecurityFilter implements Filter {
             /*
              * Finally set the all clear, by providing the necessary TolvenUserId
              */
-            TolvenSSO.getInstance().setSessionProperty(TOLVENUSER_ID, String.valueOf(user.getId()), request);
+            sessionWrapper.setAttribute(TOLVENUSER_ID, String.valueOf(user.getId()));
         }
-        String accountUserId = TolvenSSO.getInstance().getSessionProperty(ACCOUNTUSER_ID, request);
+        String accountUserId = (String) sessionWrapper.getAttribute(ACCOUNTUSER_ID);
         if (accountUserId != null && accountUserId.length() > 0) {
             /*
              * User is in an account
              */
-            
+
             AccountUser accountUser = activationBean.findAccountUser(Long.parseLong(accountUserId));
             Long tolvenUserId = Long.parseLong(tolvenUserIdString);
             if (accountUser.getUser().getId() != tolvenUserId) {

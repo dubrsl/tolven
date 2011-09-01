@@ -174,9 +174,14 @@ function wizCancelDone( request ) {
  closeTab(request.responseText);
 }
 
+/**
+* Modified to disable submit button once clicked and enable agai when submit fails
+* modified on 08/12/2010 by Valsaraj
+*/
 // Submit specified element (nothing is uploaded, which will already be done
 function wizSubmit( root, password ) {
 // Tolven.Util.log( "Submit: " + element );
+ $(root + "submitButton").disabled = true;
  var element = $(root).getAttribute("tolvenid" );
  var passwordParam = "";
  if (password) {
@@ -189,9 +194,10 @@ function wizSubmit( root, password ) {
    {
     method: 'post',
     parameters: 'element='+element+passwordParam,
-    onFailure: function(transport) {alert(transport.statusText);},
+    onFailure: function(transport) {$(root + "submitButton").disabled = false; alert(transport.statusText);},
     onSuccess: wizSubmitDone
    });
+ $(root).setAttribute( "itemStatus", "submitted" );
 }
 
 function wizSubmitDone( request ) {
@@ -221,6 +227,63 @@ function wizTransitionDone( request ) {
  closeTab(responses[0]); // Which pane to close
  if (responses[1]!=null) oneSecondShow = responses[1]; // Which pane to open
  recentSubmit();
+}
+/**
+* To nullify  the current trim. Thereby, wizard closes.
+* Author Vineetha
+* Added on 1/18/2011
+*/
+
+function wizNullify( element, action ) {
+ if (confirm( "Mark the document as Nullified?" )) {
+  var myAjax = new Ajax.Request(
+    'wizNullify.ajaxi',
+    {
+     method: 'get',
+      parameters: 'element='+element+'&action=nullifiedActive',
+             onFailure: function(request) {displayError(request,element);},
+     		 onSuccess: function(request) {wizNullifyDone(request,element);}
+    });
+ }
+}
+function wizNullifyDone( request ) {
+ 	closeTab(request.responseText);
+}
+/**
+* To suspend  the current trim. Thereby, wizard closes.
+* Author Vineetha
+* Added on 1/20/2011
+*/
+
+function wizSuspend( element, action ) {
+ if (confirm( "Mark the document as Inactive?" )) {
+  var myAjax = new Ajax.Request(
+    'wizNullify.ajaxi',
+    {
+     method: 'get',
+      parameters: 'element='+element+'&action=suspendActive',
+             onFailure: function(request) {displayError(request,element);},
+     		 onSuccess: function(request) {wizNullifyDone(request,element);}
+    });
+ }
+}
+/**
+* To mark  the current trim 'completed'. Thereby, wizard closes.
+* Author Vineetha
+* Added on 2/1/2011
+*/
+
+function wizComplete( element, action ) {
+ if (confirm( "Mark the document as Resolved?" )) {
+  var myAjax = new Ajax.Request(
+    'wizNullify.ajaxi',
+    {
+     method: 'get',
+      parameters: 'element='+element+'&action=completedActive',
+             onFailure: function(request) {displayError(request,element);},
+     		 onSuccess: function(request) {wizNullifyDone(request,element);}
+    });
+ }
 }
 
 // Setup input fields
@@ -368,10 +431,25 @@ function showStep( prefix, stepNumber ) {
 // Tolven.Util.log( "Root: " + root.id );
  var currentStep = 1*root.getAttribute('currentStep');
  var lastStep = 1*root.getAttribute('lastStep');
+ /**
+  * Modified to hide signature block in all steps except 'complete' step.
+  * added on 25/08/2010 by Valsaraj
+  */
+  if ($("signatureContainer")!=null) {
+	  if (lastStep==stepNumber) {  	
+	  	$("signatureContainer").style.display="block";
+	  }
+	  else {
+	  	$("signatureContainer").style.display="none";
+	  }
+  }
+  
  if (stepNumber==currentStep) return;
 // Tolven.Util.log( "step-before: " + stepNumber );
 // Tolven.Util.log( "step-after: " + stepNo );
- preProcessStep(root,currentStep,lastStep);
+ //if preProcessStep fails don't proceed
+ if(!preProcessStep(root,currentStep,lastStep))
+	return;
  var stepNo = stepNumber;
  $(prefix+'submitButton').disabled=true;
  if ($(prefix+'signaturePasswordField') ) {
@@ -397,6 +475,15 @@ function showStep( prefix, stepNumber ) {
  root.setAttribute('currentStep', stepNo);
  if (stepNo > 0) {
   var step = $(prefix+'step'+stepNo);
+  	/**
+  	* Modified to enable/disable 'create PHR' option for component S & T,
+  	* if 'primary email' is valid in 'Patient' TRIM.
+  	* added on 06/15/2010 by Valsaraj
+  	*/
+	if (prefix.indexOf("echrpatients")!=-1 && stepNo==5) {  	
+  		enablePHRCreationAndSharing(prefix);
+  	}
+  
   step.show();
   if (step.getAttribute('include')!=null) {
    wizUpload( prefix, null );
@@ -426,7 +513,9 @@ function getStepFromServerDone( stepId ) {
  var root = $(step.getAttribute('root'));
  if (root==null) return;
  if (step.getAttribute("stepNo")==root.getAttribute("lastStep")) {
-  $(root.id+'submitButton').disabled=false;
+ //don't enable submitbutton if the wizard request for it
+  if($(root.id+':disableSubmitButton') == null || $(root.id+':disableSubmitButton').value=='false')
+     $(root.id+'submitButton').disabled=false;
   if ($(root.id+'signaturePasswordField') ) {
    $(root.id+'signaturePasswordField').disabled=false;
   }
@@ -458,8 +547,11 @@ function wizUploadCheck( obj, value ) {
 // Upload when the form changes
 function wizUpload( obj, value ) {
   var root = $(obj);
+ // Don't upload when on the last step
+ if (root.getAttribute('itemStatus')=='NEW') {
   var elementId = root.getAttribute( 'tolvenid' );
   ajaxSubmit3( root, elementId );
+}
 }
 
 submitActive = false;
@@ -469,6 +561,11 @@ submitActive = false;
 // containing errors and further instructions.
 function ajaxSubmit3(form, element ) {
  // If the form is no linger being created, don't try uploading
+	var formElem = $(form);
+ if(formElem.getAttribute('ajaxSubmit3InProgress') != null)
+	 return;
+ $(form).setAttribute("ajaxSubmit3InProgress", 'true');
+
  if (form.getAttribute('itemStatus')!='NEW') return;
  submitActive = true;
  $('uploadStatus').innerHTML="Uploading " + form.id;
@@ -485,8 +582,8 @@ function ajaxSubmit3(form, element ) {
          form.action,        // URL
          {                // options
              method:'post',
-             onSuccess: function(req) {ajaxSubmit3Done(req,  element );},
-			    onFailure: function(request) {displayError(request,element);},
+             onSuccess: function(req) {ajaxSubmit3Done(req,  element,form );},
+			 onFailure: function(request) {displayError(request,element);},
              evalScripts: true,
              postBody: queryComponents.join('&')
         });
@@ -494,9 +591,12 @@ function ajaxSubmit3(form, element ) {
 }
 
 // OK to allow Submit button now. Show errors where they belong
-function ajaxSubmit3Done( req , element) {
- submitActive = false;
-   eval("var resp = ("+req.responseText+")");
+function ajaxSubmit3Done( req , element,form) {
+	if($(form).getAttribute('ajaxSubmit3InProgress') != null){
+		$(form).removeAttribute('ajaxSubmit3InProgress');
+	}
+	submitActive = false;
+	eval("var resp = ("+req.responseText+")");
  // Might be obsolete page
  var root = $(resp.root);
  if (root==null) {
@@ -618,7 +718,9 @@ function nextStep( prefix ) {
  var currentStep = 1*root.getAttribute('currentStep');
  var lastStep = 1*root.getAttribute('lastStep');
  if (currentStep>=lastStep) return;
- preProcessStep(root,currentStep,lastStep);
+ //if preProcessStep fails don't proceed
+ if(!preProcessStep(root,currentStep,lastStep))
+	return;
  showStep( prefix, currentStep+1);
 }
 
@@ -943,34 +1045,32 @@ function insertPlanChoice(element,path,choice){
 // is followed after submission
 
 function ajaxSubmit4(form, element, showStepAfterRefresh) {
-
- submitActive = true;
-
- $('uploadStatus').innerHTML="Uploading " + form.id;
-   var elements = Form.getElements(form);
+	submitActive = true;
+	$('uploadStatus').innerHTML="Uploading " + form.id;
+	var elements = Form.getElements(form);
     var queryComponents = new Array();
     for (var i = 0; i < elements.length; i++) {
 		var queryComponent = Form.Element.serialize(elements[i]);
         if (queryComponent) queryComponents.push(queryComponent);
     }
- queryComponents.push( 'element='+element );
- queryComponents.push( 'refreshWizard=true');
+	queryComponents.push( 'element='+element );
+	queryComponents.push( 'refreshWizard=true');
 
- var ajax = new Ajax.Updater(
-   form.id,
-   contextPath + '/ajax/paneDispatch.jsf',
-   {
-             method:'post',
-             onSuccess: function() { refreshWizard(element,form.id, showStepAfterRefresh );},
-          onFailure: function(request) { displayError(request,element+_params);},
-             evalScripts: true,
-             postBody: queryComponents.join('&')
-        });
-
+	var ajax = new Ajax.Updater(
+	form.id,
+	contextPath + '/ajax/paneDispatch.jsf',{
+        method:'post',
+        onSuccess: function() { 
+			refreshWizard(element,form.id, showStepAfterRefresh );
+		},
+        onFailure: function(request) { displayError(request,element+_params);},
+        evalScripts: true,
+        postBody: queryComponents.join('&')
+    });
 }
 
-function refreshWizard(element, id, showStepAfterRefresh)
-{
+//refreshes the wizard
+function refreshWizard(element, id, showStepAfterRefresh){
 
  submitActive = false;
  $(element).setAttribute("showStepAfterRefresh", showStepAfterRefresh);
@@ -982,14 +1082,10 @@ function refreshWizard(element, id, showStepAfterRefresh)
     evalScripts: true,
     onSuccess: function(req) {wizardRefreshComplete(req, element, id, showStepAfterRefresh ); },
     onFailure: function(request) { displayError(request,element);},
-     parameters: 'element='+element+
-          '&serialNo='+serialNo +
-              '&accountUserId='+accountUserId });
-
+     parameters: 'element='+element+'&serialNo='+serialNo +'&accountUserId='+accountUserId });
 }
 
-function wizardRefreshComplete(req,element, id, showStepAfterRefresh)
-{
+function wizardRefreshComplete(req,element, id, showStepAfterRefresh){
 
  // Do nothing
 }
@@ -1138,6 +1234,15 @@ function removeTemplate(formId,postion)
 
 }
 
+function setEnableAct(formId,enableHidden,enableVal){
+	 var rootForm = $(formId);
+	 stopAsync(formId);
+	 $(formId +":"+enableHidden).value = enableVal;
+	 var currentStep = 1 * rootForm.getAttribute('currentStep');
+	 var wipNode = rootForm.parentNode;
+	 ajaxSubmit4(rootForm, wipNode.id, currentStep);
+}
+
 function addProcedureToTrim(procedure,template,formId,element){
  if(element.checked){
   $(element.id+":options").show();
@@ -1250,16 +1355,18 @@ function preProcessStep(root,currentStep,lastStep){
   var _nextStep = currentStep+1;
   var element = $(root).getAttribute("tolvenid" );
   if(!$(root.id+':preProcessStepParams'))
-    return;
+    return true;
   var _paramstr = $(root.id+':preProcessStepParams').value;
   var _allParams = _paramstr?_paramstr.split(";"):null;
   if(!_allParams)
-    return;
+    return true;
   for(var _p=0;_p<_allParams.length;_p++){
     var _params = _allParams[_p].split(",");
-    if(_params[0] == _nextStep)
-      eval(_params[1]+"('"+element+"','"+root.id+"','"+_nextStep+"')");
+    if(_params[0] == _nextStep){
+     return eval(_params[1]+"('"+element+"','"+root.id+"','"+_nextStep+"')");	  
+	}
   }
+  return true;
 }
 
 //------------------START: Favorites wizard relates script -----------------------
@@ -1376,4 +1483,45 @@ function addPatientToDocument(patientId,menuPath,methodArguments){
 	closeDiv(methodArgs[0]+menuPath.substring(menuPath.indexOf(":")));
 	var wipNode = rootForm.parentNode;
 	ajaxSubmit4(rootForm, wipNode.id, 2);
+}
+function disableElement(element){
+	//$(prefix+'submitButton').disabled=true;
+	$(element).disabled = true;
+}
+
+//method to confirm deleting unsaved problems in problems document wizard
+function confirmDeleteUnsavedProblems(element,formId,nextStepNum){
+	if (confirm("Unsaved data on the form will be deleted. Do you want to continue?")) {
+		deleteUnsavedProblems(element,formId,nextStepNum);
+		return false;
+	}
+}
+
+//method to delete unsaved problems in problems document wizard
+//this triggers RemoveDisabledAct.java
+function deleteUnsavedProblems(element,formId,nextStepNum){
+	 var rootForm = $(formId);
+	 stopAsync(formId);
+	 $(formId +":deleteUnsavedProblems").value = true;
+	 var currentStep = 1 * rootForm.getAttribute('currentStep');
+	 var wipNode = rootForm.parentNode;
+	 ajaxSubmit4(rootForm, wipNode.id, currentStep);
+}
+
+function setDeathProblemName(formId, element, val) {
+	alert(element.value);
+	alert(val);
+	/*alert(($formId + ":deathCauseName"));
+	alert(document.getElementById("deathCauseName"));
+	alert(document.getElementById("deathCauseName").value);
+	alert(($formId + ":deathCauseName").value);
+	 alert("setDeathProblemName:" + ($formId + ":deathCauseName").value);*/
+}
+
+function instantiateAction(actionPath){
+	showPane(actionPath,false,actionPath);
+	showActionOptions(actionPath+':active:menu_dropdown_loc',actionPath+':active:menu_drpDwn');
+}
+function setProblemNameValue(srcElement,destElement){
+	$(destElement).value = $(srcElement).options[$(srcElement).selectedIndex].text;
 }

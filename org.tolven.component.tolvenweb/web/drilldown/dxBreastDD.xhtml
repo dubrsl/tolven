@@ -14,7 +14,10 @@
 <body>
     <ui:composition>
 		<wiz:body>
-		
+			<c:if test="#{empty trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}">
+				No Diagnosis is added
+			</c:if>
+			<c:if test="#{not empty trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}">
 		      <h:dataTable value="#{trim.trim.act.relationships}" var="rel" width="800px">
 		      
 			            <h:column >
@@ -74,9 +77,8 @@
 			            </h:column>
 
 
-            		</h:dataTable>
-		
-		
+            		</h:dataTable>		
+			</c:if>		
 		</wiz:body>
 	</ui:composition>
 </body>

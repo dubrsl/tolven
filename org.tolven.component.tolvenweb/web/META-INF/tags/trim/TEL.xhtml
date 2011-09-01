@@ -5,6 +5,7 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
       xmlns:trim="http://www.tolven.org/jsf/trim">
 <head>
     <title>A Telecom contact number</title>
@@ -14,10 +15,52 @@
 <body> 
     <ui:composition>
 		<h:panelGrid columns="2">
-		<h:outputText value="#{tel.label.value}"/>
+			<!--Modified to provide * symbol for primaryEmail field by Valsaraj.-->
+			<c:choose>
+				<c:when test="#{tel.label.value == 'Primary Email'}">
+					<h:inputText value="#{tel.label.value}#{readonly!='true' and (tel.label.value == 'Primary Email')?' *':''}" style="width:125px;border: 0px;" readonly="true"/>
+				</c:when>
+				<c:otherwise>
+					<h:inputText value="#{tel.label.value}" style="width:125px;border: 0px;" readonly="true"/>
+				</c:otherwise>
+			</c:choose>
 		<h:panelGroup>
-			<h:inputText value="#{tel.address}" rendered="#{readonly!='true'}"/>
+				<!--Modified to provide id for primaryEmail field and to make it mandatory by Unni.-->
+				<!--
+					Added email validator
+					Modified to provide id for secondaryEmail field and to make it mandatory.
+					- Valsaraj
+				-->
+				<c:choose>
+					<c:when test="#{tel.label.value == 'Primary Email'}">
+						<h:inputText id="primaryEmailId" value="#{tel.address}" rendered="#{readonly!='true'}" size="20" 
+							onkeyup="checkFormat('primaryEmailId', '#{menu.elementLabel}', 'errorMsgPEmail');"/>
+						<span id="errorMsgPEmail" style="display: none; color: red;">
+							<h:outputText value="Enter a valid email."/>
+					    </span>
 			<h:outputText value="#{tel.address}" rendered="#{readonly=='true'}"/>
+					</c:when>
+					<c:when test="#{tel.label.value == 'Secondary Email'}">
+						<h:inputText id="secondaryEmailId" value="#{tel.address}" rendered="#{readonly!='true'}" size="20" 
+							onkeyup="checkFormat('secondaryEmailId', '#{menu.elementLabel}', 'errorMsgSEmail');"/>
+						<span id="errorMsgSEmail" style="display: none; color: red;">
+							<h:outputText value="Enter a valid email."/>
+					    </span>
+						<h:outputText value="#{tel.address}" rendered="#{readonly=='true'}" />
+					</c:when>
+					<c:otherwise>
+						<h:inputText id="#{fn:replace(tel.label.value,' ','')}" value="#{tel.address}" rendered="#{readonly!='true'}" maxlength="10" 
+					 		onkeyup="checkFormat('#{fn:replace(tel.label.value,' ','')}', '#{menu.elementLabel}', 'errorMsg#{fn:replace(tel.label.value,' ','')}');" ><!--  onkeypress="return onlyNumbers(event);"-->
+					 		<c:if test="#{tel.label.value == 'Home Phone'}">
+					 			<f:validator validatorId="telValidator" />
+					 		</c:if>
+					 	</h:inputText>
+						<span id="errorMsg#{fn:replace(tel.label.value,' ','')}" style="display: none; color: red;">
+							<h:outputText value="Enter valid 10 digit no."/>
+						</span>
+						<h:outputText value="#{tel.address}" rendered="#{readonly=='true'}"/>
+					</c:otherwise>
+				</c:choose>
 		</h:panelGroup>
 		</h:panelGrid>
 	</ui:composition>

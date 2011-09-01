@@ -14,17 +14,14 @@
 package org.tolven.core;
 
 import java.io.Serializable;
+import java.security.cert.X509Certificate;
 import java.util.List;
 
 public interface InvitationQueueLocal {
 
     public String getQueueName();
-
-    /**
-     * Queue a payload.
-     * @param payload
-     */
-    public void send(Serializable payload);
+    
+    public X509Certificate getQueueOwnerX509Certificate();
 
     /**
      * Queue a list of payloads.
@@ -32,5 +29,11 @@ public interface InvitationQueueLocal {
      * @param payloads
      */
     public void send(List<Serializable> payloads);
+
+    /**
+     * Queue a payload.
+     * @param payload
+     */
+    public void send(Serializable payload);
 
 }

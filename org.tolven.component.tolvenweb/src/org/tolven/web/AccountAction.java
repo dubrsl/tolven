@@ -40,7 +40,7 @@ public class AccountAction extends TolvenAction {
 
     @Resource
     private VestibuleProcessor vestibuleProcessor;
-
+    
     private List<AccountUser> accountUsers = null;
 
 	private DataModel accountUsersModel;

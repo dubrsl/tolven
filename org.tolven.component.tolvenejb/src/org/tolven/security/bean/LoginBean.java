@@ -34,6 +34,7 @@ import org.tolven.security.LDAPLocal;
 import org.tolven.security.LoginLocal;
 import org.tolven.security.LoginRemote;
 import org.tolven.security.TolvenPerson;
+import org.tolven.session.TolvenSessionWrapperFactory;
 @Stateless
 @Local(LoginLocal.class)
 @Remote(LoginRemote.class)
@@ -432,7 +433,7 @@ public class LoginBean implements LoginLocal, LoginRemote {
     public void verifyUserPassword(char[] password) {
     	String principal = null;
     	try {
-    		principal = ejbContext.getCallerPrincipal().getName();
+    		principal = (String)TolvenSessionWrapperFactory.getInstance().getPrincipal();
 			this.ldapBean.verifyPassword(principal, password);
 		} catch (Exception e) {
 			throw new RuntimeException("Error changing password for " + principal, e );
@@ -445,7 +446,7 @@ public class LoginBean implements LoginLocal, LoginRemote {
     public void changeUserPassword(char[] oldPassword, char[] newPassword) {
     	String principal = null;
     	try {
-    		principal = ejbContext.getCallerPrincipal().getName();
+    		principal = (String)TolvenSessionWrapperFactory.getInstance().getPrincipal();
 			this.ldapBean.changeUserPassword(principal, oldPassword, newPassword);
 		} catch (Exception e) {
 			throw new RuntimeException("Error changing password for " + principal, e );

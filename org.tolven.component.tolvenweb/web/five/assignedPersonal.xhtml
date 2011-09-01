@@ -14,14 +14,42 @@
   			<tr><td class="name">#{msg.MiddleName}</td><td class="value">#{menu.drilldownItem.middleName}</td></tr>
   			<tr><td class="name">#{msg.LastName}</td><td class="value">#{menu.drilldownItem.lastName}</td></tr>
   			<tr><td class="name">#{msg.Sex}</td><td class="value">#{menu.drilldownItem.sex}</td></tr>
+  			
+  			<tr><td class="name">#{msg.AddressLine1}</td><td class="value">#{menu.drilldownItem.addr1}</td></tr>
+  			<tr><td class="name">#{msg.AddressLine2}</td><td class="value">#{menu.drilldownItem.addr2}</td></tr>
+  			<tr><td class="name">#{msg.City}</td><td class="value">#{menu.drilldownItem.city}</td></tr>
+  			<tr><td class="name">#{msg.State}</td><td class="value">#{menu.drilldownItem.state}</td></tr>
+  			<tr><td class="name">#{msg.Zip}</td><td class="value">#{menu.drilldownItem.zip}</td></tr>
+  			<tr><td class="name">#{msg.Email}</td><td class="value">#{menu.drilldownItem.prescriberEmail}</td></tr>
   			<tr><td class="name">#{msg.Phone}</td><td class="value">#{menu.drilldownItem.workTelecom}</td></tr>
+  			<tr><td class="name">#{msg.Fax}</td><td class="value">#{menu.drilldownItem.fax}</td></tr>
+  			
+  			<tr><td class="name">#{msg.SPINumber}</td><td class="value">#{menu.drilldownItem.spiRoot}</td></tr>
+  			<c:if test="#{menu.drilldownItem.npi != ''}">
+	  			<tr><td class="name">#{msg.NPINumber}</td><td class="value">#{menu.drilldownItem.npi}</td></tr>
+  			</c:if>
+	  		<tr><td class="name">#{msg.ServiceLevel}</td><td class="value" id="serviceCodeTD"><script type="text/javascript">calculateServiceCode('#{menu.drilldownItem.serviceLevel}','serviceCodeTD')</script></td></tr>
+  			<tr><td class="name">#{msg.ActiveStartDate}</td><td class="value">#{menu.drilldownItem.activeStartTime}</td></tr>
+  			<tr><td class="name">#{msg.ActiveEndDate}</td><td class="value">#{menu.drilldownItem.activeEndTime}</td></tr>
 			<c:forEach var="id" items="${menu.drilldownItem.placeholderIDArray}"> 
 	  			<tr>
 				<td class="name">#{id.root} [#{id.assigningAuthority}]</td><td class="value">#{id.extension}</td>  			
 	  			</tr>
 			</c:forEach> 
 		</table>
+		<c:if test="#{menu.drilldownItem.prescriberStatus =='Error'}">
+  			<p class="attributes"><a href="#" onclick="instantiate('reg/evn/assigned/md','#{menu.element}','#{menu.drilldownItem.path}')">Resubmit</a></p>
+  		</c:if>
+  		<c:if test="#{menu.drilldownItem.prescriberStatus == 'Pending'}">
+  			<p class="attributes">Network Time-out Occurred. <a href="#" onclick="instantiate('reg/evn/assigned/md','#{menu.element}','#{menu.drilldownItem.path}')">Resubmit</a></p>
+  		</c:if>
+  		<c:if test="#{menu.drilldownItem.prescriberStatus == 'Active'}">
 		<p class="attributes"><a href="#" onclick="instantiate('reg/evn/assigned/md','#{menu.element}','#{menu.drilldownItem.path}')">#{msg.Update}</a></p>
+  			<input type="button" value="Disable" onclick="disablePrescriber('reg/evn/assigned/md', '#{menu.element}', '#{menu.drilldownItem.path}')" ></input>
+  		</c:if>
+  		<c:if test="#{menu.drilldownItem.prescriberStatus == 'Disabled'}">
+  			<input type="button" value="Enable" onclick="instantiate('reg/evn/assigned/md','#{menu.element}','#{menu.drilldownItem.path}')" ></input>
+  		</c:if>
 	</ui:composition>
   </body>
 </html>

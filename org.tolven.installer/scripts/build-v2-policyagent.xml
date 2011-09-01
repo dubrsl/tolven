@@ -2,8 +2,8 @@
 <project basedir="." name="build-policyagent">
 
 	<property file="build-v2-override.properties" />
-	<property file="${password.properties.file}" />
 	<property file="build-v2.properties" />
+	<property file="${password.properties.file}" />
 	<property file="${database.properties.file}" />
 
 	<target name="props">
@@ -22,7 +22,7 @@
 		</condition>
 	</target>
 
-	<target name="install-requirements" depends="props" description="install-requirements">
+	<target name="install-requirements" depends="props" description="install-requirements" if="INCLUDE.OPENAM">
 		<fail message="policyagent.zip must be set" unless="policyagent.zip" />
 		<fail message="${policyagent.zip} does not exist">
 			<condition>
@@ -40,7 +40,7 @@
 		<echo message="${ant.project.name} to uninstall, remove: ${j2eeagent.dir} and remove: J2EE Agent: ${j2ee.agent} from OpenAM" />
 	</target>
 
-	<target name="install" depends="props" description="install">
+	<target name="install" depends="props" description="install" if="INCLUDE.OPENAM">
 		<guide-echo args="Install Policy Agent" />
 		<guide-echo args="" />
 
@@ -70,7 +70,7 @@
 		<guide-echo args="" />
 	</target>
 
-	<target name="config-policyagent" depends="props" description="config-policyagent">
+	<target name="config-policyagent" depends="props" description="config-policyagent" if="INCLUDE.OPENAM">
 		<guide-echo args="Configure Policy Agent" />
 		<guide-echo args="" />
 

@@ -1,9 +1,11 @@
 package org.tolven.app.el;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
 import javax.naming.InitialContext;
@@ -17,6 +19,8 @@ import org.tolven.provider.ProviderLocal;
 import org.tolven.provider.entity.Provider;
 import org.tolven.security.LDAPLocal;
 import org.tolven.security.TolvenPerson;
+import org.tolven.trim.ActStatus;
+import org.tolven.trim.CE;
 import org.tolven.trim.DataType;
 import org.tolven.trim.II;
 import org.tolven.trim.SETIISlot;
@@ -120,7 +124,69 @@ public class ELFunctions {
 //		}
 		return null;
 	}
-
+	
+	public static String fromCE(Object object1, Object object2) {
+		String CEcontent = "";
+		/*<displayName>Asian</displayName>
+		<code>2567338</code>
+		<codeSystem>2.16.840.1.113883.3.26.2</codeSystem>
+		<codeSystemName>caDSR</codeSystemName>
+		<codeSystemVersion>2.1</codeSystemVersion>*/
+		//first grab the CE
+		CE ce = new CE();
+		List<CE> ces = new ArrayList<CE>();
+		if(object1 !=null) {
+			if(object1 instanceof CE) {
+				ce = (CE) object1;
+				ces.add(ce);
+			} else if (object1 instanceof List<?>) {
+				ces = (List<CE>) object1;
+			} else {
+				ce.setDisplayName(object1.toString());
+			}
+		} else if (object2 !=null) {
+			if(object2 instanceof CE) {
+				ce = (CE) object2;
+				ces.add(ce);
+			} else if (object2 instanceof List<?>) {
+				ces = (List<CE>) object2;
+			} else {
+				ce.setDisplayName(object2.toString());
+			}
+		}
+		int count = 0;
+		for (CE ace : ces) {
+			if(ces.size() > 1) {
+				//This is only when it is a list
+				count +=1;
+			}
+			//Next write out all those fancy values
+			if(ace.getDisplayName() != null) {
+				CEcontent += "<displayName>" + ace.getDisplayName() + "</displayName>\n";
+			}
+			if(ace.getCode() != null) {
+				CEcontent += "<code>" + ace.getCode() + "</code>\n";
+			}
+			if(ace.getCodeSystem() != null) {
+				CEcontent += "<codeSystem>" + ace.getCodeSystem() + "</codeSystem>\n";
+			}
+			if (ace.getCodeSystemName() != null) {
+				CEcontent += "<codeSystemName>" + ace.getCodeSystemName() + "</codeSystemName>\n";
+			}
+			if (ace.getCodeSystemVersion() != null) {
+				CEcontent += "<codeSystemVersion>" + ace.getCodeSystemVersion() + "</codeSystemVersion>\n";
+			}
+			if(ces.size() > 1 && count < ces.size()) {
+				//This is only when it is a list, don't do this on the last element
+				CEcontent +="</CE>";
+				CEcontent +="<CE>";
+			}
+		}
+		
+				
+		return CEcontent;
+	}
+	
 	public static Date TStoDate( String time ) {
 		if (time==null || time.length()==0) return null;
 		try {
@@ -186,8 +252,40 @@ public class ELFunctions {
 	    return ((new Date().getTime()-dob.getTime())/YEAR);
 	}
 	
+	//CCHIT merge	
+	/**
+	 * Function to show elipses ("…") to indicate that 
+	 * the entire source details could not be displayed.
+	 * @author Pinky S
+	 * Added on 02/09/11
+	 * @param source
+	 */
+	public static String processSource( String source ) {
+		if(source!=null && source.length()>12 )
+			return source.substring(0,12).concat("...");
+		else
+			return source;
+	}
+	public static String toLowerCaseValue(ActStatus status){
+		if(status != null)
+			return status.value().toLowerCase();
+		else
+			return null;
+		
+	}
+	/*public static TolvenPerson tp( String principal ) throws NamingException {
+		return getLDAPBean().createTolvenPerson(principal);
+	}*/
+	public static String transDisplString(String transition){
+		if(transition != null && transition.equalsIgnoreCase(ActStatus.ABORTED.value())){
+			return "Discontinued";
+		}
+		if(transition == null)
+			return null;
+		return transition.toLowerCase();
+	}
 	public static TolvenPerson tp( String principal ) throws NamingException {
 		return getLDAPBean().createTolvenPerson(principal);
 	}
-
+	
 }

@@ -133,7 +133,7 @@ public class TolvenInstaller {
         String pluginsXMLTemplateFilename = commandLine.getOptionValue(CMD_LINE_PLUGINSXMLTEMPLATE_OPTION);
         File pluginsXMLTemplate = null;
         if (pluginsXMLTemplateFilename == null) {
-            pluginsXMLTemplate = new File(installDir, "installer/template-tolven-config/plugins.xml");
+            pluginsXMLTemplate = new File(installDir, "template-pluginsxml/default-template-plugins.xml");
         } else {
             pluginsXMLTemplate = new File(pluginsXMLTemplateFilename);
             if (!pluginsXMLTemplate.getPath().equals(pluginsXMLTemplate.getAbsolutePath())) {

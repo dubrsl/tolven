@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <trim xmlns="urn:tolven-org:trim:4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
 	<name>accountAllergyList</name>
-	<description>Account Allery List</description>
+	<description>Account Allergy List</description>
 	<page>createFavoritesList.xhtml</page>
 	<drilldown>favortiesListDD.xhtml</drilldown>
 	<menu>global:accountListsMenu</menu>

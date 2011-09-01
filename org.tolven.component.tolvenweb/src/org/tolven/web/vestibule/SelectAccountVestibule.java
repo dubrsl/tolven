@@ -12,7 +12,7 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id: SelectAccountVestibule.java 915 2011-05-18 05:32:10Z joe.isaac $
+ * @version $Id: SelectAccountVestibule.java 1312 2011-06-11 05:11:10Z joe.isaac $
  */
 package org.tolven.web.vestibule;
 
@@ -53,7 +53,7 @@ public class SelectAccountVestibule extends AbstractVestibule {
 
     @Override
     public String validate(ServletRequest servletRequest) {
-        Long proposedAccountId = getSessionProposedAccountUserId(servletRequest);
+        Long proposedAccountId = getSessionProposedAccountUserId();
         if (proposedAccountId == null) {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
             TolvenUser user = loginBean.findUser(request.getUserPrincipal().getName());
@@ -64,7 +64,7 @@ public class SelectAccountVestibule extends AbstractVestibule {
             if (defaultAccountUser == null) {
                 return "/vestibule/selectAccount.jsf";
             } else {
-                setSessionProposedAccountUserId(defaultAccountUser.getId(), servletRequest);
+                setSessionProposedAccountUserId(defaultAccountUser.getId());
             }
         }
         return null;

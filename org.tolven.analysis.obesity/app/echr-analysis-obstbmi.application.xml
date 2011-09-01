@@ -44,8 +44,8 @@
 					<from>#{bmisnapshotresult.patient.sex}</from>
 					<from>#{bmisnapshotresult.patient.gender}</from>
 				</column>
-				<column name="BMIRecord" width="12.0" align="right" visible="true">
-					<from>#{bmisnapshotresult.result.pqValue01}</from>
+				<column name="BMIRecord" width="12.0" visible="true" internal="string06">
+					<from>#{bmisnapshotresult.BMIRecord}</from>
 				</column>
 			</list>
 			<list name="bmi" title="BMI Recorded" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bmisnapshot:bmisnapshotresult">
@@ -71,8 +71,8 @@
 					<from>#{bmisnapshotresult.patient.sex}</from>
 					<from>#{bmisnapshotresult.patient.gender}</from>
 				</column>
-				<column name="Last BMI" width="6.0" align="right" visible="true">
-					<from>#{bmisnapshotresult.result.pqValue01}</from>
+				<column name="BMIRecord" width="12.0" visible="true" internal="string06">
+					<from>#{bmisnapshotresult.BMIRecord}</from>
 				</column>
 			</list>
 			<list name="nobmi" title="BMI Not Recorded" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bmisnapshot:bmisnapshotresult">
@@ -98,7 +98,7 @@
 					<from>#{bmisnapshotresult.patient.sex}</from>
 					<from>#{bmisnapshotresult.patient.gender}</from>
 				</column>
-				<column name="Last BMI" width="6.0" align="right" visible="true">
+				<column name="BMIRecord" width="6.0" align="right" visible="true">
 					<from>#{bmisnapshotresult.result.pqValue01}</from>
 				</column>
 			</list>
@@ -119,6 +119,8 @@
 			<field name="result" internal="parent03">
 				<from>#{result}</from>
 			</field>
+			<field name="BMIRecord" internal="string06">
+			</field>
 		</placeholder>
 	</extends>
 	<extends path="echr:cohort:snapshots">
@@ -136,7 +138,7 @@
 	</extends>
 	<extends path="echr:analysis">
 		<menu name="obstbmisnapshot" title="BMI Recording" sequence="500" page="/five/bar2.xhtml" visible="true">
-			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bmisnapshot:bmisnapshotresult">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bmisnapshot:bmisnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{bmisnapshotresult.patient.lastName}, #{bmisnapshotresult.patient.firstName} #{bmisnapshotresult.patient.middleName}</from>
 				</column>
@@ -159,11 +161,14 @@
 					<from>#{bmisnapshotresult.patient.sex}</from>
 					<from>#{bmisnapshotresult.patient.gender}</from>
 				</column>
-				<column name="BMIRecord" width="12.0" align="right" visible="true">
-					<from>#{bmisnapshotresult.result.pqValue01}</from>
+				<column name="BMIRecord" width="12.0" visible="true" internal="string06">
+					<from>#{bmisnapshotresult.BMIRecord}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bmisnapshotresult.bmisnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="bmi" title="BMI Recorded" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bmisnapshot:bmisnapshotresult">
+			<list name="bmi" title="BMI Recorded" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bmisnapshot:bmisnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{bmisnapshotresult.patient.lastName}, #{bmisnapshotresult.patient.firstName} #{bmisnapshotresult.patient.middleName}</from>
 				</column>
@@ -186,11 +191,14 @@
 					<from>#{bmisnapshotresult.patient.sex}</from>
 					<from>#{bmisnapshotresult.patient.gender}</from>
 				</column>
-				<column name="BMIRecord" width="12.0" align="right" visible="true">
-					<from>#{bmisnapshotresult.result.pqValue01}</from>
+				<column name="BMIRecord" width="12.0" visible="true" internal="string06">
+					<from>#{bmisnapshotresult.BMIRecord}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bmisnapshotresult.bmisnapshot.effectiveTime}</from>
 				</column>
 			</list>
-			<list name="nobmi" title="BMI Not Recorded" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bmisnapshot:bmisnapshotresult">
+			<list name="nobmi" title="BMI Not Recorded" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bmisnapshot:bmisnapshotresult">
 				<column name="Name" width="20.0">
 					<from>#{bmisnapshotresult.patient.lastName}, #{bmisnapshotresult.patient.firstName} #{bmisnapshotresult.patient.middleName}</from>
 				</column>
@@ -215,6 +223,9 @@
 				</column>
 				<column name="BMIRecord" width="12.0" align="right" visible="true">
 					<from>#{bmisnapshotresult.result.pqValue01}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bmisnapshotresult.bmisnapshot.effectiveTime}</from>
 				</column>
 			</list>
 		</menu>

@@ -165,4 +165,12 @@
 		<tag-name>checkBoxOptions</tag-name>
 		<source>trim/checkBoxOptions.xhtml</source>
 	</tag>
+	<tag>
+		<tag-name>personCCHIT</tag-name>
+		<source>trim/personCCHIT.xhtml</source>
+	</tag>
+	<tag>
+		<tag-name>valueSetMenuRefReq</tag-name>
+		<source>trim/valueSetMenuRefReq.xhtml</source>
+	</tag>
 </facelet-taglib>

@@ -50,12 +50,22 @@
 			<ejb-class>org.tolven.app.bean.AdminAppMDB</ejb-class>
 			<message-destination-type>javax.jms.Queue</message-destination-type>
 			<message-destination-link>AdminAppQueue</message-destination-link>
+			<env-entry>
+				<env-entry-name>queueId</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>adminApp</env-entry-value>
+			</env-entry>
 		</message-driven>
 		<message-driven>
 			<ejb-name>Evaluator</ejb-name>
 			<ejb-class>org.tolven.doc.bean.Evaluator</ejb-class>
 			<message-destination-type>javax.jms.Queue</message-destination-type>
 			<message-destination-link>RuleQueue</message-destination-link>
+			<env-entry>
+				<env-entry-name>queueId</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>rule</env-entry-value>
+			</env-entry>
 		</message-driven>
 		<message-driven>
 			<ejb-name>GenDriver</ejb-name>
@@ -63,12 +73,22 @@
 			<transaction-type>Container</transaction-type>
 			<message-destination-type>javax.jms.Queue</message-destination-type>
 			<message-destination-link>GeneratorQueue</message-destination-link>
+			<env-entry>
+				<env-entry-name>queueId</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>generator</env-entry-value>
+			</env-entry>
 		</message-driven>
 		<message-driven>
 			<ejb-name>InvitationSender</ejb-name>
 			<ejb-class>org.tolven.core.bean.InvitationSender</ejb-class>
 			<message-destination-type>javax.jms.Queue</message-destination-type>
 			<message-destination-link>InvitationQueue</message-destination-link>
+			<env-entry>
+				<env-entry-name>queueId</env-entry-name>
+				<env-entry-type>java.lang.String</env-entry-type>
+				<env-entry-value>invitation</env-entry-value>
+			</env-entry>
 		</message-driven>
 	</enterprise-beans>
 	<assembly-descriptor>

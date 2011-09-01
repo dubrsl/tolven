@@ -1,0 +1,91 @@
+package imageOrders
+
+import java.util.*;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.logging.TolvenLogger;
+
+global org.tolven.app.AppEvalAdaptor app;
+
+rule "Place image orders on the ALL orders list"
+	when
+	    $msList: MenuStructure( path == "echr:patient:orders:all" )
+	    $ms: MenuStructure( role == "placeholder", path == "echr:patient:imageOrder" )
+	    $md: MenuData( menuStructure == $ms)
+	then
+	    MenuData mdListItem = app.createReferenceMD( $md, $msList );
+	    app.info("Added an image order to the ALL orders list");
+		mdListItem.addPhrase( $md.getString01(), "imageOrder", "en_US" );
+end
+rule "Place image orders on the ACTIVE orders list"
+	when
+	    $msList: MenuStructure( path == "echr:patient:orders:active", role == 'list' )
+	    $ms: MenuStructure( role == "placeholder", path == "echr:patient:imageOrder" )
+	    $md: MenuData( menuStructure == $ms, (string02 == 'ACTIVE') || (string02 == 'SUSPENDED'))
+	then
+	    MenuData mdListItem = app.createReferenceMD( $md, $msList );
+	    app.info("Added an image order to the ACTIVE orders list");
+		mdListItem.addPhrase( $md.getString01(), "imageOrder", "en_US" );
+end
+rule "Place image orders on the COMPLETED orders list"
+	when
+	    $msList: MenuStructure( path == "echr:patient:orders:completed" )
+	    $ms: MenuStructure( role == "placeholder", path == "echr:patient:imageOrder" )
+	    $md: MenuData( menuStructure == $ms, (string02 == 'COMPLETED'))
+	then
+	    MenuData mdListItem = app.createReferenceMD( $md, $msList );
+	    app.info("Added an image order to the COMPLETED orders list");
+		mdListItem.addPhrase( $md.getString01(), "imageOrder", "en_US" );
+end
+rule "Place image orders on the INACTIVE orders list"
+	when
+	    $msList: MenuStructure( path == "echr:patient:orders:inactive" )
+	    $ms: MenuStructure( role == "placeholder", path == "echr:patient:imageOrder" )
+	    $md: MenuData( menuStructure == $ms, (string02 == 'INACTIVE') || (string02 == 'COMPLETED') || (string02 == 'CANCELLED'))
+	then
+	    MenuData mdListItem = app.createReferenceMD( $md, $msList );
+	    app.info("Added an image order to the INACTIVE orders list");
+		mdListItem.addPhrase( $md.getString01(), "imageOrder", "en_US" );
+end
+rule "Place image orders on the CANCELLED orders list"
+	when
+	    $msList: MenuStructure( path == "echr:patient:orders:cancelled" )
+	    $ms: MenuStructure( role == "placeholder", path == "echr:patient:imageOrder" )
+	    $md: MenuData( menuStructure == $ms, (string02 == 'CANCELLED'))
+	then
+	    MenuData mdListItem = app.createReferenceMD( $md, $msList );
+	    app.info("Added an image order to the CANCELLED orders list");
+		mdListItem.addPhrase( $md.getString01(), "imageOrder", "en_US" );
+end
+rule "Place image orders on the SUSPENDED orders list"
+	when
+	    $msList: MenuStructure( path == "echr:patient:orders:suspended" )
+	    $ms: MenuStructure( role == "placeholder", path == "echr:patient:imageOrder" )
+	    $md: MenuData( menuStructure == $ms, (string02 == 'SUSPENDED'))
+	then
+	    MenuData mdListItem = app.createReferenceMD( $md, $msList );
+	    app.info("Added an image order to the SUSPENDED orders list.");
+		mdListItem.addPhrase( $md.getString01(), "imageOrder", "en_US" );
+end
+rule "Place image orders on the NULLIFIED orders list"
+	when
+	    $msList: MenuStructure( path == "echr:patient:orders:nullified" )
+	    $ms: MenuStructure( role == "placeholder", path == "echr:patient:imageOrder" )
+	    $md: MenuData( menuStructure == $ms, (string02 == 'NULLIFIED'))
+	then
+	    MenuData mdListItem = app.createReferenceMD( $md, $msList );
+	    app.info("Added an image order to the NULLIFIED orders list");
+		mdListItem.addPhrase( $md.getString01(), "imageOrder", "en_US" );
+end
+
+rule "Place image order on order summary list"
+	when
+		$msList: MenuStructure( path == "echr:patient:summary:orderSummary" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:imageOrder" )
+	    $md: MenuData( menuStructure == $ms, (string02 == 'ACTIVE') || (string02 == 'SUSPENDED'))
+	then
+		app.createReferenceMD( $md, $msList );
+		app.info("Added an image order to the orders summary list");
+end

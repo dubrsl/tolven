@@ -10,7 +10,7 @@
 
 <body>
     <ui:composition template="/templates/simplePage.xhtml">
-        <ui:param name="pageTitle" value="Select account"/>
+        <ui:param name="pageTitle" value="Select Tolven account"/>
         <ui:define name="body">
 	 	<h:form id="accountForm" >
 		   <h:panelGroup rendered="#{invitation.openInvitationCount!=0}">
@@ -49,7 +49,7 @@
 						<f:facet name="header">
 							<h:outputText value="#{msg.AccountId}"/>
 						</f:facet>
-						<h:outputText value="#{item.id}"/>
+						<h:outputText value="#{item.account.id}"/>
 					</h:column>
 					<h:column>
 						<f:facet name="header">

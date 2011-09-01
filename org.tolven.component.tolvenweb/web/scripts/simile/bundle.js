@@ -4939,6 +4939,7 @@ Timeline.MirrorBand.prototype.paint=function(eventPainter){
 	var _painterEvents = eventPainter._eventSource._events;
 	this._events.remove(eventPainter._path);
 	var _mirrorEvents = new Array();
+	//add tickmarks to the bottom layer of the timeline
 	for(var i=0;i<_painterEvents.getCount();i++){
 		var _offsetFrmMinDate = parseInt((_painterEvents.elementAt(i)._start.getTime() - this._timeline.minDate.getTime())*100/(this._timeline.maxDate.getTime()-this._timeline.minDate.getTime()));
 		var _evt = new Timeline.MirrorEvent(_painterEvents.elementAt(i),eventPainter,this._timeline,_offsetFrmMinDate); 
@@ -4964,10 +4965,13 @@ Timeline.MirrorEvent = function(evnt,eventPainter,timeline,leftPos){
 	this._tickMark = createElement('div');
 	this._tickMark.style.background= eventPainter._color;
 	this._tickMark.className = 'timeline-tickmark';
+	//set the title attribute to show the date in the tooltip for the tickmark
+	this._tickMark.title = evnt._start;
 	Event.observe(this._tickMark,'click',function(){
-	    //timeline.getBand(0).setMaxVisibleDate(evnt._start);
+	    //set the visible date of the timeline
+		timeline.getBand(0).setMaxVisibleDate(evnt._start);
 		//timeline._dragging = true;
-		//setBandsStyle(timeline,null,timeline._containerDiv.id);
+		setBandsStyle(timeline,null,timeline._containerDiv.id);
 		});
 }
 

@@ -15,23 +15,23 @@
 <!-- slot is passed in -->
     <ui:composition>
         <c:if test="#{slot.datatype=='OBSVALUE' or slot.datatype=='CE' or slot.datatype=='CD'}">
-            <h:selectOneMenu id="#{id}menu" value="#{slot.value}">
+            <h:selectOneMenu id="#{id}menu" value="#{slot.value}" layout="#{layout}" onmousedown="#{onmousedown}" onclick="#{onclick}" required="#{required}" style="#{style}" >
                 <f:selectItems value="#{trim.valueSets[slot.valueSet]}"/>
                 <f:converter converterId="DataTypeConverter"/>
             </h:selectOneMenu>
         </c:if>
         <c:if test="#{slot.datatype=='SET_CE' and readonly != 'true'}">
             <div tvisible="#{tvisible}" style="display:inline">
-                <h:selectManyCheckbox id="#{id}menu" value="#{slot.values}">
+                <h:selectManyCheckbox id="#{id}menu" value="#{slot.values}" layout="#{layout}" onmousedown="#{onmousedown}" onclick="#{onclick}" required="#{required}" style="#{style}">
                     <f:selectItems value="#{trim.valueSets[slot.valueSet]}"/>
                     <f:converter converterId="DataTypeConverter"/>
                 </h:selectManyCheckbox>
             </div>
         </c:if>
         <c:if test="#{slot.datatype=='SET_CE' and readonly == 'true'}">
-	        <h:selectManyCheckbox id="#{id}menu" value="#{slot.values}">
-            <f:selectItems value="#{trim.valueSets[slot.valueSet]}"/>
-            <f:converter converterId="DataTypeConverter"/>
+	        <h:selectManyCheckbox id="#{id}menu" value="#{slot.values}" layout="#{layout}" onmousedown="#{onmousedown}" onclick="#{onclick}" required="#{required}" style="#{style}">
+	            <f:selectItems value="#{trim.valueSets[slot.valueSet]}"/>
+	            <f:converter converterId="DataTypeConverter"/>
           </h:selectManyCheckbox>
         </c:if>
         

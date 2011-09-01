@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.gatekeeper.rs" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.war" />
+		<import plugin-id="org.tolven.shiroweb" />
+	</requires>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+
+	<extension-point id="warModule-declaration" parent-plugin-id="org.tolven.component.war" parent-point-id="warModule-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" default-value="gatekeeperrs" />
+	</extension-point>
+
+	<extension-point id="WEB-INF-LIB-adaptor" parent-plugin-id="org.tolven.component.war" parent-point-id="WEB-INF-LIB-adaptor" />
+	<extension-point id="WEB-INF-CLASSES-adaptor" parent-plugin-id="org.tolven.component.war" parent-point-id="WEB-INF-CLASSES-adaptor" />
+	<extension-point id="webDirectory-adaptor" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory-adaptor" />
+
+	<!-- LOCAL Resources -->
+	<extension-point id="WEB-INF-CLASSES" extension-multiplicity="none">
+		<parameter-def id="sourceDirectory" default-value="rs/classes" multiplicity="none-or-one" />
+	</extension-point>
+	<!-- LOCAL Resources End -->
+
+	<!-- DEFAULT WEB-INF-LIBS -->
+	<extension id="WEB-INF-LIB-adaptor" plugin-id="org.tolven.gatekeeper.rs" point-id="WEB-INF-LIB-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.shiroweb" />
+		<parameter id="extension-point" value="shiroWEB" />
+	</extension>
+	<!-- DEFAULT WEB-INF-LIBS End -->
+
+	<!-- DEFAULT WEB-INF-CLASSES -->
+	<extension id="WEB-INF-CLASSES-adaptor" plugin-id="org.tolven.gatekeeper.rs" point-id="WEB-INF-CLASSES-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.gatekeeper.rs" />
+		<parameter id="extension-point" value="WEB-INF-CLASSES" />
+	</extension>
+	<!-- DEFAULT WEB-INF-CLASSES End -->
+
+	<!-- DEFAULT FILTERS -->
+	<extension id="ShiroFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="ShiroFilter" />
+		<parameter id="filter-class" value="org.tolven.shiro.web.servlet.TolvenShiroFilter" />
+		<parameter id="filter-sequence" value="50" />
+		<parameter id="web-resource-name" value="Secure Pages" />
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.rs" />
+	</extension>
+	<extension id="ShiroFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="ShiroFilter" />
+		<parameter id="url-pattern" value="/*" />
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.rs" />
+	</extension>
+
+	<extension id="ShiroSessionWrapperFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="ShiroSessionWrapperFilter" />
+		<parameter id="filter-class" value="org.tolven.shiro.web.servlet.ShiroSessionWrapperFilter" />
+		<parameter id="filter-sequence" value="55" />
+		<parameter id="web-resource-name" value="Secure Pages" />
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.rs" />
+	</extension>
+	<extension id="ShiroSessionWrapperFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="ShiroSessionWrapperFilter" />
+		<parameter id="url-pattern" value="/*" />
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.rs" />
+	</extension>
+
+	<extension id="JAXRSServlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="JAXRSServlet" />
+		<parameter id="servlet-class" value="com.sun.jersey.spi.container.servlet.ServletContainer" />
+		<parameter id="web-resource-name" value="Secure pages" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.rs" />
+	</extension>
+	<extension id="JAXRSServletPackages" plugin-id="org.tolven.component.war" point-id="context-param">
+		<!-- Jersey link to Tolven RS class -->
+		<parameter id="param-name" value="com.sun.jersey.config.property.packages" />
+		<parameter id="param-value" value="org.tolven.jersey" />
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.rs" />
+	</extension>
+	<extension id="JAXRSMapping" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="JAXRSServlet" />
+		<parameter id="url-pattern" value="/*" />
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.rs" />
+	</extension>
+	<!-- DEFAULT FILTERS End -->
+	
+	<extension id="env-entry-webContextId" plugin-id="org.tolven.component.war" point-id="env-entry">
+		<parameter id="env-entry-name" value="webContextId" />
+		<parameter id="env-entry-type" value="java.lang.String" />
+		<parameter id="env-entry-value" value="gatekeeperrs" />
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.rs" />
+	</extension>
+	
+</plugin>

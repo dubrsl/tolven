@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.library.jboss-rules">
+	<!-- 
+	Build file for org.tolven.library.jboss-rules
+	-->
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+	<!-- 
+	Source code will be included in the devLib jar file if true. Otherwise, source code
+	known to this build script (in the sources folder) will not be added to the plugin.
+	Source code may be published in devLib for several reasons: 1) remote-debugging, 
+	2) it meets the obligation to make source code available with most open-source licenses,
+	3) Provides a way to verify that a particular plugin version has a particular 
+	source-code change. But this is not a substitute for source-code management tools.
+	 -->
+	<property name="includeSourceInDevLib" value="false" />
+
+	<!-- 
+	The "build-plugin" target builds one or more sections, each section consisting of a source directory and
+	any other files needed by the manifest/tolven-plugin.xml. You are free to remove any sections that you don't use
+	and add sections if needed. In any case, the folders (sections) mentioned here should correspond to the filters
+	mentioned in the manifest.
+	-->
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+		<!-- Begin list of sections to build. Each section is added to the plugin zip file. -->
+		<!-- End of list of sections to build -->
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir=".">
+				<include name="META-INF/**" />
+				<include name="jars/**" />
+			</zipfileset>
+		</zip>		
+	</target>
+</project>

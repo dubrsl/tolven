@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenContext;
+import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -26,8 +27,10 @@ import org.apache.log4j.Logger;
 import org.tolven.core.InvitationLocal;
 import org.tolven.core.entity.Status;
 import org.tolven.doc.entity.Invitation;
+import org.tolven.session.QueueSessionInterceptor;
 
 @MessageDriven
+@Interceptors({ QueueSessionInterceptor.class })
 public class InvitationSender implements MessageListener {
 	@EJB private InvitationLocal invitationBean;
 

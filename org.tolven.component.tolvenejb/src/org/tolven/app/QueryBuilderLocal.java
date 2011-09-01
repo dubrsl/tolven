@@ -19,6 +19,7 @@ package org.tolven.app;
 
 import java.util.Map;
 
+import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuQueryControl;
 
 /**
@@ -47,5 +48,8 @@ public abstract interface QueryBuilderLocal {
 	 * @param params
 	 */
 	public void prepareCriteria( MenuQueryControl ctrl, StringBuffer sbFrom, StringBuffer sbWhere, StringBuffer sbOrder, Map<String, Object> params);
-
+	
+	public MenuData getOwner( MenuQueryControl ctrl );
+	public void addGlobalFilter(  MenuQueryControl ctrl, StringBuffer sbWhere);
+	public void addWordFilter2( String filter, StringBuffer sbWhere, Map<String, Object>params );
 }

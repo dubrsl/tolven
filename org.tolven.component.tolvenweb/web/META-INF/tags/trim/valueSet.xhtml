@@ -14,17 +14,17 @@
 <body> 
 <!-- slot is passed in -->
     <ui:composition>
-		<h:panelGroup rendered="#{readonly!='true'">
-			<wiz:radio id="#{id}slot" value="#{slot}" layout="#{layout}">
-				<f:selectItems value="#{trim.valueSets[valueSet]}"/>
-				<f:converter converterId="SlotConverter"/>
+     	<c:if test="#{slot.datatype=='SET_CE' and readonly != 'true'}">
+			<wiz:radio id="#{id}slot" value="#{slot.value}" layout="#{layout}">
+				<f:selectItems value="#{trim.valueSets[slot.valueSet]}"/>
+				<f:converter converterId="DataTypeConverter"/>
 			</wiz:radio>
-		</h:panelGroup>
-		<h:panelGroup rendered="#{readonly=='true'}">
-			<h:outputText value="#{value.CE}" >
+        </c:if>
+        <c:if test="#{slot.datatype=='SET_CE' and readonly == 'true'}">
+	        <h:outputText value="#{value.CE}" >
 				<trim:valueSetLookup valueSet="#{trim.valueSets[valueSet]}"/>
 			</h:outputText>
-		</h:panelGroup>
+        </c:if>
 	</ui:composition>
 </body>
 </html>

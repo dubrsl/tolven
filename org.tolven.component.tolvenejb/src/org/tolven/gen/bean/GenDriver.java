@@ -22,6 +22,7 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.MessageDriven;
 import javax.ejb.MessageDrivenContext;
+import javax.interceptor.Interceptors;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -40,6 +41,7 @@ import org.tolven.gen.entity.FamilyUnit;
 import org.tolven.gen.model.GenMedicalCCR;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.security.AccountProcessingProtectionLocal;
+import org.tolven.session.QueueSessionInterceptor;
 
 /**
  * Control the Data Generator process. This process starts when a client queues a message to the 
@@ -51,6 +53,7 @@ import org.tolven.security.AccountProcessingProtectionLocal;
  */
 
 @MessageDriven
+@Interceptors({ QueueSessionInterceptor.class })
 public class GenDriver implements MessageListener {
 
     @EJB

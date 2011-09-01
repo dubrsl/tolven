@@ -71,6 +71,11 @@ public class ReportServlet extends HttpServlet {
         String reportFormat = request.getParameter(REPORT_FORMAT);
         if (reportFormat == null) {
             reportFormat = "pdf";
+        } else if ("xls".toLowerCase().equals(reportFormat.toLowerCase())) { //added for CCHIT merge
+            /*
+             * Let it through
+             */
+        	
         } else if ("pdf".toLowerCase().equals(reportFormat.toLowerCase())) {
             /*
              * Let it through

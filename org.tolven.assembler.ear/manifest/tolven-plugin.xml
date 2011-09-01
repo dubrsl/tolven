@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.assembler.ear" version="2.0.12" vendor="Tolven"  class="org.tolven.assembler.ear.EARAssembler" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.assembler.ear" version="2.1.0" vendor="Tolven" class="org.tolven.assembler.ear.EARAssembler" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<attributes>
 		<attribute value="template-application.xml" id="template-applicationxml" />
 	</attributes>
 	<requires>
+		<import plugin-id="org.tolven.component.ear" />
 		<import plugin-id="org.tolven.assembler.localemodule" />
 		<import plugin-id="org.tolven.assembler.javamodule" />
 		<import plugin-id="org.tolven.assembler.connectormodule" />

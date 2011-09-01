@@ -20,7 +20,23 @@ package org.tolven.app;
 import java.util.Map;
 
 import org.tolven.app.entity.AccountMenuStructure;
+import org.tolven.app.entity.MSColumn;
+import org.tolven.app.entity.MenuStructure;
 import org.tolven.core.entity.Account;
+import org.tolven.menuStructure.Action;
+import org.tolven.menuStructure.Application;
+import org.tolven.menuStructure.Band;
+import org.tolven.menuStructure.Calendar;
+import org.tolven.menuStructure.Column;
+import org.tolven.menuStructure.Instance;
+import org.tolven.menuStructure.Menu;
+import org.tolven.menuStructure.MenuBase;
+import org.tolven.menuStructure.Placeholder;
+import org.tolven.menuStructure.PlaceholderField;
+import org.tolven.menuStructure.Portal;
+import org.tolven.menuStructure.Portlet;
+import org.tolven.menuStructure.Timeline;
+import org.tolven.menuStructure.TrimList;
 /**
  * Application metadata is loaded to database. 
  * @author John Churin
@@ -45,4 +61,25 @@ public interface ApplicationMetadataLocal {
      * @return
      */
     public AccountMenuStructure createPlaceholder(String name, String parent, Account account);
+    
+    public void processExtends( java.util.List<Application> extendApplications);
+    public void uploadProperties( Application app, Map<String, String> appFiles );
+    public AccountMenuStructure processBand( Account account, Band band, AccountMenuStructure msParent, MenuStructure msPlaceholder );
+    public AccountMenuStructure  processMenu( Account account, Menu menu, AccountMenuStructure msParent, AccountMenuStructure msPlaceholder);
+    public AccountMenuStructure processCalendar( Account account, Calendar calendar, AccountMenuStructure msParent, AccountMenuStructure msPlaceholder );
+    public AccountMenuStructure processInstance( Account account, Instance instance, AccountMenuStructure msParent);
+    public AccountMenuStructure processPlaceholder( AccountMenuStructure msMenuRoot, Placeholder placeholder, MenuStructure msParent);
+    public AccountMenuStructure processPortal( Account account, Portal portal, AccountMenuStructure msParent,AccountMenuStructure msPlaceholder);
+    public AccountMenuStructure processPortlet( Account account, Portlet portlet, AccountMenuStructure msParent, AccountMenuStructure msPlaceholder);
+    public AccountMenuStructure processTimeline( Account account, Timeline timeline, AccountMenuStructure msParent,AccountMenuStructure msPlaceholder);
+    public AccountMenuStructure processTrimList( Account account, TrimList list, AccountMenuStructure msParent );
+    public MSColumn processPlaceholderField( AccountMenuStructure ms, PlaceholderField field ) ;
+    public MSColumn processColumn( Column col, MenuStructure ms);
+    public AccountMenuStructure resolveMenuStructure( Account account, MenuBase menu, String role, AccountMenuStructure msParent );
+    public void processColumns( AccountMenuStructure ms, java.util.List<Column> columns);
+    public void processActions( Account account, AccountMenuStructure msParent, java.util.List<Action> actions );
+    public void nominateDefaultSuffix( AccountMenuStructure ms );
+    public String fullPath( MenuStructure ms );
+    public void processTrimMenus( java.util.List<Placeholder> trimMenus );
+    public java.util.List<AccountMenuStructure> getMatchingMenuStructures( String path);
 }

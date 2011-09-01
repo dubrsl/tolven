@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Problems</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<c:set var="problems" value="#{trim.trim.act.relationship['subjective'].act.relationship['problems']}"/>
+		<table width="100%">
+			<thead>
+				<tr>
+					<th>Problems</th>
+				</tr>
+				<c:forEach var="problem" items="#{problems.act.relationshipsList['problem']}" varStatus="widgetIndex">
+   					<c:if test="#{problem!=null}">
+   						<c:set var="class" value="odd"/>
+   						<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+    					<tr class="#{class}"> 
+				 			<td>
+				 				<h:outputText escape="false" value="#{problem.act.observation.values[0].CE.displayName}"/>
+			 				</td>
+     					</tr>
+   					</c:if>
+   				</c:forEach>
+		 	</thead>
+		</table>
+	</ui:composition>
+</body>
+</html>

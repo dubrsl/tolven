@@ -9,6 +9,32 @@
 	<page>bloodPressure.xhtml</page>
 	<drilldown>bloodPressureDD.xhtml</drilldown>
 	<reference>http://www.wikihit.org/wiki/index.php/Blood_Pressure_-_Complete</reference>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="editActive" from="active" to="edit">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="suspendActive" from="active" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>		
+		<transition name="suspendCompleted" from="completed" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>	
+		<transition name="nullifiedActive" from="active" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>
+		<transition name="nullifiedCompleted" from="completed" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>		
+		<transition name="completedActive" from="active" to="completed">
+			<label language="en">Resolved</label>
+		</transition>
+		<transition name="completedSuspend" from="suspended" to="completed">
+			<label language="en">Resolved</label>
+		</transition>	
+	</transitions>
 	<act classCode="OBS" moodCode="EVN">
 		<code>
 			<CD>
@@ -17,6 +43,7 @@
 				<codeSystemVersion>2006AC</codeSystemVersion>
 			</CD>
 		</code>
+		<statusCode>active</statusCode>	
 		<title>
 			<ST>Blood Pressure</ST>
 		</title>
@@ -24,6 +51,14 @@
 			<label>Time of observation</label>
 			<new datatype="TS" function="now"/>
 		</effectiveTime>
+		<observation>
+			<value>
+				<PQ>
+					<value></value>
+					<unit>mmHg</unit>
+				</PQ>
+			</value>
+		</observation>
 		<relationship name="systolic" direction="OUT" typeCode="COMP" >
 			<act classCode="OBS" moodCode="EVN">
 				<code>
@@ -39,10 +74,7 @@
 				<observation>
 					<value>
 						<label>Systolic</label>
-						<PQ>
-							<value></value>
-							<unit>mmHg</unit>
-						</PQ>
+						<ST></ST>
 					</value>
 				</observation>
 				<compute>
@@ -68,10 +100,7 @@
 				<observation>
 					<value>
 						<label>Diastolic</label>
-						<PQ>
-							<value></value>
-							<unit>mmHg</unit>
-						</PQ>
+						<ST></ST>
 					</value>
 				</observation>
 				<compute>
@@ -96,11 +125,12 @@
 		<compute>
 			<type>org.tolven.process.Copy</type>
 			<property name="destination">
-   				<value xsi:type="xs:string">\#{trim.act.text.ST.value}</value>
+   				<value xsi:type="xs:string">\#{trim.act.observation.value.ST.value}</value>
 			</property>
 			<property name="source">
-				<value xsi:type="xs:string">\#{trim.act.title.ST.value} \#{trim.act.relationship['systolic'].act.observation.value}/\#{trim.act.relationship['diastolic'].act.observation.value}</value>
+				<value xsi:type="xs:string">\#{trim.act.relationship['systolic'].act.observation.value.ST.value}/\#{trim.act.relationship['diastolic'].act.observation.value.ST.value}</value>
             </property>
 		</compute>
+		
 	</act>
 </trim>

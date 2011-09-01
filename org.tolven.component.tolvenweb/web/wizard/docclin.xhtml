@@ -17,23 +17,7 @@
       <div id="popupGrids">
   			<div id="#{top.accountType}:#{trim.fieldMap['formType']}" class="popupgrid"/>          
       </div>
-      
-      <c:if test="#{reg.userLevelPref == 'Standard'}">
-        	<wiz:step title="#{msg.GettingStarted}" >
-          <wiz:body>
-    				<p>Documenting #{menu.menuDataItem.string01}</p>    							
-    			</wiz:body>
-    			<wiz:help>
-    				<h1>getting Started</h1>
-    				<p>Help provides additional information about each page</p>
-    				<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity 
-    				so that you can continue at any time later.
-    				If you want to completely cancel this diagnosis prior to submission, removing all traces of it from the system, click the Cancel button.
-    				Once submitted, you will not be able to Cancel the form.</p>
-    			</wiz:help>
-          </wiz:step>
-      </c:if>      
-      <c:if test="${fn:length(trim.trim.act.relationshipsList['entry']) == 0}">
+   <c:if test="${fn:length(trim.trim.act.relationshipsList['entry']) == 0}">
         <div class="add" style="display:none;"> 
           <li>
           <a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:#{trim.fieldMap['formType']}','#{top.accountType}:#{trim.fieldMap['formType']}', 'addTemplate', '#{menu.elementLabel}', 0)">Add #{trim.trim.act.relationship['type'].act.title.ST.value}</a>

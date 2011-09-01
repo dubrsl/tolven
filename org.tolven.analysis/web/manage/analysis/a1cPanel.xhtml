@@ -14,7 +14,7 @@
 	<h:form id="a1cForm">
 		<fieldset><legend>Properties</legend>
 			<fieldset><legend>Target</legend>
-				<h:inputText id="a1cTarget" value="#{cohortAnalysis.properties[a1cTargetProperty]}" size="1"
+				<h:inputText id="a1cTarget" value="#{top.accountUser.account.property[a1cTargetProperty]}" size="1"
 					required="true"
 					validatorMessage=" Target must be a number from 0 to 100 inclusive"
 					requiredMessage=" A Target is required">
@@ -25,7 +25,7 @@
 			<h:message for="a1cTarget" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
 			<fieldset><legend>Threshold</legend>
 				<h:outputText value="High A1c: " />
-				<h:inputText id="a1cHigh" value="#{cohortAnalysis.properties[a1cHighProperty]}" size="1"
+				<h:inputText id="a1cHigh" value="#{top.accountUser.account.property[a1cHighProperty]}" size="1"
 					required="true"
 					validatorMessage=" High A1c must be a number greater than or equal to 0"
 					requiredMessage=" High A1c value is required">

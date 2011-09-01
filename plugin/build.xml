@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="Plugin manager kit">
+	<!-- 
+	*** You probably don't need to use this build file. ***
+	This builds the ant pluginManager that holds this plugin project. 
+	Build files that you will want to use:
+	managePlugins.xml - The build file you should normally use to manage plugins 
+	importBuild.xml - A build file you should import into the build.xml of your specific 
+	plugin (in another project). No need to use this one directly.
+	buildCommon.xml - Common declarations used by the other build files. Not used directly.
+	-->
+	<import file="../plugin/buildImport.xml"/>
+	
+	<!-- Builds this project as a Tolven plugin -->
+	<target name="build-plugin" depends="init">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section - this is strange because we're bootstrapping here.-->
+			<zipfileset dir="manifest"/>
+			<zipfileset dir="manifest" prefix="manifest"/>
+			<zipfileset dir=".">
+				<include name="build.xml" />
+				<include name="buildCommon.xml" />
+				<include name="buildImport.xml" />
+				<include name="buildTemplate.xml" />
+				<include name="managePlugins.xml" />
+				<include name="tolven-log4j.xml" />
+			</zipfileset>
+			<zipfileset dir="template" prefix="template">
+				<include name="**/*" />
+			</zipfileset>
+			<zipfileset dir="template2" prefix="template2">
+				<include name="**/*" />
+			</zipfileset>
+		</zip>
+	</target>
+</project>

@@ -2,8 +2,8 @@
 <project basedir="." name="build-opends">
 
 	<property file="build-v2-override.properties" />
-	<property file="${password.properties.file}" />
 	<property file="build-v2.properties" />
+	<property file="${password.properties.file}" />
 	<property file="${database.properties.file}" />
 
 	<target name="props">
@@ -37,19 +37,20 @@
 		</condition>
 	</target>
 
-	<target name="install-requirements" depends="props" description="install-requirements">
+	<target name="requirements-guide" if="INCLUDE.TOLVEN.OPENDS">
+		<basename property="opends.zip.full-basename" file="${opends.zip}" />
+		<guide-echo args="Download OpenDS Software: ${v2.plugin.download.site}/${opends.zip.full-basename}" />
+		<dirname property="opends.zip.dirname" file="${opends.zip}" />
+		<guide-echo args="Place ${opends.zip.full-basename} in: ${opends.zip.dirname}" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="install-requirements" depends="props" description="install-requirements" if="INCLUDE.TOLVEN.OPENDS">
 		<fail message="opends.zip must be set" unless="opends.zip" />
 		<fail message="${opends.zip} does not exist">
 			<condition>
 				<not>
 					<available file="${opends.zip}" />
-				</not>
-			</condition>
-		</fail>
-		<fail message="${opends.plugin} does not exist">
-			<condition>
-				<not>
-					<available file="${opends.plugin}" />
 				</not>
 			</condition>
 		</fail>
@@ -76,7 +77,7 @@
 		<echo message="${ant.project.name} to uninstall, remove: ${tolven.opends.dir}" />
 	</target>
 
-	<target name="install" depends="props" description="install">
+	<target name="install" depends="props" description="install" if="INCLUDE.TOLVEN.OPENDS">
 		<guide-echo args="Install OpenDS" />
 		<guide-echo args="" />
 
@@ -99,7 +100,7 @@
 		<guide-echo args="" />
 	</target>
 
-	<target name="start-opends" depends="props" description="start-opends">
+	<target name="start-opends" depends="props">
 		<guide-echo args="Start OpenDS server" />
 		<echo message="Starting server..." />
 		<guide-echo args="${start-ds}" />
@@ -110,14 +111,22 @@
 		<guide-echo args="Config OpenDS" />
 		<guide-echo args="" />
 
-		<guide-echo args="Unzip ${opends.plugin} to ${tolven.opends.dir}" />
-		<unzip src="${opends.plugin}" dest="${tolven.opends.dir}" />
-		<guide-echo args="" />
-
 		<guide-echo args="Check the default admin SSHA password in ${tolven.opends.dir}/tolven-admin.ldif matches your password (default: ${admin.ssha.password.default})" />
 		<replace token="${admin.ssha.password.default}" value="${admin.ssha.password}" file="${tolven.opends.dir}/tolven-admin.ldif" />
 		<guide-echo args="Check the default manager SSHA password in ${tolven.opends.dir}/tolven-admin.ldif matches your password (default: ${manager.ssha.password.default})" />
 		<replace token="${manager.ssha.password.default}" value="${manager.ssha.password}" file="${tolven.opends.dir}/tolven-admin.ldif" />
+		<guide-echo args="" />
+		<property name="opends.ant.tmp.file" value="${java.io.tmpdir}/tolven.opends.tmp" />
+		<concat destfile="${opends.ant.tmp.file}" append="false">${tolven.opends.anonymousAttributes}</concat>
+		<loadfile srcfile="${opends.ant.tmp.file}" property="substituted.tolven.opends.anonymousAttributes">
+			<filterchain>
+				<tokenfilter>
+					<replacestring from="," to=" || " />
+				</tokenfilter>
+			</filterchain>
+		</loadfile>
+		<delete file="${opends.ant.tmp.file}" />
+		<replace token="(targetattr=&quot;*&quot;) (version 3.0; acl &quot;Tolven Anonymous&quot;" value="(targetattr=&quot;${substituted.tolven.opends.anonymousAttributes}&quot;) (version 3.0; acl &quot;Tolven Anonymous&quot;" file="${tolven.opends.dir}/tolven-aci.ldif" />
 		<guide-echo args="" />
 
 		<guide-echo args="Create an SSL keystore pin file with one line with the password (default: ${tolven.opends.keystore.password})" />
@@ -138,7 +147,7 @@
 		<dsconfig args="set-trust-manager-provider-prop --provider-name &quot;JKS&quot; --set enabled:true --set trust-store-type:JKS --set trust-store-file:${tolven.opends.truststore} --set trust-store-pin-file:${tolven.opends.truststore.pin.file}" />
 		<dsconfig args="set-connection-handler-prop --handler-name &quot;LDAPS Connection Handler&quot; --set enabled:true --set listen-address:${tolven.opends.domain} --set listen-port:${tolven.opends.ldap.port} --set ssl-client-auth-policy:optional --remove ssl-cert-nickname:server-cert" />
 		<dsconfig args="set-connection-handler-prop --handler-name &quot;LDAP Connection Handler&quot; --set enabled:false" />
-		<dsconfig args="set-backend-prop --backend-name userRoot --add base-dn:${tolven.opends.basedn} --noPropertiesFile" />
+		<dsconfig args="set-backend-prop --backend-name userRoot --add base-dn:${tolven.opends.baseDN} --noPropertiesFile" />
 		<dsconfig args="set-backend-prop --backend-name userRoot --remove base-dn:${opends.example.basedn.default}" />
 		<echo message="Import ${tolven.opends.dir}/tolven-admin.ldif" />
 		<import-ldif args="-h ${opends.host.default} -p ${opends.admin.port.default} -X --bindDN &quot;${tolven.opends.rootdn}&quot; --bindPassword ${tolven.opends.rootdn.password} -l ${tolven.opends.dir}/tolven-admin.ldif --backendID userRoot --append --noPropertiesFile" />
@@ -154,7 +163,7 @@
 		<guide-echo args="" />
 	</target>
 
-	<target name="stop-opends" depends="props" description="stop-opends">
+	<target name="stop-opends" depends="props">
 		<guide-echo args="Stop OpenDS server" />
 		<echo message="Stopping opends..." />
 		<guide-echo args="${stop-ds}" />

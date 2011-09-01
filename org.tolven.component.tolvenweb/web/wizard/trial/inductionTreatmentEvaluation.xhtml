@@ -13,21 +13,7 @@
 </head>
 <body>
     <ui:composition>
-			<wiz:step title="#{msg.GettingStarted}">
-				<wiz:body>
-					<p>Induction Treatment Evaluation Form</p>
-					<wiz:group title="Form related to">
-						<trim:CE id="cycle" layout="pageDirection" valueSet="relatedToCycle" value="#{trim.trim.act.relationship['relatedToCycle'].act.observation.value}"/>
-					</wiz:group>
-				</wiz:body>
-				<wiz:help>
-					<p>Help provides additional information about each page</p>
-					<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yoo can continue at any time later.
-					If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
-					Once submitted, you will not be able to Cancel the form.</p>
-				</wiz:help>
-			</wiz:step>
-			<wiz:step title="Response Evaluation" >
+		     <wiz:step title="Response Evaluation" >
 				<wiz:body>
 					<wiz:group title="Response" >
 						<trim:CE id="resp" layout="pageDirection" valueSet="response" value="#{trim.trim.act.relationship['response'].act.observation.value}"/>

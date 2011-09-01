@@ -6,10 +6,6 @@
 	<import file="../plugin/buildImport.xml"/>
 
 	<property name="buildFolder" value="build"/>
-
-	<property file="../tolven/resources/ant-build-default.properties" />
-	<property name="include.java" value="false" />
-	<property name="include.java.source.code" value="true" />
 	<!-- 
 	Source code will be included in the devLib jar file if true. Otherwise, source code
 	known to this build script will not be in the plugin

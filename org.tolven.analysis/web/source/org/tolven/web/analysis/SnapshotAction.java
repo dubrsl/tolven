@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.Map;
 
 import javax.ejb.EJB;
+import javax.naming.NamingException;
 
 import org.tolven.analysis.SnapshotLocal;
 import org.tolven.app.MenuLocal;
@@ -46,6 +47,13 @@ public class SnapshotAction extends TolvenAction {
     }
 
     protected SnapshotLocal getSnapshotBean() {
+        if (snapshotBean == null) {
+            try {
+                snapshotBean = (SnapshotLocal) getContext().lookup("tolven/SnapshotBean/local");
+            } catch (NamingException ex) {
+                throw new RuntimeException("Could not lookup tolven/SnapshotBean/local", ex);
+            }
+        }
         return snapshotBean;
     }
 

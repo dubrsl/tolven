@@ -14,8 +14,8 @@
 <body>
   <ui:composition>
     <wiz:body>
-
-      <table style="width:80%">
+    	<div style="width: 70%;margin:10px;">
+    		<table style="width:100%">
         <thead>
           <th>#{trim.trim.act.relationship['type'].act.title.ST.value}</th>
           <th>#{msg.Date}</th>
@@ -37,28 +37,54 @@
         </thead>
         <tbody>
           <c:forEach items="#{trim.trim.act.relationshipsList['entry']}" var="rel" varStatus="entryIndex">
+            			<tr style="background: #EFEFEF;">
+              				<td width="70%">#{rel.act.observation.value.CE.displayName}</td>
+              				<td><trim:TS id="effectiveTime#{entryIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+              			</tr>
+              			<tr>
+              				<td colspan="2" align="left">
+              					<div class="widget" style="width: 100%;margin:10px 10px 10px 0px;">
+	              					<table style="width: 100%;" cellpadding="0" cellspacing="0" border="0">
+										<thead>
             <tr>
-              <td>#{rel.act.observation.value.CE.displayName}</td>
-              <td><trim:TS id="effectiveTime#{entryIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
-              <c:if test="#{rel.act.relationship['episodicity'] != null}">
-                <td><trim:CE id="episodicity#{entryIndex.index}" valueSet="episodicity" value="#{rel.act.relationship['episodicity'].act.observation.value}" readonly="true"/></td>
+												<th style="width: 5%;" align="center">
+													#
+												</th>
+												<th style="width: 40%;" align="center">
+													Reaction
+												</th>
+												<th style="width: 40%;" align="center">
+													Severity
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<c:set var="noOfAllergyDetail" value="0" />
+											<c:set var="hasAllergyDetail" value="false" />
+											<c:forEach var="allergyDetail" items="#{rel.act.relationship['allergyDetail'].act.relationshipsList['allergy']}" varStatus="allergyDetailIndex">
+												<c:if test="#{allergyDetail != null}">
+													<tr class="#{allergyDetailIndex.index % 2 == 0 ? 'odd' : 'even'}">
+														<td align="center">
+															#{allergyDetailIndex.index}
+														</td>
+														<td align="left">
+															#{allergyDetail.act.relationship['reaction'].act.observation.value.CE.displayName}
+														</td>
+														<td align="left">
+															#{allergyDetail.act.relationship['severity'].act.observation.value.CE.displayName}
+														</td>
+													</tr>
               </c:if>
-              <c:if test="#{rel.act.relationship['reaction'] != null}">
-                <td><trim:CE id="reaction#{entryIndex.index}" valueSet="reaction" value="#{rel.act.relationship['reaction'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-              <c:if test="#{rel.act.relationship['severity'] != null}">
-                <td><trim:CE id="severity#{entryIndex.index}" valueSet="severity" value="#{rel.act.relationship['severity'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-              <c:if test="#{rel.act.relationship['course'] != null}">
-                <td><trim:CE id="course#{entryIndex.index}" valueSet="course" value="#{rel.act.relationship['course'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-              <c:if test="#{rel.act.relationship['onset'] != null}">
-                <td><trim:CE id="onset#{entryIndex.index}" valueSet="onset" value="#{rel.act.relationship['onset'].act.observation.value}" readonly="true"/></td>
-              </c:if>
+											</c:forEach>
+										</tbody>
+									</table>
+								</div>
+              				</td>
             </tr>
           </c:forEach>
         </tbody>
       </table>
+    	</div>
     </wiz:body>
   </ui:composition>
 </body>

@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -97,5 +98,15 @@ public class TSValueConverter extends DateTimeConverter implements Converter {
 		}
 	}
 
+	public static void main(String[] args) throws ParseException {
+		TSValueConverter converter = new TSValueConverter();
+		converter.setDateStyle("short");
+		converter.setTimeStyle("short");
+		converter.setLocale(Locale.ENGLISH);
+		TSDateFormat lPattern = new TSDateFormat(Locale.ENGLISH, "short", "short");
+		System.out.println("1  "+new SimpleDateFormat(lPattern.getSimpleDatePattern()).parse("05/2/2011 9:22 pm"));
+		System.out.println("2  "+ converter.getAsObject(null,null, "05/03/2011 8:30 pm").getClass());
+		System.out.println("3  "+converter.getAsString(null, null, "201105022122"));
+	}
 
 }

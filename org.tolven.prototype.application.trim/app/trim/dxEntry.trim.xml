@@ -3,6 +3,7 @@
 	xmlns="urn:tolven-org:trim:4.0" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
 	<abstract>true</abstract>
 	<name>entry/obs/evn/diagnosis</name>
 	<page>dxEntry.xhtml</page>

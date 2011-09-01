@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.gatekeeper" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.ear" />
+		<import plugin-id="org.tolven.library.apache-commons" />
+		<import plugin-id="org.tolven.library.bouncy-castle" />
+		<import plugin-id="org.tolven.library.tolvencommon" />
+		<import plugin-id="org.tolven.shirolib" />
+		<import plugin-id="org.tolven.shiroejb" />
+		<import plugin-id="org.tolven.gatekeeper.ejb" />
+		<import plugin-id="org.tolven.gatekeeper.rs" />
+		<import plugin-id="org.tolven.gatekeeper.html" />
+		<import plugin-id="org.tolven.gatekeeper.authorization" />
+		<import plugin-id="org.tolven.opends.config" />
+		<import plugin-id="org.tolven.user" />
+	</requires>
+	<extension-point id="ear-declaration" parent-plugin-id="org.tolven.component.ear" parent-point-id="ear-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" default-value="gatekeeper-ear" />
+	</extension-point>
+
+	<!-- EAR Services -->
+	<extension-point id="META-INF-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="META-INF-adaptor" />
+	<extension-point id="connectorModuleProduct-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="connectorModuleProduct-adaptor" />
+	<extension-point id="ejbModuleProduct-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="ejbModuleProduct-adaptor" />
+	<extension-point id="ejbModule-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="ejbModule-adaptor" />
+	<extension-point id="libProduct-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="libProduct-adaptor" />
+	<extension-point id="localeModule-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="localeModule-adaptor" />
+	<extension-point id="localeModuleProduct-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="localeModuleProduct-adaptor" />
+	<extension-point id="warModule-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="warModule-adaptor" />
+	<extension-point id="warModuleProduct-adaptor" parent-plugin-id="org.tolven.component.ear" parent-point-id="warModuleProduct-adaptor" />
+	<!-- EAR Services End -->
+
+	<!-- LIB Extensions -->
+	<extension id="org.tolven.library.apache-commons-commons-beanutils" plugin-id="org.tolven.gatekeeper" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.library.apache-commons" />
+		<parameter id="extension-point" value="commons-beanutils" />
+	</extension>
+	<extension id="org.tolven.library.bouncy-castle-bcprov" plugin-id="org.tolven.gatekeeper" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.library.bouncy-castle" />
+		<parameter id="extension-point" value="lib" />
+	</extension>
+	<extension id="org.tolven.library.tolvencommon-tolvenCommon" plugin-id="org.tolven.gatekeeper" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.library.tolvencommon" />
+		<parameter id="extension-point" value="tolvenCommon" />
+	</extension>
+	<extension id="org.tolven.jndi-tolvenJndi" plugin-id="org.tolven.gatekeeper" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.jndi" />
+		<parameter id="extension-point" value="tolvenJndi" />
+	</extension>
+	<extension id="org.tolven.shirolib-shiro-core" plugin-id="org.tolven.gatekeeper" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.shirolib" />
+		<parameter id="extension-point" value="shiro-core" />
+	</extension>
+	<extension id="org.tolven.shirolib-shiro-web" plugin-id="org.tolven.gatekeeper" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.shirolib" />
+		<parameter id="extension-point" value="shiro-web" />
+	</extension>
+	<extension id="org.tolven.shirolib-shiroLIB" plugin-id="org.tolven.gatekeeper" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.shirolib" />
+		<parameter id="extension-point" value="shiroLIB" />
+	</extension>
+	<!-- LIB Extensions End -->
+
+	<!-- EJB Extensions -->
+	<extension id="org.tolven.gatekeeper.ejb" plugin-id="org.tolven.gatekeeper" point-id="ejbModule-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.gatekeeper.ejb" />
+		<parameter id="ejbFile" value="gatekeeperEJB.jar" />
+	</extension>
+	<extension id="org.tolven.shiroejb" plugin-id="org.tolven.gatekeeper" point-id="ejbModule-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.shiroejb" />
+		<parameter id="ejbFile" value="shiroEJB.jar" />
+	</extension>
+	<!-- EJB Extensions End -->
+
+	<!-- WAR Extensions -->
+	<extension id="org.tolven.gatekeeper.rs" plugin-id="org.tolven.gatekeeper" point-id="warModule-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.gatekeeper.rs" />
+		<parameter id="web-uri" value="gatekeeperRS.war" />
+		<parameter id="context-root" value="/gatekeeper/rs" />
+	</extension>
+	<extension id="org.tolven.gatekeeper.html" plugin-id="org.tolven.gatekeeper" point-id="warModule-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.gatekeeper.html" />
+		<parameter id="web-uri" value="gatekeeperHTML.war" />
+		<parameter id="context-root" value="/gatekeeper/html" />
+	</extension>
+	<!-- WAR Extensions End -->
+
+</plugin>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.command" version="2.0.11" class="org.tolven.command.TolvenApplication" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.command" version="2.1.0" class="org.tolven.command.TolvenApplication" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<attributes>
 		<attribute id="adminPluginId" value="org.tolven.assembler.admin" />
 	</attributes>
 	<requires>
 		<import plugin-id="org.tolven.library.apache-ant" />
 		<import plugin-id="org.tolven.restfulclient" />
+		<import plugin-id="org.tolven.assembler.configwrapper" />
 	</requires>
 	<runtime>
 		<library type="code" path="tpf/classes/" id="tpfclasses" />
@@ -16,11 +17,20 @@
 	<extension-point id="ant-nodeps" parent-plugin-id="org.tolven.library.apache-ant" parent-point-id="runtimeLib" extension-multiplicity="none">
 		<parameter-def id="ant-nodeps" multiplicity="none-or-one" />
 	</extension-point>
+	<extension-point id="tolvenCommon" parent-plugin-id="org.tolven.library.tolvencommon" parent-point-id="runtimeLib" extension-multiplicity="none">
+		<parameter-def id="tolvenCommon" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="tolvenJndi" parent-plugin-id="org.tolven.jndi" parent-point-id="runtimeLib" extension-multiplicity="none">
+		<parameter-def id="tolvenJndi" multiplicity="none-or-one" />
+	</extension-point>
 	<extension-point id="runtimeLib" extension-multiplicity="none">
 		<parameter-def id="tpf" default-value="tpf.jar" multiplicity="none-or-one" />
 	</extension-point>
 	<extension-point id="tpf-runtimeLib" parent-plugin-id="org.tolven.command" parent-point-id="runtimeLib" extension-multiplicity="none">
 		<parameter-def id="tpf" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="configWrapper-runtimeLib" parent-plugin-id="org.tolven.assembler.configwrapper" parent-point-id="runtimeLib" extension-multiplicity="none">
+		<parameter-def id="configWrapper" multiplicity="none-or-one" />
 	</extension-point>
 	<extension-point id="tolven-restful-client" parent-point-id="runtimeLib" parent-plugin-id="org.tolven.restfulclient" extension-multiplicity="none">
 		<parameter-def id="tolven-restful-client" multiplicity="none-or-one" />

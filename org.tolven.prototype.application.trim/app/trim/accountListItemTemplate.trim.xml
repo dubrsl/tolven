@@ -21,6 +21,14 @@
 				<title>
 					<ST></ST>
 				</title>
+				<observation>
+					<value>
+						<ST></ST>
+					</value>
+					<value>
+						<ST></ST>
+					</value>
+				</observation>
 				<relationship typeCode="PERT" direction="OUT" name="path">
 					<act classCode="OBS" moodCode="EVN">
 						<title>

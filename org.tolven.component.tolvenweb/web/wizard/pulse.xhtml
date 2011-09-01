@@ -13,28 +13,17 @@
 
 <body>
     <ui:composition>
-		<wiz:step title="#{msg.GettingStarted}" >
-			<wiz:body>
-				<p>Pulse</p>
-				<p>Click the next button to enter your pulse.</p>
-			</wiz:body>
-			<wiz:help>
-				<h1>getting Started</h1>
-				<p>Help provides additional information about each page</p>
-				<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yuo can continue at any time later.
-				If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
-				Once submitted, you will not be able to Cancel the form.</p>
-			</wiz:help>
-		</wiz:step>
 		<wiz:step title="Enter #{menu.menuDataItem.string01}" >
 			<wiz:body>
 				<wiz:group title="Date of observation">
 					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
 				</wiz:group>
 				<wiz:group title="#{trim.trim.act.observation.value.PQ.label.value}"> 
-					<h:inputText id="val" value="#{trim.trim.act.observation.value.PQ.value}" required="true">
-						<f:converter converterId="TrimDoubleConverter"/>
-					</h:inputText> #{trim.trim.act.observation.value.PQ.unit}<br/>
+					<h:inputText id="val" value="#{trim.trim.act.observation.value.ST.value}" required="true" onkeyup="validateDecimals('#{menu.elementLabel}', 'val', 'numberErrorMsg');">
+						<f:validator validatorId="numberAndDecimalValidator" />
+                        <f:attribute name="attributeFactor" value="number"/> 
+					</h:inputText> #{trim.trim.act.observation.value.label.value}<br/>
+					<span id="numberErrorMsg" style="color: red;"></span>
 					<h:panelGroup id="valError" style="display:none;color:#FF0000;font-style:italic;" >xxxxx</h:panelGroup><br/>
 				</wiz:group>
 				<wiz:group title="Additional Details" >
@@ -49,7 +38,7 @@
 						<trim:CE id="laterality" layout="pageDirection" valueSet="laterality" value="#{trim.trim.act.relationships[2].act.observation.value}"/>
 					</wiz:group>
 					<wiz:group title="#{trim.trim.act.relationships[3].act.observation.value.label.value}" visible="$('#{menu.elementLabel}:pulseDetails').isTrue();">
-						<trim:ED id="comments" value="#{trim.trim.act.relationships[3].act.observation.value}" readonly="false"/>
+						<h:inputTextarea id="comments" value="#{trim.trim.act.relationships[3].act.observation.value.ST.value}" readonly="false"> </h:inputTextarea>
 					</wiz:group>
 				</wiz:group>
 			</wiz:body>

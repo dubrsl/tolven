@@ -75,17 +75,6 @@ public class TolvenViewHandler extends ViewHandler {
     }
 
     private static Locale getLocale(HttpServletRequest request) {
-        /*
-        String accountUserLocale = TolvenSSO.getInstance().getSessionProperty(ResourceBundleHelper.USER_LOCALE, request);
-        if (accountUserLocale != null && accountUserLocale.length() == 0) {
-            accountUserLocale = null;
-        }
-        String accountLocale = TolvenSSO.getInstance().getSessionProperty(ResourceBundleHelper.ACCOUNT_LOCALE, request);
-        if (accountLocale != null && accountLocale.length() == 0) {
-            accountLocale = null;
-        }
-        return ResourceBundleHelper.getLocale(accountUserLocale, accountLocale);
-        */
         return Locale.getDefault();
     }
     

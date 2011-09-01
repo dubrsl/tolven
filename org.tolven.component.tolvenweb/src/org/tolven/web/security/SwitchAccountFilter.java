@@ -25,7 +25,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 
 /**
  * Intercepts requests to logout users
@@ -42,7 +43,8 @@ public class SwitchAccountFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         logger.info("Switch Account request + " + request.getUserPrincipal());
-        TolvenSSO.getInstance().logout(request);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        sessionWrapper.logout();
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String loginURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
         response.sendRedirect(loginURL);

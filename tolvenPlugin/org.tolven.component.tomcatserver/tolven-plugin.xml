@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.component.tomcatserver" version="0.0.1" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.component.tomcatserver" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<extension-point id="tomcatserverxmlAssembly" extension-multiplicity="one">
 		<parameter-def id="connectorDefinition" default-value="connector" multiplicity="none-or-one" />
 		<parameter-def id="webserverCredentialDirectory" default-value="#{pluginProperty['webserver.credentialDir']}" multiplicity="none-or-one" />

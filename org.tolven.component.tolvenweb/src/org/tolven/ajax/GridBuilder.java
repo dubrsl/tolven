@@ -15,6 +15,7 @@ import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.locale.ResourceBundleHelper;
 import org.tolven.locale.SessionResourceBundleFactory;
+import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.web.util.MiscUtils;
 
 
@@ -25,6 +26,7 @@ import org.tolven.web.util.MiscUtils;
  *
  */
 public class GridBuilder {
+	
 	public static final int DEFAULT_VISIBLE_ROWS = 15;
 	public static final float DEFAULT_COL_WIDTH = 10.0f;
 
@@ -38,6 +40,7 @@ public class GridBuilder {
 	private String gridType; // represents output format for the grid
 	private String favoritesType;
 	private Logger logger = Logger.getLogger(GridBuilder.class);
+	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
 	
 	/**
 	 * An instance of this class is constructed for the purpose of building a grid 
@@ -148,6 +151,7 @@ public class GridBuilder {
 	 */
 	public void createInit(String jsMethodName, String jsMethodArgs ) throws IOException {
 		writer.write("<script language=\"JavaScript\" type=\"text/javascript\">\n");
+		
 		writer.write("// <![CDATA[\n");
 		writer.write(String.format(Locale.US, "createGrid( '%s','%s','%s','%s','%s'" + " );\n", 
 				getMenuPath(""),getId(""),(jsMethodName!=null?jsMethodName:""), 
@@ -194,11 +198,39 @@ public class GridBuilder {
 			else width = col.getWidth();
 			String align = col.getAlign();
 			if (align==null) align="left";
+			
+			/**
+			 * To set clean titles for columns if it is not provided in properties.
+			 *
+			 * Author Valsaraj
+			 * Added on 05/20/2010 
+			 */
+			String localText = col.getLocaleText(getAppBundle());
+			
+			if (localText.contains("???echr.patients.")) {
+				String txt = col.getText();
+				
+				if (txt != null && txt.length() > 0) {
+					localText = txt;
+				}
+			}
+			
+			//Modification for popup opening through openTemplateWithCode
+			if (null != getJsMethodArgs() && getJsMethodArgs().endsWith("withCode")) {
+				float widthCode = 8;
+				width = 32;
+				writer.write(String.format(Locale.US, "<th style=\"text-align:%s;width:%.1fem\">%s</th>", 
+						align, widthCode, "Code"));
+				writer.write(String.format(Locale.US, "<th style=\"text-align:%s;width:%.1fem\">%s</th>", 
+						align, width+0.5, localText));
+			} else {
 			writer.write(String.format(Locale.US, "<th style=\"text-align:%s;width:%.1fem\">%s</th>", 
-					align, width+0.5, col.getLocaleText(SessionResourceBundleFactory.getBundle())));
+					align, width+0.5, localText));
 		}
 //		writer.write("\n<th> </th>\n");
-		writer.write("\n</tr>\n</thead>\n</table>\n");
+		
+	}
+writer.write("\n</tr>\n</thead>\n</table>\n");
 	}
 
 	/**
@@ -207,7 +239,23 @@ public class GridBuilder {
 	 * @throws IOException 
 	 */
 	public  void createFilter( ) throws IOException {
-	   writer.write(String.format(Locale.US,"<table class=\"filter\"><tr><td class=\"menuActions\" >"+ MiscUtils.createActionButtons(getActions(),getId(""))+" "));
+		String title = ctrl.getMenuStructure().getLocaleText(getAppBundle());
+		String path = getMenuPath("");
+		
+		if (title.contains("???")) {
+			String txt = ctrl.getMenuStructure().getText();
+			
+			if (txt != null && txt.length() > 0) {
+				title = txt;
+			}
+		}
+		
+		if (jsMethodName != null  && jsMethodName.length() > 0 || path != null && path.contains(":menu")) {
+			writer.write(String.format(Locale.US,"<table class=\"filter\"><tr><td class=\"menuActions\" >"+ getActionButtons() +" "));
+		} else {
+			writer.write(String.format(Locale.US,"<table class=\"filter\"><tr><td align=\"center\" style=\"border-bottom: 1px solid rgb(160, 160, 160);\"><b>" + title + "</b></td></tr><tr><td class=\"menuActions\" >"+ getActionButtons() + " "));
+		}
+		
 	   String filterLabel = null;
 	   filterLabel = ResourceBundleHelper.getString(SessionResourceBundleFactory.getBundle(), "Filter");
 	   writer.write(filterLabel);
@@ -215,6 +263,26 @@ public class GridBuilder {
 		" <input id=\"%s\" name=\"%s\" type=\"text\"/></td>"+addFavoritesTabs()+"</tr></table>\n", 
 		getId("-filter"), getId("-filter")));
 	}
+	
+	/**
+	 * Modified to block action buttons in emergency access account.
+	 * 
+	 * added on 02/04/2011
+	 * @author valsaraj
+	 * @return html code to be rendered
+	 */
+	public String getActionButtons() {
+		try {
+			if (ctrl.getAccountUser() != null ) {
+				return MiscUtils.createActionButtons(getActions(), getId("")); // , getAppBundle());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return "";
+	}
+	
 	/*
 	 * Method to add favorites items
 	 */
@@ -353,5 +421,9 @@ public class GridBuilder {
 
 	public void setGridType(String gridType) {
 		this.gridType = gridType;
+	}
+	
+	public TolvenResourceBundle getAppBundle() {
+		return tolvenResourceBundle;
 	}
 }

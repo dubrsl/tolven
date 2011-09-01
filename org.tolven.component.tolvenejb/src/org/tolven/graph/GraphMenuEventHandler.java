@@ -18,6 +18,8 @@ package org.tolven.graph;
 
 import java.awt.Color;
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -32,10 +34,12 @@ import javax.naming.NamingException;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.DateAxis;
+import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.servlet.ServletUtilities;
+import org.jfree.data.time.Hour;
 import org.jfree.data.time.Month;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -186,6 +190,13 @@ public class GraphMenuEventHandler extends MenuEventHandler {
         }
         DateAxis axis = (DateAxis) plot.getDomainAxis();
         axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
+        //CCHIT merge
+        NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+       // rangeAxis.setStandardTickUnits(NumberAxis.cr);
+        NumberFormat formatter = new DecimalFormat("#0.00");
+        rangeAxis.setAutoRangeIncludesZero(false);        
+        rangeAxis.setNumberFormatOverride(formatter);
+        
         return chart;
     }
 
@@ -219,7 +230,7 @@ public class GraphMenuEventHandler extends MenuEventHandler {
             String unit = datasetUnitArray[1];
             String datasetUnit = dataset + unit;
             if (datasetUnits.contains(datasetUnit)) {
-                timeSeriesMap.put(datasetUnit, new TimeSeries(dataset + " (" + unit + ")", Month.class));
+                timeSeriesMap.put(datasetUnit, new TimeSeries(dataset + " (" + unit + ")", Hour.class));
             }
         }
         for (MenuData md : menuData) {
@@ -230,8 +241,9 @@ public class GraphMenuEventHandler extends MenuEventHandler {
             if (currentTimeSeries != null) {
                 GregorianCalendar cal = new GregorianCalendar();
                 cal.setTime(md.getDateField(timeColumn));
-                Month m = new Month(cal.get(GregorianCalendar.MONTH) + 1, cal.get(GregorianCalendar.YEAR));
-                currentTimeSeries.addOrUpdate(m, md.getInternalPQValueField(md.getColumn(valueColumn).getInternal()));
+                Hour hour = new Hour(cal.getTime());
+                currentTimeSeries.addOrUpdate(hour,md.getInternalPQValueField(md.getColumn(valueColumn).getInternal()));
+                
             }
         }
         TimeSeriesCollection timeSeriesCollection = new TimeSeriesCollection();

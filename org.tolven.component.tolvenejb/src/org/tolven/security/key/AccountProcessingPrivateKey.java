@@ -23,10 +23,12 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.spec.PKCS8EncodedKeySpec;
+
 import javax.crypto.Cipher;
 import javax.crypto.EncryptedPrivateKeyInfo;
 import javax.crypto.SecretKey;
-import javax.persistence.*;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 
 /**
  * This class encapsulates a key-based encrypted PrivateKey, which has been
@@ -154,17 +156,37 @@ public class AccountProcessingPrivateKey extends TolvenEncryptedPrivateKey imple
      * @return
      * @throws GeneralSecurityException
      */
-    public PrivateKey getPrivateKey(PrivateKey aDecryptionKey) throws GeneralSecurityException, IOException {
+    public PrivateKey getPrivateKey(PrivateKey aDecryptionKey) {
         if (accountSecretKey == null) {
             throw new IllegalStateException(NOT_INITIALIZED);
         }
-        SecretKey secretKey = accountSecretKey.getSecretKey(aDecryptionKey);
-        Cipher cipher = Cipher.getInstance(secretKey.getAlgorithm());
-        cipher.init(Cipher.DECRYPT_MODE, secretKey);
-        EncryptedPrivateKeyInfo encryptedPrivateKeyInfo = new EncryptedPrivateKeyInfo(getEncodedEncryptedPrivateKeyInfo());
-        byte[] decryptedPrivateKey = cipher.doFinal(encryptedPrivateKeyInfo.getEncryptedData());
-        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decryptedPrivateKey);
-        return KeyFactory.getInstance(encryptedPrivateKeyInfo.getAlgName()).generatePrivate(keySpec);
+        SecretKey secretKey = null;
+        try {
+            secretKey = accountSecretKey.getSecretKey(aDecryptionKey);
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not get SecretKey using a decryption PrivateKey", ex);
+        }
+        Cipher cipher = null;
+        try {
+            cipher = Cipher.getInstance(secretKey.getAlgorithm());
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not intialize Cipher for decryption with SecretKey", ex);
+        }
+        EncryptedPrivateKeyInfo encryptedPrivateKeyInfo = null;
+        try {
+            encryptedPrivateKeyInfo = new EncryptedPrivateKeyInfo(getEncodedEncryptedPrivateKeyInfo());
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not construct EncryptedPrivateKeyInfo", ex);
+        }
+        byte[] decryptedPrivateKey = null;
+        try {
+            decryptedPrivateKey = cipher.doFinal(encryptedPrivateKeyInfo.getEncryptedData());
+            PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decryptedPrivateKey);
+            return KeyFactory.getInstance(encryptedPrivateKeyInfo.getAlgName()).generatePrivate(keySpec);
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not decrypt PrivateKey", ex);
+        }
     }
 
 }

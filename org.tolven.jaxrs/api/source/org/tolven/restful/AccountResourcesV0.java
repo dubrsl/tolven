@@ -29,7 +29,6 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
@@ -51,14 +50,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.codec.binary.Base64;
-import org.tolven.api.APIXMLUtil;
-import org.tolven.api.accountuser.XAccountUser;
-import org.tolven.api.accountuser.XAccountUserFactory;
 import org.tolven.api.security.GeneralSecurityFilter;
 import org.tolven.app.MenuLocal;
 import org.tolven.core.AccountDAOLocal;
@@ -71,10 +64,9 @@ import org.tolven.core.entity.TolvenUser;
 import org.tolven.security.LoginLocal;
 import org.tolven.security.TolvenPerson;
 import org.tolven.security.key.UserPrivateKey;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.util.ExceptionFormatter;
-
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 @Path("account")
 @ManagedBean
@@ -144,7 +136,8 @@ public class AccountResourcesV0 {
         return sb.toString();
     }
     
-    private TolvenPerson getTolvenPerson() {
+    @SuppressWarnings("unchecked")
+	private TolvenPerson getTolvenPerson() {
         TolvenPerson tp = new TolvenPerson();
         Set<String> cnSet = (Set<String>) request.getAttribute("cn");
         if (cnSet != null && !cnSet.isEmpty()) {
@@ -248,7 +241,8 @@ public class AccountResourcesV0 {
         account.setDisableAutoRefresh(disableAutoRefresh.equalsIgnoreCase("true"));
         account.setManualMetadataUpdate(manualMetadataUpdate.equalsIgnoreCase("true"));
         // Add the initial user to the account
-        PublicKey userPublicKey = TolvenSSO.getInstance().getUserPublicKey(request);
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+        PublicKey userPublicKey = sessionWrapper.getUserPublicKey();
         accountBean.addAccountUser(account, initialUser, new Date(), true, userPublicKey);
         menuBean.updateMenuStructure(account);
         URI uri = null;
@@ -325,7 +319,8 @@ public class AccountResourcesV0 {
                 invitedTolvenUser = loginBean.activate(tp, now);
             }
             String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
-            PrivateKey inviterUserPrivateKey = TolvenSSO.getInstance().getUserPrivateKey(request, keyAlgorithm);
+            TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
+            PrivateKey inviterUserPrivateKey = sessionWrapper.getUserPrivateKey(keyAlgorithm);
             PublicKey invitedUserPublicKey = null;
             if (invitedUserCertificate != null) {
                 byte[] userCertificateBytes = Base64.decodeBase64(URLDecoder.decode(invitedUserCertificate, "UTF-8").getBytes("UTF-8"));
@@ -337,7 +332,7 @@ public class AccountResourcesV0 {
              * A userPublicKey is required for the added user, in order to protect the AccountPrivateKey, which will be associated with them
              * A null key means their data will not be encrypted in the account
              */
-            newAccountUser = accountBean.inviteAccountUser(account, inviterAccountUser, invitedTolvenUser, inviterUserPrivateKey, now, false, invitedUserPublicKey);
+            newAccountUser = accountBean.inviteAccountUser(account, inviterAccountUser, invitedTolvenUser, "tolven", inviterUserPrivateKey, now, false); //, invitedUserPublicKey
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity("Adding a user to an Account must be done by a user with a UserPublicKey").build();
         }
@@ -371,7 +366,6 @@ public class AccountResourcesV0 {
                 properties.setProperty(name, mvMap.getFirst(name));
             }
             accountBean.putAccountProperties(accountUser.getAccount().getId(), properties);
-            TolvenSSO.getInstance().updateAccountUserTimestamp(request);
             return Response.ok().build();
         } catch (Exception ex) {
             return Response.status(Status.INTERNAL_SERVER_ERROR).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();

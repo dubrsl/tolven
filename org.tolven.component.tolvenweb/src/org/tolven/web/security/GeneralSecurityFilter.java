@@ -26,7 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
-import org.tolven.sso.TolvenSSO;
+import org.tolven.session.TolvenSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperFactory;
 
 /**
  * When a user attempts to access a secure resource whose URL is matched by the GeneralSecurityFilter, the request is
@@ -68,11 +69,12 @@ public class GeneralSecurityFilter implements Filter {
         }
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
+        TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
         try {
-            String userContext = TolvenSSO.getInstance().getSessionProperty(GeneralSecurityFilter.USER_CONTEXT, request);
+            String userContext = (String) sessionWrapper.getAttribute(GeneralSecurityFilter.USER_CONTEXT);
             boolean inVestibule = userContext == null || "vestibule".equals(userContext);
             if (inVestibule) {
-                boolean hasVestibulePass = "true".equals(TolvenSSO.getInstance().getSessionProperty(VESTIBULE_PASS, request));
+                boolean hasVestibulePass = "true".equals((String) sessionWrapper.getAttribute(VESTIBULE_PASS));
                 if (hasVestibulePass) {
                     vestibuleProcessor.refreshVestibule(request);
                 } else {
@@ -94,7 +96,7 @@ public class GeneralSecurityFilter implements Filter {
             String logoutURL = request.getScheme() + ":" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath();
             try {
                 logger.info("LOGOUT: " + message);
-                TolvenSSO.getInstance().logout(request);
+                sessionWrapper.logout();
                 logger.info(request.getUserPrincipal() + " logged out");
                 response.sendRedirect(logoutURL);
             } catch (IOException e) {
@@ -108,7 +110,7 @@ public class GeneralSecurityFilter implements Filter {
         }
         chain.doFilter(servletRequest, servletResponse);
         if (logger.isDebugEnabled()) {
-            logger.debug("TOLVEN_PERF: downstream: " + (System.currentTimeMillis() - start) + " " + request.getMethod() + " " +  request.getRequestURI());
+            logger.debug("TOLVEN_PERF: downstream: " + (System.currentTimeMillis() - start) + " " + request.getMethod() + " " + request.getRequestURI());
         }
     }
 

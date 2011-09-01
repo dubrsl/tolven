@@ -13,7 +13,7 @@
 </head>
 <body>
     <ui:composition>
-			<wiz:step title="#{msg.GettingStarted}">
+    		<wiz:step title="#{msg.GettingStarted}">
 				<wiz:body>
 					<p>Create a patient/health record</p>
 					<c:if test="#{top.accountType=='ephr'}">
@@ -23,7 +23,7 @@
 				</wiz:body>
 				<wiz:help>
 					<p>Help provides additional information about each page</p>
-					<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yoo can continue at any time later.
+					<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that you can continue at any time later.
 					If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
 					Once submitted, you will not be able to Cancel the form.</p>
 				</wiz:help>
@@ -40,7 +40,7 @@
 					</wiz:group>
 					<c:if test="#{top.accountType=='ephr'}">
 						<wiz:group title="Identifiers">
-							<trim:SETII setii="#{trim.trim.act.participation['subject'].role.id}"/>
+							<trim:SETII setii="#{trim.trim.act.participation['patient'].role.id}"/>
 						</wiz:group>
 					</c:if>
 				</wiz:body>
@@ -53,25 +53,33 @@
 				</wiz:downloadStep>
 				<wiz:step title="Patient" >
 					<wiz:body>
-						<trim:patient role="#{trim.trim.act.participation['subject'].role}"/>
+						<trim:patient role="#{trim.trim.act.participation['patient'].role}"/>
 						<wiz:group title="Physicians">
 							<p>Primary MD: 
-								<wiz:selectWithOther id="primarymd" role="#{trim.trim.act.participation['subject'].role.participation['subject'].act.participation['primary'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" />
+								<wiz:selectWithOther id="primarymd" role="#{trim.trim.act.participation['patient'].role.participation['primaryCarePhysician'].act.participation['primaryMD'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" />
 	    					</p>
 	    					<br/>
 							<p>Surgeon: 
-								<wiz:selectWithOther id="surgeon"   role="#{trim.trim.act.participation['subject'].role.participation['subject'].act.participation['surgeon'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" />
+								<wiz:selectWithOther id="surgeon"   role="#{trim.trim.act.participation['patient'].role.participation['primarySurgeon'].act.participation['primarySurgeon'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" />
 	    					</p>							
 						</wiz:group>
-						<wiz:group title="Additional Details">
-							<h:panelGrid columns="2">
-							<h:outputText value="#{msg.Race}"/>
-								<h:panelGroup>
-									<wiz:textGeneric id="race" size="15"/>
-								</h:panelGroup>
-							</h:panelGrid>
-							
-						</wiz:group>
+						<table width="100%">
+							<tr>
+								<td width="50%">
+									<wiz:group title="#{trim.trim.act.participation['patient'].role.player.person.raceCode.label.value}*">
+										<trim:valueSetMenu id="race" layout="pageDirection" slot="#{trim.trim.act.participation['patient'].role.player.person.raceCode}" />
+									</wiz:group>
+								</td>
+								<td width="50%">
+									<wiz:group title="#{trim.trim.act.participation['patient'].role.player.person.ethnicGroupCode.label.value}*">
+										<trim:valueSet id="ethnicity" layout="pageDirection" slot="#{trim.trim.act.participation['patient'].role.player.person.ethnicGroupCode}" />
+									</wiz:group>
+								</td>
+							</tr>
+						</table>
+						<wiz:group title="#{trim.trim.act.participation['patient'].role.player.languageCommunications[0].languageCode.label.value}*">
+							<trim:valueSetMenu id="language" layout="pageDirection"  slot="#{trim.trim.act.participation['patient'].role.player.languageCommunications[0].languageCode}" />
+						</wiz:group>						
 					</wiz:body>
 					<wiz:help>
 						<p>Information about this patient</p>
