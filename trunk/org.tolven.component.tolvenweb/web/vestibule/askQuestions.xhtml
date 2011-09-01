@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="Please answer the following questions"/>
+        <ui:define name="body">
+        	<h:form id="questionsForm">
+        	<h:message for="questions" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+			<h:dataTable id="questions" value="#{ques.unansweredQuestions}" 
+				var="question" border="1" width="100%" cellspacing="0" cellpadding="3">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Question"/>
+					</f:facet>
+					<h:outputText value="#{question.question}"/>
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="Answers"/>
+					</f:facet>
+					<h:selectOneRadio rendered="#{question.type == 'radio'}" layout="pageDirection" value="#{question.userAnswers[0]}" >
+						<f:selectItems value="#{question.answers}" />
+					</h:selectOneRadio>
+					<h:selectManyCheckbox rendered="#{question.type == 'checkbox'}" layout="pageDirection" value="#{question.userAnswers}" >
+						<f:selectItems value="#{question.answers}" />
+					</h:selectManyCheckbox>
+					<h:selectManyListbox rendered="#{question.type == 'multilist'}" value="#{question.userAnswers}" >
+						<f:selectItems value="#{question.answers}" />
+					</h:selectManyListbox>
+					<h:selectOneMenu rendered="#{question.type == 'onelist'}" value="#{question.userAnswers[0]}" >
+						<f:selectItems value="#{question.answers}" />
+					</h:selectOneMenu>
+				</h:column>
+			</h:dataTable>
+			<h:commandButton action="#{ques.updateAnswers}" value="Submit Answers"/>
+		  </h:form>
+	</ui:define>
+    </ui:composition>
+</body>
+</html>

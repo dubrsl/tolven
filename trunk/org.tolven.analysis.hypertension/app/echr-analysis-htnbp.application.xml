@@ -1,0 +1,276 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<property accountType="echr" name="org.tolven.cohort.htn.includeCodes"></property>
+	<property accountType="echr" name="org.tolven.cohort.htn.excludeCodes"></property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.lowSystolic">80</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.highSystolic">140</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.lowDiastolic">50</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.highDiastolic">90</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.target">90</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.intervalValue">1</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.intervalUnit">Month</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.chartRange">12</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.chartDataTitle">% Patients</property>
+	<property accountType="echr" name="org.tolven.cohort.htn.bpsnapshot.chartTargetTitle">Target</property>
+	<extends path="echr:cohort">
+		<placeholder name="bpsnapshot" title="BP Snapshot" page="/five/snapshot.xhtml" heading="/five/snapshotLink.xhtml">
+			<field name="name" internal="string01" />
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="cohort" internal="parent01">
+				<from>#{cohort}</from>
+			</field>
+			<field name="targetPercent" internal="_extended" type="real" />
+			<field name="allCount" internal="_extended" type="real" />
+			<field name="normCount" internal="_extended" type="real" />
+			<field name="abnormCount" internal="_extended" type="real" />
+			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{bpsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{bpsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{bpsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(bpsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{bpsnapshotresult.patient.sex}</from>
+					<from>#{bpsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="Systolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpSystolicValue}</from>
+				</column>
+				<column name="Diastolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+			</list>
+			<list name="normbp" title="&lt; Blood Pressure" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{bpsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{bpsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{bpsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(bpsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{bpsnapshotresult.patient.sex}</from>
+					<from>#{bpsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="Systolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpSystolicValue}</from>
+				</column>
+				<column name="Diastolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+			</list>
+			<list name="abnormbp" title="> Blood Pressure" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{bpsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{bpsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{bpsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(bpsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{bpsnapshotresult.patient.sex}</from>
+					<from>#{bpsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="Systolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpSystolicValue}</from>
+				</column>
+				<column name="Diastolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+			</list>
+		</placeholder>
+	</extends>
+	<extends path="echr:cohort:bpsnapshot">
+		<placeholder name="bpsnapshotresult" title="BP Snapshot Result">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="bpsnapshot" internal="parent01">
+				<from>#{bpsnapshot}</from>
+			</field>
+			<field name="patient" internal="parent02">
+				<from>#{patient}</from>
+			</field>
+			<field name="result" internal="parent03">
+				<from>#{result}</from>
+			</field>
+			<field name="bpSystolicValue" internal="_extended" />
+			<field name="bpSystolicUnits" internal="_extended" />
+			<field name="bpDiastolicValue" internal="_extended" />
+			<field name="bpDiastolicUnits" internal="_extended" />
+			<field name="bpDate" internal="_extended" />
+		</placeholder>
+	</extends>
+	<extends path="echr:cohort:snapshots">
+		<list name="bpsnapshot" title="Blood Pressure Snapshots" sequence="200" initialSort="Date" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot">
+			<column name="Name" internal="string01" reference="true" width="25.0">
+				<from>#{bpsnapshot.name}</from>
+			</column>
+			<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm:ss" width="15.0">
+				<from>#{bpsnapshot.effectiveTime}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:analysis:portal">
+		<portlet name="htnbpsnapshotsum" portalColumn="2" sequence="1" title="Hypertension" page="/five/analysis/htnbpAnalysis.xhtml" visible="true" />
+	</extends>
+	<extends path="echr:analysis">
+		<menu name="htnbpsnapshot" title="Hypertension" sequence="200" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{bpsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{bpsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{bpsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(bpsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{bpsnapshotresult.patient.sex}</from>
+					<from>#{bpsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="Systolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpSystolicValue}</from>
+				</column>
+				<column name="Diastolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bpsnapshotresult.bpsnapshot.effectiveTime}</from>
+				</column>
+			</list>
+			<list name="normbp" title="&lt; Blood Pressure" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{bpsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{bpsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{bpsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(bpsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{bpsnapshotresult.patient.sex}</from>
+					<from>#{bpsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="Systolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpSystolicValue}</from>
+				</column>
+				<column name="Diastolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bpsnapshotresult.bpsnapshot.effectiveTime}</from>
+				</column>
+			</list>
+			<list name="abnormbp" title="> Blood Pressure" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:bpsnapshot:bpsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{bpsnapshotresult.patient.lastName}, #{bpsnapshotresult.patient.firstName} #{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{bpsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{bpsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{bpsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{bpsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(bpsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{bpsnapshotresult.patient.sex}</from>
+					<from>#{bpsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="Systolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpSystolicValue}</from>
+				</column>
+				<column name="Diastolic" width="6.0" align="right" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{bpsnapshotresult.bpDiastolicUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{bpsnapshotresult.bpsnapshot.effectiveTime}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+</application>

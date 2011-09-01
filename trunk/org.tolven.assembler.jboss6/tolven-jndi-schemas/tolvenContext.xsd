@@ -1,0 +1,55 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" xmlns:java="urn:jboss:custom-object-binding" xmlns:jbxb="http://www.jboss.org/xml/ns/jbxb" targetNamespace="http://tolven.org/ns/gatekeeper/tolvenContext" xmlns="http://tolven.org/ns/gatekeeper/tolvenContext" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:annotation>
+		<xs:documentation xml:lang="en">TolvenContext</xs:documentation>
+	</xs:annotation>
+	<xs:element name="tolvenContext" type="tolvenContextType" />
+	<xs:complexType name="tolvenContextType">
+		<xs:annotation>
+			<xs:appinfo>
+				<jbxb:class impl="org.tolven.naming.DefaultTolvenContext"></jbxb:class>
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="mapping" type="mappingType" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="mappingType">
+		<xs:annotation>
+			<xs:appinfo>
+				<jbxb:class impl="java.util.Properties" />
+			</xs:appinfo>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="property" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:appinfo>
+						<jbxb:putMethod name="setProperty" keyType="java.lang.String" valueType="java.lang.String" />
+					</xs:appinfo>
+				</xs:annotation>
+				<xs:complexType id="propertyType">
+					<xs:annotation>
+						<xs:appinfo>
+							<jbxb:mapEntry />
+						</xs:appinfo>
+					</xs:annotation>
+					<xs:sequence>
+						<xs:element name="key" type="xs:string">
+							<xs:annotation>
+								<xs:appinfo>
+									<jbxb:mapEntryKey />
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+						<xs:element name="value" type="xs:string">
+							<xs:annotation>
+								<xs:appinfo>
+									<jbxb:mapEntryValue />
+								</xs:appinfo>
+							</xs:annotation>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+<head>
+    <title>Induction Treatment Evaluation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+		     <wiz:step title="Response Evaluation" >
+				<wiz:body>
+					<wiz:group title="Response" >
+						<trim:CE id="resp" layout="pageDirection" valueSet="response" value="#{trim.trim.act.relationship['response'].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="Survival status" >
+						<trim:CE id="survival" layout="pageDirection" valueSet="survivalStatus" value="#{trim.trim.act.relationship['survival'].act.observation.value}"/>
+					</wiz:group>
+				</wiz:body>
+				<wiz:help>
+					<p>Help goes here.</p>
+				</wiz:help>
+			</wiz:step>
+			<wiz:step title="Treatment planned" >
+				<wiz:body>
+					<wiz:group title="Treatment planned" visible="$('#{menu.elementLabel}:survivalceField:0').checked!=true">
+						Survival indicates no further treatment needed
+					</wiz:group>
+					<wiz:group title="Treatment planned" visible="$('#{menu.elementLabel}:survivalceField:0').checked==true">
+						<trim:CE id="treatment" layout="pageDirection" valueSet="treatmentPlan" value="#{trim.trim.act.relationship['treatmentPlanned'].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="Off Treatment" visible="$('#{menu.elementLabel}:treatmentceField:0').checked==true || $('#{menu.elementLabel}:treatmentceField:3').checked==true || $('#{menu.elementLabel}:treatmentceField:4').checked==true">
+						Complete off treatment form
+					</wiz:group>
+					<wiz:group title="Specify reason for off treatment" visible="$('#{menu.elementLabel}:treatmentceField:4').checked==true">
+						<wiz:textGeneric id="whyOff" size="60"/>
+					</wiz:group>
+				</wiz:body>
+				<wiz:help>
+					<p>Help goes here.</p>
+				</wiz:help>
+			</wiz:step>
+			<wiz:step title="Infection" >
+				<wiz:body>
+					<wiz:yesno id="infection" >
+					Infections during this cycle?
+					</wiz:yesno>
+					<wiz:group title="Related to period" visible="$('#{menu.elementLabel}:infection').isTrue();">
+						<trim:CE id="relToP" layout="pageDirection" valueSet="infectionReportRelatingtoPeriod" value="#{trim.trim.act.relationship['infection'].act.relationship['relatedToPeriod'].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="Highest CTC grade during this period" visible="$('#{menu.elementLabel}:infection').isTrue();">
+						<table width="100%">
+							<tr>
+								<td><b>Nr</b></td>
+								<td><b>Site</b></td>
+								<td><b>ANC</b></td>
+								<td><b>CTC Grade</b></td>
+								<td><b>Agent</b></td>
+								<td><b>Specification (site/agent/treatment)</b></td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>
+									<trim:valueSetMenu id="site1" slot="#{trim.trim.act.relationship['infection'].act.relationship['site1'].act.code}"/>
+								</td>
+								<td>
+									<trim:valueSetMenu id="ANC1" slot="#{trim.trim.act.relationship['infection'].act.relationship['ANC1'].act.code}"/>
+								</td>
+								<td>
+									<trim:INT id="grade1" size="3" value="#{trim.trim.act.relationship['infection'].act.relationship['grade1'].act.observation.value}"/>
+								</td>
+								<td>
+									<trim:valueSetMenu id="agent1" slot="#{trim.trim.act.relationship['infection'].act.relationship['agent1'].act.code}"/>
+								</td>
+								<td>
+									<trim:ST id="spec1" value="#{trim.trim.act.relationship['infection'].act.relationship['spec1'].act.observation.value}"/>
+								</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>
+									<trim:valueSetMenu id="site2" slot="#{trim.trim.act.relationship['infection'].act.relationship['site2'].act.code}"/>
+								</td>
+								<td>
+									<trim:valueSetMenu id="ANC2" slot="#{trim.trim.act.relationship['infection'].act.relationship['ANC2'].act.code}"/>
+								</td>
+								<td>
+									<trim:INT id="grade2" size="3" value="#{trim.trim.act.relationship['infection'].act.relationship['grade2'].act.observation.value}"/>
+								</td>
+								<td>
+									<trim:valueSetMenu id="agent2" slot="#{trim.trim.act.relationship['infection'].act.relationship['agent2'].act.code}"/>
+								</td>
+								<td>
+									<trim:ST id="spec2" value="#{trim.trim.act.relationship['infection'].act.relationship['spec2'].act.observation.value}"/>
+								</td>
+							</tr>
+						</table>
+					</wiz:group>
+				</wiz:body>
+				<wiz:help>
+					<p>Help goes here.</p>
+				</wiz:help>
+			</wiz:step>
+	</ui:composition>
+</body>
+</html>
+

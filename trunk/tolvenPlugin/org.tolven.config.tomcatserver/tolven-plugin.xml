@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.config.tomcatserver" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.tomcatserver" />
+	</requires>
+	<extension id="http" plugin-id="org.tolven.component.tomcatserver" point-id="connector">
+		<parameter id="port" value="#{pluginProperty['http.port']}" />
+		<parameter id="address" value="#{pluginProperty['http.address']}" />
+		<parameter id="maxThreads" value="#{pluginProperty['http.maxThreads']}" />
+		<parameter id="maxHttpHeaderSize" value="#{pluginProperty['http.maxHttpHeaderSize']}" />
+		<parameter id="emptySessionPath" value="#{pluginProperty['http.emptySessionPath']}" />
+		<parameter id="protocol" value="#{pluginProperty['http.protocol']}" />
+		<parameter id="SSLEnabled" value="#{pluginProperty['http.SSLEnabled']}" />
+		<parameter id="scheme" value="#{pluginProperty['http.scheme']}" />
+		<parameter id="secure" value="#{pluginProperty['http.secure']}" />
+		<parameter id="clientAuth" value="#{pluginProperty['http.clientAuth']}" />
+		<parameter id="sslProtocol" value="#{pluginProperty['http.sslProtocol']}" />
+		<parameter id="enableLookups" value="#{pluginProperty['http.enableLookups']}" />
+		<parameter id="redirectPort" value="#{pluginProperty['http.redirectPort']}" />
+		<parameter id="acceptCount" value="#{pluginProperty['http.acceptCount']}" />
+		<parameter id="connectionTimeout" value="#{pluginProperty['http.connectionTimeout']}" />
+		<parameter id="disableUploadTimeout" value="#{pluginProperty['http.disableUploadTimeout']}" />
+		<parameter id="keystoreFile" value="#{pluginProperty['http.keystoreFile']}" />
+		<parameter id="keystoreType" value="#{pluginProperty['http.keystoreType']}" />
+		<parameter id="keystorePass" value="#{pluginProperty['http.keystorePass']}" />
+	</extension>
+	<extension id="https" plugin-id="org.tolven.component.tomcatserver" point-id="connector">
+		<parameter id="port" value="#{pluginProperty['https.port']}" />
+		<parameter id="address" value="#{pluginProperty['https.address']}" />
+		<parameter id="maxThreads" value="#{pluginProperty['https.maxThreads']}" />
+		<parameter id="maxHttpHeaderSize" value="#{pluginProperty['https.maxHttpHeaderSize']}" />
+		<parameter id="emptySessionPath" value="#{pluginProperty['https.emptySessionPath']}" />
+		<parameter id="protocol" value="#{pluginProperty['https.protocol']}" />
+		<parameter id="SSLEnabled" value="#{pluginProperty['https.SSLEnabled']}" />
+		<parameter id="scheme" value="#{pluginProperty['https.scheme']}" />
+		<parameter id="secure" value="#{pluginProperty['https.secure']}" />
+		<parameter id="clientAuth" value="#{pluginProperty['https.clientAuth']}" />
+		<parameter id="sslProtocol" value="#{pluginProperty['https.sslProtocol']}" />
+		<parameter id="enableLookups" value="#{pluginProperty['https.enableLookups']}" />
+		<parameter id="redirectPort" value="#{pluginProperty['https.redirectPort']}" />
+		<parameter id="acceptCount" value="#{pluginProperty['https.acceptCount']}" />
+		<parameter id="connectionTimeout" value="#{pluginProperty['https.connectionTimeout']}" />
+		<parameter id="disableUploadTimeout" value="#{pluginProperty['https.disableUploadTimeout']}" />
+		<parameter id="keystoreFile" value="#{pluginProperty['https.keystoreFile']}" />
+		<parameter id="keystoreType" value="#{pluginProperty['https.keystoreType']}" />
+		<parameter id="keystorePass" value="#{pluginProperty['https.keystorePass']}" />
+	</extension>
+	<extension id="ajp" plugin-id="org.tolven.component.tomcatserver" point-id="connector">
+		<parameter id="port" value="#{pluginProperty['ajp.port']}" />
+		<parameter id="address" value="#{pluginProperty['ajp.address']}" />
+		<parameter id="maxThreads" value="#{pluginProperty['ajp.maxThreads']}" />
+		<parameter id="maxHttpHeaderSize" value="#{pluginProperty['ajp.maxHttpHeaderSize']}" />
+		<parameter id="emptySessionPath" value="#{pluginProperty['ajp.emptySessionPath']}" />
+		<parameter id="protocol" value="#{pluginProperty['ajp.protocol']}" />
+		<parameter id="SSLEnabled" value="#{pluginProperty['ajp.SSLEnabled']}" />
+		<parameter id="scheme" value="#{pluginProperty['ajp.scheme']}" />
+		<parameter id="secure" value="#{pluginProperty['ajp.secure']}" />
+		<parameter id="clientAuth" value="#{pluginProperty['ajp.clientAuth']}" />
+		<parameter id="sslProtocol" value="#{pluginProperty['ajp.sslProtocol']}" />
+		<parameter id="enableLookups" value="#{pluginProperty['ajp.enableLookups']}" />
+		<parameter id="redirectPort" value="#{pluginProperty['ajp.redirectPort']}" />
+		<parameter id="acceptCount" value="#{pluginProperty['ajp.acceptCount']}" />
+		<parameter id="connectionTimeout" value="#{pluginProperty['ajp.connectionTimeout']}" />
+		<parameter id="disableUploadTimeout" value="#{pluginProperty['ajp.disableUploadTimeout']}" />
+		<parameter id="keystoreFile" value="#{pluginProperty['ajp.keystoreFile']}" />
+		<parameter id="keystoreType" value="#{pluginProperty['ajp.keystoreType']}" />
+		<parameter id="keystorePass" value="#{pluginProperty['ajp.keystorePass']}" />
+	</extension>
+	<extension id="ajps" plugin-id="org.tolven.component.tomcatserver" point-id="connector">
+		<parameter id="port" value="#{pluginProperty['ajps.port']}" />
+		<parameter id="address" value="#{pluginProperty['ajps.address']}" />
+		<parameter id="maxThreads" value="#{pluginProperty['ajps.maxThreads']}" />
+		<parameter id="maxHttpHeaderSize" value="#{pluginProperty['ajps.maxHttpHeaderSize']}" />
+		<parameter id="emptySessionPath" value="#{pluginProperty['ajps.emptySessionPath']}" />
+		<parameter id="protocol" value="#{pluginProperty['ajps.protocol']}" />
+		<parameter id="SSLEnabled" value="#{pluginProperty['ajps.SSLEnabled']}" />
+		<parameter id="scheme" value="#{pluginProperty['ajps.scheme']}" />
+		<parameter id="secure" value="#{pluginProperty['ajps.secure']}" />
+		<parameter id="clientAuth" value="#{pluginProperty['ajps.clientAuth']}" />
+		<parameter id="sslProtocol" value="#{pluginProperty['ajps.sslProtocol']}" />
+		<parameter id="enableLookups" value="#{pluginProperty['ajps.enableLookups']}" />
+		<parameter id="redirectPort" value="#{pluginProperty['ajps.redirectPort']}" />
+		<parameter id="acceptCount" value="#{pluginProperty['ajps.acceptCount']}" />
+		<parameter id="connectionTimeout" value="#{pluginProperty['ajps.connectionTimeout']}" />
+		<parameter id="disableUploadTimeout" value="#{pluginProperty['ajps.disableUploadTimeout']}" />
+		<parameter id="keystoreFile" value="#{pluginProperty['ajps.keystoreFile']}" />
+		<parameter id="keystoreType" value="#{pluginProperty['ajps.keystoreType']}" />
+		<parameter id="keystorePass" value="#{pluginProperty['ajps.keystorePass']}" />
+	</extension>
+</plugin>

@@ -1,0 +1,57 @@
+package assessment
+import java.util.*;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.logging.TolvenLogger;
+
+global org.tolven.app.AppEvalAdaptor app;
+
+rule "Place assessment on Assessments list"
+	when
+		$msAssessment: MenuStructure( role == "placeholder", path == "echr:patient:assessment" )
+		$msAssessmentList: MenuStructure( role == "list", path == "echr:patient:assessments:all" )
+		$mdAssessment: MenuData( menuStructure == $msAssessment )
+	then
+		app.createReferenceMD( $mdAssessment, "echr:patient:assessments:all" );
+end
+rule "Place assessment on assesum summary list"
+	when
+		$msAssessment: MenuStructure( role == "placeholder", path == "echr:patient:assessment" )
+		$mdAssessment: MenuData( menuStructure == $msAssessment, actStatus=="active" )
+	then
+		MenuData mdPXList = app.createReferenceMD( $mdAssessment, "echr:patient:summary:assesum" );
+end
+rule "Place assessments on Assessments Nullified list"
+	when
+		$msAssessment: MenuStructure( role == "placeholder", path == "echr:patient:assessment" )
+		$msAssessmentList: MenuStructure( role == "list", path == "echr:patient:assessments:all" )		
+		$mdAssessment: MenuData( menuStructure == $msAssessment, string04 == "NULLIFIED" )
+	then
+		app.createReferenceMD( $mdAssessment, "echr:patient:assessments:nullified" );
+end
+rule "Place assessments on Assessments Active list"
+	when
+		$msAssessment: MenuStructure( role == "placeholder", path == "echr:patient:assessment" )
+		$msAssessmentList: MenuStructure( role == "list", path == "echr:patient:assessments:all" )		
+		$mdAssessment: MenuData( menuStructure == $msAssessment, string04 == "ACTIVE" )
+	then
+		app.createReferenceMD( $mdAssessment, "echr:patient:assessments:active" );
+end
+rule "Place assessments on Assessments Inactive list"
+	when
+		$msAssessment: MenuStructure( role == "placeholder", path == "echr:patient:assessment" )
+		$msAssessmentList: MenuStructure( role == "list", path == "echr:patient:assessments:all" )		
+		$mdAssessment: MenuData( menuStructure == $msAssessment, string04 == "SUSPENDED" )
+	then
+		app.createReferenceMD( $mdAssessment, "echr:patient:assessments:suspended" );
+end
+rule "Place assessments on Assessments Resolved list"
+	when
+		$msAssessment: MenuStructure( role == "placeholder", path == "echr:patient:assessment" )
+		$msAssessmentList: MenuStructure( role == "list", path == "echr:patient:assessments:all" )		
+		$mdAssessment: MenuData( menuStructure == $msAssessment, string04 == "COMPLETED" )
+	then
+		app.createReferenceMD( $mdAssessment, "echr:patient:assessments:completed" );
+end

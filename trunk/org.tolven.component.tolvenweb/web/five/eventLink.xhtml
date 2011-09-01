@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Content of links referencing charts</title>
+  </head>
+  <body>
+  	<ui:composition>
+     	<c:if test="#{menu.menuDataItem.status=='NEW'}">
+  			<h:outputText value="#{trim.trim.description} "/> 
+     	</c:if>
+  	
+  		<h:outputText value="#{menu.menuDataItem.string02} #{menu.menuDataItem.string01}"/> 
+  		<h:panelGroup rendered="#{menu.menuDataItem.string04!=null}">
+	  		<h:outputText value=" ["/> 
+	  		<h:outputText value="#{menu.menuDataItem.string04} "/> 
+	  		<h:outputText value="#{menu.menuDataItem.date01}" converter="ageConverter"/>
+	  		<h:outputText value="]"/> 
+	  	</h:panelGroup>
+  	</ui:composition>
+  </body>
+</html>

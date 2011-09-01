@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:wiz="http://www.tolven.org/jsf/wizard"
+    xmlns:trim="http://www.tolven.org/jsf/trim">
+
+<body>
+  	<ui:composition>
+<h:form class="wizard" id="#{menu.elementLabel}" onsubmit="ajaxSubmit3(this, '#{menu.element}');return false;">
+	<script language="JavaScript" type="text/javascript">
+	 // <![CDATA[
+        $('#{menu.elementLabel}').setAttribute( 'currentStep', 0 );
+        $('#{menu.elementLabel}').setAttribute( 'lastStep', 0 );
+        $('#{menu.elementLabel}').setAttribute( 'errorCount', -1 );
+        $('#{menu.elementLabel}').setAttribute( 'drilldown', '#{trim.trim.drilldown}' );
+        $('#{menu.elementLabel}').setAttribute( 'tolvenid', '#{menu.element}' );
+        $('#{menu.elementLabel}').setAttribute( 'itemStatus', '#{menu.menuDataItem.statusName}' );
+		$('#{menu.elementLabel}').setAttribute( 'stopAsync', 'false' );        
+         var wizFunction = function(){
+        setupWizSteps('#{menu.elementLabel}', $('#{menu.element}'));
+    	};
+    	DynaLoad.downloadAndCallScript(wizFunction, undefined, 'TOLVENWIZ');
+        
+	  // ]]>
+	</script>
+	<c:if test="#{forBubble != 'true'}">
+	<div class="infobar" >
+		<div class="infotitle">
+			<span class="name"> #{title} </span>
+			<span class="status"> (#{subject}) </span>
+		</div>
+		<div class="author">
+		    <h:outputLink value="#{trim.reference}" rendered="#{trim.trim.reference!=null}" target="_blank">
+		    	<h:outputText value="#{msg.Source}"/>
+		    </h:outputLink>
+		</div>
+		<div id="clear"></div>
+	</div>
+	<div id="clear"></div>
+	<div class="steps">
+		<div class="heading" id="#{menu.elementLabel}stepIcons">
+		</div>
+		<a class="help" title="Toggle Help" href="#" onclick="toggleHelp('#{menu.elementLabel}');">
+			<img id="showDropDown" src="../images/img_help.jpg" border="0" />
+		</a>
+		<div id="clear"></div>
+	</div>
+	<div id="clear"></div>
+	
+	<c:if test="#{menu.menuDataItem.statusName=='NEW'}">
+		<ui:insert name="steps">
+				Steps go here
+		</ui:insert>
+		<wiz:downloadStep title="#{msg.Complete}" include="/drilldown/drilldown.jsf">
+		</wiz:downloadStep>
+	</c:if>
+	<c:if test="#{menu.menuDataItem.statusName!='NEW'}">
+		<ui:include src="/drilldown/drilldown.xhtml"/>
+	</c:if>
+
+	<div id="clear"></div>
+	
+	<div class="navbar">
+		<c:if test="#{menu.menuDataItem.statusName=='NEW'}">
+            <h:commandButton action="#{trim.upload}" value="#{msg.Upload}" style="display:none"/>
+			<div class="submit">
+				<!-- Added close button on 07/23/2010 - Valsaraj -->
+				<input id="#{menu.elementLabel}closeButton" type="submit" value="#{msg.Close}" onclick="closeTab('#{menu.element}');"/>
+				<c:if test="#{trim.trim.act.text.ST!=null and trim.trim.act.text.ST.value!='' and trim.trim.name=='act/evn/vital'}">
+					<input id="#{menu.elementLabel}cancelButton" type="submit" value="#{msg.Cancel}" onclick="cancelVitalSign('#{menu.element}');"/>
+				</c:if>
+				<c:if test="#{!(trim.trim.act.text.ST!=null and trim.trim.act.text.ST.value!='' and trim.trim.name=='act/evn/vital')}">
+				<input id="#{menu.elementLabel}cancelButton" type="submit" value="#{msg.Cancel}" onclick="wizCancel('#{menu.element}');"/>
+				</c:if>
+				<input id="#{menu.elementLabel}prevButton" type="submit" value="#{msg.Previous}" onclick="prevStep('#{menu.elementLabel}' );self.scrollTo(0, 0);return false;"/>
+				<input id="#{menu.elementLabel}nextButton" type="submit" value="#{msg.Next}"  onclick="nextStep('#{menu.elementLabel}' );self.scrollTo(0, 0);return false;"/>
+				<c:if test="#{!trim.signatureRequired}">
+					<input id="#{menu.elementLabel}submitButton" type="submit" value="#{msg.Submit}" onclick="wizSubmit('#{menu.elementLabel}');" />
+				</c:if>
+			</div>
+			<c:if test="#{trim.signatureRequired}">
+				<!-- 
+  	 				Modified to hide signature block in all steps except 'complete' step.
+  	 				added on 25/08/2010 by Valsaraj
+ 				 -->
+				<div id="signatureContainer" class="signature">
+					<h:panelGroup>
+						<h:outputText value=" #{msg.UserId}: " />
+                        <h:inputText id="uid" value="#{reg.tp.uid}" size="20" readonly="true"/>
+					</h:panelGroup>
+					<h:panelGroup>
+						<h:outputText value=" #{msg.Password}: " />
+						<input id="#{menu.elementLabel}signaturePasswordField" type="password" size="15" />
+					</h:panelGroup>
+					<input id="#{menu.elementLabel}submitButton" type="submit" value="#{msg.SignAndSubmit}" onclick="wizSubmit('#{menu.elementLabel}',$('#{menu.elementLabel}signaturePasswordField'));" />
+				</div>
+			</c:if>
+		</c:if>
+		<c:if test="#{menu.menuDataItem.statusName!='NEW'}">
+			<div class="transitions">
+	            <h:commandButton action="#{trim.upload}" value="Upload" style="display:none"/>
+	            <!-- Added close button on 07/23/2010 - Valsaraj -->
+	            <input id="#{menu.elementLabel}closeButton" type="submit" value="#{msg.Close}" onclick="closeTab('#{menu.element}');"/>
+				<c:set var="isEmergencyAccount" value="false"/>
+	            <c:forEach items="#{top.accountUser.account.accountProperties}" var="property">
+	            	<c:if test="#{property.propertyName=='tolven.cchit.emergencyAccount'}">
+	            		<c:set var="isEmergencyAccount" value="true"/>
+	            	</c:if>
+	            </c:forEach>
+	            <c:if test="#{isEmergencyAccount=='false'}">
+	            <trim:transitions trim="#{trim.trim}"/>
+	            </c:if>
+			</div>
+		</c:if>
+	</div>
+	</c:if>
+
+   <c:if test="#{forBubble == 'true'}">
+     <c:if test="#{menu.menuDataItem.statusName=='NEW'}">
+		<ui:insert name="steps">
+				Steps go here
+		</ui:insert>
+		<wiz:downloadStep title="#{msg.Complete}" include="/drilldown/drilldown.jsf">
+		</wiz:downloadStep>
+	</c:if>
+	<c:if test="#{menu.menuDataItem.statusName!='NEW'}">
+		<ui:include src="/drilldown/drilldown.xhtml"/>
+	</c:if>
+
+	    <div class="transitions">
+	       <h:commandButton action="#{trim.upload}" value="Upload" style="display:none"/>
+	       <trim:transitions trim="#{trim.trim}"/>
+		</div>
+	</c:if>
+
+
+
+</h:form>
+</ui:composition>
+</body>
+</html>

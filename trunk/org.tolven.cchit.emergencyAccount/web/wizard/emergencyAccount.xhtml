@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+	<head>
+	    <title>Emergency Access Account</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	
+	<body>
+		<ui:composition>
+			<script>
+				// <![CDATA[
+	  				 if ($("#{menu.elementLabel}submitButton")!=null) {
+	                           $("#{menu.elementLabel}submitButton").observe('click', function() {
+	                        	   synchronizeWithEmergencyAccount('#{menu.elementLabel}');
+	                           });
+	                 } 
+	  			// ]]>               
+			</script>
+			<wiz:step title="Account">
+				<h:inputHidden id="accountId" value="#{trim.trim.act.relationship['accountDetails'].act.observation.values[0].ST.value}" required="true"/>
+	        	<h:inputHidden id="accountName" value="#{trim.trim.act.relationship['accountDetails'].act.observation.values[1].ST.value}"/>
+	        	<h:inputHidden id="accountEmail" value="#{trim.trim.act.relationship['accountDetails'].act.observation.values[2].ST.value}"/>
+	         	<wiz:body>
+					<table cellpadding="5">
+					  <tr>
+					  	<td>
+					  		<h:outputText value="Select emergency account: "/>
+					  	</td>
+					  	<td evalFunc="removeCurrentAccountFromDropdown('#{menu.elementLabel}', 'accountNameId', '#{top.accountId} / #{top.accountTitle}');">
+					  		<h:selectOneMenu onchange="javaScript:wizSelectEmergencyAccount('#{menu.elementLabel}')" id="accountNameId" value="#{trim.trim.act.relationship['accountDetails'].act.observation.values[3].CE}">
+			                  	<f:selectItem itemLabel="Select"/>
+			                  	<f:selectItems value="#{trim.valueSets['accounts']}"/>
+			                   	<f:converter converterId="DataTypeConverter"/>
+			               	</h:selectOneMenu>
+						</td>
+					  </tr>
+					  <tr>
+					  	<td>
+					  		<h:selectBooleanCheckbox value="false" id="synchronizeCheck"/> 
+					  		<h:outputText value="Synchronize with Emergency Account"/>
+					  	</td>
+					  </tr>
+					</table>
+				</wiz:body>
+			</wiz:step>
+			<script>
+	        	wizSelectEmergencyAccount('#{menu.elementLabel}')    	
+	        </script>
+		</ui:composition>
+	</body>
+</html>

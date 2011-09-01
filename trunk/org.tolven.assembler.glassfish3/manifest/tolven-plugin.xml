@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.assembler.glassfish3" version="2.1.0" class="org.tolven.assembler.glassfish3.GlassFish3Assembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<attributes>
+		<attribute id="libDir" value="glassfish/domains/tolven/lib" />
+		<attribute id="configDir" value="glassfish/domains/tolven/config" />
+		<attribute id="deployDir" value="glassfish/domains/tolven/autodeploy" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.assembler" />
+		<import plugin-id="org.tolven.assembler.ear" />
+		<import plugin-id="org.tolven.library.tolvencommon" />
+		<import plugin-id="org.tolven.config.appserver" />
+		<import plugin-id="org.tolven.jndi" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="tpfclasses/" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension id="execute" plugin-id="org.tolven.assembler" point-id="execute">
+		<parameter id="args" value="" />
+	</extension>
+	<extension-point extension-multiplicity="one" id="databasePlugin" />
+	<extension-point id="libProduct-adaptor" parent-plugin-id="org.tolven.config.appserver" parent-point-id="libProduct-adaptor" extension-multiplicity="none" />
+	<extension-point id="config" parent-plugin-id="org.tolven.config.appserver" parent-point-id="config" />
+	<extension-point id="deploy" parent-plugin-id="org.tolven.config.appserver" parent-point-id="deploy" />
+	<extension-point id="classes">
+		<parameter-def id="dir" />
+	</extension-point>
+
+	<!-- LOCAL RESOURCES -->
+	<extension-point id="hibernate-jars">
+		<parameter-def id="antlr" default-value="hibernate/antlr-2.7.6.jar" />
+		<parameter-def id="dom4j" default-value="hibernate/dom4j-1.6.1.jar" />
+		<parameter-def id="hibernate3" default-value="hibernate/hibernate3.jar" />
+		<parameter-def id="javassist" default-value="hibernate/javassist-3.12.0.GA.jar" />
+		<parameter-def id="slf4j-api" default-value="hibernate/slf4j-api-1.6.1.jar" />
+	</extension-point>
+	<extension-point id="commons">
+		<parameter-def id="commons-collections" default-value="commons/commons-collections-3.1.jar" />
+		<parameter-def id="commons-logging" default-value="commons/commons-logging-1.0.4.jar" />
+	</extension-point>
+	<extension-point id="log4j">
+		<parameter-def id="log4j" default-value="log4j/log4j-1.2.15.jar" />
+	</extension-point>
+	<!-- LOCAL RESOURCES End -->
+
+	<extension id="libProduct-adaptor-hibernate-jars" plugin-id="org.tolven.config.appserver" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.assembler.glassfish3" />
+		<parameter id="extension-point" value="hibernate-jars" />
+	</extension>
+	<extension id="libProduct-adaptor-commons" plugin-id="org.tolven.config.appserver" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.assembler.glassfish3" />
+		<parameter id="extension-point" value="commons" />
+	</extension>
+	<extension id="libProduct-adaptor-log4j" plugin-id="org.tolven.config.appserver" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.assembler.glassfish3" />
+		<parameter id="extension-point" value="log4j" />
+	</extension>
+	<extension id="log4jXML" plugin-id="org.tolven.config.appserver" point-id="config">
+		<parameter id="file" value="config/log4j.xml" />
+	</extension>
+</plugin>

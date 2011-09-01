@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Cache-Control" content="no-cache" />
+		<title>Login</title>
+    </head>
+    <body>
+     <ui:composition template="/templates/simplePage.xhtml">
+      <ui:param name="pageTitle" value="Sign in"/>
+      <ui:define name="body">
+		<form method="post" action="j_security_check" name="security_check">
+		User Id<br />
+		<h:inputText id="j_username" size="30" tabindex="0" /> <br />
+		Password<br />
+		<h:inputSecret id="j_password" size="20" onkeydown="Tolven.Util.submitOnEnter(event, 'security_check');"/> <input
+			type="submit" name="Submit" value="Sign in" /><br />
+		<script language="JavaScript">
+			// <![CDATA[
+				Tolven.Util.setFocus("j_username");
+			// ]]>							
+		</script>
+		</form>
+		<h:form id="login">
+	            <h:outputLink value="#{facesContext.externalContext.request.contextPath}/public/register.jsf" 
+	            	rendered="#{top.properties['tolven.login.create.activatedUser']}">
+	                <h:outputText value="Register new user"/><br/>
+	             </h:outputLink>
+	            <h:outputLink value="#{facesContext.externalContext.request.contextPath}/public/newDemoUser.jsf" 
+	            	rendered="#{top.properties['tolven.login.create.demoUser']}">
+	                <h:outputText value="Create (demo) user"/><br/>
+	            </h:outputLink>
+              	<br/>
+	            <h:outputLink value="#{facesContext.externalContext.request.contextPath}/public/resetLoginPassword.jsf">
+	                <h:outputText value="Forgot password"/><br/>
+	            </h:outputLink>
+				<div style="clear:both"/>
+				<hr/>
+				<c:if test="#{top.properties['tolven.notice.uri']!=null}">
+					<ui:include src="#{top.properties['tolven.notice.uri']}"/>			
+				</c:if>
+	        </h:form>
+		</ui:define>
+		</ui:composition>
+
+    </body>
+</html>
+
+

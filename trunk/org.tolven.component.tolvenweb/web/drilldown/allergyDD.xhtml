@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Allergy - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>	
+		<wiz:body>
+	 		<c:if test="#{menu.xmlNS==null}">
+	 			<p>#{msg.NoDocumentAvailable}</p>
+	 		</c:if>
+	 		<c:if test="#{menu.xmlNS=='urn:astm-org:CCR'}">
+	 			<p>#{msg.FromCCRDocument}</p>
+		  	   <h:panelGrid columns="2" >
+		            <h:outputText value="#{msg.Date}:"/>
+		            <h:outputText value="#{menu.menuDataItem.date01}"/>
+		            <h:outputText value="#{msg.Allergy}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string01}"/>
+		            <h:outputText value="#{msg.Reaction}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string04}"/>		            
+		            <h:outputText value="#{msg.Severity}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string05}"/>		            
+		            <h:outputText value="#{msg.Status}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string03}"/>
+		        </h:panelGrid>
+			</c:if>
+		
+	 		<c:if test="#{menu.xmlNS=='urn:tolven-org:trim:4.0'}">
+				<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+				<h:panelGrid columns="2" >
+					<h:outputText value="#{msg.OnsetOfAllergy}: "/>
+					<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+					<h:outputText value="#{msg.Allergy}: "/>
+					<h:outputText value="#{act.observation.value.CE.displayName}"/>
+					<h:outputText value="#{msg.Reaction}: "/>
+					<trim:CE id="reaction" valueSet="reaction" value="#{trim.trim.act.relationships[0].act.observation.value}" readonly="true"/>
+					<h:outputText value="#{trim.trim.act.relationships[0].act.observation.value.label.value}: "/>
+					<trim:CE id="severity" valueSet="severity" value="#{trim.trim.act.relationships[1].act.observation.value}" readonly="true"/>
+					<h:outputText value="#{trim.trim.act.relationships[1].act.observation.value.label.value}: "/>
+				</h:panelGrid>
+			</c:if>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

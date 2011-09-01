@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using JasperAssistant (http://www.jasperassistant.com) -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="path1Procedures" pageWidth="576" pageHeight="791" whenNoDataType="AllSectionsNoDetail" columnWidth="576" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="true"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<import value="org.tolven.report.TolvenReportDataSource"/>
+	<style name="Base" isDefault="false" isBlankWhenNull="true" fontName="Helvetica" fontSize="8" pdfFontName="Helvetica"/>
+	<style name="SectionHeader" isDefault="false" style="Base" markup="none" fontSize="10" isBold="true" isItalic="true" pdfFontName="Helvetica-BoldOblique"/>
+	<style name="BaseBD" isDefault="false" style="Base" markup="none" isBlankWhenNull="true" fontSize="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<field name="Date" class="java.util.Date"/>
+	<field name="ProcedureNames" class="java.lang.String"/>
+	<field name="ProcedureSummary" class="java.lang.String"/>
+	<group name="DOB">
+		<groupHeader>
+			<band height="14">
+				<textField hyperlinkType="None">
+					<reportElement style="SectionHeader" x="0" y="0" width="576" height="14"/>
+					<box padding="0">
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Procedures"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<detail>
+		<band height="14">
+			<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" hyperlinkType="None">
+				<reportElement style="Base" positionType="Float" stretchType="RelativeToTallestObject" isPrintRepeatedValues="false" mode="Transparent" x="0" y="0" width="54" height="14"/>
+				<box topPadding="0" leftPadding="2" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{Date}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="BaseBD" positionType="Float" stretchType="RelativeToTallestObject" x="60" y="0" width="126" height="14"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ProcedureNames}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" hyperlinkType="None">
+				<reportElement style="Base" positionType="Float" stretchType="RelativeToTallestObject" x="223" y="0" width="350" height="14"/>
+				<box topPadding="1" leftPadding="2" bottomPadding="0" rightPadding="0"/>
+				<textElement verticalAlignment="Top" markup="none"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{ProcedureSummary}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.assembler.ear" version="2.1.0" vendor="Tolven" class="org.tolven.assembler.ear.EARAssembler" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<attributes>
+		<attribute value="template-application.xml" id="template-applicationxml" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.component.ear" />
+		<import plugin-id="org.tolven.assembler.localemodule" />
+		<import plugin-id="org.tolven.assembler.javamodule" />
+		<import plugin-id="org.tolven.assembler.connectormodule" />
+		<import plugin-id="org.tolven.assembler.ejbmodule" />
+		<import plugin-id="org.tolven.assembler.war" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="classes" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension-point id="abstractEAR" parent-plugin-id="org.tolven.component.ear" parent-point-id="abstractEAR" extension-multiplicity="none" />
+</plugin>

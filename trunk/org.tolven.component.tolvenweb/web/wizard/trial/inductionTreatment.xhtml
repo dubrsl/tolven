@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+<head>
+    <title>Induction Treatment</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+		<wiz:step title="Patient characteristics at start of cycle" >
+				<wiz:body>
+					<wiz:group title="Surface Area">
+						<h:inputText id="bsa" 
+													value="#{trim.trim.act.relationship['surfaceArea'].act.observation.value.PQ.value}" required="true">
+							<f:converter converterId="TrimDoubleConverter"/>
+						</h:inputText>
+					</wiz:group>
+				</wiz:body>
+				<wiz:help>
+					<p>Help goes here.</p>
+				</wiz:help>
+			</wiz:step>
+			<wiz:step title="Administration of Treatment" >
+				<wiz:body>
+					<wiz:group title="Date start of this cycle">
+							<trim:TS id="adminTime" 
+														value="#{trim.trim.act.relationship['relatedToCycle'].act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+					</wiz:group>
+					<wiz:group title="#{trim.trim.act.relationship['lastChemoTime'].act.effectiveTime.label.value}">
+							<trim:TS id="lastChemoTime" 
+														value="#{trim.trim.act.relationship['lastChemoTime'].act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+					</wiz:group>
+					<wiz:group title="Administration">
+						<table width="100%">
+							<tr>
+								<td><b>Drug</b></td>
+								<td><b>Theoretical full dose</b></td>
+								<td><b>Total dose<br/> actually given</b></td>
+								<td><b>Dosage*</b></td>
+								<td><b>Reason**</b></td>
+							</tr>
+							<tr>
+								<td>Cytarabin</td>
+								<td>Cycle 1: 200 mg/m2 <br/>(c.i. 24 hrs, day 1-7)<br/>Cycle 2: 1000 mg/m2 <br/>q 12 hrs (days 1-6)</td>
+								<td>
+									<h:inputText id="val" size="6" value="#{trim.trim.act.relationship['treatment'].act.substanceAdministration.doseQuantity.PQ.value}" required="true">
+										<f:converter converterId="TrimDoubleConverter"/>
+									</h:inputText> #{trim.trim.act.relationship['treatment'].act.substanceAdministration.doseQuantity.PQ.unit}<br/>
+									<h:panelGroup id="valError" style="display:none;color:#FF0000;font-style:italic;" >xxxxx</h:panelGroup><br/>
+								</td>
+								<td>
+									<trim:valueSetMenu id="dosageR" slot="#{trim.trim.act.relationship['reasonIfDosageLessThan1'].act.code}"/>
+								</td>
+								<td>
+									<trim:valueSetMenu id="reason" slot="#{trim.trim.act.relationship['specifyReason'].act.code}"/>
+								</td>
+							</tr>
+						</table>
+					</wiz:group>					
+				</wiz:body>
+				<wiz:help>
+					<p>Help goes here.</p>
+				</wiz:help>
+			</wiz:step>
+	</ui:composition>
+</body>
+</html>
+

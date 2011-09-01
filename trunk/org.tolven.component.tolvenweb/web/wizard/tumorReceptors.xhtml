@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Tumor Receptor</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Enter #{menu.menuDataItem.string01}" >
+			<wiz:body>
+				<wiz:group title="Accession Numbers">
+				</wiz:group>
+
+				<wiz:group title="#{trim.trim.act.relationship['erStatus'].act.title.ST.value}">
+					<wiz:enableMultipleRelationsRadio id="erStatus" 
+									act="#{trim.trim.act}"
+									valueSet="finalERStatus" 
+									value="#{trim.trim.act.relationship['erStatus'].act.observation.value}" 
+									valueSetDisplayNamesAndRelations="Positive=erStrength,erPrevalence"  />
+
+					<wiz:enableMultipleRelationsRadioContent valueSet="finalERStatus"  ceDisplayName="Positive" enableRadioId="erStatus" >
+						<wiz:group title="#{trim.trim.act.relationship['erStrength'].act.title.ST.value}">
+							<trim:CE id="finalERStatusStrengthCE" valueSet="finalERStatusStrength" value="#{trim.trim.act.relationship['erStrength'].act.observation.value}" />
+						</wiz:group >
+						<wiz:group title="#{trim.trim.act.relationship['erPrevalence'].act.title.ST.value}">
+							<trim:CE id="finalERStatusPrevalenceCE" valueSet="finalERStatusPrevalence" value="#{trim.trim.act.relationship['erPrevalence'].act.observation.value}" />
+						</wiz:group >
+					</wiz:enableMultipleRelationsRadioContent>
+				</wiz:group>
+
+				<wiz:group title="#{trim.trim.act.relationship['prStatus'].act.title.ST.value}">
+				
+					<wiz:enableMultipleRelationsRadio id="prStatus" 
+														act="#{trim.trim.act}"
+														valueSet="finalPRStatus" 
+														value="#{trim.trim.act.relationship['prStatus'].act.observation.value}" 
+														valueSetDisplayNamesAndRelations="Positive=prStrength,prPrevalence"  />
+
+					<wiz:enableMultipleRelationsRadioContent valueSet="finalPRStatus"  ceDisplayName="Positive" enableRadioId="prStatus" >
+						<wiz:group title="#{trim.trim.act.relationship['prStrength'].act.title.ST.value}">
+							<trim:CE id="finalPRStatusStrengthCE" valueSet="finalPRStatusStrength" value="#{trim.trim.act.relationship['prStrength'].act.observation.value}" />
+						</wiz:group >
+						<wiz:group title="#{trim.trim.act.relationship['prPrevalence'].act.title.ST.value}">
+							<trim:CE id="finalPRStatusPrevalenceCE" valueSet="finalPRStatusPrevalence" value="#{trim.trim.act.relationship['prPrevalence'].act.observation.value}" />
+						</wiz:group >
+					</wiz:enableMultipleRelationsRadioContent>				
+				</wiz:group>				
+				
+				
+				<wiz:group title="HER2/neu">
+					<wiz:group title="#{trim.trim.act.relationship['HER2NeuScore'].act.title.ST.value}">
+							<trim:CE id="HER2NeuScoreCE" valueSet="HER2NeuScoreVS" value="#{trim.trim.act.relationship['HER2NeuScore'].act.observation.value}" />
+					</wiz:group >
+					
+					<wiz:group title="#{trim.trim.act.relationship['fishResult'].act.title.ST.value}">
+							<trim:CE id="fishResultCE" valueSet="fishResultVS" value="#{trim.trim.act.relationship['fishResult'].act.observation.value}" />
+					</wiz:group >
+
+					<wiz:group title="#{trim.trim.act.relationship['HER2NeuStatus'].act.title.ST.value}">
+							<trim:CE id="HER2NeuStatusCE" valueSet="HER2NeuStatusVS" value="#{trim.trim.act.relationship['HER2NeuStatus'].act.observation.value}" />
+					</wiz:group >
+
+					
+				</wiz:group>		
+			</wiz:body>
+			
+			<wiz:help>
+				<h1>Weight</h1>
+				<p>Holding your breath doesn't help much.</p>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>

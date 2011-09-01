@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="generateCCRSCConfig" enabled="true">
+      <stringProp name="TestPlan.comments">Returns ${CCR}</stringProp>
+    </GenericController>
+    <hashTree>
+      <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="generateCCRIC" enabled="true">
+        <stringProp name="IncludeController.includepath">simple-controllers/generateCCRSC.jmx</stringProp>
+      </IncludeController>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

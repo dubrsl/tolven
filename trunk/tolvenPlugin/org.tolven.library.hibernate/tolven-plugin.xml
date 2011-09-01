@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.library.hibernate" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<extension-point id="lib" extension-multiplicity="none">
+		<parameter-def id="hibernate-annotations" default-value="jars/hibernate-annotations.jar" multiplicity="none-or-one" />
+		<parameter-def id="javassist" default-value="jars/javassist.jar" multiplicity="none-or-one" />
+		<parameter-def id="slf4j-api" default-value="jars/slf4j-api.jar" multiplicity="none-or-one" />
+		<parameter-def id="slf4j-log4j" default-value="jars/slf4j-log4j12.jar" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jarDir" default-value="jars" />
+	</extension-point>
+</plugin>
+
+

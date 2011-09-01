@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+	<head>
+	    <title>Share Information</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	
+	<body>
+	    <ui:composition>
+			<wiz:step title="Person" >
+				<wiz:body>
+					<wiz:group title="Add this new data to someone in this ePHR account">
+		                <h:selectOneMenu id="mypat" value="#{trim.trim.act.participation['subject'].role.id.for[top.accountUser.account].extension}" required="true">
+		                   	<f:selectItem itemValue="#{null}" itemLabel="None"/>
+		                	<f:selectItems value="#{trim.list['echr:patients:all~Name']}"/>
+		                </h:selectOneMenu>
+		                <br/>
+		                <h:outputLink value="javascript:instantiate('reg/evn/patient','#{menu.element}','#{menu.element}')">
+		                	<h:outputText value="create new person"/>
+		                </h:outputLink><br/>
+		                <h:outputLink value="javascript:getRemoteContent(visiblePage);">
+		                	<h:outputText value="refresh"/>
+		                </h:outputLink> 
+					</wiz:group>
+					<wiz:group title="Data from sender">
+						<trim:personSummary entity="#{trim.trim.act.participation['subject'].role.player}" readonly="true"/>
+					</wiz:group>
+				</wiz:body>
+			</wiz:step>
+		</ui:composition>
+	</body>
+</html>

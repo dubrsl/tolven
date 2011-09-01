@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.client.example" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.tolvenweb" />
+	</requires>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="remoteFile" plugin-id="org.tolven.component.tolvenweb" point-id="remoteFile">
+		<parameter id="file" value="tolven-client-examples.jar" />
+		<parameter id="file" value="tolven-client-examples-src.zip" />
+	</extension>
+</plugin>

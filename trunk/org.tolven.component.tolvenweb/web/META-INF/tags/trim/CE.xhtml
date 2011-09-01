@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Valueset as Radio Buttons</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+        <h:panelGroup rendered="#{readonly!='true' and value.class.name=='org.tolven.trim.ex.ObservationValueSlotEx'}">
+            <wiz:radio id="#{id}ce" value="#{value.CE}" layout="#{layout}" onclick="#{onclick}">
+                <f:selectItems value="#{trim.valueSets[valueSet]}"/>
+                <f:converter converterId="DataTypeConverter"/>
+            </wiz:radio>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{readonly=='true' and value.class.name=='org.tolven.trim.ex.ObservationValueSlotEx'}">
+            <h:outputText value="#{value.CE}" >
+                <trim:valueSetLookup valueSet="#{trim.valueSets[valueSet]}"/>
+            </h:outputText>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{readonly!='true' and value.class.name=='org.tolven.trim.ex.CESlotEx'}">
+            <wiz:radio id="#{id}ceslot" value="#{value.CE}" layout="#{layout}" onclick="#{onclick}">
+                <f:selectItems value="#{trim.valueSets[valueSet]}"/>
+                <f:converter converterId="DataTypeConverter"/>
+            </wiz:radio>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{readonly=='true' and value.class.name=='org.tolven.trim.ex.CESlotEx'}">
+            <h:outputText value="#{value.CE}" >
+                <trim:valueSetLookup valueSet="#{trim.valueSets[valueSet]}"/>
+            </h:outputText>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{readonly!='true' and value.class.name=='org.tolven.trim.SETCESlot'}">
+            <wiz:radio id="#{id}setceslot" value="#{value.CES[0]}" layout="#{layout}" onclick="#{onclick}">
+                <f:selectItems value="#{trim.valueSets[valueSet]}"/>
+                <f:converter converterId="DataTypeConverter"/>
+            </wiz:radio>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{readonly=='true' and value.class.name=='org.tolven.trim.SETCESlot'}">
+            <h:outputText value="#{value.CES[0]}" >
+                <trim:valueSetLookup valueSet="#{trim.valueSets[valueSet]}"/>
+            </h:outputText>
+        </h:panelGroup>
+    </ui:composition>
+</body>
+</html>

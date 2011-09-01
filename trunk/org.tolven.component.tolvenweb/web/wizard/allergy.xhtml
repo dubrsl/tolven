@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Allergy</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="#{trim.trim.act.title.ST}" >
+			<wiz:body>
+				<wiz:group title="#{trim.trim.act.title.ST}">
+					<h:outputText value="#{trim.trim.act.observation.value.CE.displayName}"/>
+				</wiz:group>
+				<wiz:group title="#{trim.trim.act.effectiveTime.label.value}">
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" />
+				</wiz:group>
+				<wiz:group title="Additional Details" >
+					<wiz:yesno id="allergyDetails">Add?</wiz:yesno>
+					<wiz:group title="#{trim.trim.act.relationship['reaction'].act.title.ST}" visible="$('#{menu.elementLabel}:allergyDetails').isTrue();">
+						<trim:CE id="reaction" valueSet="reaction" value="#{trim.trim.act.relationship['reaction'].act.observation.value}" layout="pageDirection"/>
+					</wiz:group>
+					<wiz:group title="#{trim.trim.act.relationship['severity'].act.title.ST}" visible="$('#{menu.elementLabel}:allergyDetails').isTrue();">
+						<trim:CE id="severity" valueSet="severity" value="#{trim.trim.act.relationship['severity'].act.observation.value}" layout="pageDirection" />
+					</wiz:group>
+				</wiz:group>
+			</wiz:body>
+		</wiz:step>
+ 		<ui:include src="selectEncounter.xhtml"/>
+ 		<wiz:help title="#{trim.trim.description}">
+			<p>Help provides additional information about each page</p>
+			<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yuo can continue at any time later.
+			If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
+			Once submitted, you will not be able to Cancel the form.</p>
+		</wiz:help>		
+	</ui:composition>
+</body>
+</html>

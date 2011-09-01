@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.cchit.component.mirth" version="2.1.0" vendor="Tolven" 
+	class="HelloWorld">
+
+	<!-- 
+		Any plugin mentioned in extensions below will need declaration in the requires element. 
+		The most common plugins are already included. Add additional plugins as needed. 
+	-->
+	<requires>
+	     <import plugin-id="org.tolven.component.tolvenejb" />
+	     <import plugin-id="org.tolven.component.tolvenweb" />
+		 <import plugin-id="org.tolven.component.application" />
+		 <import plugin-id="org.tolven.component.war" />
+		 <import plugin-id="org.tolven.component.tolvenear" />
+	</requires>
+	<!-- 
+		Include the following only if you have code that runs in TPF itself. 
+	
+	<runtime>
+		<library id="classes" path="tpf/classes/" type="code"/>
+	</runtime>
+	-->
+	<!-- 
+		In most case, you plugin will be included in the development library which will allow
+		others to compile and debug against your code.
+	-->
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+		<parameter id="dir" value="app" />
+	</extension>
+	
+	<extension id="trims" plugin-id="org.tolven.component.application" point-id="trims">
+		<parameter id="dir" value="app/trim" />
+	</extension>
+	<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+	     <parameter id="dir" value="ejb/classes" />
+	</extension>
+	
+	<extension id="warclasses" plugin-id="org.tolven.component.war" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	
+	<extension id="MirthPostServlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="mirthPostServlet" />
+		<parameter id="servlet-class" value="org.tolven.mirth.MirthRequestProcessor" />
+		<parameter id="transaction" value="true" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="MirthPostServletMapping" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="mirthPostServlet" />
+		<parameter id="url-pattern" value="/tolvenInbox" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!--  <extension id="Mirth Area-security-constraint" plugin-id="org.tolven.component.war" point-id="security-constraint">
+		<parameter id="web-resource-collection">
+			<parameter id="web-resource-name" value="Mirth Area" />
+		</parameter>
+		<parameter id="role-name" value="tolvenRegister" />
+		<parameter id="transport-guarantee" value="CONFIDENTIAL" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>-->
+	<extension id="Hl7MessagePostServlet" plugin-id="org.tolven.component.war" point-id="servlet">
+	       <parameter id="servlet-name" value="hl7MessagePostServlet" />
+	       <parameter id="servlet-class" value="org.tolven.cchit.component.hl7.Hl7MessageProcessor" />
+	       <parameter id="transaction" value="true" />
+	       <parameter id="load-on-startup" value="5" />
+	       <parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Hl7MessagePostServletMapping" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+	       <parameter id="servlet-name" value="hl7MessagePostServlet" />
+	       <parameter id="url-pattern" value="/hl7MessageInput" />
+	       <parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>        
+	<extension id="ejbLib" plugin-id="org.tolven.component.tolvenear" point-id="javaModuleProduct">
+	     	<parameter id="dir" value="ejb/lib" />
+	</extension>
+	<extension id="drilldownDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="drilldownDirectory">
+	     <parameter id="sourceDirectory" value="drilldown" />
+	</extension>
+	<extension id="stylesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="stylesDirectory">
+		<parameter id="sourceDirectory" value="styles" />
+	</extension>
+	<extension id="mirthStyle" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/mirthStyle.txt" />
+	</extension>
+</plugin>

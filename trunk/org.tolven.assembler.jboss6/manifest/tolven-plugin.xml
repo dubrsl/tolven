@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.assembler.jboss6" version="2.1.0" class="org.tolven.assembler.jboss6.JBoss6Assembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<attributes>
+		<attribute id="libDir" value="server/tolven/lib" />
+		<attribute id="configDir" value="server/tolven/conf" />
+		<attribute id="deployDir" value="server/tolven/deploy" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.assembler" />
+		<import plugin-id="org.tolven.assembler.ear" />
+		<import plugin-id="org.tolven.library.tolvencommon" />
+		<import plugin-id="org.tolven.config.appserver" />
+		<import plugin-id="org.tolven.jndi" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="tpfclasses/" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension id="execute" plugin-id="org.tolven.assembler" point-id="execute">
+		<parameter id="args" value="" />
+	</extension>
+	<extension-point id="tolvenJndi" extension-multiplicity="none" parent-point-id="runtimeLib" parent-plugin-id="org.tolven.jndi">
+		<parameter-def multiplicity="none-or-one" id="tolvenJndi" />
+	</extension-point>
+	<extension-point extension-multiplicity="one" id="databasePlugin" />
+	<extension-point id="libProduct-adaptor" parent-plugin-id="org.tolven.config.appserver" parent-point-id="libProduct-adaptor" extension-multiplicity="none" />
+	<extension-point id="config" parent-plugin-id="org.tolven.config.appserver" parent-point-id="config" />
+	<extension-point id="deploy" parent-plugin-id="org.tolven.config.appserver" parent-point-id="deploy" />
+	<extension-point id="classes">
+		<parameter-def id="dir" />
+	</extension-point>
+
+	<!-- LOCAL RESOURCES -->
+	<extension-point id="jersey-server-jars">
+		<parameter-def id="asm" default-value="jersey/asm-3.1.jar" />
+		<parameter-def id="jersey-core" default-value="jersey/jersey-core-1.3.jar" />
+		<parameter-def id="jersey-multipart" default-value="jersey/jersey-multipart-1.3.jar" />
+		<parameter-def id="jersey-server" default-value="jersey/jersey-server-1.3.jar" />
+		<parameter-def id="jsr311-api" default-value="jersey/jsr311-api-1.1.jar" />
+		<parameter-def id="jersey-client" default-value="jersey/jersey-client-1.3.jar" />
+		<parameter-def id="mimepull" default-value="jersey/mimepull-1.3.jar" />
+	</extension-point>
+	<extension-point id="metro-jars">
+		<parameter-def id="asm" default-value="metro/webservices-rt.jar" />
+	</extension-point>
+	<!-- LOCAL RESOURCES End -->
+
+	<extension id="libProduct-adaptor-tolvenJndi" plugin-id="org.tolven.config.appserver" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.jndi" />
+		<parameter id="extension-point" value="tolvenJndi" />
+	</extension>
+	<extension id="libProduct-adaptor-jersey-server-jars" plugin-id="org.tolven.config.appserver" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.assembler.jboss6" />
+		<parameter id="extension-point" value="jersey-server-jars" />
+	</extension>
+	<extension id="libProduct-adaptor-metro-jars" plugin-id="org.tolven.config.appserver" point-id="libProduct-adaptor">
+		<parameter id="source-plugin-id" value="org.tolven.assembler.jboss6" />
+		<parameter id="extension-point" value="metro-jars" />
+	</extension>
+	<extension id="deploy-tolven-jndi-service.xml" plugin-id="org.tolven.config.appserver" point-id="deploy">
+		<!--<parameter id="file" value="tolven-jndi-service.xml" />-->
+		<parameter id="file" value="tolven-ldap-service.xml" />
+	</extension>
+	<extension id="deploy-tolven-tolven-jndi-schemas" plugin-id="org.tolven.config.appserver" point-id="deploy">
+		<parameter id="dir" value="tolven-jndi-schemas" />
+	</extension>
+	<extension id="deploy-tolven-tolven-hornetq" plugin-id="org.tolven.config.appserver" point-id="deploy">
+		<parameter id="dir" value="hornetq" />
+	</extension>
+</plugin>

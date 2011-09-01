@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Rash</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Enter #{menu.menuDataItem.string01}" >
+			<wiz:body>
+				<wiz:group title="Date of observation">
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+				<wiz:group title="#{trim.trim.act.observation.value.label.value}" >
+					<trim:ED id="description" value="#{trim.trim.act.observation.value}" readonly="false"/>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Rash</h1>
+				<p>Help needed here.</p>
+			</wiz:help>
+		</wiz:step>
+ 		<ui:include src="selectEncounter.xhtml"/>
+		<wiz:uploadStep title="Attach a photo">
+			TBD.
+		</wiz:uploadStep>
+	</ui:composition>
+</body>
+</html>

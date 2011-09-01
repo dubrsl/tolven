@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.config.oraclecredentials" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.assembler.admin" />
+	</requires>
+	<extension id="database" plugin-id="org.tolven.assembler.admin" point-id="database">
+		<parameter id="database.groupId" value="#{pluginProperty['database.groupId']}" />
+		<parameter id="database.rootPasswordId" value="#{pluginProperty['database.rootPasswordId']}" />
+		<parameter id="databaseSSL.passwordProtected" value="#{pluginProperty['databaseSSL.passwordProtected']}" />
+		<parameter id="keyStore">
+			<parameter id="databaseSSL.keyStoreFile" value="#{pluginProperty['databaseSSL.keyStoreFile']}" />
+			<parameter id="databaseSSL.keyStoreType" value="#{pluginProperty['databaseSSL.keyStoreType']}" />
+		</parameter>
+		<parameter id="databaseSSL.trustStoreFile" value="#{pluginProperty['databaseSSL.trustStoreFile']}" />
+		<parameter id="databaseSSL.trustStoreType" value="#{pluginProperty['databaseSSL.trustStoreType']}" />
+		<parameter id="databaseSSL.trusted.groups" value="#{pluginProperty['databaseSSL.trusted.groups']}" />
+		<parameter id="database.credentialDir" value="#{pluginProperty['database.credentialDir']}" />
+	</extension>
+</plugin>

@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>TRIM Person Entity</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+		<trim:ENSlot id="name" slot="#{entity.name}" readonly="#{readonly}"/>
+		<!-- Modified to validate gender and DOB, 07/119/2010, Valsaraj -->
+		<wiz:group title="#{entity.livingSubject.administrativeGenderCode.label.value}*">
+			<trim:valueSetMenu id="gender" slot="#{entity.livingSubject.administrativeGenderCode}" />
+		</wiz:group>
+		<wiz:group title="#{entity.livingSubject.birthTime.label.value}*">
+			<trim:TS id="dob" value="#{entity.livingSubject.birthTime.TS}" dateStyle="short"/>
+		</wiz:group>
+		<trim:ADSlot id="addr" slot="#{entity.person.addr}"/>
+		<trim:TELSlot id="telecom" slot="#{entity.telecom}"/>
+	</ui:composition>
+</body>
+</html>

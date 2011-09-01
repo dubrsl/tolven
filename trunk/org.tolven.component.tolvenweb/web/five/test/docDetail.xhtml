@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Document Details</title>
+  </head>
+  <body>
+  	<ui:composition>
+		<div id="docDetailPane" >
+<h:dataTable value="#{ccr.ccrPaths}" var="p">
+	<h:column>
+		<f:facet name="header">
+			<h:outputText value="Path"/>
+		</f:facet>
+		<h:outputText value="#{p.label}"/>
+	</h:column>
+	<h:column>
+		<f:facet name="header">
+			<h:outputText value="Value"/>
+		</f:facet>
+		<h:outputText value="#{p.value}"/>
+	</h:column>
+</h:dataTable>
+<h:form id="docDetail" onsubmit="return ajaxSubmit2(this);">
+	<h:panelGrid columns="2">
+	     <h:outputText value="document Id"/>
+	     <h:outputText id="id" value="#{ccr.documentId}"/>
+	</h:panelGrid>
+	<h:outputText value="Path"/>
+	<h:inputText value="#{ccr.path}" size="80" />
+	<h:outputText value="Value"/>
+	<h:inputText value="#{ccr.pathValue}" size="40"/>
+	<h:commandButton id="docDetailSubmit" action="#{ccr.evaluatePath}" value="Evaluate"/>
+</h:form>
+<h:form id="docDetail2" onsubmit="return ajaxSubmit2(this);">
+	<h:commandButton action="#{ccr.newCCR}" value="#{msg.NewCCR}"/>
+</h:form>
+<pre>
+#{ccr.docXMLContentString}
+</pre>
+       </div>
+    </ui:composition>
+  </body>
+</html>

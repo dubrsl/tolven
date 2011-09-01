@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.growthchart" version="2.1.0" class="org.tolven.deploy.growthChart.LoadGrowthChart"  vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.tolvenejb" />
+		<import plugin-id="org.tolven.component.faces" />
+		<import plugin-id="org.tolven.component.war" />
+		<import plugin-id="org.tolven.component.tolvenweb" />
+		<import plugin-id="org.tolven.component.application" />
+	 	<import plugin-id="org.tolven.component.tolvenlocale_en" />
+	 	<import plugin-id="org.tolven.api" />
+	</requires>
+	<runtime>
+		<library id="classes" path="tpf/classes/" type="code"/>
+	</runtime>
+	<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+		<parameter id="dir" value="app" />
+	</extension>
+	<extension id="apiClasses" plugin-id="org.tolven.api" point-id="classes">
+		<parameter id="dir" value="api/classes" />
+	</extension>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+	</extension>
+	<extension id="fiveDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="fiveDirectory">
+		<parameter id="sourceDirectory" value="web/five" />
+	</extension>
+	<extension id="chart-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Growth Chart Action" />
+		<parameter id="managed-bean-name" value="chart" />
+		<parameter id="managed-bean-class" value="org.tolven.web.ChartAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="warclasses" plugin-id="org.tolven.component.war" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="legacypostgresql-GROWTHCHART_SEQ_GEN-table-generator" plugin-id="org.tolven.component.tolvenejb" point-id="table-generator">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="name" value="GROWTHCHART_SEQ_GEN" />
+		<parameter id="table" value="SEQUENCE_GENERATOR" />
+		<parameter id="schema" value="core" />
+		<parameter id="pk-column-name" value="SEQ_NAME" />
+		<parameter id="value-column-name" value="NEXT_VAL" />
+		<parameter id="pk-column-value" value="GROWTHCHART" />
+		<parameter id="initial-value" value="1000" />
+		<parameter id="allocation-size" value="1000" />
+		<parameter id="unique-constraint">
+			<parameter id="column-name" value="SEQ_NAME" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenejb" />
+	</extension>
+	<extension id="application-locale" plugin-id="org.tolven.component.tolvenlocale_en" point-id="application-locale">
+	    <parameter id="application-name" value="echr" />
+	    <parameter id="properties-file" value="locale/chart-locale.properties" />
+	</extension>
+</plugin>

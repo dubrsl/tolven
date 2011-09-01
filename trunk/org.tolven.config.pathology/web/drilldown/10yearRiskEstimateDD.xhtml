@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>10 Year Risk Estimate</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+			<b><h:outputText value="#{menu.item[trim.trim.act.relationship['diagnosis'].act.id.for[top.accountUser.account].extension].string01}"/></b>
+			<br></br>
+			<br></br>
+			<table width="40%" border="1">
+				<thead>
+					<tr>
+					<th width="40%"></th>
+					<th width="30%">Recur.</th>
+					<th width="30%">Mort.</th>
+					</tr>
+				</thead>
+				
+				
+				<tbody>
+					<tr>
+						<td>None</td>
+						<td align="center"><trim:PQ id="nonerecur" value="#{trim.trim.act.relationship['noneRecur'].act.observation.value}" readonly="true" /></td>
+						<td align="center"><trim:PQ id="nonemort" value="#{trim.trim.act.relationship['noneMort'].act.observation.value}" readonly="true" /></td>
+					</tr>
+					<tr>
+						<td>Hormone</td>
+						<td align="center"><trim:PQ id="hormonerecur" value="#{trim.trim.act.relationship['hormoneRecur'].act.observation.value}" readonly="true" /></td>
+						<td align="center"><trim:PQ id="hormonemort" value="#{trim.trim.act.relationship['hormoneMort'].act.observation.value}" readonly="true" /></td>
+					</tr>
+					<tr>
+						<td>Chemo</td>
+						<td align="center"><trim:PQ id="chemorecur" value="#{trim.trim.act.relationship['chemoRecur'].act.observation.value}" readonly="true" /></td>
+						<td align="center"><trim:PQ id="chemomort" value="#{trim.trim.act.relationship['chemoMort'].act.observation.value}" readonly="true" /></td>
+					</tr>
+					<tr>
+						<td>Combined</td>
+						<td align="center"><trim:PQ id="combinedrecur" value="#{trim.trim.act.relationship['combinedRecur'].act.observation.value}" readonly="true" /></td>
+						<td align="center"><trim:PQ id="combinedmort" value="#{trim.trim.act.relationship['combinedMort'].act.observation.value}" readonly="true" /></td>
+					</tr>					
+				
+				</tbody>
+				
+			</table>
+			
+			<ui:include src="/drilldown/attachments.xhtml"/>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

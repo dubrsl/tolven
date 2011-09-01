@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.library.tolvencommon">
+
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+	<property name="includeSourceInDevLib" value="true" />
+
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+		<!-- Each section adds itself to the zip file-->
+		<antcall target="buildSection">
+			<param name="section" value="java" />
+			<param name="lib" value="lib/el-api-1.1.jar:lib/log4j-1.2.15.jar:lib/commons-codec-1.3.jar:lib/jersey-client-1.3.jar" />
+			<param name="sectionZipExcludes" value="**/*" />
+		</antcall>
+		<antcall target="buildSection">
+			<param name="section" value="test" />
+			<param name="lib" value="${buildFolder}/java/classes:lib/junit.jar:lib/log4j-1.2.15.jar" />
+			<param name="sectionZipExcludes" value="**/*" />
+		</antcall>
+		<!-- Add DevLib.jar to plugin zip -->
+		<jar destfile="${buildFolder}/tolvenCommon.jar">
+			<manifest>
+				<attribute name="Built-By" value="Tolven Healthcare Innovations" />
+			</manifest>
+			<zipfileset dir="${buildFolder}/java/classes" />
+			<zipfileset src="lib/commons-codec-1.3.jar">
+				<include name="org/apache/commons/codec/binary/Base64.class" />
+				<include name="org/apache/commons/codec/BinaryDecoder.class" />
+				<include name="org/apache/commons/codec/BinaryEncoder.class" />
+				<include name="org/apache/commons/codec/Decoder.class" />
+				<include name="org/apache/commons/codec/DecoderException.class" />
+				<include name="org/apache/commons/codec/EncoderException.class" />
+				<include name="org/apache/commons/codec/Encoder.class" />
+			</zipfileset>
+		</jar>
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar" />
+				<include name="tolvenCommon.jar" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<!--<target name="javadoc" description="Generate Javadoc">
+		<javadoc access="public" author="true" 
+			destdir="build/doc" 
+			doctitle="Tolven Logger" 
+			classpathref="project.classpath" 
+			packagenames="*"
+			source="1.5" sourcepath="src" splitindex="true" use="true" version="true"
+		    encoding="UTF-8"  docencoding="UTF-8"/>
+	</target>-->
+
+</project>

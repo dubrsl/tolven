@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Respiration Rate</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Enter #{menu.menuDataItem.string01}" >
+			<wiz:body>
+				<wiz:group title="Date of observation">
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+				<wiz:group title="#{menu.menuDataItem.string01}"> 
+					<h:inputText id="val" value="#{trim.trim.act.observation.value.ST.value}" required="true" onkeyup="validateDecimals('#{menu.elementLabel}', 'val', 'numberErrorMsg');">
+						<f:validator validatorId="numberAndDecimalValidator" />
+                        <f:attribute name="attributeFactor" value="number"/> 
+					</h:inputText> #{trim.trim.act.observation.value.label.value}<br/>
+					<span id="numberErrorMsg" style="color: red;"></span>
+					<h:panelGroup id="valError" style="display:none;color:#FF0000;font-style:italic;" >xxxxx</h:panelGroup><br/>
+				</wiz:group>
+				<wiz:group title="Additional Details" >
+					<wiz:yesno id="respDetails">Add?</wiz:yesno>
+					<wiz:group title="#{trim.trim.act.relationships[0].act.observation.value.label.value}" visible="$('#{menu.elementLabel}:respDetails').isTrue();">
+						<trim:CE id="rhythm" layout="lineDirection" valueSet="rhythm" value="#{trim.trim.act.relationships[0].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="#{trim.trim.act.relationships[1].act.observation.value.label.value}" visible="$('#{menu.elementLabel}:respDetails').isTrue();">
+						<trim:CE id="position" layout="lineDirection" valueSet="position" value="#{trim.trim.act.relationships[1].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="#{trim.trim.act.relationships[2].act.observation.value.label.value}" visible="$('#{menu.elementLabel}:respDetails').isTrue();">
+						<trim:CE id="ventilationType" layout="lineDirection" valueSet="ventilationType" value="#{trim.trim.act.relationships[2].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="#{trim.trim.act.relationships[3].act.observation.value.label.value}" visible="$('#{menu.elementLabel}:respDetails').isTrue();">
+						<h:inputTextarea id="comments" value="#{trim.trim.act.relationships[3].act.observation.value.ST.value}" readonly="false"> </h:inputTextarea>
+					</wiz:group>
+
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Respiration</h1>
+				<p>Help is [TBD].</p>
+			</wiz:help>
+		</wiz:step>
+ 		<ui:include src="selectEncounter.xhtml"/>
+	</ui:composition>
+</body>
+</html>

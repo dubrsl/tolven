@@ -1,0 +1,181 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	
+<!-- Patient Assessments -->
+<extends path="echr:patient">
+	<placeholder name="assessment" title="Assessment" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml">
+		<field name="effectiveTimeLow" internal="date01">
+			<from>#{act.effectiveTime.TS.date}</from>
+		</field>
+		<field name="title" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="smokingstatus" internal="string03" >
+			<from>#{trim.act.relationship['smoker'].act.observation.value.CE.displayName}</from>
+		</field>
+		<field name="status" internal="string04" >
+			<from>#{trim.act.statusCode}</from>
+		</field>
+		<field name="smokingProgramStatus" internal="string05" >
+			<from>#{trim.act.relationship['smoker'].act.relationship['smokingProgram'].act.observation.values[0].CE.displayName}</from>
+		</field>
+		<field name="bmiValue" internal="string06" >
+			<from>#{trim.act.relationship['bmi'].act.observation.value.ST.value}</from>
+		</field>
+		<field name="smokingProgram" internal="string07" >
+			<from>#{trim.act.relationship['smoker'].act.relationship['smokingProgram'].act.observation.values[1].ST.value}</from>
+		</field>
+	</placeholder>
+</extends>
+	<extends path="echr:patient:summary">
+		<list name="assesum" visible="never">
+			<column name="effectiveTime" internal="date01" format="MM/dd/yyyy" width="15.0">
+				<from>#{assessment.effectiveTimeLow}</from>
+			</column>
+			<column name="title" internal="string01" width="35.0">
+				<from>#{assessment.title}</from>
+			</column>
+			<column name="smokingstatus" internal="string03" width="15.0">
+				<from>#{assessment.smokingstatus}</from>
+			</column>
+			<column name="status" internal="string04" width="15.0">
+				<from>#{assessment.status}</from>
+			</column>			
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="assesum" portalColumn="1" sequence="1" title="Assessments" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:assesum" visible="true" drilldown=":assessments">
+			<action name="menu1" title="Document" page="/five/list.xhtml" visible="true" query="global:assessmentDocMenu">
+					<column name="Title" internal="string01" instantiate="true" width="40.0"/>
+			</action>
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:assessmentDocMenu">
+				<column name="Title" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>  
+	</extends>
+	<extends path="echr:patient:summary:timeline">
+		<band name="assessum" sequence="1" title="Assessments" query="echr:patient:summary:assesum" visible="true" interval="month" style="#99FFCC" drilldown=":assessments"/>  
+	</extends>
+	<extends path="echr:patient">
+		<menu name="assessments" sequence="2" title="Assessments" page="/five/bar2.xhtml" visible="true">
+			<list name="active" title="Active" page="/five/list.xhtml" visible="true" drilldown=":assessment">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{assessment.effectiveTimeLow}</from>
+				</column>
+				<column name="Assessment" internal="string01" reference="true" width="35.0">
+					<from>#{assessment.title}</from>
+				</column>
+				<column name="smokingstatus" internal="string03" width="15.0">
+					<from>#{assessment.smokingstatus}</from>
+				</column>
+				<column name="Status" internal="string04" width="15.0">
+					<from>#{assessment.status}</from>
+				</column>
+				<column name="smokingProgramStatus" internal="string05" visible="false">
+					<from>#{assessment.smokingProgramStatus}</from>
+				</column>
+				<column name="bmiValue" internal="string06" visible="false">
+					<from>#{assessment.bmiValue}</from>
+				</column>
+				<column name="smokingProgram" internal="string07" visible="false">
+					<from>#{assessment.smokingProgram}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:assessmentDocMenu">
+					<column name="Assessment" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+			<list name="suspended" title="Suspended" page="/five/list.xhtml" visible="true" drilldown=":assessment">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{assessment.effectiveTimeLow}</from>
+				</column>
+				<column name="Assessment" internal="string01" reference="true" width="35.0">
+					<from>#{assessment.title}</from>
+				</column>
+				<column name="smokingstatus" internal="string03" width="15.0">
+					<from>#{assessment.smokingstatus}</from>
+				</column>
+				<column name="Status" internal="string04" width="15.0">
+					<from>#{assessment.status}</from>
+				</column>
+				<column name="smokingProgramStatus" internal="string05" visible="false">
+					<from>#{assessment.smokingProgramStatus}</from>
+				</column>
+				<column name="bmiValue" internal="string06" visible="false">
+					<from>#{assessment.bmiValue}</from>
+				</column>
+				<column name="smokingProgram" internal="string07" visible="false">
+					<from>#{assessment.smokingProgram}</from>
+				</column>
+			</list>
+			<list name="nullified" title="Nullified" page="/five/list.xhtml" visible="true" drilldown=":assessment">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{assessment.effectiveTimeLow}</from>
+				</column>
+				<column name="Assessment" internal="string01" reference="true" width="35.0">
+					<from>#{assessment.title}</from>
+				</column>
+				<column name="smokingstatus" internal="string03" width="15.0">
+					<from>#{assessment.smokingstatus}</from>
+				</column>
+				<column name="Status" internal="string04" width="15.0">
+					<from>#{assessment.status}</from>
+				</column>
+				<column name="smokingProgramStatus" internal="string05" visible="false">
+					<from>#{assessment.smokingProgramStatus}</from>
+				</column>
+				<column name="bmiValue" internal="string06" visible="false">
+					<from>#{assessment.bmiValue}</from>
+				</column>
+				<column name="smokingProgram" internal="string07" visible="false">
+					<from>#{assessment.smokingProgram}</from>
+				</column>
+			</list>
+			<list name="completed" title="Completed" page="/five/list.xhtml" visible="true" drilldown=":assessment">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{assessment.effectiveTimeLow}</from>
+				</column>
+				<column name="Assessment" internal="string01" reference="true" width="35.0">
+					<from>#{assessment.title}</from>
+				</column>
+				<column name="smokingstatus" internal="string03" width="15.0">
+					<from>#{assessment.smokingstatus}</from>
+				</column>
+				<column name="Status" internal="string04" width="15.0">
+					<from>#{assessment.status}</from>
+				</column>
+				<column name="smokingProgramStatus" internal="string05" visible="false">
+					<from>#{assessment.smokingProgramStatus}</from>
+				</column>
+				<column name="bmiValue" internal="string06" visible="false">
+					<from>#{assessment.bmiValue}</from>
+				</column>
+				<column name="smokingProgram" internal="string07" visible="false">
+					<from>#{assessment.smokingProgram}</from>
+				</column>
+			</list>
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown=":assessment">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{assessment.effectiveTimeLow}</from>
+				</column>
+				<column name="Assessment" internal="string01" reference="true" width="35.0">
+					<from>#{assessment.title}</from>
+				</column>
+				<column name="smokingstatus" internal="string03" width="15.0">
+					<from>#{assessment.smokingstatus}</from>
+				</column>
+				<column name="Status" internal="string04" width="15.0">
+					<from>#{assessment.status}</from>
+				</column>
+				<column name="smokingProgramStatus" internal="string05" visible="false">
+					<from>#{assessment.smokingProgramStatus}</from>
+				</column>
+				<column name="bmiValue" internal="string06" visible="false">
+					<from>#{assessment.bmiValue}</from>
+				</column>
+				<column name="smokingProgram" internal="string07" visible="false">
+					<from>#{assessment.smokingProgram}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+</application>

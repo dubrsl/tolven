@@ -1,0 +1,12 @@
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/effects.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/window.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/window_effects.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/emergencyAccountScripts.js">
+</script>

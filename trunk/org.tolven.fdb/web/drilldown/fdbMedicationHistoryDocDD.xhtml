@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:wiz="http://www.tolven.org/jsf/wizard"
+    xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+  <title>Patient Diagnosis - Drilldown</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+  	<ui:composition>
+    	<wiz:body>
+    	Medications Taken in Past
+    	<br/>
+    		<div class="widget">
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<thead>
+					<tr>
+						<th style="text-align: center;width: 20%;"><b>Medications</b></th>
+						<th style="text-align: center;width: 10%;"><b>Route</b></th>
+						<th style="text-align: center;width: 10%;"><b>Frequency</b></th>
+						<th style="text-align: center;width: 15%;"><b>Administration Instructions</b></th>
+						<th style="text-align: center;width: 15%;"><b>Comments</b></th>
+						<th style="text-align: center;width: 10%;"><b>Start Date</b></th>
+						<th style="text-align: center;width: 10%;"><b>End Date</b></th>						
+					</tr>
+				</thead>
+				<tbody>
+				<c:forEach var="med" items="#{trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}" varStatus="widgetIndex">
+					<c:set var="class" value="odd"/>
+					<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+					<c:if test="#{med.enabled == true and med.act.statusCode == 'COMPLETED'}"> <!-- saved medications-->
+					<tr id="#{menu.elementLabel}savedOrder#{status}#{widgetIndex.index}" class="#{class}">
+						<td>#{med.act.participations[0].role.player.code}</td>
+						<td>
+							#{med.act.procedure.substanceAdministration.routeCode.value.displayName}
+						</td>
+						<td>
+							#{med.act.relationship['frequency'].act.observation.value.CE.displayName}						
+						</td>
+						<td>#{med.act.relationship['instructions'].act.text.originalText}</td>
+						<td>#{med.act.relationship['comments'].act.text.originalText}</td>
+						<td><trim:TSNew value="#{med.act.effectiveTime.IVLTS.low.TS}" dateStyle="short"  readonly="true"/></td>	
+						<td><trim:TSNew value="#{med.act.effectiveTime.IVLTS.high.TS}" dateStyle="short" readonly="true"/></td>
+					</tr>
+					</c:if>
+				</c:forEach>	
+			</tbody>			
+			</table>
+		</div>
+		<br/>
+		
+		Medications Taking Currently
+		<div class="widget">
+			<table width="100%" cellpadding="0" cellspacing="0" border="0">
+				<thead>
+					<tr>
+						<th style="text-align: center;width: 20%;"><b>Medications</b></th>
+						<th style="text-align: center;width: 10%;"><b>Route</b></th>
+						<th style="text-align: center;width: 10%;"><b>Frequency</b></th>
+						<th style="text-align: center;width: 15%;"><b>Administration Instructions</b></th>
+						<th style="text-align: center;width: 15%;"><b>Comments</b></th>
+						<th style="text-align: center;width: 10%;"><b>Start Date</b></th>
+						<th style="text-align: center;width: 10%;"><b>End Date</b></th>						
+					</tr>
+				</thead>
+				<tbody>
+				<c:forEach var="med" items="#{trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}" varStatus="widgetIndex">
+					<c:set var="class" value="odd"/>
+					<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+					<c:if test="#{med.enabled == true and med.act.statusCode != 'COMPLETED'}"> <!-- saved medications-->
+					<tr id="#{menu.elementLabel}savedOrder#{status}#{widgetIndex.index}" class="#{class}">
+						<td>#{med.act.participations[0].role.player.code}</td>
+						<td>
+							#{med.act.procedure.substanceAdministration.routeCode.value.displayName}
+						</td>
+						<td>
+							#{med.act.relationship['frequency'].act.observation.value.CE.displayName}						
+						</td>
+						<td>#{med.act.relationship['instructions'].act.text.originalText}</td>
+						<td>#{med.act.relationship['comments'].act.text.originalText}</td>
+						<td><trim:TSNew value="#{med.act.effectiveTime.IVLTS.low.TS}" dateStyle="short" readonly="true"/></td>	
+						<td><trim:TSNew value="#{med.act.effectiveTime.IVLTS.high.TS}" dateStyle="short" readonly="true"/></td>
+					</tr>
+					</c:if>
+				</c:forEach>	
+			</tbody>			
+			</table>
+		</div>
+		
+		<table>
+			<tr>
+				<td><b><h:outputText value="#{trim.trim.act.relationship['encounter'].act.observation.value.label.value} :"/></b></td>
+				<td colspan="4">
+					#{trim.trim.act.relationship['encounter'].act.observation.value.CE.displayName}
+				</td>
+			</tr>
+		</table>
+		<c:if test="#{trim.history != null}">
+  				<div style="width:100%;height:100%; padding: 5px;">
+				<a href="#" onclick="$('historyDisplayTable').toggle();return false;">History</a>
+				<table cellspacing="0" cellpadding="0" style="display: none;" id="historyDisplayTable" width="60%">
+					<thead>
+	    				<tr>
+	    					<th>User</th>
+	    					<th>Timestamp</th>
+	    					<th>Status</th>
+	    				</tr>
+      					</thead>
+					<tbody style="width: 100%;">
+		    			<c:forEach var="tmp" items="#{trim.history}" varStatus="indx">
+          						<tr>
+		    					<td style="width: 33%;">#{tmp['user']}</td>
+		    					<td style="width: 33%;">#{tmp['timestamp']}</td>
+		    					<td style="width: 33%;">#{tmp['status']}</td>
+          						</tr>
+						</c:forEach>
+			        </tbody>
+			    </table>
+			</div>
+		</c:if>
+    	</wiz:body>
+  	</ui:composition>
+</body>
+</html>

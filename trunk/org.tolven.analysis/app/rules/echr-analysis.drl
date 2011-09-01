@@ -1,0 +1,76 @@
+package echr.analysis
+ /* Tolven */
+
+import java.util.*;
+
+import org.jfree.data.time.RegularTimePeriod;
+import java.util.TimeZone;
+
+import org.tolven.analysis.AnalysisEvent;
+import org.tolven.analysis.AnalysisLocal;
+import org.tolven.analysis.SnapshotEvent;
+import org.tolven.analysis.SnapshotLocal;
+import org.tolven.app.MenuLocal;
+import org.tolven.app.CCHITLocal;
+
+
+global org.tolven.app.AppEvalAdaptor app;
+global Date now;
+
+rule "Insert SnapshotBean"
+	when
+		eval(true)
+	then
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/SnapshotBean!org.tolven.analysis.SnapshotLocal" ));
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/AnalysisBean!org.tolven.analysis.AnalysisLocal" ));
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/MenuBean!org.tolven.app.MenuLocal" ));
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/CCHITBean!org.tolven.app.CCHITLocal" ));
+end
+
+rule "Snapshot command rule"
+	when
+		$analysisEvent: AnalysisEvent( command == "snapshot", $cohortType: cohortType, $snapshotType: snapshotType )
+		$snapshotBean: SnapshotLocal()
+		$analysisBean: AnalysisLocal()
+	then
+		//app.debug( "Snapshot command rule");
+		Boolean snapshotNow = $analysisEvent.getMessage().getBooleanProperty("snapshotNow");
+		if(snapshotNow != null && snapshotNow.booleanValue()) {
+			//app.debug( "snapshot");
+			SnapshotEvent snapshotEvent = new SnapshotEvent();
+			snapshotEvent.setCohortType($cohortType);
+			snapshotEvent.setSnapshotType($snapshotType);
+			insert(snapshotEvent);
+		}
+		Boolean schedule = $analysisEvent.getMessage().getBooleanProperty("schedule");
+		if(schedule != null && schedule.booleanValue() && $snapshotBean.getNextScheduledDate($cohortType, $snapshotType, now, app.getAccount()) == null) {
+			//app.debug( "schedule & snapshot");
+	        String intervalUnitClassName = app.getAccount().getProperty().get($cohortType + "." + $snapshotType + ".intervalUnit");
+	        Class<?> intervalUnitClass = null;
+	        try {
+	            intervalUnitClass = Class.forName("org.jfree.data.time." + intervalUnitClassName);
+	        } catch (ClassNotFoundException e) {
+	            throw new RuntimeException("Could not schedule with non-existent interval class: " + "org.jfree.data.time." + intervalUnitClassName, e);
+	        }
+	        Long nIntervals = Long.parseLong(app.getAccount().getProperty().get($cohortType + "." + $snapshotType + ".intervalValue"));
+	        RegularTimePeriod timePeriod = RegularTimePeriod.createInstance(intervalUnitClass, now, TimeZone.getDefault());
+	        long milliseconds = nIntervals * (timePeriod.getEnd().getTime() - timePeriod.getStart().getTime());
+	        Date scheduleTime = new Date(timePeriod.getStart().getTime() + milliseconds);
+	        Map<String, Object> messageProperties = new HashMap<String, Object>();
+	        messageProperties.put("command", "snapshot");
+	        messageProperties.put("cohortType", $cohortType);
+	        messageProperties.put("snapshotType", $snapshotType);
+        	messageProperties.put("snapshotNow", true);
+	        messageProperties.put("schedule", true);
+			$analysisBean.scheduleAnalysis(messageProperties, scheduleTime, app.getAccount());
+		}
+end
+
+rule "Cancel snapshot"
+	when
+		$analysisEvent: AnalysisEvent( command == "cancelSchedule", $cohortType: cohortType, $snapshotType: snapshotType )
+		$snapshotBean: SnapshotLocal()
+	then
+		//app.debug( "Cancel snapshot");
+		$snapshotBean.cancelScheduleNow($cohortType, $snapshotType, app.getAccount(), now);
+end

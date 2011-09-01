@@ -1,0 +1,5 @@
+<application>
+	<module>
+		<java>tolvenLocale.jar</java>
+	</module>
+</application>

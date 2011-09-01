@@ -1,0 +1,138 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<extends path="echr:patient">
+		<menu name="share" title="Share" page="/five/bar2.xhtml" visible="true">
+			<list name="outShares" title="Sent Shares" page="/five/list.xhtml" visible="true" drilldown=":outShare">
+				<column name="effectiveTime" internal="date01" width="13.0">
+					<from>#{outShare.effectiveTime}</from>
+				</column>
+				<column name="MyComment" internal="string02" width="30.0" reference="true">
+					<from>#{outShare.senderComment}</from>
+				</column>
+				<column name="ReceiverName" internal="string03" width="20.0">
+					<from>#{outShare.receiverName}</from>
+				</column>
+				<column name="receiverComment" internal="string04" width="30.0">
+					<from>#{outShare.receiverComment}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:shareMenu">
+					<column name="Share" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+			<list name="inShares" title="Received Shares" page="/five/list.xhtml" visible="true" drilldown=":inShare">
+				<column name="effectiveTime" internal="date01" width="13.0">
+					<from>#{inShare.effectiveTime}</from>
+				</column>
+				<column name="SenderComment" internal="string02" width="30.0" reference="true">
+					<from>#{inShare.senderComment}</from>
+				</column>
+				<column name="SenderName" internal="string03" width="20.0">
+					<from>#{inShare.senderName}</from>
+				</column>
+				<column name="MyComment" internal="string04" width="30.0">
+					<from>#{inShare.receiverComment}</from>
+				</column>
+			</list>
+			<list name="accountShares" uniqueKey="AccountId" title="Account Shares" page="/five/list.xhtml" visible="true">
+				<column name="AccountId" internal="long01" >
+					<from>#{inShare.accountId}</from>
+					<from>#{outShare.accountId}</from>
+				</column>
+				<column name="Name" internal="string01" width="25">
+					<from>#{inShare.senderName}</from>				
+					<from>#{outShare.receiverName}</from>
+				</column>
+				<column name="Comment" internal="string02" width="30">
+					<from>#{inShare.senderComment}</from>
+					<from>#{outShare.receiverComment}</from>					
+				</column>
+			</list>
+			<!-- Keep track of which accounts this patient this patient has shared from and to, regardless of how many times a share has occured. -->
+			<list name="providerShares" uniqueKey="ProviderId" title="Provider Shares" page="/five/list.xhtml" visible="true">
+				<column name="ProviderId" internal="long02" >
+					<from>#{outShare.providerId}</from>
+					<from>#{inShare.providerId}</from>
+				</column>
+				<column name="Name" internal="string01" width="25">
+					<from>#{outShare.receiverName}</from>
+					<from>#{inShare.senderName}</from>
+				</column>
+				<column name="Comment" internal="string02" width="30">
+					<from>#{outShare.receiverComment}</from>
+					<from>#{inShare.senderComment}</from>
+				</column>
+			</list>
+			<list name="access" title="Access" page="/five/list.xhtml" visible="true">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="10.0"/>
+				<column name="User" internal="string01" width="25.0"/>
+				<column name="Purpose" internal="string02" width="25.0"/>
+				<column name="Remote IP" internal="string03" width="25.0"/>
+			</list>
+		</menu>
+	</extends>
+	<extends path="echr:patient">
+		<placeholder name="outShare" title="Sent Share" eventInstance="echr:patient:wip" page="/wizard/outShare.xhtml" heading="/five/shareLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="provider" internal="parent02">
+				<from>#{trim.message.receiver.accountPath}</from>
+			</field>
+			<field name="senderName" internal="string01" >
+				<from>#{trim.message.sender.accountName}</from>
+			</field>
+			<field name="senderComment" internal="string02" >
+				<from>#{trim.message.sender.comment}</from>
+			</field>
+			<field name="receiverName" internal="string03" >
+				<from>#{trim.message.receiver.accountName}</from>
+			</field>
+			<field name="receiverComment" internal="string04" >
+				<from>#{trim.message.receiver.comment}</from>
+			</field>
+			<field name="accountId" internal="long01" >
+				<from>#{trim.message.receiver.accountId}</from>
+			</field>
+			<field name="providerId" internal="long02" >
+				<from>#{trim.message.receiver.providerId}</from>
+			</field>
+			<field name="subject" internal="string05">
+				<from>#{act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient">
+		<placeholder name="inShare" title="Received Share" eventInstance="echr:patient:wip" page="/wizard/inShare.xhtml" heading="/five/shareLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="senderName" internal="string01" >
+				<from>#{trim.message.sender.accountName}</from>
+			</field>
+			<field name="senderComment" internal="string02" >
+				<from>#{trim.message.sender.comment}</from>
+			</field>
+			<field name="receiverName" internal="string03" >
+				<from>#{trim.message.receiver.accountName}</from>
+			</field>
+			<field name="receiverComment" internal="string04" >
+				<from>#{trim.message.receiver.comment}</from>
+			</field>
+			<field name="accountId" internal="long01" >
+				<from>#{trim.message.sender.accountId}</from>
+			</field>
+			<field name="providerId" internal="long02" >
+				<from>#{trim.message.sender.providerId}</from>
+			</field>
+			<field name="subject" internal="string05">
+				<from>#{act.participation['subject'].role.player.name.EN['L'].formatted}</from>
+			</field>
+		</placeholder>
+	</extends>
+</application>

@@ -1,0 +1,16 @@
+package test.rules5
+ 
+import java.util.*;
+import org.tolven.trim.*;
+import java.lang.Integer;
+import test.rules.*;
+
+global java.io.PrintStream out;
+
+rule "MVELTest1"
+	when
+		MockChild( $field1: parent.field1 )
+	then
+		out.println( $field1 );
+end
+

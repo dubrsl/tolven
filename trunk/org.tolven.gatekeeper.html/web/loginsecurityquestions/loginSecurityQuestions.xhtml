@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>Login Password Manager</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+	<ui:composition>
+		<h:graphicImage value="/images/tolven-login-backimage.png" rendered="true" />
+		<div style="clear:both"/>
+		<hr/>
+		
+		<h:form id="loginsecurityqNavigateHomeForm">
+			<h:panelGrid columns="3">
+		    	<h:commandLink id="navigateHome" action="home">
+					<h:outputText value="Home Page" />
+		    	</h:commandLink>
+				<h:outputText value="|" />
+		    	<h:commandLink id="manageLoginPassword" action="manageLoginPassword">
+					<h:outputText value="Login Password Manager"/>
+		    	</h:commandLink>
+	    	</h:panelGrid>
+	   </h:form>
+		<div style="clear:both"/>
+		<hr/>
+		
+		<h2>Security Question Manager</h2>
+		<div style="clear:both"/>
+		<hr/>
+		
+		<h:form id="loginsecurityqForm">
+			<fieldset><legend>Security Questions (one per line)</legend>
+				<h:inputTextarea id="questions" value="#{loginsecurityq.questions}" cols="120" rows="10" required="true" />
+				<h:panelGrid columns="2">
+					<h:commandButton action="#{loginsecurityq.addLoginSecurityQuestions}" value="Add" />
+					<h:commandButton action="#{loginsecurityq.removeLoginSecurityQuestions}" value="Remove" />
+				</h:panelGrid>
+			</fieldset>
+			<h:message for="questions" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		</h:form>
+		<fieldset><legend>Current Security Questions</legend>
+			<h:dataTable id="loginsecurityqTable" value="#{loginsecurityq.currentSecurityQuestions}" var="sq">
+				<h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Security Question"/>
+	                </f:facet>
+	                <h:outputText value="#{sq.question}"/>
+	            </h:column>
+			</h:dataTable>
+		</fieldset>
+    </ui:composition>
+  </body>
+</html>

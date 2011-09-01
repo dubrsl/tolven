@@ -1,0 +1,399 @@
+table{
+border-collapse: collapse;
+}
+.calendarView{
+padding-top: 10px;
+background:#c6dbff;
+}
+.navigateLinks{
+list-style: none;
+font-size: 1.4em;
+margin-left: 52%
+}
+.navigateLinks li{
+padding-left: 5px;
+text-decoration: none;
+font-weight: bold;
+display:inline;
+}
+
+.navigateLinks li a{
+text-decoration: none;
+}
+
+.calendarTable{
+background: #c6dbff;
+border: 0;
+width: 100%;
+text-align: center;
+}
+
+.calendarTable tr{
+color: #4A4D4A;
+}
+.colHeaders{
+position:absolute;
+text-align: center;
+float: left;
+width: 98%;
+}
+.colHeader{
+text-align: center;
+float: left;
+}
+.miniMonth{
+background:#c6dbff; 
+width: 150px;
+}
+.miniMonth a{
+color: #4A4D4A;
+text-decoration:none;
+}
+.miniMonth a:hover{
+background: #c6dbff;
+text-decoration:underline;
+}
+
+.calgrid{
+background:#FFFFFF none repeat scroll 0%;
+cursor:default;
+position:relative;
+z-index: 1;
+}
+.dayOfMonth {
+font-family:Verdana;
+left:0pt;
+padding-bottom:2px;
+position:absolute;
+text-align:right;
+top:0pt;
+position: absolute;
+width:100%;
+}
+.dayInMonth {
+	cursor:pointer;
+	background:#E8EEF7 none repeat scroll 0%;
+	color:#6A6A6B;
+	width: 100%;
+	font-size: 80%;
+	float: left;
+	height: 20px;
+	padding-right: 2px;
+	text-align: right;
+	float: right;
+
+}
+.dayNotInMonth{
+	color: #BABDC4;
+	cursor:default;
+	background:#E8EEF7 none repeat scroll 0%;
+	width: 100%;
+	font-size: 80%;
+	float: left;
+	height: 20px;
+	padding-right: 2px;
+	text-align: right;
+}
+.eventLabel{
+width:100%;
+height:90%;
+padding-left: 1px;
+text-align:left;
+font-size: 1em;
+overflow: auto;
+}
+.eventText{
+overflow:hidden;
+text-align: left;
+ background: red;
+ color:white;
+ z-index: 3;
+}
+.eventText a{
+  text-decoration:none;  
+
+}
+.eventText a:hover{
+  text-decoration:underline;
+  background:#c6dbff;
+}
+
+.vrule{
+width: 1px;
+position:absolute;
+top:0pt;
+border-left:1px solid #CCDDEE;
+height: 100%;
+z-index: 1;
+}
+.hrule{
+height: 1px;
+position:absolute;
+left:0pt;
+border-top:1px solid #CCDDEE;
+width: 100%;
+z-index: 1;
+}
+.gotoDiv{
+float:right;
+text-align: center;
+}
+.gotoDiv select{
+display:inline;
+}
+.weekend{
+background:#99BBDD;
+}
+.weekday{
+background:#FFFFFF;
+}
+.today{
+font-weight: bold;
+}
+.displayDate{
+background: #557799;
+}
+.mmDayNotInMonth{
+color: #BABDC4;
+}
+.dailyCalHeader{
+border-bottom: 1px #99BBDD solid;
+background:#E8EEF7 none repeat scroll 0%;
+color:#6A6A6B;
+font-size: 1.2em;
+height: 20px;
+padding-bottom: 1px;
+}
+.hourCell{
+color:#6A6A6B;
+font-size: 1.2em;
+height: 20px;
+border: 1px #99BBDD solid;
+height: 50px;
+}
+.hourEventsGrid{
+height: 400px;
+overflow-y: scroll;
+position: relative;
+}
+.hoursDiv{
+background:#E8EEF7 repeat scroll 0%;
+position: absolute;
+left: 0;
+}
+.eventsDiv{
+position: absolute;
+left: 5%;
+top:0;
+}
+.hourDiv{
+border-top: 1px #99BBDD solid;
+border-right: 1px #99BBDD solid;
+background:#E8EEF7;
+color:#446688;
+font-size: 13px;
+padding-left:5px;
+text-align:left;
+}
+.dayGrid{
+	height:400px;
+	overflow-y:scroll;
+	position:relative;
+	border-right:  1px #99BBDD solid;
+	border-bottom:  1px #99BBDD solid;
+}
+.dayGrid .eventLabel{
+	border-top: 1px #99BBDD solid;
+	position:absolute;
+	width: 95%;
+	left: 5.5%;
+	height: 50px;
+}
+
+.dayGrid .hourDiv{
+	height: 50px;
+	position:absolute;
+}
+
+.eventDiv{
+border-top: 1px #99BBDD solid;
+}
+.dayEventsDiv{
+border-top: 1px #99BBDD solid;
+position: absolute;
+border-left:  1px #99BBDD solid;
+}
+.weeklyEvents{
+height:400px;
+overflow-y:scroll;
+position:relative;
+border-right:  1px #99BBDD solid;
+border-bottom:  1px #99BBDD solid;
+}
+
+.bubbleDate{
+border-bottom:1px solid #888888;
+font-weight:bold;
+margin-bottom:0.5em;
+}
+.calendarBubble{
+position:absolute;
+width: 250px;
+height: 200px;
+z-index: 5;
+}
+.bubbleLayer_1{
+  width: 100%; 
+  height: 100%; 
+  position: relative;
+}
+.bubbleTopLeft{
+background: url(../scripts/simile/images/bubble-top-left.png) repeat scroll 0%; 
+left: 0px; top: 0px; 
+position: absolute; 
+width: 33px; 
+height: 33px;
+}
+.bubbleTop{
+  background: url(../scripts/simile/images/bubble-top.png) repeat scroll 0%; 
+  left: 33px; 
+  top: 0px; 
+  position: absolute; 
+  width: 300px; 
+  height: 33px;
+}
+.bubbleTopRight{
+  background: url(../scripts/simile/images/bubble-top-right.png) repeat scroll 0%; 
+  left: 333px; 
+  top: 0px; 
+  position: absolute; 
+  width: 40px; 
+  height: 33px;
+}
+.bubbleLeft{
+  background: url(../scripts/simile/images/bubble-left.png) repeat scroll 0%; 
+  left: 0px; 
+  top: 33px; 
+  position: absolute; 
+  width: 33px; 
+  height: 145px;
+}
+.bubbleRight{
+  background: url(../scripts/simile/images/bubble-right.png) repeat scroll 0%; 
+  left: 333px; 
+  top: 33px; 
+  position: absolute; 
+  width: 40px; 
+  height: 145px; 
+}
+.bubbleBottomLeft{
+  background:  url(../scripts/simile/images/bubble-bottom-left.png) repeat scroll 0%;
+  left: 0px; 
+  top: 178px; 
+  position: absolute; 
+  width: 33px; 
+  height: 42px; 
+}
+.bubbleBottom{
+  background:  url(../scripts/simile/images/bubble-bottom.png) repeat scroll 0%; 
+  left: 33px; 
+  top: 178px; 
+  position: absolute; 
+  width: 300px; 
+  height: 42px; 
+}     
+.bubbleBottomRight{
+  background: url(../scripts/simile/images/bubble-bottom-right.png) repeat scroll 0%; 
+  left: 333px; 
+  top: 178px; 
+  position: absolute; 
+  width: 40px; 
+  height: 42px;
+}
+.bubbleClose{
+  background: url(../scripts/simile/images/close-button.png) repeat scroll 0%; 
+  left: 330px; 
+  top: 19px; 
+  cursor: pointer; 
+  position: absolute; 
+  width: 16px; 
+  height: 16px; 
+}
+.bubbleBottomArrow{
+background: url(../scripts/simile/images/bubble-bottom-arrow.png) repeat scroll 0%; 
+left: 165px; 
+top: 178px; 
+position: absolute; 
+width: 37px; 
+height: 42px; 
+}
+.bubbleTopArrow{
+ background: url(../scripts/simile/images/bubble-top-arrow.png) repeat scroll 0%; 
+ left: 165px; 
+ top: 0px; 
+ position: absolute; 
+ width: 37px; 
+ height: 33px; 
+}
+.bubbleMessageContainer{
+  background: white none repeat scroll 0%; 
+  overflow: auto; 
+  position: absolute; 
+  text-align: left;
+  left: 33px; 
+  top: 30px; 
+  width: 302px; 
+  height: 150px;
+}
+.closeBubble{
+  background: url(../scripts/simile/images/close-button.png) repeat scroll 0%; 
+  left: 330px; 
+  top: 19px; 
+  cursor: pointer; 
+  position: absolute; 
+  width: 16px; 
+  height: 16px;
+}
+/* to overwrite the bubble style on calendar*/
+.bubbleLayer_1 h2{
+font-size: 10px;
+}
+.bubbleLayer_1 td{
+border: 0;
+}
+.bubbleLayer_1 input{
+font-size: 87%;
+}
+.bubbleLayer_1 .wizard{
+margin:3px;
+border: 0;
+}
+.actionsDiv{
+margin-top: 5px;
+}
+/* to overwrite the bubble style on timeline*/
+#eventBubble .wizard{
+margin:3px;
+border: 0;
+}
+#eventBubble h2{
+font-size: 10px;
+}
+#eventBubble td{
+border: 0;
+}
+#eventBubble input{
+font-size: 87%;
+}
+.calendarIntervalSelect{
+	font-weight: bold;
+}
+.monthEventsContainerGrid{
+	position: absolute;
+	top: 0px;
+	z-index: 2;
+	width: 100%;
+}
+.monthEventsContainerGrid .eventLabel{
+	padding-top: 16px;
+}

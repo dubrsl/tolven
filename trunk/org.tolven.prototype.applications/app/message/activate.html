@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+#{property['org.tolven.message.heading']}
+</head>
+<body>
+	<img src="http://#{property['tolven.invitation.host']}:#{property['tolven.invitation.port']}#{property['tolven.invitation.root']}#{property['tolven.web.defaultLogo']}"/>
+       <p>Congratulations. The activation process for your new Tolven account is almost complete.
+        To complete the activation process, click the following link (or paste it into your browser's address bar).
+        You will then need to login using your new username (which will be your email address) and your new password.
+        </p>
+       	<p><a href="#{property['tolven.invitation.replyTo']}/public/activating.jsf?invitationId=#{invitation.id}">
+       	         #{property['tolven.invitation.replyTo']}/public/activating.jsf?invitationId=#{invitation.id}</a></p>
+       	<p>Invitation Id: #{invitation.id} expires #{invitation.expiration}</p>
+    <hr/>
+    <div class="message" title="The purpose of this request is to help ensure that your notifications(s) will not be mistaken for spam.">
+	    To ensure that this and subsequent notifications are delivered to your inbox, please add 
+    	<span class="address">#{property['tolven.mail.from']}</span> to your email address book. 
+    </div>
+</body>
+</html>

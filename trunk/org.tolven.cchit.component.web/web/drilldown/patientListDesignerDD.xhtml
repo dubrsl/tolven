@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+	<head>
+	    <title>Patient List Designer - Drilldown</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	
+	<body>
+	    <ui:composition>
+	    	<wiz:body>
+	    		<table width="100%">
+    				<tr>
+    					<c:forEach var="position" begin="1" end="5" step="1" varStatus="status">  						
+			    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[0].ST.value==position and (trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].enableRelationship or trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[1].ST.value=='Yes')}">
+			    				<td style="border:2px solid #4663FE;">
+		    						<b>
+		    							<h:outputText value="Patient Name"/>
+		    						</b>
+		    					</td>
+			    			</c:if>
+			    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[0].ST.value==position and (trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].enableRelationship or trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[1].ST.value=='Yes')}">
+			    				<td style="border:2px solid #4663FE;">
+		    						<b>
+		    							<h:outputText value="Age"/>
+		    						</b>
+		    					</td>
+			    			</c:if> 
+			    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[0].ST.value==position and (trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].enableRelationship or trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[1].ST.value=='Yes')}">
+			    				<td style="border:2px solid #4663FE;">
+		    						<b>
+		    							<h:outputText value="Race"/>
+		    						</b>
+		    					</td>
+			    			</c:if>
+			    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[0].ST.value==position and (trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].enableRelationship or trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[1].ST.value=='Yes')}">
+			    				<td style="border:2px solid #4663FE;">
+		    						<b>
+		    							<h:outputText value="Gender"/>
+		    						</b>
+		    					</td>
+			    			</c:if>
+			    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[0].ST.value==position and (trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].enableRelationship or trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[1].ST.value=='Yes')}">
+			    				<td style="border:2px solid #4663FE;">
+		    						<b>
+		    							<h:outputText value="Zip Code"/>
+		    						</b>
+		    					</td>
+			    			</c:if>
+			    		</c:forEach>
+			    		<td style="border:2px solid #4663FE;">
+    						<b>
+    							<h:outputText value="Summary"/>    							
+    						</b>
+    					</td>
+		    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[2].CE==null and trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].enableRelationship}">
+		    				<td style="border:2px solid #4663FE;">
+	    						<b>
+	    							<h:outputText value="Patient Name"/>
+	    						</b>
+	    					</td>
+		    			</c:if>
+		    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[2].CE==null and trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].enableRelationship}">
+		    				<td style="border:2px solid #4663FE;">
+	    						<b>
+	    							<h:outputText value="Age"/>
+	    						</b>
+	    					</td>
+		    			</c:if>
+		    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[2].CE==null and trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].enableRelationship}">
+		    				<td style="border:2px solid #4663FE;">
+	    						<b>
+	    							<h:outputText value="Race"/>
+	    						</b>
+	    					</td>
+		    			</c:if>
+		    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[2].CE==null and trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].enableRelationship}">
+		    				<td style="border:2px solid #4663FE;">
+	    						<b>
+	    							<h:outputText value="Gender"/>
+	    						</b>
+	    					</td>
+		    			</c:if>
+		    			<c:if test="#{trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[2].CE==null and trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].enableRelationship}">
+		    				<td style="border:2px solid #4663FE;">
+	    						<b>
+	    							<h:outputText value="Zip Code"/>
+	    						</b>
+	    					</td>
+		    			</c:if>
+    				</tr>
+    			</table>
+    		</wiz:body>
+    	</ui:composition>
+	</body>
+</html>   

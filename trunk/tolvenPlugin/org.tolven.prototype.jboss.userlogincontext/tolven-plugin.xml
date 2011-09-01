@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.prototype.jboss.userlogincontext" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.assembler.jboss" />
+	</requires>
+	<extension id="userLoginContext" plugin-id="org.tolven.assembler.jboss" point-id="userLoginContext">
+		<parameter id="login-module">
+			<parameter id="code" value="org.tolven.security.auth.KeyLoginModule" />
+			<parameter id="flag" value="required" />
+			<parameter id="module-option">
+				<parameter id="name" value="jaasSecurityDomain" />
+				<parameter id="value" value="tolven/ldap" />
+			</parameter>
+			<parameter id="module-option">
+				<parameter id="name" value="principalDNPrefix" />
+				<parameter id="value" value="uid" />
+			</parameter>
+			<parameter id="module-option">
+				<parameter id="name" value="principalDNSuffix" />
+				<parameter id="value" value="ou=people,dc=tolven,dc=com" />
+			</parameter>
+			<parameter id="module-option">
+				<parameter id="name" value="rolesCtxDN" />
+				<parameter id="value" value="ou=groups,dc=tolven,dc=com" />
+			</parameter>
+			<parameter id="module-option">
+				<parameter id="name" value="roleAttributeID" />
+				<parameter id="value" value="cn" />
+			</parameter>
+			<parameter id="module-option">
+				<parameter id="name" value="guestPrincipalName" />
+				<parameter id="value" value="tolvenGuest" />
+			</parameter>
+			<parameter id="module-option">
+				<parameter id="name" value="guestPassword" />
+				<parameter id="value" value="tolvenGuest" />
+			</parameter>
+		</parameter>
+		<parameter id="login-module">
+			<parameter id="code" value="org.jboss.security.ClientLoginModule" />
+			<parameter id="flag" value="required" />
+			<parameter id="module-option">
+				<parameter id="name" value="restore-login-identity" />
+				<parameter id="value" value="true" />
+			</parameter>
+		</parameter>
+	</extension>
+</plugin>

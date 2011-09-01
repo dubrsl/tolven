@@ -1,0 +1,7 @@
+build
+.classpath
+.project
+build.properties
+_boot.properties
+classes
+bin

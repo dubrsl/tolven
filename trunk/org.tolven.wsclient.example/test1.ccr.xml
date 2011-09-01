@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+    <Version>V1.0</Version>
+    <Patient>
+        <ActorID>AC000001</ActorID>
+    </Patient>
+    <Body>
+        <Problems>
+            <Problem>
+                <DateTime>
+                    <Type>
+                        <Text>Date of Onset</Text>
+                    </Type>
+                    <ExactDateTime>2048-11-03T00:00:00-08:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Problem</Text>
+                </Type>
+                <Description>
+                    <Text>Diabetes Mellitus</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Problem>
+            <Problem>
+                <DateTime>
+                    <Type>
+                        <Text>Date of Onset</Text>
+                    </Type>
+                    <ExactDateTime>2048-11-03T00:00:00-08:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Problem</Text>
+                </Type>
+                <Description>
+                    <Text>Hay Fever</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Problem>
+        </Problems>
+        <Alerts>
+            <Alert>
+                <DateTime>
+                    <Type>
+                        <Text>Start Date</Text>
+                    </Type>
+                    <ExactDateTime>2048-11-03T00:00:00-08:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Allergy</Text>
+                </Type>
+                <Description>
+                    <Text>Ragweed</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Alert>
+            <Alert>
+                <DateTime>
+                    <Type>
+                        <Text>Start Date</Text>
+                    </Type>
+                    <ExactDateTime>2048-11-03T00:00:00-08:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Allergy</Text>
+                </Type>
+                <Description>
+                    <Text>Cedar Pollen</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Alert>
+            <Alert>
+                <DateTime>
+                    <Type>
+                        <Text>Start Date</Text>
+                    </Type>
+                    <ExactDateTime>2048-11-03T00:00:00-08:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Allergy</Text>
+                </Type>
+                <Description>
+                    <Text>Leaf Mold</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Alert>
+        </Alerts>
+        <Medications>
+            <Medication>
+                <DateTime>
+                    <Type>
+                        <Text>Start Date</Text>
+                    </Type>
+                    <ExactDateTime>2048-11-03T00:00:00-08:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Medication</Text>
+                </Type>
+                <Description>
+                    <Text>glucophage 500 mg tablets</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+                <PatientInstructions>
+                    <Instruction>
+                        <Text>take two tablets twice a day for diabetes</Text>
+                    </Instruction>
+                </PatientInstructions>
+                <Refills>
+                    <Refill>
+                        <Number>2</Number>
+                    </Refill>
+                </Refills>
+            </Medication>
+            <Medication>
+                <DateTime>
+                    <Type>
+                        <Text>Start Date</Text>
+                    </Type>
+                    <ExactDateTime>2048-11-03T00:00:00-08:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Medication</Text>
+                </Type>
+                <Description>
+                    <Text>tolbutamide 500 mg tablets</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+                <PatientInstructions>
+                    <Instruction>
+                        <Text>take two tablets twice a day for diabetes</Text>
+                    </Instruction>
+                </PatientInstructions>
+                <Refills>
+                    <Refill>
+                        <Number>2</Number>
+                    </Refill>
+                </Refills>
+            </Medication>
+        </Medications>
+        <Encounters>
+            <Encounter>
+                <DateTime>
+                    <Type>
+                        <Text>Encounter DateTime</Text>
+                    </Type>
+                    <ExactDateTime>2048-10-07T15:50:16-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Physician Office Visit</Text>
+                </Type>
+                <Description>
+                    <Text>12 Month diabetes followup</Text>
+                </Description>
+            </Encounter>
+        </Encounters>
+    </Body>
+    <Actors>
+        <Actor>
+            <ActorObjectID>AC000001</ActorObjectID>
+            <Person>
+                <Name>
+                    <CurrentName>
+                        <Given>Jennifer</Given>
+                        <Middle>Sarah</Middle>
+                        <Family>Colello</Family>
+                    </CurrentName>
+                </Name>
+                <DateOfBirth>
+                    <ExactDateTime>2048-11-03T00:00:00-08:00</ExactDateTime>
+                </DateOfBirth>
+                <Gender>
+                    <Text>Female</Text>
+                </Gender>
+            </Person>
+            <IDs>
+                <Type>
+                    <Text>DemoPatient</Text>
+                </Type>
+                <ID>32212047</ID>
+            </IDs>
+        </Actor>
+    </Actors>
+</ContinuityOfCareRecord>

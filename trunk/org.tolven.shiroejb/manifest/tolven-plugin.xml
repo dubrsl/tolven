@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.shiroejb" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.assembler.ejbmodule" />
+		<import plugin-id="org.tolven.component.ejb" />
+	</requires>
+	
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	
+	<extension-point id="ejbModule-declaration" parent-plugin-id="org.tolven.component.ejb" parent-point-id="ejbModule-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" default-value="shiroejb" />
+	</extension-point>
+	
+	<extension-point parent-point-id="classes" parent-plugin-id="org.tolven.assembler.ejbmodule" id="classes">
+		<parameter-def id="dir" />
+	</extension-point>
+	<extension-point parent-point-id="META-INF" parent-plugin-id="org.tolven.assembler.ejbmodule" id="META-INF">
+		<parameter-def id="dir" />
+	</extension-point>
+	<extension-point parent-point-id="persistence-unit" parent-plugin-id="org.tolven.assembler.ejbmodule" id="persistence-unit">
+		<parameter-def id="target-plugin-id" default-value="org.tolven.shiroejb" multiplicity="none-or-one" />
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="provider" multiplicity="none-or-one" />
+		<parameter-def id="mapping-file" />
+		<parameter-def id="property" multiplicity="any">
+			<parameter-def id="name" />
+			<parameter-def id="value" />
+		</parameter-def>
+	</extension-point>
+	<extension-point parent-point-id="persistence-unit-metadata" parent-plugin-id="org.tolven.assembler.ejbmodule" id="persistence-unit-metadata">
+		<parameter-def id="target-plugin-id" default-value="org.tolven.shiroejb" multiplicity="none-or-one" />
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="persistence-unit-defaults" multiplicity="none-or-one">
+			<parameter-def id="schema" multiplicity="none-or-one" />
+		</parameter-def>
+	</extension-point>
+	<extension-point parent-point-id="table-generator" parent-plugin-id="org.tolven.assembler.ejbmodule" id="table-generator">
+		<parameter-def id="target-plugin-id" default-value="org.tolven.shiroejb" multiplicity="none-or-one" />
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="name" />
+		<parameter-def id="table" multiplicity="none-or-one" />
+		<parameter-def id="schema" multiplicity="none-or-one" />
+		<parameter-def id="pk-column-name" multiplicity="none-or-one" />
+		<parameter-def id="value-column-name" multiplicity="none-or-one" />
+		<parameter-def id="pk-column-value" multiplicity="none-or-one" />
+		<parameter-def id="initial-value" multiplicity="none-or-one" />
+		<parameter-def id="allocation-size" multiplicity="none-or-one" />
+		<parameter-def id="unique-constraint" multiplicity="any">
+			<parameter-def id="column-name" multiplicity="one-or-more" />
+		</parameter-def>
+	</extension-point>
+	<extension-point parent-point-id="entity" parent-plugin-id="org.tolven.assembler.ejbmodule" id="entity">
+		<parameter-def id="target-plugin-id" default-value="org.tolven.shiroejb" multiplicity="none-or-one" />
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="class" />
+		<parameter-def id="table" multiplicity="none-or-one">
+			<parameter-def id="name" multiplicity="none-or-one" />
+			<parameter-def id="schema" multiplicity="none-or-one" />
+			<parameter-def id="unique-constraint" multiplicity="any">
+				<parameter-def id="column-name" multiplicity="one-or-more" />
+			</parameter-def>
+		</parameter-def>
+		<parameter-def id="discriminator-column" multiplicity="none-or-one">
+			<parameter-def id="name" multiplicity="none-or-one" />
+			<parameter-def id="length" type="number" multiplicity="none-or-one" />
+		</parameter-def>
+		<parameter-def id="attributes" multiplicity="none-or-one">
+			<parameter-def id="id" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="basic" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+				<parameter-def id="lob" multiplicity="none-or-one" />
+				<parameter-def id="temporal" multiplicity="none-or-one" />
+				<parameter-def id="enumerated" multiplicity="none-or-one" />
+			</parameter-def>
+			<parameter-def id="version" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="many-to-one" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="join-column" multiplicity="any">
+					<parameter-def id="name" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="embedded" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="attribute-override" multiplicity="any">
+					<parameter-def id="name" />
+					<parameter-def id="column" multiplicity="any">
+						<parameter-def id="name" multiplicity="none-or-one" />
+						<parameter-def id="length" type="number" multiplicity="none-or-one" />
+						<parameter-def id="column-definition" multiplicity="none-or-one" />
+					</parameter-def>
+				</parameter-def>
+			</parameter-def>
+		</parameter-def>
+	</extension-point>
+	
+	<extension id="ejbClasses" plugin-id="org.tolven.shiroejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+	</extension>
+	<extension id="metaInfFiles" plugin-id="org.tolven.shiroejb" point-id="META-INF">
+		<parameter id="dir" value="ejb/META-INF" />
+	</extension>
+	
+	<extension id="legacypostgresql-persistence-unit" plugin-id="org.tolven.shiroejb" point-id="persistence-unit">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="provider" value="org.hibernate.ejb.HibernatePersistence" />
+		<parameter id="mapping-file" value="orm.xml" />
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation" />
+			<parameter id="value" value="create-tables" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation.output-mode" />
+			<parameter id="value" value="database" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.logging.levelxxxx" />
+			<parameter id="value" value="FINEST" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.target-database" />
+			<parameter id="value" value="PostgreSQL" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.dialect" />
+			<parameter id="value" value="org.hibernate.dialect.PostgreSQLDialect" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.show_sql" />
+			<parameter id="value" value="false" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.hbm2ddl.auto" />
+			<parameter id="value" value="update" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.cache.provider_class" />
+			<parameter id="value" value="org.hibernate.cache.NoCacheProvider" />
+		</parameter>
+	</extension>
+	<extension id="legacypostgresql-org.tolven.shiro.authz.entity.DefaultTolvenAuthorization-entity" plugin-id="org.tolven.shiroejb" point-id="entity">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="class" value="org.tolven.shiro.authz.entity.DefaultTolvenAuthorization" />
+		<parameter id="table">
+			<parameter id="name" value="TOLVENAUTH" />
+			<parameter id="schema" value="core" />
+		</parameter>
+	</extension>
+	<extension id="legacypostgresql-org.tolven.shiro.session.entity.TolvenSimpleSession-entity" plugin-id="org.tolven.shiroejb" point-id="entity">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="class" value="org.tolven.shiro.session.entity.TolvenSimpleSession" />
+		<parameter id="table">
+			<parameter id="name" value="TOLVEN_SESSION" />
+			<parameter id="schema" value="core" />
+		</parameter>
+	</extension>
+	
+	<extension id="oracle-persistence-unit" plugin-id="org.tolven.shiroejb" point-id="persistence-unit">
+		<parameter id="ormId" value="oracle" />
+		<parameter id="provider" value="org.hibernate.ejb.HibernatePersistence" />
+		<parameter id="mapping-file" value="orm.xml" />
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation" />
+			<parameter id="value" value="create-tables" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.ddl-generation.output-mode" />
+			<parameter id="value" value="database" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.logging.levelxxxx" />
+			<parameter id="value" value="FINEST" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="eclipselink.target-database" />
+			<parameter id="value" value="Oracle" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.dialect" />
+			<parameter id="value" value="org.hibernate.dialect.Oracle10gDialect" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.show_sql" />
+			<parameter id="value" value="false" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.hbm2ddl.auto" />
+			<parameter id="value" value="update" />
+		</parameter>
+		<parameter id="property">
+			<parameter id="name" value="hibernate.cache.provider_class" />
+			<parameter id="value" value="org.hibernate.cache.NoCacheProvider" />
+		</parameter>
+	</extension>
+	<extension id="oracle-persistence-unit-metadata" plugin-id="org.tolven.shiroejb" point-id="persistence-unit-metadata">
+		<parameter id="ormId" value="oracle" />
+	</extension>
+</plugin>

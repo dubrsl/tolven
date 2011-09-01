@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard">
+
+      
+<head>
+    <title>Enable Relationship</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+</head>
+<body>
+<!-- 
+	Used to enable bunch of relationships. No action required, just declare and it enables all relation names passed.
+	
+	Look into lymphNodeInvolment.xhtml for implementation example. 
+	  
+
+-->
+    <ui:composition>
+    
+    			<script language="JavaScript" type="text/javascript">
+	 						// <![CDATA[
+									var options1 = $('#{menu.elementLabel}:#{id}:enableMultipleRelations').getElementsByTagName('input');
+									for ( i= 0; i <options1.length; i++ )
+									{
+										options1[i].value='#{value}';
+									}
+	 						
+							  // ]]>
+				</script>
+				<div id="#{menu.elementLabel}:#{id}:enableMultipleRelations">
+					<c:forEach var="relationName" items="${fn:split(relations, ',')}" varStatus="choiceIndex">
+						<h:inputText value="#{act.relationship[relationName].enableRelationship}" style="display: none;" />	
+					</c:forEach>
+				</div>    	
+
+    </ui:composition>
+</body>
+</html>

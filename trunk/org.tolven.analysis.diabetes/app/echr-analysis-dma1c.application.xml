@@ -1,0 +1,255 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<property accountType="echr" name="org.tolven.cohort.dm.includeCodes"></property>
+	<property accountType="echr" name="org.tolven.cohort.dm.excludeCodes"></property>
+	<property accountType="echr" name="org.tolven.cohort.dm.a1csnapshot.low">4</property>
+	<property accountType="echr" name="org.tolven.cohort.dm.a1csnapshot.high">7</property>
+	<property accountType="echr" name="org.tolven.cohort.dm.a1csnapshot.target">90</property>
+	<property accountType="echr" name="org.tolven.cohort.dm.a1csnapshot.intervalValue">1</property>
+	<property accountType="echr" name="org.tolven.cohort.dm.a1csnapshot.intervalUnit">Month</property>
+	<property accountType="echr" name="org.tolven.cohort.dm.a1csnapshot.chartRange">12</property>
+	<property accountType="echr" name="org.tolven.cohort.dm.a1csnapshot.chartDataTitle">% Patients</property>
+	<property accountType="echr" name="org.tolven.cohort.dm.a1csnapshot.chartTargetTitle">Target</property>
+	<extends path="echr:cohort">
+		<placeholder name="a1csnapshot" title="A1c" page="/five/snapshot.xhtml" heading="/five/snapshotLink.xhtml">
+			<field name="name" internal="string01" />
+			<field name="effectiveTime" internal="date01">
+			</field>
+			<field name="cohort" internal="parent01">
+				<from>#{cohort}</from>
+			</field>
+			<field name="a1cValue" internal="_extended" />
+			<field name="a1cUnits" internal="_extended" />
+			<field name="a1cDate" internal="_extended" />
+			<field name="targetPercent" internal="_extended" type="real" />
+			<field name="allCount" internal="_extended" type="real" />
+			<field name="normCount" internal="_extended" type="real" />
+			<field name="abnormCount" internal="_extended" type="real" />
+			<list name="all" title="All Results" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{a1csnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{a1csnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{a1csnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(a1csnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{a1csnapshotresult.patient.sex}</from>
+					<from>#{a1csnapshotresult.patient.gender}</from>
+				</column>
+				<column name="A1c" width="6.0" align="right" visible="true">
+					<from>#{a1csnapshotresult.a1cValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+			</list>
+			<list name="norma1c" title="&lt; A1c Level" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{a1csnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{a1csnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{a1csnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(a1csnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{a1csnapshotresult.patient.sex}</from>
+					<from>#{a1csnapshotresult.patient.gender}</from>
+				</column>
+				<column name="A1c" width="6.0" align="right" visible="true">
+					<from>#{a1csnapshotresult.a1cValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+			</list>
+			<list name="abnorma1c" title="> A1c Level" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{a1csnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{a1csnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{a1csnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(a1csnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{a1csnapshotresult.patient.sex}</from>
+					<from>#{a1csnapshotresult.patient.gender}</from>
+				</column>
+				<column name="A1c" width="6.0" align="right" visible="true">
+					<from>#{a1csnapshotresult.a1cValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+			</list>
+		</placeholder>
+	</extends>
+	<extends path="echr:cohort:a1csnapshot">
+		<placeholder name="a1csnapshotresult" title="A1c Snapshot Result">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="a1csnapshot" internal="parent01">
+				<from>#{a1csnapshot}</from>
+			</field>
+			<field name="patient" internal="parent02">
+				<from>#{patient}</from>
+			</field>
+			<field name="result" internal="parent03">
+				<from>#{result}</from>
+			</field>
+			<field name="a1cValue" internal="_extended" />
+			<field name="a1cUnits" internal="_extended" />
+			<field name="a1cDate" internal="_extended" />
+		</placeholder>
+	</extends>
+	<extends path="echr:cohort:snapshots">
+		<list name="a1csnapshot" title="A1c Snapshots" sequence="100" initialSort="Date" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot">
+			<column name="Name" internal="string01" reference="true" width="25.0">
+				<from>#{a1csnapshot.name}</from>
+			</column>
+			<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm:ss" width="15.0">
+				<from>#{a1csnapshot.effectiveTime}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:analysis:portal">
+		<portlet name="dma1csnapshotsum" portalColumn="1" sequence="1" title="Diabetes" page="/five/analysis/dma1cAnalysis.xhtml" visible="true" drilldown="echr:analysis:dma1csnapshot" />
+	</extends>
+	<extends path="echr:analysis">
+		<menu name="dma1csnapshot" title="Diabetes" sequence="100" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{a1csnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{a1csnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{a1csnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(a1csnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{a1csnapshotresult.patient.sex}</from>
+					<from>#{a1csnapshotresult.patient.gender}</from>
+				</column>
+				<column name="A1c" width="6.0" align="right" visible="true">
+					<from>#{a1csnapshotresult.a1cValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="false">
+					<from>#{a1csnapshotresult.a1csnapshot.effectiveTime}</from>
+				</column>
+			</list>
+			<list name="norma1c" title="&lt; A1c Level" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{a1csnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{a1csnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{a1csnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(a1csnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{a1csnapshotresult.patient.sex}</from>
+					<from>#{a1csnapshotresult.patient.gender}</from>
+				</column>
+				<column name="A1c" width="6.0" align="right" visible="true">
+					<from>#{a1csnapshotresult.a1cValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="false">
+					<from>#{a1csnapshotresult.a1csnapshot.effectiveTime}</from>
+				</column>
+			</list>
+			<list name="abnorma1c" title="> A1c Level" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:a1csnapshot:a1csnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{a1csnapshotresult.patient.lastName}, #{a1csnapshotresult.patient.firstName} #{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{a1csnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{a1csnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{a1csnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{a1csnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(a1csnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{a1csnapshotresult.patient.sex}</from>
+					<from>#{a1csnapshotresult.patient.gender}</from>
+				</column>
+				<column name="A1c" width="6.0" align="right" visible="true">
+					<from>#{a1csnapshotresult.a1cValue}</from>
+				</column>
+				<column name="Units" width="6.0" visible="true">
+					<from>#{a1csnapshotresult.a1cUnits}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="false">
+					<from>#{a1csnapshotresult.a1csnapshot.effectiveTime}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+</application>

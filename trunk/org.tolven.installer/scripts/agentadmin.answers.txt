@@ -1,0 +1,12 @@
+n
+yes
+${glassfish.dir}/glassfish/domains/tolven/config
+server
+https://${sso.domain}:${sso.port}/openam
+false
+https://${tolven.domain}:${tolven.https.port}/agentapp
+
+${j2ee.agent}
+agentauthpassword
+false
+1

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.assembler.glassfish3.legacypostgresql" version="2.1.0" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<requires>
+		<import plugin-id="org.tolven.assembler.glassfish3" />
+		<import plugin-id="org.tolven.assembler.ejbmodule" />
+		<import plugin-id="org.tolven.legacypostgresql.indexes" />
+	</requires>
+	<extension id="databasePlugin" plugin-id="org.tolven.assembler.glassfish3" point-id="databasePlugin" />
+	<extension id="orm" plugin-id="org.tolven.assembler.ejbmodule" point-id="orm">
+		<parameter id="ormId" value="legacypostgresql" />
+		<parameter id="name" value="em" />
+		<parameter id="transaction-type" value="JTA" />
+		<parameter id="jta-data-source" value="jdbc/__default" />
+	</extension>
+</plugin>

@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Observation Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+  	<ui:composition>
+  		<c:if test="#{menu.xmlNS=='urn:tolven-org:trim:4.0'}">
+  			<ui:include src="observationTRIM.xhtml"/>
+  		</c:if>
+  		<c:if test="#{menu.xmlNS=='urn:astm-org:CCR'}">
+	  		<c:if test="#{menu.menuDataItem.string01=='Chest X-Ray'}">
+				<wiz:group title="Clinical presentation" >
+					<p>'Routine' chest x-ray of an adult caucasian male with non-specific joint symptoms.</p>
+				</wiz:group>
+				<wiz:group title="Findings" >
+					<p>The lungs are large volume. There is mid-zone, variably sized, ill-defined nodularity. Both hila appear somewhat lobulated with densities that are separated from the density of the mediastinum by the air transradiancy of the major bronchi, implying hilar lymphadenopathy.</p>
+				</wiz:group>
+				<wiz:group title="Image" >
+		  			<a href="#" onclick="$('#{menu.elementLabel}image').toggle();">#{msg.ShowHide}</a>
+					<div id="#{menu.elementLabel}image" style="display:none">
+						<h:graphicImage value="/images/chest-xray.jpg"/>
+					</div>
+				</wiz:group>
+			</c:if>
+			<ui:include src="observationCCR.xhtml"/>
+  		</c:if>
+  	</ui:composition>
+</body>
+</html>

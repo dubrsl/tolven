@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Problems</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<table style="background: #99CCFF;height: 20px;">
+			<tr>
+				<td style="width: 575px;padding-left: 5px;border: none!important;">
+					<b>Problem</b> 
+				</td>
+				<td style="width: 20px;border: none!important;">
+					<img class="closetab" onclick="closeOrderAssociatePopUps('#{menu.element}','#{menu.elementLabel}','orderAssociationPopUpDiv','problemDropDownTemplate','problemDropDownDiv#{param['widgetIndex']}','#{param['index']}','problems','#{param['widgetIndex']}');return false;" src="../images/x_black.gif"/>
+				</td>
+			</tr>
+		</table>		
+		<div id="addNewProblem" style="margin: 10px;border: none!important;">
+			<table>
+				<tr>
+					<td style="width: 35%;border: none!important;"><b>Problem : </b></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;">
+		    			<c:set var="problems" value="#{trim.trim.act.relationship['problems']}"/>
+						<c:forEach var="problem" items="#{problems.act.relationshipsList['problem']}" varStatus="widgetIndex">
+							<c:if test="#{widgetIndex.index+1==param['index']}">
+								#{problem.act.observation.values[0].CE.displayName}
+							</c:if>
+						</c:forEach>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 35%;border: none!important;"><b>Onset of Symptoms :* </b></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;">
+						<c:forEach var="problem" items="#{problems.act.relationshipsList['problem']}" varStatus="widgetIndex">
+							<c:if test="#{widgetIndex.index+1==param['index']}">
+								<trim:TSNew id="effectiveTime" value="#{problem.act.effectiveTime.TS}" dateStyle="short" />
+							</c:if>
+						</c:forEach>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 35%;border: none!important;"><b>Severity : </b></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;">
+						<h:selectOneMenu value="" id="severity">
+           					<f:selectItems value="#{trim.valueSets['severity']}" />
+           				</h:selectOneMenu>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 35%;border: none!important;"><b>Course : </b></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;">
+						<h:selectOneMenu value="" id="course">
+           					<f:selectItems value="#{trim.valueSets['course']}" />
+           				</h:selectOneMenu>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 35%;border: none!important;"><b>Outcome : </b></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;">
+						<h:selectOneMenu value="" id="outcome">
+           					<f:selectItems value="#{trim.valueSets['outcome']}" />
+           				</h:selectOneMenu>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 35%;border: none!important;"><b>Treatment : </b></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;">
+						<h:inputTextarea id="treatment" rows="3" cols="30" />
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 35%;border: none!important;"><b>Comments : </b></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;">
+						<h:inputTextarea id="comments" rows="3" cols="30"/>
+					</td>
+				</tr>
+				<tr>
+					<td style="width: 35%;border: none!important;"></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;"><span id="errorBox" style="color: red;"/></td>
+				</tr>
+				<tr>
+					<td style="width: 35%;border: none!important;"></td>
+					<td style="width: 1%;border: none!important;"></td>
+					<td style="width: 64%;border: none!important;">
+						<input type="button" id="saveButtonPhy" value="save" onclick="javascript:saveOrderAssociateProblemDetails('#{menu.element}','#{param['index']}','problemDropDownDiv#{param['widgetIndex']}','problemDropDownTemplate','#{param['widgetIndex']}');"/>
+						&#160;&#160;<input type="button" value="close" onclick="closeOrderAssociatePopUps('#{menu.element}','#{menu.elementLabel}','orderAssociationPopUpDiv','problemDropDownTemplate','problemDropDownDiv#{param['widgetIndex']}','#{param['index']}','problems','#{param['widgetIndex']}');return false;"/>
+					</td>
+				</tr>
+			</table>	
+		</div>
+	</ui:composition>
+</body>
+</html>

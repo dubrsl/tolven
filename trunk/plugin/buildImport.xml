@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	A generic plugin build file. Import this into your plugin project something like this:
+	<import file="../plugin/buildImport.xml"/>
+	This adds targets.
+	-->
+<project name="pluginImport">
+
+	<import file="../plugin/buildCommon.xml" />
+
+	<!--
+	Load up the plugin manifest which is the source of truth for the plugin.
+	-->
+	<xmlproperty file="manifest/tolven-plugin.xml" />
+
+	<!--
+	The name of the resulting zip file containing the packaged zip file
+	-->
+	<property name="zipFileName" value="build/${plugin(id)}-${plugin(version)}.zip" />
+	<property name="devLibFileName" value="${plugin(id)}.devLib.jar" />
+
+	<target name="clean" description="Clean">
+		<delete dir="build" />
+	</target>
+
+	<target name="init">
+		<mkdir dir="build" />
+	</target>
+
+	<target name="build-plugin">
+		<fail>Your plugin is missing a build_plugin target</fail>
+	</target>
+
+	<target name="-check-devLib-file" unless="devLibfile.exists">
+		<available property="devLibfile.exists" file="build/devLib.jar" />
+	</target>
+
+	<target name="populate-dev-lib" depends="-check-devLib-file" if="${devLibfile.exists}">
+		<copy file="build/devLib.jar" toFile="${tolven.devLib}/${devLibFileName}" preservelastmodified="true" />
+	</target>
+
+	<target name="dir.check">
+		<condition property="dir.exists">
+			<available file="jars" type="dir" />
+		</condition>
+	</target>
+
+	<target name="populate-dev-lib-library" depends="dir.check" if="dir.exists">
+		<copy todir="${tolven.devLib}">
+			<fileset dir="jars">
+				<exclude name="lib/*" />
+			</fileset>
+			<mapper type="glob" from="*.jar" to="${plugin(id)}.*.jar" />
+		</copy>
+	</target>
+
+	<target name="gen-build-plugin">
+		<antcall target="build-plugin" />
+		<!-- Copy devLib to tolven-config/devLib -->
+		<antcall target="populate-dev-lib" />
+		<antcall target="populate-dev-lib-library" />
+	</target>
+
+	<target name="clean-deploy-to-local-repository" depends="clean" description="Clean, Build And Deploy To Local Repository">
+		<antcall target="deploy-to-local-repository" />
+	</target>
+
+	<!--
+	Copy this plugin to the local repository and recalculate the metadata file in that repository.
+	This is the same as genMetadata at the command line
+	-->
+	<target name="deploy-to-local-repository" depends="build-plugin" description="Update Local Repository">
+		<copy toDir="${respositoryLocal.location}/plugins" flatten="true" preservelastmodified="true">
+			<fileset dir=".">
+				<include name="${zipFileName}" />
+			</fileset>
+		</copy>
+		<java fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}" />
+			<arg line="-genMetadata -plugins ${respositoryLocal.location}/plugins -liburl file:///${respositoryLocal.location} -outdir ${respositoryLocal.location}" />
+		</java>
+	</target>
+
+	<target name="gen-deploy-to-local-repository" depends="gen-build-plugin" description="Update Local Repository">
+		<copy toDir="${respositoryLocal.location}/plugins" flatten="true" preservelastmodified="true">
+			<fileset dir=".">
+				<include name="${zipFileName}" />
+			</fileset>
+		</copy>
+		<java fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}" />
+			<arg line="-genMetadata -plugins ${respositoryLocal.location}/plugins -liburl file:///${respositoryLocal.location} -outdir ${respositoryLocal.location}" />
+		</java>
+	</target>
+
+	<!-- Compile sources (from src folder) if needed -->
+	<target name="compileSection" depends="compileSectionCheck" if="compileSection${section}">
+		<mkdir dir="${buildFolder}/${section}/classes" />
+		<javac destdir="${buildFolder}/${section}/classes" debug="true" encoding="UTF-8">
+			<src path="${section}/source" />
+			<classpath>
+				<fileset dir="${section}/lib">
+					<include name="**/*.jar" />
+				</fileset>
+				<pathelement path="${lib}" />
+			</classpath>
+			<classpath refid="project.classpath" />
+		</javac>
+	</target>
+
+	<target name="zipSourceSection" if="zipSourceSection${section}">
+		<zip destfile="${buildFolder}/devLib.jar" update="true">
+			<zipfileset dir="${section}/source" />
+		</zip>
+	</target>
+
+	<target name="compileSectionCheck">
+		<!-- Include sources in devLib if requested -->
+		<available property="compileSection${section}" file="${section}/source" />
+	</target>
+
+	<!-- Build one section, also add source/classes to the devLib -->
+	<target name="buildSection">
+		<!-- If a lib folder already exists, this does nothing -->
+		<mkdir dir="${section}/lib" />
+		<!-- As soon as erroronmissingdir in zipfileset is supported, the following line can be removed-->
+		<mkdir dir="${buildFolder}/${section}/classes" />
+		<!-- Compile -->
+		<antcall target="compileSection">
+			<param name="section" value="${section}" />
+		</antcall>
+		<!-- Zip the section (except source) -->
+		<zip destfile="${zipFileName}" whenempty="create" update="true">
+			<zipfileset dir="${section}" prefix="${section}">
+				<include name="**/*" unless="sectionZipIncludes" />
+				<include name="${sectionZipIncludes}" if="sectionZipIncludes" />
+				<exclude name="**/source/" unless="sectionZipExcludes" />
+				<exclude name="${sectionZipExcludes}" if="sectionZipExcludes" />
+			</zipfileset>
+			<zipfileset dir="${buildFolder}/${section}/classes" prefix="${section}/classes">
+				<include name="**/*" unless="sectionZipIncludes" />
+				<include name="${sectionZipIncludes}" if="sectionZipIncludes" />
+				<exclude name="${sectionZipExcludes}" if="sectionZipExcludes" />
+			</zipfileset>
+		</zip>
+		<!-- Zip devLib content -->
+		<zip destfile="${buildFolder}/devLib.jar" update="true">
+			<zipfileset dir="${buildFolder}/${section}/classes" />
+		</zip>
+		<!-- Include sources in devLib if requested -->
+		<condition property="zipSourceSection${section}">
+			<and>
+				<available file="${section}/source" />
+				<equals arg1="true" arg2="${includeSourceInDevLib}" casesensitive="false" />
+			</and>
+		</condition>
+		<antcall target="zipSourceSection">
+			<!--	<param name="section" value="${section}"/> -->
+		</antcall>
+	</target>
+
+</project>

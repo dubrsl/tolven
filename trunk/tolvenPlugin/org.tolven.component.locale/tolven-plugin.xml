@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.locale" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<extension-point id="compositeExtensionPoint">
+		<parameter-def id="name" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="application-locale" extension-multiplicity="none">
+		<parameter-def id="application-name" />
+		<parameter-def id="properties-file" />
+	</extension-point>
+	<extension-point id="application-global-locale"  extension-multiplicity="none">
+		<parameter-def id="application-name" />
+		<parameter-def id="properties-file" />
+	</extension-point>
+	<extension-point id="global-locale"  extension-multiplicity="none">
+		<parameter-def id="properties-file" />
+	</extension-point>
+</plugin>

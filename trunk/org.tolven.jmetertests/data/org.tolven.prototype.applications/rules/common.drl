@@ -1,0 +1,41 @@
+package common
+ /* Tolven common rules */
+import java.util.*;
+import org.tolven.doc.entity.*;
+import java.lang.Integer;
+import org.tolven.app.bean.Mode;
+import org.tolven.app.bean.Plan;
+import org.tolven.core.TolvenPropertiesLocal;
+
+global org.tolven.app.AppEvalAdaptor app;
+
+rule "Initialize Properties"
+	when
+		eval(true)
+	then
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/TolvenProperties!org.tolven.core.TolvenPropertiesLocal"));
+end
+
+/**
+ *
+ * Make the document immutable 
+ *
+ */
+rule "Finalize local document"
+salience 20
+	when
+		Mode( direction == "local" )
+		$doc: DocXML( )
+	then
+		app.finalize($doc);
+end
+
+rule "Display the mode"
+    when
+    	Mode( $direction: direction, $thisAccount: thisAccount, $sender: fromAccount, $receiver: toAccount )
+    	$properties: TolvenPropertiesLocal()
+    then
+		app.info( "Mode: direction=" + $direction + " thisAccount=" + $thisAccount.getId() + " from=" + $sender + " to=" + $receiver);
+		app.info( "repository OID: " + $properties.getProperty( "tolven.repository.oid" ));
+end
+

@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" >
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Cache-Control" content="no-cache" />
+	<link 
+		href="/styles/style.css"
+		type="text/css" rel="stylesheet" />
+		<title>Login</title>
+</head>
+<body>
+    <ui:composition>
+		<h:graphicImage value="/images/tolven-login-backimage.png" rendered="true" />
+		<div style="clear:both"/>
+		<hr/>
+		
+		<h2>Please Log in</h2>
+	
+		<form name="loginform" action="" method="post">
+			<table align="left" border="0" cellspacing="0" cellpadding="3">
+				<tr>
+	               	<td><h:outputText value="Realm"/></td>
+	 				<td><h:selectOneMenu id="realm" value="#{login.realmId}" >
+	                	<f:selectItems value="#{login.realmIds}" />
+	                </h:selectOneMenu></td>
+				</tr>
+				<tr>
+					<td>Username:</td>
+					<td><h:inputText id="username" size="30" tabindex="0" /></td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td><h:inputSecret id="password" value="" size="30" /></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="right">
+						<input type="submit" name="submit" value="Login" />
+					</td>
+				</tr>
+			</table>
+		</form>
+		
+		<div style="clear:both"/>
+		<hr/>
+		
+		<h:form id="recoverLoginPassword">
+	        <h:outputLink value="#{request.contextPath}/recoverloginpassword/recoverLoginPassword.jsf">
+	            <h:outputText value="Forgot password"/><br/>
+	        </h:outputLink>
+		</h:form>
+    </ui:composition>
+</body>
+</html>

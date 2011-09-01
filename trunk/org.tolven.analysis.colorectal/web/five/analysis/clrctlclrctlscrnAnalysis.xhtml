@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>clrctlclrctlscrnsnapshotsum Analysis</title>
+</head>
+
+<body>
+<ui:composition template="/five/analysis/portletChart.xhtml">
+	<ui:param name="id" value="clrctlclrctlscrnsnapshotsum" />
+	<ui:define name="chartBody">
+		<div id="#{menu.element}">
+			<h:graphicImage value="/five/analysis/portletchart/clrctlclrctlscrnsnapshotsumchart-#{snapshot.snapshotVersion['echr:analysis:portal:clrctlclrctlscrnsnapshotsum']}.png?cohortType=org.tolven.cohort.clrctl&amp;snapshotType=clrctlscrnsnapshot&amp;chartType=percenttimeseries" />
+		</div>
+	</ui:define>
+</ui:composition>
+</body>
+</html>

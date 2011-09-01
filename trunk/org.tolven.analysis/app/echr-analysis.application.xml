@@ -1,0 +1,81 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<property accountType="echr" name="org.tolven.analysis.bean.percenttimeseries.portlet.width">300</property>
+	<property accountType="echr" name="org.tolven.analysis.bean.percenttimeseries.portlet.height">200</property>
+	<extends path="echr">
+		<placeholder name="cohort" title="Cohort" page="/five/cohort.xhtml" heading="/five/cohortLink.xhtml">
+			<field name="name" internal="string01" />
+			<field name="changeType" internal="string08" />
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<list name="patients" title="Patients" page="/five/list.xhtml" visible="true" drilldown="echr:patient:patientcohort">
+				<column name="Name" width="20.0">
+					<from>#{patientcohort.patient.lastName}, #{patientcohort.patient.firstName} #{patientcohort.patient.middleName}</from>
+				</column>
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patientcohort.patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patientcohort.patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patientcohort.patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" format="d MMM yyyy" width="7.0">
+					<from>#{patientcohort.patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patientcohort.patient.sex}</from>
+					<from>#{patientcohort.patient.gender}</from>
+				</column>
+			</list>
+			<menu name="snapshots" title="Snapshots" sequence="201" page="/five/bar2.xhtml" visible="true" />
+		</placeholder>
+	</extends>
+	<extends path="echr:patient">
+		<placeholder name="patientcohort" title="Cohort Membership" page="/wizard/wizard.xhtml" heading="/five/patientcohortLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="cohort" internal="parent02">
+				<from>#{cohort}</from>
+			</field>
+			<field name="lastA1c" internal="_extended" type="placeholder" />
+			<field name="lastBP" internal="_extended" type="placeholder" />
+			<field name="lastLDL" internal="_extended" type="placeholder" />
+		</placeholder>
+	</extends>
+	<extends path="echr:patient">
+		<menu name="cohorts" title="Cohorts" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="Current" page="/five/list.xhtml" visible="true">
+				<column name="Name" internal="string01" width="25.0">
+					<from>#{patientcohort.cohort.name}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+	<extends path="echr">
+		<menu name="analysis" title="Analysis" page="/five/analysis/analysis.xhtml" visible="true" />
+	</extends>
+	<extends path="echr:analysis">
+		<portal name="portal" title="Overview" sequence="1" page="/five/portletView.xhtml" visible="true" />
+	</extends>
+	<extends path="echr:analysis">
+		<menu name="cohorts" title="Cohorts" sequence="10000" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All Cohorts" page="/five/list.xhtml" visible="true" drilldown="echr:cohort">
+				<column name="Name" internal="string01" reference="true" width="25.0">
+					<from>#{cohort.name}</from>
+				</column>
+				<column name="ChangeType" internal="string08" visible="false" width="25.0">
+					<from>#{cohort.changeType}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+</application>

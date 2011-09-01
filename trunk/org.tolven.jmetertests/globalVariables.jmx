@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="globalVariables" enabled="true">
+      <collectionProp name="Arguments.arguments">
+        <elementProp name="AMADMIN_ID" elementType="Argument">
+          <stringProp name="Argument.name">AMADMIN_ID</stringProp>
+          <stringProp name="Argument.value">amAdmin</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="AMADMIN_PASSWORD" elementType="Argument">
+          <stringProp name="Argument.name">AMADMIN_PASSWORD</stringProp>
+          <stringProp name="Argument.value">sysadmin</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="DEFAULT_HTTP_PROTOCOL" elementType="Argument">
+          <stringProp name="Argument.name">DEFAULT_HTTP_PROTOCOL</stringProp>
+          <stringProp name="Argument.value">https</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="DEFAULT_HTTP_ENCODING" elementType="Argument">
+          <stringProp name="Argument.name">DEFAULT_HTTP_ENCODING</stringProp>
+          <stringProp name="Argument.value">UTF-8</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="AUTH_HOST" elementType="Argument">
+          <stringProp name="Argument.name">AUTH_HOST</stringProp>
+          <stringProp name="Argument.value">dev.able.com</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="AUTH_PORT" elementType="Argument">
+          <stringProp name="Argument.name">AUTH_PORT</stringProp>
+          <stringProp name="Argument.value">8444</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="AUTH_RESTFUL_INTERFACE" elementType="Argument">
+          <stringProp name="Argument.name">AUTH_RESTFUL_INTERFACE</stringProp>
+          <stringProp name="Argument.value">/openam/identity</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="LOGIN_PATH" elementType="Argument">
+          <stringProp name="Argument.name">LOGIN_PATH</stringProp>
+          <stringProp name="Argument.value">/openam/UI/Login</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="LOGOUT_PATH" elementType="Argument">
+          <stringProp name="Argument.name">LOGOUT_PATH</stringProp>
+          <stringProp name="Argument.value">/openam/UI/Logout</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="SSOTOKEN_NAME" elementType="Argument">
+          <stringProp name="Argument.name">SSOTOKEN_NAME</stringProp>
+          <stringProp name="Argument.value">iPlanetDirectoryPro</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="TOLVEN_REALM" elementType="Argument">
+          <stringProp name="Argument.name">TOLVEN_REALM</stringProp>
+          <stringProp name="Argument.value">tolven</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="ROLE_BASE_DN" elementType="Argument">
+          <stringProp name="Argument.name">ROLE_BASE_DN</stringProp>
+          <stringProp name="Argument.value">ou=group,o=tolven,ou=services,dc=opensso,dc=tolven,dc=org</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="USER_BASE_DN" elementType="Argument">
+          <stringProp name="Argument.name">USER_BASE_DN</stringProp>
+          <stringProp name="Argument.value">ou=user,o=tolven,ou=services,dc=opensso,dc=tolven,dc=org</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="APP_HOST" elementType="Argument">
+          <stringProp name="Argument.name">APP_HOST</stringProp>
+          <stringProp name="Argument.value">dev.able.com</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="APP_PORT" elementType="Argument">
+          <stringProp name="Argument.name">APP_PORT</stringProp>
+          <stringProp name="Argument.value">8443</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="APP_RESTFUL_INTERFACE" elementType="Argument">
+          <stringProp name="Argument.name">APP_RESTFUL_INTERFACE</stringProp>
+          <stringProp name="Argument.value">/api</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="APP_CONTEXT_PATH" elementType="Argument">
+          <stringProp name="Argument.name">APP_CONTEXT_PATH</stringProp>
+          <stringProp name="Argument.value">/Tolven</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="TS" elementType="Argument">
+          <stringProp name="Argument.name">TS</stringProp>
+          <stringProp name="Argument.value">${__time(yyyyMMddHHmmss)}</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="USER_PREFIX" elementType="Argument">
+          <stringProp name="Argument.name">USER_PREFIX</stringProp>
+          <stringProp name="Argument.value">U</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="ACCOUNT_PREFIX" elementType="Argument">
+          <stringProp name="Argument.name">ACCOUNT_PREFIX</stringProp>
+          <stringProp name="Argument.value">A</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="KNOWNTYPE_PREFIX" elementType="Argument">
+          <stringProp name="Argument.name">KNOWNTYPE_PREFIX</stringProp>
+          <stringProp name="Argument.value">K</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="PLACEHOLDER_PREFIX" elementType="Argument">
+          <stringProp name="Argument.name">PLACEHOLDER_PREFIX</stringProp>
+          <stringProp name="Argument.value">P</stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="DATA_DIR" elementType="Argument">
+          <stringProp name="Argument.name">DATA_DIR</stringProp>
+          <stringProp name="Argument.value"></stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+        <elementProp name="RESULTS_DIR" elementType="Argument">
+          <stringProp name="Argument.name">RESULTS_DIR</stringProp>
+          <stringProp name="Argument.value"></stringProp>
+          <stringProp name="Argument.metadata">=</stringProp>
+        </elementProp>
+      </collectionProp>
+    </Arguments>
+    <hashTree/>
+  </hashTree>
+</jmeterTestPlan>

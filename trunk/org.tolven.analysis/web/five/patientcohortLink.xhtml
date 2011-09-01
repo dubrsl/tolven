@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>Cohort Link</title>
+  </head>
+  <body>
+  	<ui:composition>
+	<c:choose>
+		<c:when test="#{menu.menuDataItem.cohort.name == null}">
+			<h:outputText value="Cohort: New" style="color:#FFFF00" />
+		</c:when>
+		<c:otherwise>
+			<h:outputText value="#{menu.menuDataItem.cohort.name}" style="color:#FFFF00" />
+		</c:otherwise>
+	</c:choose>
+  	</ui:composition>
+  </body>
+</html>

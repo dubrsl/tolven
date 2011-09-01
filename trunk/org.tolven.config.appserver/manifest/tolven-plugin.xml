@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.config.appserver" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+
+	<extension-point id="libProduct-adaptor">
+		<parameter-def id="source-plugin-id" />
+		<parameter-def id="extension-point" />
+	</extension-point>
+
+	<extension-point id="libJar">
+		<parameter-def id="jar" multiplicity="any" />
+	</extension-point>
+	<extension-point id="config">
+		<parameter-def id="file" multiplicity="any" />
+		<parameter-def id="dir" multiplicity="any" />
+	</extension-point>
+	<extension-point id="deploy">
+		<parameter-def id="file" multiplicity="any" />
+		<parameter-def id="dir" multiplicity="any" />
+	</extension-point>
+</plugin>

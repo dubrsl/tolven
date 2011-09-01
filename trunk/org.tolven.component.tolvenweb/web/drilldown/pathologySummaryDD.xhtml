@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Pathology Specimen - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+			<h:panelGrid  columns="3">
+				<h:outputText value="#{trim.trim.act.relationship['encounter'].act.title.ST.value}"/> :  <h:outputText value="#{trim.trim.act.relationship['encounter'].act.observation.value}"/>
+				<h:outputText value="#{trim.trim.act.relationship['procedure'].act.title.ST.value}"/> :  <h:outputText value="#{trim.trim.act.relationship['procedure'].act.observation.value}"/>
+      </h:panelGrid>
+      <table>
+        <c:forEach var="choice" items="#{trim.trim.act.relationship['pathologyResult'].act.relationships}" varStatus="choiceIndex">
+          <c:if test="#{choice.enabled}">
+          <tr>
+            <td><b>Overall Result</b> : </td>
+            <td colspan="2"><h:outputText value="#{choice.act.title.ST.value}"/>  </td>
+          </tr>          
+         </c:if>
+        </c:forEach>
+      </table>	
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

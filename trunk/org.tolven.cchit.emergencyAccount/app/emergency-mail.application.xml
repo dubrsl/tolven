@@ -1,0 +1,4 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure" >
+	<property name="org.tolven.message.fromEmergencyAccoutMessage" accountType="echr" file="mailMessage/fromEmergencyAccountMessage.html"/>
+ 	<property name="org.tolven.message.toEmergencyAccoutMessage" accountType="echr" file="mailMessage/toEmergencyAccoutMessage.html"/>
+</application>

@@ -1,0 +1,15 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+<f:attribute name="contentType" value="text/xml"/>
+<a href="javascript:showPane('#{param.element}');"> 
+<ui:insert name="body">
+      		Description goes here.
+</ui:insert>
+			<img class="closetab" 
+				src="../images/x_black.gif"
+				onclick="closeTab('#{param.element}');return false;"/>
+</a>
+</f:view>

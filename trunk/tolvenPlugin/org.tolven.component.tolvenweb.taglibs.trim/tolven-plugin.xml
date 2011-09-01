@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.tolvenweb.taglibs.trim" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.faces.taglib" />
+	</requires>
+	<extension id="taglib" plugin-id="org.tolven.component.faces.taglib" point-id="taglib">
+		<parameter id="namespace" value="http://www.tolven.org/jsf/trim" />
+		<parameter id="tag-filename" value="trim.taglib.xml" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension-point id="compositeExtensionPoint">
+		<parameter-def id="name" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="tagValidator">
+		<parameter-def id="tag-name" />
+		<parameter-def id="validator-id" />
+		<parameter-def id="validator-class" multiplicity="none-or-one" />
+		<parameter-def id="handler-class" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="tagConverter">
+		<parameter-def id="tag-name" />
+		<parameter-def id="converter-id" />
+		<parameter-def id="converter-class" multiplicity="none-or-one" />
+		<parameter-def id="handler-class" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="tagSourceDirectory">
+		<parameter-def id="source-directory" multiplicity="none-or-one" />
+	</extension-point>
+</plugin>

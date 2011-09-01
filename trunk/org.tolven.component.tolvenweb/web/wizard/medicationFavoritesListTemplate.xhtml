@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Medication Favourites</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+  <wiz:step title="Configure List" >
+	  <wiz:body>
+      <table>
+        <tr style="padding-top:20px;">
+          <td></td>
+          <td style="width:150px;"/>
+          <td>
+            <table>
+              <tr>
+                <td>New List Name</td>
+                <td><h:inputText id="listName" value="#{trim.trim.act.title.ST.value}" required="true"/></td>
+              </tr>
+              <tr>
+                <td>Display Name</td>
+                <td><h:inputText id="displayName" value="#{trim.trim.act.relationship['displayName'].act.title.ST.value}" required="true"/> </td>
+              </tr>
+            </table>
+          </td>
+          <tr></tr>
+           </tr>
+          <tr>
+            <td>
+              <input type="text"  id="formIdValue" value="#{menu.elementLabel}"  style="display:none"/>
+				<input type="text"  id="elementValue" value="#{menu.element}"  style="display:none" />
+				<input type="text"  id="rowId" value="#{fdbstorage.rowId}"  style="display:none"/>
+				<img id="ajaxLoader"  alt="ajax" src="../images/ajax-loader.gif" style="display:none; z-index: 50;position: absolute;margin-top: 40px;margin-left: 450px;"/>
+				<h:inputText id="hiddenVariable" value="#{fdbstorage.hidden}" style="display:none"></h:inputText>
+				<h:inputText id="hiddenDrugName" value="#{fdb.selectedDrug}" style="display:none"></h:inputText>
+				<input type="text"  id="fdbType" style="display:none"/>
+                <h:inputHidden id="invokeStorageForMedication" value="#{fdbstorage.hidden}"/>
+				<div id="medicationFromFDBPopUP" >
+					<div class="paneBody">
+						<div class="grid" style="border: 1px solid rgb(153, 153, 153); width: 465px;">
+							<table class="filter">
+								<tbody>
+									<tr>
+										<td class="menuActions">
+											Filter
+											<h:inputText id="filterText" value="#{fdb.filterValue}" onkeyup="startFiltering(event , this , '#{menu.elementLabel}', '#{menu.element}')"></h:inputText>
+										</td>
+										<td style="text-align: right;">
+			 				 				<div>
+			 				 					<img alt="First"  style="cursor: pointer;text-decoration: underline;margin-right: 5px;" onclick="clickFirst()"/>
+			 				 					<img alt="Previous"  style="cursor: pointer;text-decoration: underline;margin-right: 5px;" onclick="clickPrevious()"/>
+			 				 					<img alt="Next"  style="cursor: pointer;text-decoration: underline;margin-right: 5px;" onclick="clickNext()"/>
+			 				 					<img alt="Last"  style="cursor: pointer;text-decoration: underline;margin-right: 5px;" onclick="clickLast()"/>
+			 				 				</div>
+			 				 			</td>
+									</tr>
+								</tbody>
+							</table>
+							<table>
+								<thead>
+									<tr>
+										<th style="text-align: left; width: 40.5em; cursor: pointer;">
+											Medication
+											<span> 
+												<img height="5" width="9" src="../images/sort_asc.gif" />
+											</span>
+										</th>
+									</tr>
+								</thead>
+							</table>
+							<table style="max-height: 265.312px; width: 100%">
+								<tr>
+									<td colspan="2">
+										<div style="overflow: auto; height: 265.312px;" id="mainDiv">
+											<h:dataTable id="drugTable" width="100%" styleClass="gridBody"
+												var="drug" value="#{fdb.drugList}" rowClasses="odd,even">
+												<h:column>
+													<h:outputText value="#{drug.drugName}"
+														style="text-decoration:underline ;cursor:pointer;"
+														onclick="saveFDBMedication('#{menu.element}','#{menu.elementLabel}','#{drug.drugName}','#{drug.drugCode}','#{drug.nameType}','#{trim.trim.act.id.for[top.accountUser.account].extension}:favorites')" />
+												</h:column>
+											</h:dataTable>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2">
+										<div class="foot">
+											<span id="startLimit" > </span> <f:verbatim> - </f:verbatim>
+											<span id="endLimit"  > </span> <f:verbatim> of  </f:verbatim>
+											<h:outputText id ="totalcount" value=" #{fdb.totalDrugCount} items" />
+											<h:outputText id="filteredcount"/>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+            </td>
+            <td style="vertical-align:middle;text-align:center;">
+            </td>
+            <td>
+              <div id="#{trim.trim.act.id.for[top.accountUser.account].extension}:favorites" style="">
+                <div class="grid" id="#{menu.element}:favorites-grid" style="border: 1px solid rgb(153, 153, 153); width: 311px;">
+                  <table id="#{menu.element}:favorites_header" style="width:100%;">
+                    <thead>
+                      <tr>
+                        <th style="text-align: left;">Name</th>
+                      </tr>
+                    </thead>
+                  </table>
+                  <div style="height: 330.188px;overflow:auto;">
+                      <table id="#{trim.trim.act.id.for[top.accountUser.account].extension}:favorites_grid" class="gridBody" width="100%">
+                        <tbody>
+                          <c:forEach items="#{trim.trim.act.relationshipsList['favoriteItem']}" var="favorite" varStatus="favoriteIndex">
+                            <c:choose>
+                              <c:when test="#{favoriteIndex.index%2 == 0}">
+                                <tr class="even" id="#{favorite.sourceTrim}" onclick="javascript:removeFDBMedication('#{menu.element}','#{menu.elementLabel}','#{favorite.act.title.ST.value}','#{favorite.act.observation.values[0].ST.value}','#{trim.trim.act.id.for[top.accountUser.account].extension}:favorites')">
+                                  <td>
+                                    #{favorite.act.title.ST.value}
+                                  </td>
+                                </tr>
+                              </c:when>
+                              <c:otherwise>
+                                <tr class="odd" id="#{favorite.sourceTrim}" onclick="javascript:removeFDBMedication('#{menu.element}','#{menu.elementLabel}','#{favorite.act.title.ST.value}','#{favorite.act.observation.values[0].ST.value}','#{trim.trim.act.id.for[top.accountUser.account].extension}:favorites')">
+                                  <td>
+                                    #{favorite.act.title.ST.value}
+                                  </td>
+                                </tr>
+                              </c:otherwise>
+                            </c:choose>                           
+                          </c:forEach>                          
+                        </tbody>
+                      </table>                    
+                  </div>
+                </div>              
+              </div>                          
+            </td>
+          </tr>
+        </table>  
+      </wiz:body>
+    </wiz:step>	 
+</body>
+</html>

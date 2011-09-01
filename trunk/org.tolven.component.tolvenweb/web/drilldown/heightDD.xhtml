@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Height- Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+			<h2><h:outputText value="#{act.title.ST.value}"/></h2>
+				<table>
+					<tr>
+						<td width="25%" style="text-align: left;">
+							<h:outputText value="#{msg.DateOfObservation}: " />
+						</td>
+						<td width="25%" style="text-align: left;">
+							<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}"
+								dateStyle="short" timeStyle="short" readonly="true" />
+						</td>
+					</tr>
+					<tr>
+						<td width="25%" style="text-align: left;">
+							<h:outputText
+								value="#{trim.trim.act.relationship['heightfeet'].act.title.ST.value}" />
+						</td>
+						<td width="5%" style="text-align: left;">
+							#{trim.trim.act.relationship['heightfeet'].act.observation.value.ST.value}
+							feet
+							#{trim.trim.act.relationship['heightinches'].act.observation.value.ST.value}
+							inches
+						</td>
+						<td width="25%" style="text-align: left;"></td>
+					</tr>
+				</table>
+				<ui:include src="/drilldown/attachments.xhtml"/>
+				<!-- <c:if test="#{vitalsignsHistory.history != null}">
+    				<div style="width:100%;height:100%; padding: 5px;">
+					<a href="#" onclick="$('historyDisplayTable').toggle();return false;">History</a>
+						<table cellspacing="0" cellpadding="0" style="display: none;" id="historyDisplayTable" width="60%">
+							<thead>
+			    				<tr>
+			    					<th>User</th>
+			    					<th>Timestamp</th>
+			    					<th>Value</th>
+			    					<th>Units</th>
+			    					<th>Status</th>
+			    				</tr>
+							</thead>
+							<tbody style="width: 100%;">
+				    			<c:forEach var="tmp" items="#{vitalsignsHistory.history}" varStatus="indx">
+				    				<tr>
+				    					<td style="width: 20%;">#{tmp['user']}</td>
+				    					<td style="width: 20%;">#{tmp['timestamp']}</td>
+				    					<td style="width: 20%;">#{tmp['value']}</td>
+				    					<td style="width: 20%;">#{tmp['units']}</td>
+				    					<td style="width: 20%;">#{tmp['status']}</td>
+				    				</tr>
+				    			</c:forEach>
+							</tbody>
+		    			</table>
+					</div>
+				</c:if> -->
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

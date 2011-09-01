@@ -1,0 +1,493 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>cognistat</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+	<wiz:step title="Alert" >
+			<wiz:body>
+				<wiz:group title="Person Alert">
+					<wiz:yesno id="isAlert" >
+						Is the patient alert?
+					</wiz:yesno>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>If the answer is “No”, exit exam. If the answer is yes, continue with the exam.</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Orientation" visible="$('#{menu.elementLabel}:isAlert').isNotFalse();">
+			<wiz:body>
+				<wiz:group title="Name Orientation">
+					<wiz:yesno id="saysName" >
+						Can the patient say his/her full name?
+					</wiz:yesno>
+					<wiz:certainty title="Certainty" id="saysNameCertainty" visible="$('#{menu.elementLabel}:saysName').isTrue();"/>
+				</wiz:group>
+				<wiz:group title="Location Orientation" visible="$('#{menu.elementLabel}:saysName').isTrue();">
+					<p>Determine if the patient is oriented to their location</p>
+					<wiz:group title="Place">
+						<p>Does the patient know where they are?</p>
+						<wiz:radioGeneric id="knowsPlace">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+						</wiz:radioGeneric>
+						<wiz:certainty title="Certainty" id="knowsPlaceCertainty"/>
+					</wiz:group>
+					<wiz:group title="City">
+						<p>Does the patient know what city they are in?</p>
+						<wiz:radioGeneric id="knowsCity">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+						</wiz:radioGeneric>
+						<wiz:certainty title="Certainty" id="knowsCityCertainty"/>
+					</wiz:group>
+				</wiz:group>
+				<wiz:group title="Time Orientation" visible="$('#{menu.elementLabel}:saysName').isTrue();">
+					<p>Determine if the patient is oriented in time</p>
+					<wiz:group title="Knows Day">
+						<wiz:radioGeneric id="knowsDay">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+						</wiz:radioGeneric>
+						<wiz:certainty title="Certainty" id="knowsDayCertainty" />
+					</wiz:group>
+					<wiz:group title="Knows Month">
+						<wiz:radioGeneric id="knowsMonth">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+						</wiz:radioGeneric>
+						<wiz:certainty title="Certainty" id="knowsMonthCertainty" />
+					</wiz:group>
+					<wiz:group title="Knows Year">
+						<wiz:radioGeneric id="knowsYear">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+						</wiz:radioGeneric>
+						<wiz:certainty title="Certainty" id="knowsYearCertainty" />
+					</wiz:group>
+					<wiz:group title="Knows Day of Week">
+						<wiz:radioGeneric id="knowsDOW">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+						</wiz:radioGeneric>
+						<wiz:certainty title="Certainty" id="knowsDOWCertainty"/>
+					</wiz:group>
+					<wiz:group title="Knows Time of Day (within one hour)" >
+						<wiz:radioGeneric id="knowsTOD">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+						</wiz:radioGeneric>
+						<wiz:certainty title="Certainty" id="knowsTODCertainty"/>
+					</wiz:group>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>Oh boy...time is passing.</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Attention" visible="($('#{menu.elementLabel}:isAlert').isNotFalse() &#38;&#38; $('#{menu.elementLabel}:saysName').isNotFalse())">
+			<wiz:body>
+				<wiz:group title="Attention">
+					<wiz:yesno id="attentionScreening">
+						<p>Patient passes attention screening?</p>
+					</wiz:yesno>
+					<wiz:group title="Digit Repetition" visible="$('#{menu.elementLabel}:attentionScreening').isFalse()">
+						<p>Administer the digit repetition metric (maximum score 8 and score as follows:</p>
+						<wiz:group title="First 3 digit">
+							<wiz:radioGeneric id="digit31">
+								<f:selectItem itemLabel="pass" itemValue="1"/>
+								<f:selectItem itemLabel="fail" itemValue="0"/>
+							</wiz:radioGeneric>
+							<wiz:group title="Miss" visible="$('#{menu.elementLabel}:digit31').is('0')">
+								<wiz:radioGeneric id="digit31Miss">
+									<f:selectItem itemLabel="Slight Miss" itemValue="slight"/>
+									<f:selectItem itemLabel="Bad Miss" itemValue="bad"/>
+								</wiz:radioGeneric>
+							</wiz:group>
+						</wiz:group>
+						<wiz:group title="Second 3 digit">
+							<wiz:radioGeneric id="digit32">
+								<f:selectItem itemLabel="pass" itemValue="1"/>
+								<f:selectItem itemLabel="fail" itemValue="0"/>
+							</wiz:radioGeneric>
+							<wiz:group title="Miss" visible="$('#{menu.elementLabel}:digit32').is('0')">
+								<wiz:radioGeneric id="digit32Miss">
+									<f:selectItem itemLabel="Slight Miss" itemValue="slight"/>
+									<f:selectItem itemLabel="Bad Miss" itemValue="bad"/>
+								</wiz:radioGeneric>
+							</wiz:group>
+						</wiz:group>
+						<wiz:group title="First 4 digit">
+							<wiz:radioGeneric id="digit41">
+								<f:selectItem itemLabel="pass" itemValue="1"/>
+								<f:selectItem itemLabel="fail" itemValue="0"/>
+							</wiz:radioGeneric>
+							<wiz:group title="Miss" visible="$('#{menu.elementLabel}:digit41').is('0')">
+								<wiz:radioGeneric id="digit41Miss">
+									<f:selectItem itemLabel="Slight Miss" itemValue="slight"/>
+									<f:selectItem itemLabel="Bad Miss" itemValue="bad"/>
+								</wiz:radioGeneric>
+							</wiz:group>
+						</wiz:group>
+						<wiz:group title="Second 4 digit">
+							<wiz:radioGeneric id="digit42">
+								<f:selectItem itemLabel="pass" itemValue="1"/>
+								<f:selectItem itemLabel="fail" itemValue="0"/>
+							</wiz:radioGeneric>
+							<wiz:group title="Miss" visible="$('#{menu.elementLabel}:digit42').is('0')">
+								<wiz:radioGeneric id="digit42Miss">
+									<f:selectItem itemLabel="Slight Miss" itemValue="slight"/>
+									<f:selectItem itemLabel="Bad Miss" itemValue="bad"/>
+								</wiz:radioGeneric>
+							</wiz:group>
+						</wiz:group>
+						<wiz:group title="First 5 digit">
+							<wiz:radioGeneric id="digit51">
+								<f:selectItem itemLabel="pass" itemValue="1"/>
+								<f:selectItem itemLabel="fail" itemValue="0"/>
+							</wiz:radioGeneric>
+							<wiz:group title="Miss" visible="$('#{menu.elementLabel}:digit51').is('0')">
+								<wiz:radioGeneric id="digit51Miss">
+									<f:selectItem itemLabel="Slight Miss" itemValue="slight"/>
+									<f:selectItem itemLabel="Bad Miss" itemValue="bad"/>
+								</wiz:radioGeneric>
+							</wiz:group>
+						</wiz:group>
+						<wiz:group title="Second 5 digit">
+							<wiz:radioGeneric id="digit52">
+								<f:selectItem itemLabel="pass" itemValue="1"/>
+								<f:selectItem itemLabel="fail" itemValue="0"/>
+							</wiz:radioGeneric>
+							<wiz:group title="Miss" visible="$('#{menu.elementLabel}:digit52').is('0')">
+								<wiz:radioGeneric id="digit52Miss">
+									<f:selectItem itemLabel="Slight Miss" itemValue="slight"/>
+									<f:selectItem itemLabel="Bad Miss" itemValue="bad"/>
+								</wiz:radioGeneric>
+							</wiz:group>
+						</wiz:group>
+						<wiz:group title="First 6 digit">
+							<wiz:radioGeneric id="digit61">
+								<f:selectItem itemLabel="pass" itemValue="1"/>
+								<f:selectItem itemLabel="fail" itemValue="0"/>
+							</wiz:radioGeneric>
+							<wiz:group title="Miss" visible="$('#{menu.elementLabel}:digit61').is('0')">
+								<wiz:radioGeneric id="digit61Miss">
+									<f:selectItem itemLabel="Slight Miss" itemValue="slight"/>
+									<f:selectItem itemLabel="Bad Miss" itemValue="bad"/>
+								</wiz:radioGeneric>
+							</wiz:group>
+						</wiz:group>
+						<wiz:group title="Second 6 digit">
+							<wiz:radioGeneric id="digit62">
+								<f:selectItem itemLabel="pass" itemValue="1"/>
+								<f:selectItem itemLabel="fail" itemValue="0"/>
+							</wiz:radioGeneric>
+							<wiz:group title="Miss" visible="$('#{menu.elementLabel}:digit62').is('0')">
+								<wiz:radioGeneric id="digit62Miss">
+									<f:selectItem itemLabel="Slight Miss" itemValue="slight"/>
+									<f:selectItem itemLabel="Bad Miss" itemValue="bad"/>
+								</wiz:radioGeneric>
+							</wiz:group>
+						</wiz:group>
+					</wiz:group>			
+					<wiz:group title="Four word registration" visible="$('#{menu.elementLabel}:attentionScreening').isFalse()">
+						<wiz:integerGeneric id="fourWordTrialCount" min="0" max="100">
+							Number of trials
+						</wiz:integerGeneric>
+						<wiz:yesno id="fourWordMaster">
+							<p>Did patient master trial?</p>
+						</wiz:yesno>
+						<div tvisible="$('#{menu.elementLabel}:fourWordTrialCount').gt(4)">
+							[More than four trials were needed]
+						</div>
+					</wiz:group>
+				</wiz:group>			
+			</wiz:body>
+			<wiz:help>
+				<p>What?</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Language" visible="($('#{menu.elementLabel}:isAlert').isNotFalse() &#38;&#38; $('#{menu.elementLabel}:saysName').isNotFalse())">
+			<wiz:body>
+				<wiz:group title="Fluency rating" >
+					<wiz:radioGeneric id="fluency">
+						<f:selectItem itemLabel="Dysfluent" itemValue="dysfluent"/>
+						<f:selectItem itemLabel="Hesitant" itemValue="hesitant"/>
+						<f:selectItem itemLabel="Fluent" itemValue="fluent"/>
+					</wiz:radioGeneric>
+					<wiz:yesno id="fluencyParaphrasic" >
+						Was there a paraphrasic error?
+					</wiz:yesno>
+				</wiz:group>
+				<wiz:group title="Comprehension" >
+					<wiz:yesno id="comprehensionScreening" >
+						Patient passes comprehension screening? If the answer is “No’, administer the comprehension metric (maximum score 6).
+					</wiz:yesno>
+					<wiz:group title="Score" visible="$('#{menu.elementLabel}:comprehensionScreening').isFalse()">
+						<wiz:radioGeneric id="comprehensionScore">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+							<f:selectItem itemLabel="3" itemValue="3"/>
+							<f:selectItem itemLabel="4" itemValue="4"/>
+							<f:selectItem itemLabel="5" itemValue="5"/>
+							<f:selectItem itemLabel="6" itemValue="6"/>
+						</wiz:radioGeneric>
+						<wiz:yesno id="comprehensionConfused" >
+							Was patient confused?
+						</wiz:yesno>
+					</wiz:group>
+				</wiz:group>
+				<wiz:group title="Repetition" >
+					<wiz:yesno id="repetitionScreening" >
+						Patient passes repetition screening? If the answer is “No”, administer the repetition metric (maximum score 12).
+					</wiz:yesno>
+					<wiz:group title="Score" visible="$('#{menu.elementLabel}:repetitionScreening').isFalse()">
+						<wiz:radioGeneric id="repetitionScore">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+							<f:selectItem itemLabel="3" itemValue="3"/>
+							<f:selectItem itemLabel="4" itemValue="4"/>
+							<f:selectItem itemLabel="5" itemValue="5"/>
+							<f:selectItem itemLabel="6" itemValue="6"/>
+							<f:selectItem itemLabel="7" itemValue="7"/>
+							<f:selectItem itemLabel="8" itemValue="8"/>
+							<f:selectItem itemLabel="9" itemValue="9"/>
+							<f:selectItem itemLabel="10" itemValue="10"/>
+							<f:selectItem itemLabel="11" itemValue="11"/>
+							<f:selectItem itemLabel="12" itemValue="12"/>
+						</wiz:radioGeneric>
+						<wiz:yesno id="repetitionParaphrasic" >
+							Was there a paraphrasic error?
+						</wiz:yesno>
+					</wiz:group>
+				</wiz:group>
+				<wiz:group title="Naming" >
+					<wiz:yesno id="namingScreening" >
+						Patient passes naming screening? If the answer is “No”, administer the naming metric (maximum score 8).
+					</wiz:yesno>
+					<wiz:group title="Score" visible="$('#{menu.elementLabel}:namingScreening').isFalse()">
+						<wiz:radioGeneric id="namingScore">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+							<f:selectItem itemLabel="3" itemValue="3"/>
+							<f:selectItem itemLabel="4" itemValue="4"/>
+							<f:selectItem itemLabel="5" itemValue="5"/>
+							<f:selectItem itemLabel="6" itemValue="6"/>
+							<f:selectItem itemLabel="7" itemValue="7"/>
+							<f:selectItem itemLabel="8" itemValue="8"/>
+						</wiz:radioGeneric>
+						<wiz:radioGeneric id="namingVisual">
+							<f:selectItem itemLabel="Smooth placement" itemValue="smoothPlacement"/>
+							<f:selectItem itemLabel="Trial and error" itemValue="trial and error"/>
+							<f:selectItem itemLabel="Confusion" itemValue="confusion"/>
+						</wiz:radioGeneric>
+					</wiz:group>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>Huh?</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Constructional Ability" visible="($('#{menu.elementLabel}:isAlert').isNotFalse() &#38;&#38; $('#{menu.elementLabel}:saysName').isNotFalse())">
+			<wiz:body>
+				<wiz:group title="Constructional Ability" >
+					<wiz:yesno id="caScreening" >
+						Patient passes Constructional Ability screening? If the answer is “No”, administer the constructional ability metric (maximum score 6). 
+					</wiz:yesno>
+					<wiz:group title="Score" visible="$('#{menu.elementLabel}:caScreening').isFalse()">
+						<wiz:radioGeneric id="caScore">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+							<f:selectItem itemLabel="3" itemValue="3"/>
+							<f:selectItem itemLabel="4" itemValue="4"/>
+							<f:selectItem itemLabel="5" itemValue="5"/>
+							<f:selectItem itemLabel="6" itemValue="6"/>
+						</wiz:radioGeneric>
+						<wiz:radioGeneric id="caRate">
+							<f:selectItem itemLabel="Smooth placement" itemValue="smoothPlacement"/>
+							<f:selectItem itemLabel="Trial and error" itemValue="trialAndError"/>
+							<f:selectItem itemLabel="Confusion" itemValue="confusion"/>
+						</wiz:radioGeneric>
+					</wiz:group>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>What goes here?</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Memory 4 Words" visible="($('#{menu.elementLabel}:isAlert').isNotFalse() &#38;&#38; $('#{menu.elementLabel}:saysName').isNotFalse())">
+			<wiz:body>
+				<wiz:group title="Free Recall" >
+					<wiz:yesno id="freeRecallRobin" >Does patient say “robin”?</wiz:yesno>
+					<wiz:yesno id="freeRecallPiano" >Does patient say “piano”?</wiz:yesno>
+					<wiz:yesno id="freeRecallCarrot">Does patient say “carrot”?</wiz:yesno>
+					<wiz:yesno id="freeRecallGreen" >Does patient say “green”?</wiz:yesno>
+				</wiz:group>
+				<wiz:group title="Cued Recall" >
+					<p>If the answer is no on any item in A, the tester then gives a “hint” for each item that was missed</p>
+					<div tvisible="$('#{menu.elementLabel}:freeRecallRobin').isFalse()">
+						<wiz:yesno id="cuedRecallRobin" >
+						Does patient say “robin” when given the cue?
+						</wiz:yesno>
+					</div>
+					<div tvisible="$('#{menu.elementLabel}:freeRecallPiano').isFalse()">
+						<wiz:yesno id="cuedRecallPiano" >
+						Does patient say “piano” when given the cue?
+						</wiz:yesno>
+					</div>
+					<div tvisible="$('#{menu.elementLabel}:freeRecallCarrot').isFalse()">
+						<wiz:yesno id="cuedRecallCarrot" >
+						Does patient say “carrot” when given the cue?
+						</wiz:yesno>
+					</div>
+					<div tvisible="$('#{menu.elementLabel}:freeRecallGreen').isFalse()">
+						<wiz:yesno id="cuedRecallGreen" >
+						Does patient say “green” when given the cue?
+						</wiz:yesno>
+					</div>
+				</wiz:group>
+				<wiz:group title="Recognition Recall" >
+					<p>If the answer is no on any item in Free Recall above, the tester then gives the patient to pick the word from a list of 3 words.</p>
+					<div tvisible="($('#{menu.elementLabel}:freeRecallRobin').isFalse() &#38;&#38; $('#{menu.elementLabel}:cuedRecallRobin').isFalse())">
+						<wiz:yesno id="recognitionRecallRobin" >
+						Does patient say “robin” when given a list of three words to choose from?
+						</wiz:yesno>
+					</div>
+					<div tvisible="($('#{menu.elementLabel}:freeRecallPiano').isFalse() &#38;&#38; $('#{menu.elementLabel}:cuedRecallPiano').isFalse())">
+						<wiz:yesno id="recognitionRecallPiano" >
+						Does patient say “piano” when given a list of three words to choose from?
+						</wiz:yesno>
+					</div>
+					<div tvisible="($('#{menu.elementLabel}:freeRecallCarrot').isFalse() &#38;&#38; $('#{menu.elementLabel}:cuedRecallCarrot').isFalse())">
+						<wiz:yesno id="recognitionRecallCarrot" >
+						Does patient say “carrot” when given a list of three words to choose from?
+						</wiz:yesno>
+					</div>
+					<div tvisible="($('#{menu.elementLabel}:freeRecallGreen').isFalse() &#38;&#38; $('#{menu.elementLabel}:cuedRecallGreen').isFalse())">
+						<wiz:yesno id="recognitionRecallGreen" >
+						Does patient say “green” when given a list of three words to choose from?
+						</wiz:yesno>
+					</div>
+					<wiz:radioGeneric id="recognitionRecallRate">
+						<f:selectItem itemLabel="Rapid Recall" itemValue="rapidRecall"/>
+						<f:selectItem itemLabel="Hesitant Recall" itemValue="hesitantRecall"/>
+						<f:selectItem itemLabel="Long Delays" itemValue="longDelays"/>
+					</wiz:radioGeneric>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>I'd tell you but I forgot</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Calculations" visible="($('#{menu.elementLabel}:isAlert').isNotFalse() &#38;&#38; $('#{menu.elementLabel}:saysName').isNotFalse())">
+			<wiz:body>
+				<wiz:group title="Calculations" >
+					<wiz:yesno id="calculationsScreening" >
+						Patient passes calculations screening?
+					</wiz:yesno>
+					<wiz:group title="Score" visible="$('#{menu.elementLabel}:calculationsScreening').isFalse()">
+						<wiz:radioGeneric id="calculationsScore">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+							<f:selectItem itemLabel="3" itemValue="3"/>
+							<f:selectItem itemLabel="4" itemValue="4"/>
+						</wiz:radioGeneric>
+						<wiz:integerGeneric id="calculationsIncorrect" min="0" max="100">
+							How many times did the patient give an answer in the appropriate time frame that was incorrect?
+						</wiz:integerGeneric>
+						<wiz:yesno id="calculationsRepetitions" >
+							Were there requests for repetitions?
+						</wiz:yesno>
+						<wiz:integerGeneric id="calculationsCorrectOver20" min="0" max="100">
+							How many times did the patient give a correct answer that did not count because it took longer than 20 seconds?
+						</wiz:integerGeneric>
+						<wiz:integerGeneric id="calculationsCorrect1120" min="0" max="100">
+							How many times did the patient give a correct answer but took between 11 and 20 seconds to give it?
+						</wiz:integerGeneric>
+					</wiz:group>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>Two plus gravity equals pie  </p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Reasoning" visible="($('#{menu.elementLabel}:isAlert').isNotFalse() &#38;&#38; $('#{menu.elementLabel}:saysName').isNotFalse())">
+			<wiz:body>
+				<wiz:group title="Similarities" >
+					<wiz:yesno id="similaritiesScreening" >
+						Patient passes similarities screening?
+					</wiz:yesno>
+					<wiz:group title="Score" visible="$('#{menu.elementLabel}:similaritiesScreening').isFalse()">
+						<wiz:radioGeneric id="similaritiesScore">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+							<f:selectItem itemLabel="3" itemValue="3"/>
+							<f:selectItem itemLabel="4" itemValue="4"/>
+							<f:selectItem itemLabel="5" itemValue="5"/>
+							<f:selectItem itemLabel="6" itemValue="6"/>
+							<f:selectItem itemLabel="7" itemValue="7"/>
+							<f:selectItem itemLabel="8" itemValue="8"/>
+						</wiz:radioGeneric>
+						<wiz:yesno id="similaritiesParaphrasic" >
+							Were there paraphrasic errors?
+						</wiz:yesno>
+						<wiz:yesno id="similaritiesWordfinding" >
+							Was word finding noted?
+						</wiz:yesno>
+						<wiz:check id="similaritiesSingleWord" >
+							Single word solutions
+						</wiz:check>
+						<wiz:check id="similaritiesDescription" >
+							Description of details
+						</wiz:check>
+						<wiz:check id="similaritiesConcrete" >
+							Concrete attempts
+						</wiz:check>
+					</wiz:group>
+				</wiz:group>
+				<wiz:group title="Judgment" >
+					<wiz:yesno id="judgmentScreening" >
+						Patient passes judgment screening?
+					</wiz:yesno>
+					<wiz:group title="Score" visible="$('#{menu.elementLabel}:judgmentScreening').isFalse()">
+						<wiz:radioGeneric id="judgmentScore">
+							<f:selectItem itemLabel="0" itemValue="0"/>
+							<f:selectItem itemLabel="1" itemValue="1"/>
+							<f:selectItem itemLabel="2" itemValue="2"/>
+							<f:selectItem itemLabel="3" itemValue="3"/>
+							<f:selectItem itemLabel="4" itemValue="4"/>
+							<f:selectItem itemLabel="5" itemValue="5"/>
+							<f:selectItem itemLabel="6" itemValue="6"/>
+						</wiz:radioGeneric>
+						<wiz:yesno id="judgmentTangent" >
+							Was tangentiality evident?
+						</wiz:yesno>
+						<wiz:yesno id="judgmentInadequate" >
+							Were the answers inadequate?
+						</wiz:yesno>
+					</wiz:group>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>I think therefore I wet  </p>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>

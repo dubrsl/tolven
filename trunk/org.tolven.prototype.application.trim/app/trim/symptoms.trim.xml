@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<abstract>true</abstract>
+	<name>obs/evn/symptoms</name>
+	<page>symptoms.xhtml</page>
+	<drilldown>symptomsDD.xhtml</drilldown>
+	<menu>global:symptomsMenu</menu>
+	<application name="echr">
+		<instance>echr:patient:symptoms</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:problem</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>C0332139</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>symptoms</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of symptoms</label>
+			<new datatype="TS" function="now" />
+		</effectiveTime>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id />
+			</role>
+		</participation>
+		
+		<relationship name="comments" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Comments</ST>
+				</title>
+				<text>
+					<ST></ST>
+				</text>
+				<effectiveTime>
+					<label>Termination Date</label>
+					<new datatype="TS" function="now" />
+				</effectiveTime>
+			</act>
+		</relationship>
+		<relationship typeCode="COMP" direction="OUT" name="procedureAssociations">
+ 			<act classCode="OBS" moodCode="EVN">
+ 				<observation>
+		 			<value>
+		 				<label>Associate with Encounter</label>
+		 				<valueSet>encounter</valueSet>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.Copy</type>
+			<property name="destination">
+				<value xsi:type="xs:string">\#{trim.act.text.ST.value}</value>
+			</property>
+			<property name="source">
+				<value xsi:type="xs:string">\#{trim.act.title.ST.value} \#{trim.act.observation.value.CE.displayName}</value>
+			</property>
+		</compute>
+	</act>
+
+</trim>

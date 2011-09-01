@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.config.admincredentials" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.assembler.admin" />
+	</requires>
+	<extension id="admin" plugin-id="org.tolven.assembler.admin" point-id="admin">
+		<parameter id="admin.groupId" value="#{pluginProperty['admin.groupId']}" />
+		<parameter id="admin.keyStoreFile" value="#{pluginProperty['admin.keyStoreFile']}" />
+		<parameter id="admin.keyStoreType" value="#{pluginProperty['admin.keyStoreType']}" />
+		<parameter id="admin.trustStoreFile" value="#{pluginProperty['admin.trustStoreFile']}" />
+		<parameter id="admin.trustStoreType" value="#{pluginProperty['admin.trustStoreType']}" />
+		<parameter id="admin.secretKeyFile" value="#{pluginProperty['admin.secretKeyFile']}" />
+		<parameter id="admin.secretKey.create" value="#{pluginProperty['admin.secretKey.create']}" />
+		<parameter id="admin.passwordStoreFile" value="#{pluginProperty['admin.passwordStoreFile']}" />
+		<parameter id="admin.passwordStore.create" value="#{pluginProperty['admin.passwordStore.create']}" />
+		<parameter id="admin.credentialDir" value="#{pluginProperty['admin.credentialDir']}" />
+	</extension>
+</plugin>

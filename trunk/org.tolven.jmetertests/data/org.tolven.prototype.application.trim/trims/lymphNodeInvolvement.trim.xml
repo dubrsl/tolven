@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>procedureAct</extends>
+	<name>lymphNodeInvolment</name>
+	<description>Lymph Node Involvement</description>
+	<author>Tolven</author>
+	<page>lymphNodeInvolment.xhtml</page>
+	<drilldown>lymphNodeInvolmentDD.xhtml</drilldown>
+	<menu>global:resultMenu</menu>
+	<application name="echr">
+		<instance>echr:patient:result</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<application name="ephr">
+		<instance>ephr:patient:result</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="create">
+				<path>echr:patient:result</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="create">
+				<path>ephr:patient:result</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Lymph Node Involvement</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now" />
+		</effectiveTime>
+		<relationship typeCode="PERT" direction="OUT" name="lymphNodeStatus">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Lymph Node Status</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Node Status</label>
+						<valueSet>nodeStatus</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="noMetastases_totalNodesWithITC">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Total number of nodes with isolated tumor cells (ITC)</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Total number of nodes with isolated tumor cells (ITC)</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="noMetastases_nodesExaminedWithITC">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Total number of nodes examined for ITC</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Total number of nodes examined for ITC</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>												
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="positive_totalPositiveNodes">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Total number of Positive Nodes</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Total number of Positive Nodes</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="postive_largestMetastatisSize">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Size of largest metastasis in any node</ST>
+				</title>
+				<observation>
+					<value>
+						<valueSet>metastatisDataType</valueSet>
+						<PQ>
+							<label>Size in cm</label>
+							<unit>1</unit>
+						</PQ>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="PERT" direction="OUT" name="nodesExamined">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Total number of nodes examined for metastases</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Total number of nodes examined for metastases</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="PERT" direction="OUT" name="extraNodalExtension">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Extranodal extension</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Extranodal extension</label>
+						<valueSet>extraNodal</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="sentinelLymphNodesPostive">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Sentinel lymph nodes positive</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Sentinel lymph nodes positive</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="sentinelLymphNodesExamined">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Sentinel lymph nodes examined</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Sentinel lymph nodes examined</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="nonSentinelLymphNodesPostive">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Non-Sentinel lymph nodes positive</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Non-Sentinel lymph nodes positive</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="nonSentinelLymphNodesExamined">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Non-Sentinel lymph nodes examined</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Non-Sentinel lymph nodes examined</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		
+
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="axillaryLymphNodesPositive">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Axillary lymph nodes positive</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Axillary lymph nodes positive</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="axillaryLymphNodesExamined">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Axillary lymph nodes examined</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Axillary lymph nodes examined</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+
+		
+		
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="internalMammaryLymphNodesPositive">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Internal mammary lymph nodes positive</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Internal mammary lymph nodes positive</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="internalMammaryLymphNodesExamined">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Internal mammary lymph nodes examined</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Internal mammary lymph nodes examined</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>		
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="supraclavicularLymphNodesPositive">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Supraclavicular lymph nodes positive</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Supraclavicular lymph nodes positive</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="supraclavicularLymphNodesExamined">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Supraclavicular lymph nodes examined</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Supraclavicular lymph nodes examined</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="infraclavicularLymphNodesPositive">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Infraclavicular lymph nodes positive</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Infraclavicular lymph nodes positive</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="infraclavicularLymphNodesExamined">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Infraclavicular lymph nodes examined</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Infraclavicular lymph nodes examined</label>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>	
+		<compute>
+			<type>org.tolven.process.DataTypeSelect</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>			
+			<property name="dataTypeDestination">
+   				<value xsi:type="xs:string"></value>
+			</property>
+			<property name="dataTypeSource">
+				<value xsi:type="xs:string"></value>
+            </property>
+		</compute>        							
+						
+	</act>
+	<valueSet name="extraNodal">
+		<CE>
+			<displayName>None</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Present</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="nodeStatus">
+		<CE>
+			<displayName>No Metastases</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Positive</displayName>
+			<code>C0183105</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="metastatisDataType">
+		<PQ>
+			<label>Size in cm</label>
+			<unit>cm</unit>
+		</PQ>
+		<PQ>
+			<label>Size in mm</label>
+			<unit>mm</unit>
+		</PQ>		
+	</valueSet>
+	
+</trim>

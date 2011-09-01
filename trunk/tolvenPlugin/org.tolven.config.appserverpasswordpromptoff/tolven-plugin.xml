@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.config.appserverpasswordpromptoff" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.jboss" />
+	</requires>
+	<extension id="serverSecurityProduct" plugin-id="org.tolven.component.jboss" point-id="serverSecurityProduct">
+		<parameter id="promptForPassword" value="#{pluginProperty['promptFor.appserver.password']}" />
+	</extension>
+</plugin>

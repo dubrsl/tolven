@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"      
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Diagnosis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+
+			<div id="#{menu.menuDataItem.parent01.path}:diagnoses:breastMenu" class="popupgrid"/>
+    
+		<c:if test="${fn:length(trim.trim.act.relationships) == 0}">
+			<script language="JavaScript" type="text/javascript">
+				// <![CDATA[
+					openTemplate('#{menu.menuDataItem.parent01.path}:diagnoses:breastMenu','#{menu.menuDataItem.parent01.path}:diagnoses:breastMenu', 'addTemplate', '#{menu.elementLabel}', 0);
+				// ]]>
+			</script>
+      	<div class="add" style="display:none;"> 
+          <li><a class="inactive" href="#" onclick="javascript:openTemplate('#{menu.menuDataItem.parent01.path}:diagnoses:breastMenu','#{menu.menuDataItem.parent01.path}:diagnoses:breastMenu', 'addTemplate', '#{menu.elementLabel}', 0)">Add Diagnosis</a></li>
+        </div>
+		</c:if>
+
+		<h:inputText id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" style="display: none;" converter="javax.faces.Boolean"/>			
+		<h:inputText  id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
+		<h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
+		<h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />										
+		<c:if test="#{empty trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}">
+		  <h:inputHidden id="disableSubmitButton" value="true" />										
+		
+			<script language="JavaScript" type="text/javascript">
+				// <![CDATA[					
+					$('#{menu.elementLabel}submitButton').disabled='true';	
+					$('#{menu.elementLabel}nextButton').disabled='true';						
+				// ]]>
+			</script>
+		</c:if>
+
+ 		<c:forEach var="rel" items="#{trim.trim.act.relationships}" varStatus="diagnosis">
+			<c:if test="#{rel.name=='entry'}">
+				<ui:include src="dxBreastContent.xhtml">
+				    <ui:param name="rel" value="#{rel}"/>
+     			</ui:include>	     		
+			</c:if>
+		</c:forEach>		
+	</ui:composition>
+
+	
+</body>
+</html>

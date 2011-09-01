@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.faces" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<extension-point id="compositeExtensionPoint">
+		<parameter-def id="name" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="faces" extension-multiplicity="none" />
+	<extension-point id="globalValidator">
+		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="validator-id" />
+		<parameter-def id="validator-class" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="globalConverter">
+		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="converter-id" />
+		<parameter-def id="converter-class" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="lifecycle">
+		<parameter-def id="phase-listener" multiplicity="any" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="view-handler">
+		<parameter-def id="view-handler" multiplicity="any" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="el-resolver">
+		<parameter-def id="el-resolver" multiplicity="any" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="localeConfig">
+		<parameter-def id="default-locale" />
+		<parameter-def id="supported-locale" multiplicity="any" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="navigation-rule">
+		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="from-view-id" />
+		<parameter-def id="navigation-case" multiplicity="any">
+			<parameter-def id="from-action" multiplicity="none-or-one" />
+			<parameter-def id="from-outcome" multiplicity="none-or-one" />
+			<parameter-def id="to-view-id" />
+			<parameter-def id="redirect" multiplicity="none-or-one" />
+		</parameter-def>
+		<parameter-def id="override" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="navigation-rule-contribution">
+		<parameter-def id="from-view-id" />
+		<parameter-def id="navigation-case">
+			<parameter-def id="from-action" multiplicity="none-or-one" />
+			<parameter-def id="from-outcome" multiplicity="none-or-one" />
+			<parameter-def id="to-view-id" />
+			<parameter-def id="redirect" multiplicity="none-or-one" />
+			<parameter-def id="override" multiplicity="none-or-one" />
+		</parameter-def>
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="managed-bean">
+		<parameter-def id="description" multiplicity="none-or-one" />
+		<parameter-def id="managed-bean-name" />
+		<parameter-def id="managed-bean-class" />
+		<parameter-def id="managed-bean-scope" />
+		<parameter-def id="managed-property" multiplicity="any">
+			<parameter-def id="property-name" />
+			<parameter-def id="property-class" multiplicity="none-or-one" />
+			<parameter-def id="value" />
+		</parameter-def>
+		<parameter-def id="target-plugin-id" />
+		<parameter-def id="override" multiplicity="none-or-one" />
+	</extension-point>
+</plugin>

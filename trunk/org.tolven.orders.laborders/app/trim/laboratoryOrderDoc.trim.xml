@@ -1,0 +1,919 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<extends>patientAct</extends>
+	<name>labOrderDoc</name>
+	<description>New Laboratory Order</description>
+	<page>labOrderDoc.xhtml</page>
+	<drilldown>labOrderDocDD.xhtml</drilldown>
+	<menu>global:newOrderMenu</menu>
+	<application name="echr" signatureRequired="false">
+		<instance>echr:patient:labOrder</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Activate</label>
+		</transition>
+		<transition name="completedActive" from="active" to="completed">
+			<label language="en">Complete</label>
+		</transition>		
+		<transition name="suspendActive" from="active" to="suspended">
+			<label language="en">Suspend</label>
+		</transition>
+		<transition name="reactivate" from="suspended" to="active">
+			<label language="en">Reactivate</label>
+		</transition>
+		<transition name="cancelActive" from="active" to="cancelled">
+			<label language="en">Cancel</label>
+		</transition>
+		<transition name="nullifyActive" from="active" to="nullified">
+			<label language="en">Entered in Error</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+	 </transitions>	
+	<act classCode="OBS" moodCode="RQO">
+		<code>
+			<CD>
+				<code>OINT</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3.0</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Laboratory Orders</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of Order</label>
+	      	<new datatype="TS" function="now"/>
+	    </effectiveTime>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<relationship name="encounter" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="RQO">
+				<title>
+					<ST>Encounter</ST>
+				</title>
+				<observation>
+		 			<value>
+		 				<label>Associate with Encounter</label>
+		 				<valueSet>encounter</valueSet>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.EditLabOrderAct</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="arName">
+		        <value xsi:type="xs:string">labOrder</value>
+			</property>
+			<property name="arDirection">
+				<value xsi:type="xs:string">OUT</value>
+			</property>
+			<property name="arTypeCode">
+		        <value xsi:type="xs:string">COMP</value>
+			</property>
+			<property name="template">
+		       <value xsi:type="xs:string">obs/evn/labOrder</value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">add</value>
+			</property>
+			<property name="position">
+		        <value xsi:type="xs:string">0</value>
+			</property>
+			<property name="listPath">
+		        <value xsi:type="xs:string">labOrderList</value>
+			</property>
+			<property name="arType">
+		        <value xsi:type="xs:string">Laboratory Order</value>
+			</property>
+		</compute>
+	</act>
+	<valueSet name="encounter">
+	</valueSet>
+	<valueSet name="priority">
+		<CE>
+			<displayName>Routine</displayName>
+			<code>C2316030</code>
+			<codeSystem>SNOMEDCT</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>ASAP</displayName>
+			<code>C2316421</code>
+			<codeSystem>SNOMEDCT</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>STAT</displayName>
+			<code>C2316422</code>
+			<codeSystem>SNOMEDCT</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="specimenType">
+		<CE>
+			<displayName>Abcess</displayName>
+			<code>C1550609</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Amniotic fluid</displayName>
+			<code>C1610731</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Aspirate</displayName>
+			<code>C0370199</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Basophils</displayName>
+			<code>C1550610</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Bile fluid</displayName>
+			<code>C1608239</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Blood - cord</displayName>
+			<code>C1550613</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Blood arterial</displayName>
+			<code>C1550611</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Blood bag</displayName>
+			<code>C1292465</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Blood capillary</displayName>
+			<code>C1550612</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Blood product unit</displayName>
+			<code>C1550614</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Blood venous</displayName>
+			<code>C1550615</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Body fluid</displayName>
+			<code>C1550640</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Bone</displayName>
+			<code>C1550616</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Breast milk</displayName>
+			<code>C1556060</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Bronchial</displayName>
+			<code>C1550618</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Burn</displayName>
+			<code>C1550619</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Calculus (=Stone)</displayName>
+			<code>C1550620</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Calculus (=Stone)</displayName>
+			<code>C1550620</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cannula</displayName>
+			<code>C1550622</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cardiac muscle</displayName>
+			<code>C1550621</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Catheter tip</displayName>
+			<code>C1292474</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cerebral spinal fluid</displayName>
+			<code>C1610718</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cervical mucus</displayName>
+			<code>C1619816</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cervix</displayName>
+			<code>C1550623</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Colostrum</displayName>
+			<code>C0444320</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Conjunctiva</displayName>
+			<code>C1550624</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cornea</displayName>
+			<code>C1550625</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Curettage</displayName>
+			<code>C0700071</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cyst</displayName>
+			<code>C1550626</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Dialysis fluid</displayName>
+			<code>C0444131</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Dose med or substance</displayName>
+			<code>C1550627</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Drain</displayName>
+			<code>C1550628</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Duodenal fluid</displayName>
+			<code>C1561521</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Ear wax (cerumen)</displayName>
+			<code>C1550630</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Ear</displayName>
+			<code>C1550629</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Electrode</displayName>
+			<code>C1550631</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Endocardium</displayName>
+			<code>C1550632</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Endometrium</displayName>
+			<code>C1550633</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Eosinophils</displayName>
+			<code>C1550634</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Erythrocytes</displayName>
+			<code>C1550635</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Exhaled gas (=breath)</displayName>
+			<code>C1550617</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Exhaled gas (=breath)</displayName>
+			<code>C1550617</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Eye</displayName>
+			<code>C1550636</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fibroblasts</displayName>
+			<code>C1550637</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Filter</displayName>
+			<code>C1550638</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fistula</displayName>
+			<code>C1550639</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Food sample</displayName>
+			<code>C0444315</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Gas</displayName>
+			<code>C1550641</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Gastric fluid/contents</displayName>
+			<code>C0487948</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Genital cervix</displayName>
+			<code>C1550643</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Genital fluid</displayName>
+			<code>C1561575</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Genital lochia</displayName>
+			<code>C1561523</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Genital vaginal</displayName>
+			<code>C1550644</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Genital</displayName>
+			<code>C1550642</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Hair</displayName>
+			<code>C0444095</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Inhaled Gas</displayName>
+			<code>C1292487</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Intubation tube</displayName>
+			<code>C1550645</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>isolate</displayName>
+			<code>C1764827</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Isolate</displayName>
+			<code>C1764827</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Lamella</displayName>
+			<code>C1550646</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Leukocytes</displayName>
+			<code>C1550647</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Line arterial</displayName>
+			<code>C1550649</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Line venous</displayName>
+			<code>C1550650</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Line</displayName>
+			<code>C1550648</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Liquid NOS</displayName>
+			<code>C1561501</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Lymphocytes</displayName>
+			<code>C1550651</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Macrophages</displayName>
+			<code>C1550652</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Marrow (bone)</displayName>
+			<code>C1550653</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Meconium</displayName>
+			<code>C1561531</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Menstrual blood</displayName>
+			<code>C1571918</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Milk</displayName>
+			<code>C0444318</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Nail</displayName>
+			<code>C0444077</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Nose (nasal passage)</displayName>
+			<code>C1550654</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Pancreatic fluid</displayName>
+			<code>C0444147</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Patient</displayName>
+			<code>C1550655</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Peritoneal fluid /ascites</displayName>
+			<code>C0487951</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Placenta</displayName>
+			<code>C1550656</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Plasma bag</displayName>
+			<code>C1292468</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Plasma</displayName>
+			<code>C1609077</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Platelet poor plasma</displayName>
+			<code>C0370219</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Platelet rich plasma</displayName>
+			<code>C0370220</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Pleural fluid (thoracentesis fld)</displayName>
+			<code>C1550657</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Polymorphonuclear neutrophils</displayName>
+			<code>C1550658</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Pus</displayName>
+			<code>C0444185</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Saliva</displayName>
+			<code>C1608524</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Seminal fluid</displayName>
+			<code>C1578518</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Seminal plasma</displayName>
+			<code>C1609064</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Serum</displayName>
+			<code>C1550100</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Skeletal muscle</displayName>
+			<code>C1550659</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Skin</displayName>
+			<code>C0444099</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Spermatozoa</displayName>
+			<code>C1550660</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Sputum - coughed</displayName>
+			<code>C0370205</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Sputum - tracheal aspirate</displayName>
+			<code>C0483219</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Sputum</displayName>
+			<code>C1576419</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Stool = Fecal</displayName>
+			<code>C1550661</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Sweat</displayName>
+			<code>C1561530</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Synovial fluid (Joint fluid)</displayName>
+			<code>C1550662</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tears</displayName>
+			<code>C1611838</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Throat</displayName>
+			<code>C1550663</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Thrombocyte (platelet)</displayName>
+			<code>C1550664</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tissue gall bladder</displayName>
+			<code>C1550666</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tissue large intestine</displayName>
+			<code>C1550667</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tissue lung</displayName>
+			<code>C1550668</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tissue placenta</displayName>
+			<code>C1550669</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tissue small intestine Tissue ulcer</displayName>
+			<code>C1550670</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tissue ulcer</displayName>
+			<code>C1550671</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tissue</displayName>
+			<code>C1550665</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tube</displayName>
+			<code>C1292472</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Ulcer</displayName>
+			<code>C1550672</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Umbilical blood</displayName>
+			<code>C1550673</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown medicine</displayName>
+			<code>C1550674</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown substance</displayName>
+			<code>C0370229</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Urethra</displayName>
+			<code>C1550675</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Urine catheter</displayName>
+			<code>C1550676</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Urine clean catch</displayName>
+			<code>C0694700</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Urine sediment</displayName>
+			<code>C1611286</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Urine</displayName>
+			<code>C1610733</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Vomitus</displayName>
+			<code>C1608512</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Water</displayName>
+			<code>C1550678</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Whole blood</displayName>
+			<code>C1608936</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Whole body</displayName>
+			<code>C1550677</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Wick</displayName>
+			<code>C1550679</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Wound abscess</displayName>
+			<code>C1550681</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Wound drainage</displayName>
+			<code>C0694702</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Wound exudate</displayName>
+			<code>C1550682</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Wound</displayName>
+			<code>C1550680</code>
+			<codeSystem>HL7V3.0</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="containerType">
+		<CE>
+			<displayName>Specimen well</displayName>
+			<code>C2316030</code>
+			<codeSystem>SNOMEDCT</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Specimen vial</displayName>
+			<code>C2316421</code>
+			<codeSystem>SNOMEDCT</codeSystem>
+			<codeSystemVersion>codeSystemVersion</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<field name="seqNo">	
+		<value xsi:type="xs:string">0</value>
+	</field>
+</trim>

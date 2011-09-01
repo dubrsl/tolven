@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Progress Notes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<script type="text/javascript">
+		    // <![CDATA[ 
+		    if ($("#{menu.elementLabel}submitButton")!=null){
+				$("#{menu.elementLabel}submitButton").observe('click', function() {
+					submitProblemTrim("#{menu.element}");
+					if ($("drilldown:generateReport").checked==true) 
+						wizGenerateProgressNoteReport('#{menu.element}');
+						wizSaveObservationTrims('#{menu.element}');
+				});
+			}
+			// ]]> 
+		</script>
+		<!--  Subjective Data  - START  -->
+      	<wiz:step title="Subjective (S)">
+			<wiz:body>
+		      	<!-- Problem popup -->
+		      	<div id="popupGrids">
+		  			<div id="echr:problems"  class="popupgrid" />
+		      	</div>
+		      	<!-- Symptom popup -->
+		      	<div id="popupGrids">
+					<div id="echr:symptoms" class="popupgrid"/>          
+   				</div>
+   				
+   				<c:set var="subjective" value="#{trim.trim.act.relationship['subjective']}"/>
+		      	<table width="100%" cellpadding="5">
+		      		<tr>
+		      			<td style="width: 20%;"><b>#{trim.trim.act.effectiveTime.label.value}</b></td>
+		      			<td>
+							<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short"/>
+						</td>
+					</tr>
+					<tr>
+						<td><b>#{subjective.act.relationship['encounterAssociations'].act.observation.value.label.value}*</b></td>
+						<td>
+	                       	<h:selectOneMenu id="associateEncounters" value="#{subjective.act.relationship['encounterAssociations'].act.observation.value.ST.value}">
+			                   	<f:selectItem itemValue="None" itemLabel="None"/>
+			                	<f:selectItems value="#{trim.list['echr:patient:encounters:active~Date Location Attending']}"/>
+			                </h:selectOneMenu>
+						</td>
+					</tr>
+					<tr>
+		      			<td><b>#{subjective.act.relationship['problems'].act.title.ST.value}</b></td>
+		      			<td>
+		      				<h:inputHidden id="problemActionType" value="0"/>
+							<h:inputHidden id="problemWidgetIndex" value=""/>
+							<div id="pnProblemDiv" class="widget" style="width: 100%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnProblemDiv", "tempPNProblems.jsf");
+								</script> 
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td><b>#{subjective.act.relationship['symptoms'].act.title.ST.value}</b></td>
+		      			<td>
+		      				<h:inputHidden id="symptomActionType" value="0"/>
+							<h:inputHidden id="symptomWidgetIndex" value=""/>
+							<div id="pnSymptomDiv" class="widget" style="width: 60%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnSymptomDiv", "tempPNSymptoms.jsf");
+								</script> 
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><b>#{subjective.act.relationship['notes'].act.title.ST.value}</b></td>
+						<td>
+							<h:inputTextarea id="subNotes" value="#{subjective.act.relationship['notes'].act.observation.values[0].ST.value}" style="width: 60%;height: 150px;"/>
+						</td>
+					</tr>
+				</table>
+			</wiz:body>
+		</wiz:step>
+		<!--  Subjective Data  - END  -->
+		
+		<!-- Objective Data - START -->
+		
+		<wiz:step title="Objective (O)">
+			<wiz:body>
+				<c:set var="objective" value="#{trim.trim.act.relationship['objective']}"/>
+				<table width="100%" cellpadding="5" cellspacing="5">
+				 	<tr >
+		          			<td style="font-weight: bold;">#{objective.act.relationship['temperature'].act.title.ST.value} in °C</td>
+		          			<td  style="text-align: left;">
+		          				<h:inputText id="temperatureInC" value="#{objective.act.relationship['temperature'].act.observation.value.PQ.value}" style="width: 200px" onkeyup="validateNumbers('#{menu.elementLabel}', 'temperatureInC', 'temperatureInCErrorMsg');">
+		          				</h:inputText>
+		          				<br/><span id="temperatureInCErrorMsg" style="color: red;"></span>
+		          			</td>
+		          			<td style="float: left;"><b>Temperature in Fahrenheit</b>
+		          			</td>
+		          			<td style="float: left;" >
+		          				<h:inputText id="temperatureInF" value="" size="18" onkeyup="validateNumbers('#{menu.elementLabel}', 'temperatureInF', 'temperatureInFErrorMsg');"/>
+		          				<br/><span id="temperatureInFErrorMsg" style="color: red;"></span>
+		          			</td>
+		          			 <td style="float: left">
+		          				<h:commandButton id="temperatureConvert" value="Convert to Centigrade" onclick="tempCnvFn('#{menu.elementLabel}');validateNumbers('#{menu.elementLabel}', 'temperatureInC', 'temperatureInCErrorMsg');"></h:commandButton>
+		          			</td>
+		          		</tr>
+				 	<tr>
+					 	<td><b>#{objective.act.relationship['pulse'].act.title.ST.value} /min</b></td>
+						<td>
+							<c:if test="#{objective.act.relationship['pulse'].enabled==true}">
+								<h:outputText>#{objective.act.relationship['pulse'].act.observation.values[1].ST.value}</h:outputText>
+							</c:if>
+							<c:if test="#{objective.act.relationship['pulse'].enabled==false}">
+								<h:inputText id="pulse" value="#{objective.act.relationship['pulse'].act.observation.values[1].ST.value}" style="width: 200px" maxlength="3" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','pulse','pulseErrorMsg')">
+									<f:validator validatorId="numberAndDecimalValidator" />
+                                    <f:attribute name="attributeFactor" value="number"/>
+								</h:inputText>
+								<br/><span id="pulseErrorMsg" style="color: red;"></span>
+							</c:if>	
+						</td>	
+					</tr>
+					<tr>
+					 	<td><b>#{objective.act.relationship['systolic'].act.title.ST.value} in mmHG</b></td>
+						<td>
+							<c:if test="#{objective.act.relationship['systolic'].enabled==true}">
+								<h:outputText>#{objective.act.relationship['systolic'].act.observation.values[1].ST.value}</h:outputText>
+							</c:if>
+							<c:if test="#{objective.act.relationship['systolic'].enabled==false}">
+								<h:inputText id="systolic" value="#{objective.act.relationship['systolic'].act.observation.values[1].ST.value}" style="width: 200px" maxlength="3" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','systolic','systolicErrorMsg')">
+									<f:validator validatorId="numberAndDecimalValidator" />
+                                    <f:attribute name="attributeFactor" value="number"/>
+								</h:inputText>
+								<br/><span id="systolicErrorMsg" style="color: red;"></span>
+							</c:if>	
+						</td>	
+					</tr>
+					<tr>
+					 	<td><b>#{objective.act.relationship['diastolic'].act.title.ST.value} in mmHG</b></td>
+						<td>
+							<c:if test="#{objective.act.relationship['diastolic'].enabled==true}">
+								<h:outputText>#{objective.act.relationship['diastolic'].act.observation.values[1].ST.value}</h:outputText>
+							</c:if>
+							<c:if test="#{objective.act.relationship['diastolic'].enabled==false}">
+								<h:inputText id="diastolic" value="#{objective.act.relationship['diastolic'].act.observation.values[1].ST.value}" maxlength="3" style="width: 200px" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','diastolic','diastolicErrorMsg')">
+									<f:validator validatorId="numberAndDecimalValidator" />
+                                    <f:attribute name="attributeFactor" value="number"/>
+								</h:inputText>
+								<br/><span id="diastolicErrorMsg" style="color: red;"></span>
+							</c:if>	
+						</td>	
+					</tr>	
+					<tr>
+					 	<td><b>#{objective.act.relationship['respirationrate'].act.title.ST.value} in RPM</b></td>
+						<td>
+							<c:if test="#{objective.act.relationship['respirationrate'].enabled==true}">
+								<h:outputText>#{objective.act.relationship['respirationrate'].act.observation.value.PQ.value}</h:outputText>
+							</c:if>
+							<c:if test="#{objective.act.relationship['respirationrate'].enabled==false}">
+								<h:inputText id="respirationRate" value="#{objective.act.relationship['respirationrate'].act.observation.value.PQ.value}" style="width: 200px" onkeyup="validateNumbers('#{menu.elementLabel}', 'respirationRate', 'rpmErrorMsg');" maxlength="6">
+								</h:inputText>
+								<br/><span id="rpmErrorMsg" style="color: red;"></span>
+							</c:if>	
+						</td>	
+					</tr>	
+				</table>
+				<table width="100%" cellpadding="5" cellspacing="5">	
+					<tr >
+						<td><b>#{objective.act.relationship['painlevel'].act.title.ST.value}</b></td>
+						<td >	
+							<div id="track2" style="background-image:url(../images/bg-fader.gif); background-repeat:no-repeat; width:209px; height:28px;float: left;">
+								<div id="handle2" style="background-image:url(../images/thumb-orange.gif); background-repeat:no-repeat; width:17px; height:21px; cursor:ew-resize;"> </div>
+						    	<script type="text/javascript" language="javascript">
+								    // <![CDATA[
+										var s2 = new Control.Slider('handle2','track2', {axis:'horizontal', range: $R(1,10), values: [1,2,3,4,5,6,7,8,9,10]});
+										s2.options.onChange = function(value){
+										        $('height_value_2').innerHTML = value;
+										        $('#{menu.elementLabel}:painValue').value = value;
+										        if(value >'5')
+													$('smileyFace').src = "../images/sad.png";
+												else
+													$('smileyFace').src = "../images/happy.png";
+										    };
+										$('height_value_2').innerHTML = s2.value;
+										$('#{menu.elementLabel}:painValue').value = s2.value;
+										
+								    // ]]>
+								</script>
+							</div>
+							<img src="../images/happy.png" alt="Pain Level:10" height="36px" width="42px" title="Pain Level" id="smileyFace"/>		
+							<div id='height_value_2'></div>
+							<h:inputHidden id="painValue" value="#{objective.act.relationship['painlevel'].act.observation.value.ST.value}"/>
+					    </td>
+					</tr>		
+					<tr>	
+						<td><b>#{objective.act.relationship['notes'].act.title.ST.value}</b></td>
+						<td>
+							<h:inputTextarea id="objNotes" value="#{objective.act.relationship['notes'].act.observation.value.ST.value}" style="width: 60%;height: 150px;"/>
+						</td>
+					</tr>
+				</table>
+			</wiz:body>
+		</wiz:step>
+		<!-- Objective Data - END -->
+		
+		<!-- Assessment Data - START -->
+		<wiz:step title="Assessment (A)">
+			<wiz:body>
+				<!-- Diagnoses popup -->
+		      	<div id="popupGrids">
+		  			<div id="#{menu.menuDataItem.parent01.path}:diagnoses:menu"  class="popupgrid" />
+		      	</div>
+   				<c:set var="assessment" value="#{trim.trim.act.relationship['assessment']}"/>
+		      	<table width="100%" cellpadding="5">
+					<tr>
+		      			<td style="width: 20%;"><b>#{assessment.act.relationship['diagnoses'].act.title.ST.value}</b></td>
+		      			<td>
+		      				<h:inputHidden id="diagnosisActionType" value="0"/>
+							<h:inputHidden id="diagnosisWidgetIndex" value=""/>
+							<div id="pnDiagnosisDiv" class="widget" style="width: 60%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnDiagnosisDiv", "tempPNDiagnoses.jsf");
+								</script> 
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td><b>#{trim.trim.act.relationship['subjective'].act.relationship['problems'].act.title.ST.value}</b></td>
+		      			<td>
+							<div id="pnAssProblemDiv" class="widget" style="width: 60%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnAssProblemDiv", "tempPNAssessmentProblems.jsf");
+								</script> 
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><b>#{assessment.act.relationship['notes'].act.title.ST.value}</b></td>
+						<td>
+							<h:inputTextarea id="asseNotes" value="#{assessment.act.relationship['notes'].act.observation.values[0].ST.value}" style="width: 60%;height: 150px;"/>
+						</td>
+					</tr>
+				</table>
+			</wiz:body>
+		</wiz:step>
+		<!-- Assessment Data - END -->
+		
+    	<!--  Planning Data  - START  -->
+      	<wiz:step title="Plan (P)">
+			<wiz:body>
+		      	<!-- Test Order popup -->
+		      	<div id="popupGrids">
+		  			<div id="echr:labOrderList"  class="popupgrid" />
+		      	</div>
+		      	<div id="popupGrids">
+		  			<div id="echr:imageOrderList"  class="popupgrid" />
+		      	</div>
+		      	<!-- Treatment popup -->
+		      	<div id="popupGrids">
+		  			<div id="echr:pxList"  class="popupgrid" />
+		      	</div>
+		      	<!-- Referral popup -->
+		      	<div id="popupGrids">
+		  			<div id="echr:referralRequestList"  class="popupgrid" />
+		      	</div> 
+		      	<c:set var="plan" value="#{trim.trim.act.relationship['plan']}"/>
+		      	<table width="100%" cellpadding="5">
+		      		<tr>
+		      			<td colspan="2"><b>#{plan.act.relationship['medications'].act.title.ST.value}</b></td>
+		      		</tr>
+		      		<tr>
+						<td colspan="2">					       	
+							<input type="text"  id="formIdValue" value="#{menu.elementLabel}"  style="display:none"/>
+							<input type="text"  id="elementValue" value="#{menu.element}"  style="display:none" />
+							<input type="text"  id="rowId" value="#{fdbstorage.rowId}"  style="display:none"/>
+							<img id="ajaxLoader"  alt="ajax" src="../images/ajax-loader.gif" style="display:none; z-index: 50;position: absolute;margin-top: 40px;margin-left: 450px;"/>
+							<h:inputText id="hiddenVariable" value="#{fdbstorage.hidden}" style="display:none"></h:inputText>
+							<input type="text"  id="fdbType" value=""  style="display:none"/>
+							<ui:include src="/wizard/wizMedicationTemplate.xhtml"/> 
+						</td>
+					</tr>
+					<tr>
+		      			<td style="width: 20%;"><b>#{plan.act.relationship['testOrders'].act.title.ST.value}</b></td>
+		      			<td>
+		      				<h:inputHidden id="testOrderActionType" value="0"/>
+							<h:inputHidden id="testOrderWidgetIndex" value=""/>
+							<div id="pnTestOrderDiv" class="widget" style="width: 60%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnTestOrderDiv", "tempPNTestOrders.jsf");
+								</script> 
+							</div>
+							<h:inputHidden id="imageOrderActionType" value="0"/>
+							<h:inputHidden id="imageOrderWidgetIndex" value=""/>
+							<div id="pnImageOrderDiv" class="widget" style="width: 60%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnImageOrderDiv", "tempPNImageOrders.jsf");
+								</script> 
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td style="width: 20%;"><b>#{plan.act.relationship['followUp'].act.title.ST.value}</b></td>
+		      			<td>
+					      	<h:inputHidden id="followUpActionType" value="0"/>
+							<h:inputHidden id="followUpWidgetIndex" value=""/>
+							<div id="pnFollowUpDiv" class="widget" style="width: 60%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnFollowUpDiv", "tempPNFollowUp.jsf");
+								</script> 
+							</div>
+							<div id="msgPNFollowUp" style="color: red;font-weight: bold;text-align: center;width: 60%;" ></div>
+						</td>
+					</tr>
+					<tr>
+		      			<td style="width: 20%;"><b>#{plan.act.relationship['treatments'].act.title.ST.value}</b></td>
+		      			<td>
+					      	<h:inputHidden id="treatmentActionType" value="0"/>
+							<h:inputHidden id="treatmentWidgetIndex" value=""/>
+							<div id="pnTreatmentDiv" class="widget" style="width: 60%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnTreatmentDiv", "tempPNTreatments.jsf");
+								</script> 
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td style="width: 20%;"><b>#{plan.act.relationship['referrals'].act.title.ST.value}</b></td>
+		      			<td>
+					      	<h:inputHidden id="referralActionType" value="0"/>
+							<h:inputHidden id="referralWidgetIndex" value=""/>
+							<div id="pnReferralDiv" class="widget" style="width: 60%;margin-left: 0px;">
+								<script>
+									showPNTemplate("#{menu.element}", "pnReferralDiv", "tempPNReferrals.jsf");
+								</script> 
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td style="width: 20%;"><b>#{plan.act.relationship['notes'].act.title.ST.value}</b></td>
+		      			<td>
+					      	<h:inputTextarea id="planNotes" value="#{plan.act.relationship['notes'].act.observation.values[0].ST.value}" style="width: 60%;height: 150px;"/>
+						</td>
+					</tr>
+				</table>
+			</wiz:body>
+		</wiz:step> 
+		<!--  Planning Data  - END  -->
+		<!-- 
+		<ui:include src="selectEncounter.xhtml"/>
+		 -->
+	</ui:composition>
+</body>
+</html>

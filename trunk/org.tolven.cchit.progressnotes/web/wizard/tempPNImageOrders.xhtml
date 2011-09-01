@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Orders</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<c:set var="imageOrders" value="#{trim.trim.act.relationship['plan'].act.relationship['imageOrders']}"/>
+		<table width="100%">
+			<thead>
+				<tr>
+					<th width="20%">Date</th>
+					<th width="61%">Imaging Orders</th>
+					<th width="19%"></th>
+				</tr>
+			 	<c:forEach var="imageOrder" items="#{imageOrders.act.relationshipsList['imageOrder']}" varStatus="widgetIndex">
+			 		<c:set var="class" value="odd"/>
+					<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+			 		<tr class="#{class}" id="#{menu.elementLabel}:saveImageOrders#{widgetIndex.index}" onmouseover="setBackground(this);" onmouseout="resetBackground(this);">
+			 			<td width="20%"><trim:TSAjax style="width:70px;" value="#{imageOrder.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+			 			<td width="61%"><h:outputText escape="false" value="#{imageOrder.act.code.CE.displayName}"/></td>
+						<td width="19%">
+							<span style="float: left; padding: 0 5px 0 3px;"> <img
+									onclick="editPNTemplateImageOrders('imageOrder', #{widgetIndex.index}, 'echr:imageOrderList', 'wizSavePNImageOrders', '#{menu.elementLabel}', 0);return false;"
+									alt="Edit" src="../images/edit.jpg" style="cursor: pointer;"
+									title="Edit"></img> </span>
+
+							<span style="float: right;"> <img
+									onclick="wizRemoveTemplate('managePNImageOrders.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnImageOrderDiv', 'tempPNImageOrders.jsf');return false;"
+									alt="Remove" src="../images/delete.gif"
+									style="cursor: pointer;" title="Remove"></img> </span>
+						</td>
+					</tr>
+					<tr style="display: none;" class="editWidget" id="#{menu.elementLabel}:editImageOrders#{widgetIndex.index}">
+						<h:inputHidden value="0" id="tempImageOrdersActionType#{widgetIndex.index}" />
+						<td width="20%"><trim:TSAjax id="effectiveImageOrderDate#{widgetIndex.index}" style="width:70px;" value="#{imageOrder.act.effectiveTime.TS}" dateStyle="short"/></td>
+						<td width="61%"><h:outputText escape="false" value="#{imageOrder.act.code.CE.displayName}"/></td>
+						<td width="19%">
+							<span style="float: left; padding: 0 5px 0 3px;"> <img
+									onclick="wizUpdatePNImageOrders('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 0);return false;"
+									alt="Save" src="../images/save.gif" style="cursor: pointer;"
+									title="Save">
+								</img> </span>
+							<span style="float: right;"> <img
+									onclick="wizCancelTemplateImageOrders('managePNImageOrders.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnImageOrderDiv', 'tempPNImageOrders.jsf');return false;"
+									alt="Cancel" src="../images/undo.gif" style="cursor: pointer;"
+									title="Cancel">
+								</img> </span>
+						</td>
+					</tr>
+					<c:if test="#{imageOrder.act.title.ST.value!=''}">
+						<script>
+      							$('#{menu.elementLabel}:saveImageOrders#{widgetIndex.index}').hide();
+      							$('#{menu.elementLabel}:editImageOrders#{widgetIndex.index}').show();
+       					</script>
+					</c:if>
+			 	</c:forEach>
+			 	<tr  class="widgetAction">
+			 		<td colspan="3">
+			 			<a id="addPNImageOrderLink" onclick="addPNTemplate('imageOrder', 'echr:imageOrderList', 'wizSavePNImageOrders', '#{menu.elementLabel}', 0);return false;" href="#">
+							Add imaging order
+						</a>
+			 		</td>
+			 	</tr>
+		 	</thead>
+		</table>
+	</ui:composition>
+</body>
+</html>

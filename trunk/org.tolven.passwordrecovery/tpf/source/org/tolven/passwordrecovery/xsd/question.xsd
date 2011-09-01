@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns="urn:tolven-org:question:1.0"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0"
+	targetNamespace="urn:tolven-org:question:1.0"
+	elementFormDefault="qualified">
+
+	<xs:element name="questions">
+	<xs:complexType>
+		<xs:sequence>
+			<xs:element name="securityQuestion" type="SecurityQuestionDetail"
+				maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="SecurityQuestionDetail">
+		<xs:sequence>
+			<xs:element name="question" type="xs:string" />
+		</xs:sequence>
+		<xs:attribute name="purpose" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="login_password_recovery" />
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,9 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<extends path="echr">
+		<list name="symptoms" title="Symptoms List" page="/five/list.xhtml" visible="never" query="global:symptomsMenu">
+			<column name="code" title="symptomCode" instantiate="true" visible="true" internal="string03" width="10.0" />
+			<column name="order" title="symptomOrder" instantiate="true" visible="true" internal="string01" width="40.0" />
+			<column name="heading" title="procName" visible="false" internal="string02" width="40.0" />
+		</list>
+	</extends>
+</application>

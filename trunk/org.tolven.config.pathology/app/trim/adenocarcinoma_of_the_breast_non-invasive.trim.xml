@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<trim xmlns="urn:tolven-org:trim:4.0">
+	<extends>obs/evn/breastdiagnosis</extends>
+	<name>diagnosis/SCTID-86616005</name>
+	<description>adenocarcinoma of the breast - non-invasive</description>
+	<act classCode="OBS" modeCode="EVN">
+		<observation>
+			<value>
+				<CE>
+					<displayName>adenocarcinoma of the breast - non-invasive</displayName>
+					<code>126926005| Neoplasm of breast (disorder)|:(116676008 |Associated morphology (attribute) = 86616005|Intraductal carcinoma, noninfiltrating, no ICD-O subtype (morphologic abnormality)|) </code>
+					<codeSystem>2.16.840.1.113883.6.96</codeSystem>
+					<codeSystemName>SNOMED-CT</codeSystemName>
+				</CE>
+			</value>
+		</observation>
+	</act>
+</trim>

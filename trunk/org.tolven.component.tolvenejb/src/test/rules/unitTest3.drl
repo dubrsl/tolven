@@ -1,0 +1,99 @@
+package test.rules
+ 
+import java.util.*;
+import org.tolven.trim.*;
+import java.lang.Integer;
+import test.rules.RuleBaseTests.Counter;
+
+global RuleBaseTests.Counter counter;
+global java.io.PrintStream out;
+
+/**
+ * See what we can do with a TRIM object
+ */
+rule "trim"
+	when
+		$trim: Trim()
+	then
+		insert( $trim.getAct() );
+		counter.bump();
+end
+
+rule "act is event rule"
+	when
+		$act: Act( moodCode == ActMood.EVN )
+	then
+		out.println( "Act: " + $act.getClassCode() + "-" + $act.getMoodCode() + " is in event mood" ); 
+		counter.bump();
+end
+
+rule "act rule"
+	when
+		$act: Act( $effectiveTime : effectiveTime )
+	then
+		insert( $effectiveTime );
+		for (II ii : $act.getId().getIIS()) {
+			insert( ii );
+		}
+		out.println(  "Act: " + $act.getClassCode() + "-" + $act.getMoodCode() ); 
+		counter.bump();
+end
+
+/**
+ * Use qualifiedIdentifier
+ */
+rule "qualifiedIdentifier test"
+	when
+		$trim: Trim( $classCode : act.classCode, $code : act.code.CD.code )
+	then
+		out.println(  "Act classCode: " + $classCode + " code: " + $code ); 
+end
+
+/**
+ * Use qualifiedIdentifier
+ */
+rule "qualifiedIdentifier test2"
+	when
+		$trim: Trim( $code : act.classCode == ActClass.OBS )
+	then
+		out.println(  "Got an Observation act" ); 
+end
+
+rule "act is obs rule"
+	when
+		$act: Act( classCode == ActClass.OBS )
+	then
+		out.println(  "Act: " + $act.getClassCode() + "-" + $act.getMoodCode() + " is an Observation" ); 
+		counter.bump();
+end
+
+rule "act is event observation rule"
+	when
+		$act: Act( moodCode == ActMood.EVN, classCode == ActClass.OBS )
+	then
+		out.println(  "Act: " + $act.getClassCode() + "-" + $act.getMoodCode() + " is an observation event" ); 
+		counter.bump();
+end
+
+rule "Display ID slot"
+	when
+		$slot: IISlot()
+	then
+		insert( $slot.getII( ) );
+end
+
+rule "display II"
+	when
+		$ii: II();
+	then
+		out.println( "ID: " + $ii.getRoot() + "/" + $ii.getExtension() ); 
+		counter.bump();
+end
+
+rule "Display GTS slot"
+	when
+		$slot: GTSSlot()
+	then
+		out.println( "TS:" + $slot.getTS( ));
+		counter.bump();
+end

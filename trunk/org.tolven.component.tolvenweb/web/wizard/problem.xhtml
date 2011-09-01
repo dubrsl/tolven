@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Diagnosis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Add Problems" >
+			<wiz:body>
+				<wiz:group title="Problem">
+					<a href="#">Add Problem</a>
+				</wiz:group>
+				<wiz:group title="Onset of Symptoms">
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+				<c:if test="#{top.accountType=='echr'}">
+					<ui:include src="author.xhtml"/>
+				</c:if>
+				<wiz:group title="Additional Details" >
+					<wiz:yesno id="probDetails">Add?</wiz:yesno>
+					<wiz:group title="Episodicity" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
+						<trim:valueSetMenu id="episodicity" slot="#{trim.trim.act.relationship['episodicity'].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="Severity" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
+						<trim:CE id="severity" valueSet="severity" value="#{trim.trim.act.relationships[1].act.observation.value}" layout="pageDirection" />
+					</wiz:group>
+					<wiz:group title="Course" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
+						<trim:CE id="course" valueSet="course" value="#{trim.trim.act.relationships[2].act.observation.value}"/>
+					</wiz:group>
+					<wiz:group title="Outcome" visible="$('#{menu.elementLabel}:probDetails').isTrue();">
+						<trim:CE id="outcome" valueSet="outcome" value="#{trim.trim.act.relationships[3].act.observation.value}" layout="pageDirection" />
+					</wiz:group>
+				</wiz:group>
+				
+			</wiz:body>			
+		</wiz:step>
+		<wiz:help>
+			<h1>Problem</h1>
+			<p>TBD</p>
+		</wiz:help>
+	</ui:composition>
+</body>
+</html>

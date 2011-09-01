@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.component.tolvenweb">
+
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+
+	<property name="includeSourceInDevLib" value="true" />
+
+	<target depends="init" name="compile">
+		<mkdir dir="${buildFolder}/classes" />
+		<javac destdir="${buildFolder}/classes" debug="true">
+			<src path="src" />
+			<classpath refid="project.classpath" />
+			<classpath path="lib/jsf-api.jar" />
+			<classpath path="lib/javax.annotation.jar" />
+			<classpath path="lib/openssoclientsdk.jar" />
+		</javac>
+	</target>
+
+	<target name="jars" depends="compile" description="Build tolvenWEB.war">
+		<jar destfile="${buildFolder}/tolvenWEB.war">
+			<manifest>
+				<attribute name="Built-By" value="Tolven Healthcare Innovations" />
+			</manifest>
+			<zipfileset dir="${buildFolder}/classes" prefix="WEB-INF/classes" includes="**/*.class" excludes="test/**" />
+			<zipfileset dir="web" />
+		</jar>
+		<jar destfile="${buildFolder}/devLib.jar">
+			<manifest>
+				<attribute name="Built-By" value="Tolven Healthcare Innovations" />
+			</manifest>
+			<zipfileset dir="${buildFolder}/classes" includes="**/*.class" />
+			<zipfileset dir="src" excludes="META-INF/**"/>
+		</jar>
+	</target>
+
+	<target name="build-plugin" depends="jars" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar" />
+				<include name="tolvenWEB.war" />
+			</zipfileset>
+			<zipfileset dir=".">
+				<include name="scriptInclude/**" />
+			</zipfileset>
+			<zipfileset dir="web/META-INF/tags">
+				<include name="ccr/*" />
+				<include name="trim/*" />
+				<include name="wizard/*" />
+			</zipfileset>
+			<!--<zipfileset dir="lib" prefix="web/WEB-INF/lib">
+				<include name="jsf-facelets.jar" />
+			</zipfileset>-->
+		</zip>
+	</target>
+
+	<target name="packaging" depends="jars" description="Create jars and plugins">
+	</target>
+
+	<target name="javadoc" description="Generate Javadoc">
+		<javadoc access="public" author="true" destdir="${buildFolder}/doc" doctitle="Tolven WEB" packagenames="*" classpathref="project.classpath" source="1.5" sourcepath="src" splitindex="true" use="true" version="true" encoding="UTF-8" docencoding="UTF-8" />
+	</target>
+	<target name="unit-test" depends="packaging">
+		<junit fork="yes" showoutput="true" printsummary="withOutAndErr">
+			<formatter type="plain" usefile="false" />
+			<classpath refid="project.classpath" />
+			<batchtest>
+				<fileset dir="src">
+					<include name="test/**/*.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+</project>

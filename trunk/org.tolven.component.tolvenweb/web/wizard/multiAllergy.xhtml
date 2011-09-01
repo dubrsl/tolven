@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Allergies</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+
+			<div id="#{menu.menuDataItem.parent01.path}:allergies:menu" class="popupgrid"/>
+    
+    		<wiz:step title="#{msg.GettingStarted}" >
+    			<wiz:body>
+    				<p>Documenting #{menu.menuDataItem.string01}</p>
+    				<p>Click (+) above to begin</p>
+    				<h:inputText id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" style="display: none;" converter="javax.faces.Boolean"/>			
+					<h:inputText id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
+					<h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
+					<h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />										
+    			</wiz:body>
+    			<wiz:help>
+    				<h1>getting Started</h1>
+    				<p>Help provides additional information about each page</p>
+    				<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity 
+    				so that you can continue at any time later.
+    				If you want to completely cancel this diagnosis prior to submission, removing all traces of it from the system, click the Cancel button.
+    				Once submitted, you will not be able to Cancel the form.</p>
+    			</wiz:help>
+    			
+		</wiz:step>
+
+		<div class="add" style="display:none;"> 
+			<li><a class="inactive" href="#" onclick="javascript:openTemplate('#{menu.menuDataItem.parent01.path}:allergies:menu','#{menu.menuDataItem.parent01.path}:allergies:menu', 'addTemplate', '#{menu.elementLabel}', 0)">+</a></li>
+		</div>
+ 
+ 		<c:forEach var="rel" items="#{trim.trim.act.relationships}" varStatus="allergy">
+			<c:if test="#{rel.name=='entry'}">
+    				<ui:include src="multiAllergyContent.xhtml">
+					<ui:param name="rel" value="#{rel}"/>
+	     			</ui:include>
+	     			
+	     			<div class="add" style="display:none;"> 
+						<li><a class="inactive" href="#" onclick="javascript:openTemplate('#{menu.menuDataItem.parent01.path}:allergies:menu','#{menu.menuDataItem.parent01.path}:allergies:menu', 'addTemplate', '#{menu.elementLabel}', #{rel.sequenceNumber})">+</a></li>
+					</div>
+	     			
+	     			
+			</c:if>
+		</c:forEach>		
+	</ui:composition>
+
+	
+</body>
+</html>

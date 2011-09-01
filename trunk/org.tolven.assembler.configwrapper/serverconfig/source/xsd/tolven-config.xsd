@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="urn:tolven-org:tolven-config:1.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" jaxb:version="2.0" targetNamespace="urn:tolven-org:tolven-config:1.0" elementFormDefault="qualified">
+	<xs:element name="tolven-config">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="admin" type="AdminDetail" />
+				<xs:element name="ldap" type="LDAPServerDetail" />
+				<xs:element name="db" type="DBServerDetail" />
+				<xs:element name="appServer" type="AppServerDetail" />
+				<xs:element name="passwordServer" type="PasswordServerDetail" />
+				<xs:element name="webServer" type="WebServerDetail" />
+				<xs:element name="application" type="ApplicationDetail" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="EntityDetail">
+		<xs:attribute name="id" type="xs:string" use="required" />
+		<xs:attribute name="trustStoreId" type="xs:string" />
+		<xs:attribute name="credentialDir" type="xs:string" />
+	</xs:complexType>
+	<xs:complexType name="AdminDetail">
+		<xs:complexContent>
+			<xs:extension base="EntityDetail">
+				<xs:sequence>
+					<xs:element name="password" type="xs:string" />
+					<xs:element name="realm" type="xs:string" />
+					<xs:element name="secretKeySource" type="xs:string" />
+					<xs:element name="passwordStoreSource" type="xs:string" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LDAPServerDetail">
+		<xs:complexContent>
+			<xs:extension base="EntityDetail">
+				<xs:sequence>
+					<xs:element name="user" type="xs:string" />
+					<xs:element name="contextFactory" type="xs:string" />
+					<xs:element name="connectionString" type="xs:string" />
+					<xs:element name="connectionValidString" type="xs:string" />
+					<xs:element name="mdbuser" type="MDBUserDetail" />
+				</xs:sequence>
+				<xs:attribute name="rootPassId" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="DBServerDetail">
+		<xs:complexContent>
+			<xs:extension base="EntityDetail">
+				<xs:sequence>
+					<xs:element name="user" type="xs:string" />
+					<xs:element name="portNumber" type="xs:string" />
+					<xs:element name="databaseName" type="xs:string" />
+					<xs:element name="driverClass" type="xs:string" />
+					<xs:element name="connectionString" type="xs:string" />
+					<xs:element name="connectionValidString" type="xs:string" />
+				</xs:sequence>
+				<xs:attribute name="rootPassId" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="AppServerDetail">
+		<xs:complexContent>
+			<xs:extension base="EntityDetail">
+				<xs:sequence>
+					<xs:element name="authRestful" type="RestfulDetail" />
+					<xs:element name="appRestful" type="RestfulDetail" />
+				</xs:sequence>
+				<xs:attribute name="dbId" type="xs:string" />
+				<xs:attribute name="ldapId" type="xs:string" />
+				<xs:attribute name="rootPassId" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="RestfulDetail">
+		<xs:sequence>
+			<xs:element name="path" type="xs:string" />
+		</xs:sequence>
+		<xs:attribute name="protocol" type="xs:string" use="required" />
+		<xs:attribute name="hostname" type="xs:string" use="required" />
+		<xs:attribute name="port" type="xs:string" use="required" />
+		<xs:attribute name="interface" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="ApplicationDetail">
+		<xs:attribute name="authRestfulURL" type="xs:string" use="required" />
+		<xs:attribute name="appRestfulURL" type="xs:string" use="required" />
+	</xs:complexType>
+	<xs:complexType name="PasswordServerDetail">
+		<xs:complexContent>
+			<xs:extension base="EntityDetail" />
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="WebServerDetail">
+		<xs:complexContent>
+			<xs:extension base="EntityDetail">
+				<xs:attribute name="restfulURL" type="xs:string" use="required" />
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="MDBUserDetail">
+		<xs:complexContent>
+			<xs:extension base="EntityDetail">
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

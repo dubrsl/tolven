@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.assembler.pluginframework">
+	<!-- 
+	Build file for org.tolven.assembler.pluginframework
+	-->
+
+	<import file="../plugin/buildImport.xml" />
+
+	<property name="buildFolder" value="build" />
+	<!-- 
+	Source code will be included in the devLib jar file if true. Otherwise, source code
+	known to this build script will not be in the plugin
+	 -->
+	<property name="includeSourceInDevLib" value="true" />
+
+	<path id="project.classpath">
+		<fileset dir="${buildFolder}">
+			<include name="*.jar" />
+			<include name="pluginLib/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="resources">
+		<copy toDir="build/classes/org/tolven/plugin/repository">
+			<fileset dir="tpfboot/source/org/tolven/plugin/repository">
+				<include name="plugins.xsd" />
+			</fileset>
+		</copy>
+		<copy toDir="build/classes/org/tolven/plugin/registry/xml">
+			<fileset dir="tpfboot/source/org/tolven/plugin/registry/xml">
+				<include name="tpf.xsd" />
+				<include name="Resources.properties" />
+				<include name="Resources_de.properties" />
+				<include name="Resources_ru.properties" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jars" depends="resources" description="Create jars">
+		<mkdir dir="build/pluginLib" />
+		<copy toDir="build/pluginLib" preservelastmodified="true">
+			<fileset dir="lib">
+				<include name="commons-logging.jar" />
+				<include name="jpf-boot.jar" />
+				<include name="jpf-tools.jar" />
+				<include name="jpf.jar" />
+			</fileset>
+			<fileset dir="lib/apache-ant">
+				<include name="ant.jar" />
+				<include name="ant-launcher.jar" />
+				<include name="ant-apache-log4j.jar" />
+			</fileset>
+			<fileset dir="lib/commons-io">
+				<include name="commons-io-1.4.jar" />
+			</fileset>
+			<fileset dir="lib/commons-codec">
+				<include name="commons-codec-1.3.jar" />
+			</fileset>
+			<fileset dir="lib/commons-cli">
+				<include name="commons-cli-1.2.jar" />
+			</fileset>
+			<fileset dir="lib/javaee">
+				<include name="el-api-1.1.jar" />
+				<include name="el-impl-1.1.jar" />
+			</fileset>
+			<fileset dir="lib/log4j">
+				<include name="log4j-1.2.15.jar" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build-plugin" depends="init,jars" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest" />
+		</zip>
+		<!-- Each section adds itself to the zip file-->
+		<antcall target="buildSection">
+			<param name="section" value="tpfboot" />
+			<param name="lib" value="lib/commons-cli/commons-cli-1.2.jar:lib/log4j/log4j-1.2.15.jar:lib/commons-logging.jar:lib/jpf-boot.jar:lib/jpf-tools.jar:lib/jpf.jar:lib/xercesImpl.jar:lib/xml-apis.jar:lib/commons-io/commons-io-1.4.jar:lib/javaee/el-api-1.1.jar:lib/javee/el-impl-1.1.jar" />
+			<param name="sectionZipExcludes" value="**/*" />
+		</antcall>
+		<antcall target="buildSection">
+			<param name="section" value="kit" />
+			<param name="lib" value="lib/commons-cli/commons-cli-1.2.jar:lib/commons-io/commons-io-1.4.jar" />
+			<param name="sectionZipExcludes" value="**/*" />
+		</antcall>
+		<manifestclasspath property="tpf-boot.jar.classpath" jarfile="build/pluginLib/tpf-boot.jar">
+			<classpath>
+				<zipfileset dir="build/pluginLib">
+					<include name="*.jar" />
+				</zipfileset>
+			</classpath>
+		</manifestclasspath>
+		<jar destfile="build/pluginLib/tpf-boot.jar">
+			<manifest>
+				<attribute name="Built-By" value="Tolven Healthcare Innovations" />
+				<attribute name="Implementation-Version" value="${tolven.impl.version}" />
+				<attribute name="Class-Path" value="${tpf-boot.jar.classpath}" />
+				<attribute name="Main-Class" value="org.tolven.plugin.boot.TPFBoot" />
+			</manifest>
+			<zipfileset dir="build/tpfboot/classes" />
+			<fileset dir="manifest">
+				<include name="tolven-plugin.xml" />
+			</fileset>
+			<fileset dir="tpfboot/source">
+				<include name="**/plugins.xsd" />
+				<include name="**/tpf.xsd" />
+				<include name="**/Resources.properties" />
+				<include name="**/Resources_de.properties" />
+				<include name="**/Resources_ru.properties" />
+			</fileset>
+		</jar>
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar" />
+				<include name="pluginLib/jpf-boot.jar" />
+				<include name="pluginLib/jpf-tools.jar" />
+				<include name="pluginLib/jpf.jar" />
+				<include name="pluginLib/tpf-boot.jar" />
+				<include name="pluginLib/commons-logging.jar" />
+			</zipfileset>
+		</zip>
+		<antcall target="create-installer" />
+		<antcall target="populate-dev-lib-tpf" />
+	</target>
+	
+	<!-- This populates the devLib with needed jars-->
+	<target name="populate-dev-lib-tpf">
+		<copy todir="${tolven.devLib}">
+			<fileset dir="build/pluginLib">
+			</fileset>
+			<mapper type="glob" from="tpf*.jar" to="${plugin(id)}.tpf*.jar" />
+		</copy>
+		<copy todir="${tolven.devLib}">
+			<fileset dir="build/pluginLib">
+			</fileset>
+			<mapper type="glob" from="jpf*.jar" to="${plugin(id)}.jpf*.jar" />
+		</copy>
+		<copy todir="${tolven.devLib}">
+			<fileset dir="build/pluginLib">
+			</fileset>
+			<mapper type="glob" from="commons-logging*.jar" to="${plugin(id)}.commons-logging*.jar" />
+		</copy>
+	</target>
+
+	<target name="gen_plugins">
+		<exec executable="xjc">
+			<arg line="-p org.tolven.plugin.repository.bean" />
+			<arg line="-d tpfboot/source" />
+			<arg line="-extension" />
+			<arg file="tpfboot/source/org/tolven/plugin/repository/plugins.xsd" />
+		</exec>
+	</target>
+
+	<target name="create-installer">
+		<tstamp>
+			<format property="TSTAMP" pattern="yyyyMMddHHmmss" />
+		</tstamp>
+		<property name="tolven.impl.version" value="tolven${TSTAMP}" />
+		<java classname="org.tolven.plugin.repository.TolvenManifestParser" failonerror="true" outputproperty="plugin.version">
+			<arg line="-url file:///${basedir}/manifest/tolven-plugin.xml -pluginVersion" />
+			<classpath path="${buildFolder}/pluginLib/tpf-boot.jar:lib/xercesImpl.jar:lib/xml-apis.jar" />
+		</java>
+		<property name="build.tag" value="tolven-V${plugin.version}" />
+		<property name="tolven.installer" value="${basedir}/build/installer" />
+		<property name="kit.dir" value="${tolven.installer}/${build.tag}" />
+		<mkdir dir="${kit.dir}" />
+		<copy toDir="${kit.dir}" preservelastmodified="true">
+			<fileset dir="manifest">
+				<include name="lgpl.txt" />
+			</fileset>
+		</copy>
+		<mkdir dir="${kit.dir}/log" />
+		<mkdir dir="${kit.dir}/installer" />
+		<concat destfile="${kit.dir}/installer/cvstag_dirname_unix.txt">${tolven-dirname-prefix-unix}/${build.tag}</concat>
+		<concat destfile="${kit.dir}/installer/cvstag_dirname_windows.txt">${tolven-dirname-prefix-win}\${build.tag}</concat>
+
+		<copy toDir="${kit.dir}/pluginLib" preservelastmodified="true">
+			<fileset dir="build/pluginLib" />
+		</copy>
+		<copy file="tolven-log4j.xml" toDir="${kit.dir}/bin" preservelastmodified="true" />
+		<copy toDir="${kit.dir}/installer/bin" preservelastmodified="true" flatten="true">
+			<fileset dir="scripts" />
+			<fileset dir=".">
+				<include name="tolven-log4j.xml" />
+			</fileset>
+		</copy>
+		<copy toDir="${kit.dir}/bin" preservelastmodified="true" flatten="true">
+			<fileset dir="scripts">
+				<include name="install.*" />
+			</fileset>
+		</copy>
+		<copy toDir="${kit.dir}/installer" preservelastmodified="true">
+			<fileset dir=".">
+				<include name="template-tolven-config/**" />
+			</fileset>
+		</copy>
+		<copy toDir="${kit.dir}" preservelastmodified="true">
+			<fileset dir=".">
+				<include name="template-pluginsxml/**" />
+			</fileset>
+		</copy>
+
+		<fixcrlf srcdir="${tolven.installer}" includes="**/*.sh" eol="lf" eof="remove" />
+		<manifestclasspath property="install.jar.classpath" jarfile="${kit.dir}/pluginLib/install.jar">
+			<classpath>
+				<zipfileset dir="${kit.dir}/pluginLib">
+					<include name="commons-cli-1.2.jar" />
+					<include name="commons-io-1.4.jar" />
+				</zipfileset>
+			</classpath>
+		</manifestclasspath>
+		<jar destfile="${kit.dir}/pluginLib/install.jar">
+			<manifest>
+				<attribute name="Built-By" value="Tolven Healthcare Innovations" />
+				<attribute name="Class-Path" value="${install.jar.classpath}" />
+				<attribute name="Main-Class" value="org.tolven.tools.TolvenInstaller" />
+			</manifest>
+			<zipfileset dir="build/kit/classes" />
+		</jar>
+		<mkdir dir="${tolven.installer}/build" />
+		<zip destfile="${tolven.installer}/${build.tag}.zip">
+			<zipfileset dir="${kit.dir}" prefix="${build.tag}">
+				<exclude name="**/*.sh" />
+			</zipfileset>
+			<zipfileset dir="${kit.dir}" filemode="700" prefix="${build.tag}">
+				<include name="**/*.sh" />
+			</zipfileset>
+		</zip>
+		<delete dir="${kit.dir}" />
+		<delete dir="${tolven.installer}/build" />
+	</target>
+
+</project>

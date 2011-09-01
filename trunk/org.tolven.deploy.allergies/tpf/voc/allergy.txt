@@ -1,0 +1,44 @@
+f1|Almond oil
+f2|Aspartame (Equal, etc)
+f3|Carrots
+f4|Cheese
+f5|Chocolate
+f6|Cinnamon 
+f7|Coconut oil
+f8|Corn
+f9|Cow's milk (includes ice cream)
+f10|Eggs
+f11|Fruit
+f12|Gelatin 
+f13|Gluten
+f14|Legumes (beans, peas; for peanuts, see below)
+f15|Nuts (other than peanuts)
+f16|Oats
+f17|Olive oil
+f18|Peanuts 
+f19|Potato
+f20|Red meat
+f21|Rye
+f22|Seeds
+f23|Seafood 
+f24|Soy protein  
+f25|Sulfite based food preservative
+f26|Tomato 
+f27|Wheat (or products made with wheat)
+a28|Adhesive
+a29|Adhesive bandages
+a30|Animal dander (cats, dogs, rabbits, etc)
+a31|Animal hair
+a32|Cosmetics
+a33|Dust
+a34|Dyes
+a35|Feathers
+a36|Grass Pollen
+a37|Latex
+a38|Metals
+a39|Rubber
+a40|Sulfur
+a41|Tree resin
+a42|Tree pollen
+a43|Weed pollen 
+a44|Wood

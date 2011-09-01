@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Diagnosis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<ui:composition>
+		<h:inputHidden value="0" id="currentAction"/>
+		<h:inputHidden id="currentWidget"/>
+		<table width="100%">
+			<thead>
+				<tr>
+					<th style="width: 15%;"><b>Procedures</b></th>
+					<th style="width: 8%;" nowrap="nowrap"><b>Date Of Order*</b></th>
+					<th style="width: 12%;"><b>Reason</b></th>
+					<th style="width: 17%;"><b>Associate with Diagnosis</b></th>
+					<th style="width: 17%;"><b>Associate with Problem</b></th>
+					<th style="width: 7%;"></th>
+				</tr>
+			</thead>
+			<tbody style="width: 100%;">
+				<c:set var="i" value="1"/>
+				<c:if test="#{trim.trim.act.relationshipsList['entry']!=null}">
+					<c:forEach var="rel" items="#{trim.trim.act.relationshipsList['entry']}" varStatus="widgetIndex">
+						<c:if test="#{rel!=null}">
+							<c:set var="class" value="odd"/>
+							<c:set var="i" value="0"/>
+							<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/><c:set var="i" value="1"/></c:if>
+							<tr id="savedOrder#{widgetIndex.index}" class="#{class}">
+								<td style="width: 15%;">#{rel.act.code.CE.displayName}</td>
+								<td style="width: 8%;">
+									<trim:TS value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+								</td>
+								<td style="width: 12%;">#{rel.act.relationship['procedureInfo'].act.observation.values[1].ST.value}</td>
+								<td style="width: 17%;">#{rel.act.relationship['orderAssociations'].act.observation.values[0].ST.value}</td>
+								<td style="width: 17%;">#{rel.act.relationship['orderAssociations'].act.observation.values[1].ST.value}</td>
+								<td style="width: 7%;" nowrap="nowrap">
+									<span style="float: left;"><img onclick="editTpfRel('#{menu.element}','procedureDocclinDiv','px','#{widgetIndex.index}');" alt="Edit" src="../images/edit.jpg" style="cursor:pointer;" title="Edit" height="22" width="22"></img></span>
+									<span style="float: right;"><img onclick="removeTpfRel('#{menu.element}','procedureDocclinDiv','px','#{widgetIndex.index}','#{menu.elementLabel}');" alt="Remove" src="../images/delete.gif" style="cursor:pointer;" title="Remove" height="20" width="20"></img></span>
+								</td>
+							</tr>
+	     					<tr id="toBeSavedOrder#{widgetIndex.index}" style="display: none;">
+		      					<td style="width:15%;" id="order">
+		      						#{rel.act.code.CE.displayName}
+		      					</td>
+		      					<td style="width:8%;" nowrap="nowrap" >
+		      						<trim:TSNew id="orderDate#{widgetIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" style="width:90px;" />
+		      					</td>
+		      					<td style="width:12%;" >
+		      						<h:inputTextarea id="reason#{widgetIndex.index}" value="#{rel.act.relationship['procedureInfo'].act.observation.values[1].ST.value}"/>
+		      					</td>
+		      					<td style="width:17%;">
+		      						<h:inputHidden id="associateDiagnosesValue#{widgetIndex.index}" value="#{rel.act.relationship['orderAssociations'].act.observation.values[0].ST.value}"/>
+									<div id="diagnosesDropDownDiv#{widgetIndex.index}">
+										<script>
+											showOrderAssociationsDropDown("#{menu.element}","diagnosesDropDownDiv#{widgetIndex.index}","diagnosesDropDownTemplate","#{widgetIndex.index}","#{menu.elementLabel}");
+										</script> 
+									</div>
+									
+		      					</td>
+		      					<td style="width:17%;">
+		      						<h:inputHidden id="associateProblemValue#{widgetIndex.index}" value="#{rel.act.relationship['orderAssociations'].act.observation.values[1].ST.value}"/>
+									<div id="problemDropDownDiv#{widgetIndex.index}">
+										<script>
+											showOrderAssociationsDropDown("#{menu.element}","problemDropDownDiv#{widgetIndex.index}","problemDropDownTemplate","#{widgetIndex.index}","#{menu.elementLabel}");
+										</script> 
+									</div>
+		      					</td>
+								<td style="width:7%;" nowrap="nowrap">
+		       						<span style="float: left;">
+	   									<img onclick="saveProcedureRel('#{menu.element}','procedureDocclinDiv','px','#{widgetIndex.index}','#{menu.elementLabel}')" src="../images/save.gif" alt="Save" style="cursor:pointer;" title="Save" height="22" width="22">
+		        						</img>
+	        						</span>
+	        						<span style="float: right;">
+		        						<img onclick="cancelTpfRel('#{menu.element}','procedureDocclinDiv','px','#{widgetIndex.index}');" src="../images/undo.gif" alt="Cancel" style="cursor:pointer;" title="Cancel" height="22" width="22">
+		        						</img>
+		        					</span>
+					       		</td>
+					       	</tr>		
+						</c:if>
+					</c:forEach>
+				</c:if>
+				<tr id="newOrder" style="display: none;">
+  					<h:inputHidden value="0" id="template"/>
+  					<h:inputHidden value="0" id="templateTrim"/>
+				    <td style="width:15%;" id="order">
+   						<h:outputText id="templateDescription"/>
+   					</td>
+   					<td style="width:8%;" nowrap="nowrap" >
+   						<trim:TSNew id="orderDate" value="#{rel.act.effectiveTime.TS}" dateStyle="short" style="width:90px;" />
+   					</td>
+	    			<td style="width:12%;" >
+	    				<h:inputTextarea id="reason"/>
+	    			</td>
+	    			<td style="width:17%;">
+	    				<h:inputHidden id="associateDiagnosesValue"/>
+						<div id="diagnosesDropDownDiv">
+							<script>
+								showOrderAssociationsDropDown("#{menu.element}","diagnosesDropDownDiv","diagnosesDropDownTemplate","","#{menu.elementLabel}");
+							</script> 
+						</div>
+	    			</td>
+	    			<td style="width:17%;">
+	    				<h:inputHidden id="associateProblemValue"/>
+						<div id="problemDropDownDiv">
+							<script>
+								showOrderAssociationsDropDown("#{menu.element}","problemDropDownDiv","problemDropDownTemplate","","#{menu.elementLabel}");
+							</script> 
+						</div>
+	    			</td>
+					<td style="width:7%;" nowrap="nowrap">
+     					<span style="float: left;">
+							<img onclick="saveProcedureRel('#{menu.element}','procedureDocclinDiv','px','','#{menu.elementLabel}')" src="../images/save.gif" alt="Save" style="cursor:pointer;" title="Save" height="22" width="22">
+      						</img>
+     					</span>
+     					<span style="float: right;">
+      						<img onclick="cancelTpfRel('#{menu.element}','procedureDocclinDiv','px','');" src="../images/undo.gif" alt="Cancel" style="cursor:pointer;" title="Cancel" height="22" width="22">
+      						</img>
+      					</span>
+		       		</td>
+  				</tr>
+			</tbody>		
+		</table>
+		<div id="orderAssociationPopUpDiv" style="display:none;width: 500px;border: 2px groove #99CCFF;border-right-style: ridge;border-bottom-style: ridge;z-index:90;position:absolute;background: #fff;left: 250px;top:250px;"> </div>
+		<div id="popupGrids">
+		  	<div id="echr:problems"  class="popupgrid" />
+		</div>
+		<div id="popupGrids">
+		  	<div id="#{menu.menuDataItem.parent01.path}:diagnoses:menu"  class="popupgrid" />
+			</div>
+</ui:composition>
+</body>
+</html>

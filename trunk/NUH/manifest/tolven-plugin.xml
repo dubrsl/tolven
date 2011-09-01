@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.nuh" version="2.1.0" 
+	vendor="tolven" >
+	<requires>
+		<import plugin-id="org.tolven.component.tolvenejb" />
+	</requires>
+	<!-- Add the NUH DocType -->
+	<extension id="property1" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="org.tolven.doctype.DocTypeFactory" />
+		<parameter id="name" value="documentTypeClassName" />
+		<parameter id="value" value="org.tolven.nuh.doctype.NUHDocumentType" />
+	</extension>
+	<!-- Add the NUH message processor for TolvenMessage messages -->
+	<extension id="property2" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="org.tolven.doc.bean.Evaluator" />
+		<parameter id="name" value="processorJNDI" />
+		<parameter id="value" value="java:global/tolven/tolvenEJB/ProcessNUH!org.tolven.nuh.api.ProcessNUHLocal" />
+	</extension>
+	<!-- Include this plugin in the tolvenEJB.jar -->
+	<extension id="classes" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+	</extension></plugin>

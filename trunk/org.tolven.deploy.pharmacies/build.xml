@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.deploy.pharmacies">
+
+	<import file="../plugin/buildImport.xml"/>
+	<property name="buildFolder" value="build"/>
+	<!-- 
+	Source code will be included in the devLib jar file if true. Otherwise, source code
+	known to this build script will not be in the plugin
+	 -->
+	<property name="includeSourceInDevLib" value="true"/>
+	
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest"/>
+		</zip>
+		<!-- Each section adds itself to the zip file-->
+		<antcall target="buildSection">
+			<param name="section" value="app"/>
+		</antcall>
+		<antcall target="buildSection">
+			<param name="section" value="ejb"/>
+		</antcall>
+		<antcall target="buildSection">
+			<param name="section" value="web"/>
+			<param name="lib" value="${buildFolder}/ejb/classes"/>
+		</antcall>
+		<antcall target="buildSection">
+			<param name="section" value="tpf"/>
+		</antcall>
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar"/>
+			</zipfileset>
+		</zip>
+	</target>
+	
+	<!--
+		Get plugins from local and library repositories
+		This is the same as tpf -getPlugins (or repositoryInit) at the command line
+		-->
+		<target name="getPlugins" description="Get plugins from local and central repositories">
+			<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="tpf.classpath">
+				<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+				<arg line="-getPlugins" />
+			</java>
+		</target>
+	<target name="updateDevLib" depends="getPlugins" description="Create or update Tolven developer library">
+			<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="tpf.classpath">
+				<env key="TOLVEN_USER" value="${admin.user}"/>
+				<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+				<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+				<arg line="-plugin org.tolven.developmentmgr -devLib" />
+			</java>
+		</target>
+	<target name="loadPharmacies" depends="updateDevLib" description="Upload Pharmacies">
+			<java dir="../plugin" fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+				<env key="TOLVEN_USER" value="${admin.user}"/>
+				<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+				<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+	<!--			<jvmarg line="-Xdebug -Xrunjdwp:transport=dt_socket,address=8788,server=y,suspend=y" /> 
+	-->
+				<arg line="-plugin org.tolven.deploy.pharmacies" />
+			</java>
+		</target>
+</project>

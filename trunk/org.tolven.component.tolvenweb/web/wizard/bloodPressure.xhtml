@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Weight</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Enter #{menu.menuDataItem.string01}" >
+			<wiz:body>
+				<wiz:group title="Date of observation">
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+				<wiz:group title="#{menu.menuDataItem.string01}"> 
+						<table>
+							<tr>
+								<td>
+									<h:outputText
+										value="#{trim.trim.act.relationship['systolic'].act.observation.value.label.value}" />
+								</td>
+								<td>
+									<h:inputText id="sys"
+										value="#{trim.trim.act.relationship['systolic'].act.observation.value.ST.value}"
+										onkeyup="validateOnlyNumbers('#{menu.elementLabel}','sys','SystolicErrorMsg')">
+										<f:validator validatorId="numberAndDecimalValidator" />
+										<f:attribute name="attributeFactor" value="number" />
+									</h:inputText>
+								</td>
+							</tr>
+							<tr>
+								<span id="SystolicErrorMsg" style="color: red;"></span>
+							</tr>
+							<tr>
+								<td>
+									<h:outputText
+										value="#{trim.trim.act.relationship['diastolic'].act.observation.value.label.value}" />
+								</td>
+								<td>
+									<h:inputText id="dia"
+										value="#{trim.trim.act.relationship['diastolic'].act.observation.value.ST.value}"
+										onkeyup="validateOnlyNumbers('#{menu.elementLabel}','dia','DiastolicErrorMsg')">
+										<f:validator validatorId="numberAndDecimalValidator" />
+										<f:attribute name="attributeFactor" value="number" />
+									</h:inputText>
+								</td>
+							</tr>
+							<tr>
+								<span id="DiastolicErrorMsg" style="color: red;"></span>
+							</tr>
+						</table>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Blood Pressure</h1>
+				<p>Holding your breath doesn't help much.</p>
+			</wiz:help>
+		</wiz:step>
+ 		<ui:include src="selectEncounter.xhtml"/>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Weight - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+	<div class="pagesm">
+		<fieldset id="#{menu.elementLabel}Score">
+			<legend>Score </legend>
+			<h:panelGrid columns="2" >
+				<h:outputText value="#{msg.TimeOfObservation}: "/>
+				<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+				<h:outputText value="#{msg.EyeScore}: "/>
+				<h:outputText value="#{trim.trim.act.relationships[0].act.observation.value.INT.value}"/>
+				<h:outputText value="#{msg.VerbalScore}: "/>
+				<h:outputText value="#{trim.trim.act.relationships[1].act.observation.value.INT.value}"/>
+				<h:outputText value="#{msg.MotorScore}: "/>
+				<h:outputText value="#{trim.trim.act.relationships[2].act.observation.value.INT.value}"/>
+				<h:outputText value="#{msg.TotalScore}: "/>
+				<h:outputText value="#{trim.trim.act.observation.value.INT.value}"/>
+			</h:panelGrid>
+		</fieldset>
+		<fieldset id="#{menu.elementLabel}interpretation">
+			<div align="right" style="margin-top:5px; padding-top:5px; float:right"><a title="#{msg.MoreInformation}" href="javascript:toggleHelp('#{menu.elementLabel}','interpretation');"><img src="../images/img_help_t.jpg" border="0" /></a></div>
+			<legend>Interpretation </legend>
+				<h:outputText value="#{msg.Severe}" rendered="#{trim.trim.act.observation.value.INT.value le 8}"/>
+				<h:outputText value="#{msg.Moderate}" rendered="#{trim.trim.act.observation.value.INT.value ge 9 and trim.trim.act.observation.value.INT.value le 12}"/>
+				<h:outputText value="#{msg.Minor}" rendered="#{trim.trim.act.observation.value.INT.value == 13}"/>
+				<h:outputText value="#{msg.FullyAwake}" rendered="#{trim.trim.act.observation.value.INT.value == 14}"/>
+			<h:outputText value=" (#{msg.Computed})"/><br />
+		</fieldset>
+	</div>
+	<div class="help" id="#{menu.elementLabel}interpretationHelp" style="display:none">
+		<h1>Interpretation</h1>
+		<p>Generally, comas are classified as:</p>
+		<ul>
+			<li>Severe, with GCS &lt; 9 </li>
+			<li>Moderate, GCS 9 - 12 </li>
+			<li>Minor, GCS &gt; 12 </li>
+		</ul>
+		<p>The GCS has limited applicability to children below the age of 36 months. 
+		Consider the Pediatric Glasgow Coma Scale.</p>
+	</div>
+	<div class="help" id="#{menu.elementLabel}submissionHelp" style="display:none">
+		<h1>Submission</h1>
+		<p>The Submit button remains disabled until all entered data is validated and has been stored on the server in your private holding area. 
+		The time field represents the time when the data was most recently captured on the server (not the time of the observation). Clicking the submit button will
+		mark this document as complete, actionable, and immutable.</p>
+	</div>
+</ui:composition>
+</body>
+</html>
+    

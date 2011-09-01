@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+        <title>Tolven Initial User Setup</title>
+    </head>
+    <body>
+    <p>Search for LDAP people. By default, the query will return the first 1000 people. Enter search criteria to
+    narrow the search. The wildcard character can be used, as it is in the default.
+    A person must be in LDAP to be a Tolven User. However, not all LDAP persons need to be TolvenUsers. </p>
+     <h:form id="ldapsearch">
+         <h:panelGrid columns="3">
+             <h:outputText value="Max results"/>
+             <h:panelGroup>
+                 <h:inputText id="maxResults" value="#{reg.maxResults}" size="50" required="true">
+                     <f:validateLongRange minimum="1"/>
+                 </h:inputText><br/>
+                 <h:message for="maxResults" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+             </h:panelGroup>
+            
+
+             <h:outputText value="Time Limit in ms"/>
+             <h:panelGroup>
+                 <h:inputText id="timeLimit" value="#{reg.timeLimit}" size="50" required="true">
+                     <f:validateLongRange minimum="1"/>
+                 </h:inputText><br/>
+                 <h:message for="timeLimit" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+             </h:panelGroup>
+             <h:outputText value=" "/>
+
+             <h:selectOneRadio value="#{reg.searchField}">
+                 <f:selectItem itemLabel="User Id" itemValue="uid="/>
+                 <f:selectItem itemLabel="Given Name" itemValue="givenName="/>
+                 <f:selectItem itemLabel="Surname" itemValue="sn="/>
+             </h:selectOneRadio>
+             <h:inputText id="criteria" value="#{reg.searchCriteria}" size="50" required="true"/>
+             <h:commandButton  action="#{reg.search}" value="Search"/>
+         </h:panelGrid>
+         </h:form>
+         <c:if test="#{reg.searchResults!=null}">
+             <h:dataTable value="#{reg.searchResults}" border="1" cellspacing="0" var="r">
+                <h:column>
+                     <f:facet name="header">
+                         <h:outputText value="Common Name (cn)"/>
+                     </f:facet>
+                     <h:outputText value="#{r.cn}"/>
+                </h:column>
+                <h:column>
+                     <f:facet name="header">
+                         <h:outputText value="UserID (uid)"/>
+                     </f:facet>
+                     <h:outputText value="#{r.uid}"/>
+                </h:column>
+                <h:column>
+                     <f:facet name="header">
+                         <h:outputText value="EMail (mail)"/>
+                     </f:facet>
+                     <h:outputText value="#{r.mail}"/>
+               </h:column>
+             </h:dataTable>
+         </c:if>
+        <h:messages errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+        <h:outputText value="#{reg.elapsedTime}"/>
+        <h:panelGrid columns="3">
+        <h:outputLink value="ldap.jsf">
+        	<h:outputText value="LDAP"/>
+        </h:outputLink>
+        <h:outputLink value="users.jsf">
+        	<h:outputText value="Tolven Users"/>
+        </h:outputLink>
+        <h:outputLink value="createUser.jsf">
+        	<h:outputText value="Create New User"/>
+        </h:outputLink>
+        </h:panelGrid>
+</body>
+</html>

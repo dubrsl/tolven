@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+    xmlns:trim="http://www.tolven.org/jsf/trim">
+  <head>
+        <title>Recent transaction history</title>
+  </head>
+  <body>
+  	<ui:composition>
+		 <p>Recent server transaction history (Up to 100 of the most recent server interactions for this session). Excludes icons and image fetches. The elapsed 
+		 time for this page will be included in the next query.<!--  (click <a href="javascript:getRemoteContent(visiblePage);" >[refresh]</a>). --> </p>
+		 <p>Elapsed time is measured from the moment an HTTP request is received at the server until after the transaction and rendering have occured for that page.
+		 Ajax entries are not really HTML pages, but rather XML sent to the browser for display, such as in scrolling tables. </p>
+		 <p>Many user interactions have no server involvement at all, such as moving back and forth between tabs and viewing a page that has
+		 already been fetched from the server. On the other hand, some complex pages may require several server interactions. When this happens, the requests are
+		 handled in parallel and thus the elapsed time of all of the server requests could be much larger than what the
+		 user sees as response time.
+		 Therefore, rarely does the count of <i>server</i> interactions equate to the number or duration of <i>user interactions</i>. </p>
+		 
+		<div id="#{menu.element}-ver" localVersion="1"></div>
+		<div id="#{menu.element}:menu" class="popupgrid"></div>
+		<div id="#{menu.element}-pane" class="paneBody" style="overflow:auto;">
+			<div id="#{menu.element}-grid" class="grid" totalRows="#{performance.totalPerformanceData}" visibleRows="15" 
+							gridOffset="0" gridSortCol="Date" gridSortDir="DESC">
+				<table class="filter" width="100%">
+					<tr>
+						<td width="15%"><b>Date Range From:</b></td>
+						<td>
+							<span id="dateDiv" style="float:left;">
+                          		<span style="float:left;">
+	                          		<h:inputText id="FieldFrom" >
+										<trim:convertTSValue timeStyle="" dateStyle="short" type="" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+									</h:inputText>
+									<h:graphicImage id="ButtonFrom" value="/images/cal-image.png" style="cursor:pointer; margin-left:5px" />
+									<script type="text/javascript">
+										// <![CDATA[
+										Calendar.setup({
+										inputField   : "FieldFrom",
+										button       : "ButtonFrom",
+										dateFormat   : "%Y/%m/%d",
+										showsTime	 : true,
+										electric	 : true,
+										weekNumbers  : false,
+										timeFormat   : "12"
+										    });
+										  // ]]>
+									</script>
+								</span>
+								<span style="float:left;padding: 0 5px 0 5px;"><b>To</b></span>
+                          		<span style="float:left;">
+	                          		<h:inputText id="FieldTo" >
+										<trim:convertTSValue timeStyle="" dateStyle="short" type="" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+									</h:inputText>
+									<h:graphicImage id="ButtonTo" value="/images/cal-image.png" style="cursor:pointer; margin-left:5px" />
+									<script type="text/javascript">
+										// <![CDATA[
+										Calendar.setup({
+										inputField   : "FieldTo",
+										button       : "ButtonTo",
+										showsTime	 : false,
+										electric	 : true,
+										weekNumbers  : false,
+										timeFormat   : "12"
+										    });
+										  // ]]>
+									</script>
+								</span>
+                          	</span>
+                         </td>
+					</tr>
+					<tr>
+						<td><b>Patient:</b></td>
+						<td>
+							<span id="patientDiv" style="float:left;">
+								<h:selectOneMenu id="patient" style="width:200px;">
+									<f:selectItem itemValue="#{null}" itemLabel="Select Patient" />
+	                          		<c:forEach var="pat" items="#{ep.allMenuData['echr:patients:all']}">
+	                          				<f:selectItem itemValue="#{pat.Name}" itemLabel="#{pat.Name}" />
+	                          		</c:forEach>
+	                          	</h:selectOneMenu>
+                          	</span>
+                    	</td>
+                    </tr>
+                   	<tr>
+                   		<td><b>User:</b></td>
+						<td>
+							<span id="usereDiv" style="float:left;">
+								<h:selectOneMenu id="user" style="width:200px;">
+									<f:selectItem itemValue="" itemLabel="Select User" />
+									<c:forEach var="au" items="#{reg.accountUsers}" varStatus="userIndex">
+										<f:selectItem itemValue="#{au.user.ldapUID}" itemLabel="#{au.user.ldapUID}" />
+									</c:forEach>
+								</h:selectOneMenu>
+							</span>
+						</td>
+					</tr>
+					<tr>
+                   		<td><b>Method:</b></td>
+						<td>
+							<span id="methoDiv" style="float:left;">
+								<h:selectOneMenu id="method" style="width:200px;">
+									<f:selectItem itemValue="" itemLabel="Select Method" />
+									<f:selectItem itemValue="GET" itemLabel="GET (Read)" />
+									<f:selectItem itemValue="POST" itemLabel="POST (Add)" />
+									<f:selectItem itemValue="PUT" itemLabel="PUT (Update)" />
+									<f:selectItem itemValue="DELETE" itemLabel="DELETE (Delete)" />
+								</h:selectOneMenu>
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+                          	<span style="float:left;">
+                          		<input type="button" value="Go" onclick="perfFilterClick('#{menu.element}','addTemplate','#{menu.elementLabel}|0', 'getPerformanceData.ajaxper');"/>
+                          	</span>
+                          	<span style="float:left;padding-left: 25px;">
+                          		<input type="button" value="Clear" onclick="clearFilterValues('#{menu.element}','addTemplate','#{menu.elementLabel}|0', 'getPerformanceData.ajaxper');"/>
+                          	</span>
+						</td>
+					</tr>
+				</table>
+	
+				<table id="#{menu.element}-LG_header" >
+					<thead>
+						<tr>
+							<th style="text-align:left;width:6.0em">Date</th>
+							<th style="text-align:left;width:6.0em">Time</th>
+							<th style="text-align:left;width:9.5em">User</th>
+							<th style="text-align:left;width:11.5em">Patient</th>
+							<th style="text-align:left;width:29.5em">URI</th>
+							<th style="text-align:left;width:19.5em">Method</th>
+						</tr>
+					</thead>
+				</table>
+				<div id="queryPopUP" class="popupgrid" style="top:auto;background-color:#DFECFC;position:absolute;z-index:0;left: 30em;width: 410px;">
+					<input type="hidden" id="queryPopUpId" value=""/> 
+					<div class="popupgridheader">
+						<span style="float: left;"><b>Query String</b></span>
+						<span style="float: right;"><img class="closetab" src="../images/x_black.gif" onclick="hideQuerString()"/></span>
+					</div>
+					<div id="queryPopUPStr" style="padding: 10px;"></div>
+				</div>
+				<table id="#{menu.element}-LG" style="width: 100%;">
+					<tbody>
+						<c:forEach var="i" begin="1" end="16" step="1" varStatus ="status">
+							<c:set var="class" value="odd"/>
+							<c:if test="#{(status.index%2)==1}">
+								<c:set var="class" value="even"/>
+							</c:if>
+							<tr class="#{class}">
+								<td style="text-align:left;width:6.0em">--</td>
+								<td style="text-align:left;width:6.0em">--</td>
+								<td style="text-align:left;width:9.5em">--</td>
+								<td style="text-align:left;width:11.5em">--</td>
+								<td style="text-align:left;width:29.5em">--</td>
+								<td style="text-align:left;width:19.5em">--</td>
+							</tr>
+						</c:forEach>
+					</tbody>
+				</table>
+	
+				<div class="foot"><span id="#{menu.element}-totalCount">#{performance.totalPerformanceData}</span>
+				<span> item</span><span id="#{menu.element}-foot"> </span></div>
+			</div>
+			
+			<script language="JavaScript" type="text/javascript">
+				// <![CDATA[
+					createPerformanceGrid( '#{menu.element}','#{menu.element}','addTemplate','#{menu.elementLabel}|0', 'getPerformanceData.ajaxper');
+				// ]]>
+			</script>
+		</div>
+		<br clear="all"/><br clear="all"/>
+	</ui:composition>
+  </body>
+</html>

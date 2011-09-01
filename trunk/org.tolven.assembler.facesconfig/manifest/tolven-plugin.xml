@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.assembler.facesconfig" version="2.1.0" class="org.tolven.assembler.facesconfig.FacesConfigAssembler" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<attributes>
+		<attribute value="template-faces-config.xml" id="template-faces-config.xml" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.component.faces" />
+		<import plugin-id="org.tolven.component.faces.taglib" />
+	</requires>
+	<runtime>
+		<library id="classes" path="tpf/classes/" type="code" />
+	</runtime>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension-point id="warExtensionPoint">
+		<parameter-def id="id" />
+	</extension-point>
+	<extension-point id="faces" parent-plugin-id="org.tolven.component.faces" parent-point-id="faces" extension-multiplicity="none" />
+	<extension-point id="taglib" parent-plugin-id="org.tolven.component.faces.taglib" parent-point-id="taglib" extension-multiplicity="none" />
+</plugin>

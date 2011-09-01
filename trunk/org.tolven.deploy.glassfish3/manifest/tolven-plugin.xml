@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.deploy.glassfish3" version="2.1.0" class="org.tolven.deploy.glassfish3.GlassFish3Deploy" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<attributes>
+		<attribute id="deployDir" value="glassfish/domains/tolven/autodeploy" />
+		<attribute id="binDir" value="bin" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.deploy" />
+		<import plugin-id="org.tolven.jndi" />
+	</requires>
+	<runtime>
+		<library id="tpfclasses" path="tpf/classes/" type="code" />
+	</runtime>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="execute" plugin-id="org.tolven.deploy" point-id="execute">
+		<parameter id="args" value="" />
+	</extension>
+	<extension-point id="tolvenJndi" extension-multiplicity="none" parent-point-id="runtimeLib" parent-plugin-id="org.tolven.jndi">
+		<parameter-def multiplicity="none-or-one" id="tolvenJndi" />
+	</extension-point>
+</plugin>

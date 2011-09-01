@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>dma1csnapshotsum Analysis</title>
+</head>
+
+<body>
+<ui:composition template="/five/analysis/portletChart.xhtml">
+	<ui:param name="id" value="dma1csnapshotsum" />
+	<ui:define name="chartBody">
+		<h:graphicImage value="/five/analysis/portletchart/dma1csnapshotsumchart-#{snapshot.snapshotVersion['echr:analysis:portal:dma1csnapshotsum']}.png?cohortType=org.tolven.cohort.dm&amp;snapshotType=a1csnapshot&amp;chartType=percenttimeseries" />
+	</ui:define>
+</ui:composition>
+</body>
+</html>

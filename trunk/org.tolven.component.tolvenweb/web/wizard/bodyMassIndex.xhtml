@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Weight</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Components" >
+			<wiz:body>
+					<wiz:group title="Date of Observation">
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" />
+				</wiz:group>
+					<wiz:group title="#{trim.trim.act.title.ST.value}"> 
+						<table>
+						<tr style="height:30px">
+							<td  evalFunc="bmiCalFnc('#{menu.elementLabel}')" width="15%" style="text-align: left;"></td>
+							<td width="1%"></td>
+		          			<td width="24%" style="text-align: left;">          				
+		          			</td>
+		          			<td width="16%" style="text-align: left;"></td>
+		          			<td width="10%" style="text-align: left;"></td>
+		          			<td width="10%" style="text-align: left;"></td>
+		          			<td width="24%" style="text-align: left;"></td>
+		          		</tr>
+						<tr style="height:30px">
+		          			<td colspan="7" style="font-weight: bold;">#{trim.trim.act.relationship['height'].act.text.ST.value}</td>
+		          		</tr>
+		          		<tr style="height:30px">
+		          			<td width="15%" style="text-align: left;">#{trim.trim.act.relationship['height'].act.title.ST.value}</td>
+		          			<td width="1%"></td>
+		          			<td width="24%" style="text-align: left;">
+		          				<h:inputText id="heightfeet" size="4" value="#{trim.trim.act.relationship['height'].act.observation.values[0].ST.value}" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','heightfeet','heightfeetErrorMsg')">
+		          					<f:validator validatorId="numberAndDecimalValidator" />
+                                    <f:attribute name="attributeFactor" value="number"/> 
+		          				</h:inputText> feet
+		          				<h:inputText style="margin-left:5px" id="heightinch" size="4" value="#{trim.trim.act.relationship['height'].act.observation.values[1].ST.value}" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','heightinch','heightinchErrorMsg')">
+		          					<f:validator validatorId="numberAndDecimalValidator" />
+                                    <f:attribute name="attributeFactor" value="number"/>
+		          				</h:inputText> inches
+		          				<br/>
+		          				<span id="heightfeetErrorMsg" style="color: red;"></span>
+		          				<br/>
+		          				<span id="heightinchErrorMsg" style="color: red;"></span>
+		          			</td>
+		          			<td width="16%" style="text-align: left;">Height in Centimeters</td>
+		          			<td width="10%" style="text-align: left;">
+		          				<h:inputText id="heightcm" size="18" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','heightcm','heightcmErrorMsg')"/>
+		          				<span id="heightcmErrorMsg" style="color: red;"></span>
+		          			</td>
+		          			<td width="10%" style="text-align: center;">
+		          				<h:commandButton id="heightConvert" value="Convert to feet-inches" onclick="heightCnvFn('#{menu.elementLabel}');validateOnlyNumbers('#{menu.elementLabel}','heightfeet','heightfeetErrorMsg');validateOnlyNumbers('#{menu.elementLabel}','heightinch','heightinchErrorMsg')"></h:commandButton>
+		          			</td>
+		          			<td width="24%" style="text-align: left;"></td>
+		          		</tr>
+		          		<tr  style="height:30px">
+		          			<td colspan="7" style="font-weight: bold;">#{trim.trim.act.relationship['weight'].act.title.ST.value}</td>
+		          		</tr>
+		          		<tr style="height:30px">
+		          			<td width="15%" style="text-align: left;">#{trim.trim.act.relationship['weight'].act.observation.value.label.value}</td>
+		          			<td width="1%"></td>
+		          			<td width="24%" style="text-align: left;">
+		          				<h:inputText id="weightlbs" value="#{trim.trim.act.relationship['weight'].act.observation.value.ST.value}" onkeyup="validateNumbers('#{menu.elementLabel}', 'weightlbs', 'weightlbsErrorMsg');">
+		          					<f:validator validatorId="numberAndDecimalValidator" />
+                                    <f:attribute name="attributeFactor" value="numberAndDecimal"/>
+		          				</h:inputText>
+		          				<br/>
+		          				<span id="weightlbsErrorMsg" style="color: red;"></span>
+		          			</td>
+		          			<td width="16%" style="text-align: left;" >
+		          				Weight in Kilograms
+		          			</td>
+		          			<td width="10%" style="text-align: left;">
+		          				<h:inputText id="weightkg" size="18"  onkeyup="validateNumbers('#{menu.elementLabel}', 'weightkg', 'weightkgErrorMsg');" />
+		          				<span id="weightkgErrorMsg" style="color: red;"></span>
+		          			</td>
+		          			<td width="10%" style="text-align: left;">
+		          				<h:commandButton id="weightConvert" value="Convert to Pounds" onclick="weightCnvFn('#{menu.elementLabel}');validateNumbers('#{menu.elementLabel}', 'weightlbs', 'weightlbsErrorMsg');"></h:commandButton>
+		          			</td>
+		          			<td width="24%" style="text-align: left;"></td>
+		          		</tr>
+		          		<tr  style="height:30px">
+		          			<td width="15%" style="text-align: left;font-weight: bold;">#{trim.trim.act.observation.value.label.value}</td>
+		          			<td width="1%"></td>
+		          			<td width="24%" style="text-align: left;">
+		          				<h:inputText id ="bmiValue" value="#{trim.trim.act.observation.value.PQ.originalText}" readonly="true"/> 
+		          				<h:inputHidden id ="bmiValueHidden" value="#{trim.trim.act.observation.value.PQ.value}" />
+		          			</td>
+		          			<td width="16%" style="text-align: left;"></td>
+		          			<td width="10%" style="text-align: left;"></td>
+		          			<td width="10%" style="text-align: left;"></td>
+		          			<td width="24%" style="text-align: left;"></td>
+		          		</tr>
+		          		</table>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<h1>Body Mass Index</h1>
+				<p>Calculated from weight and height.</p>
+			</wiz:help>
+		</wiz:step>
+ 		<ui:include src="selectEncounter.xhtml"/>
+ 		<wiz:help title="#{trim.trim.description}">
+			<p>Body mass index (BMI) or Quetelet Index is a statistical measure of
+			the weight of a person scaled according to height. It was invented 
+			between 1830 and 1850 by the Belgian polymath Adolphe Quetelet during 
+			the course of developing "social physics". </p>
+			<p>The BMI has become controversial because many people, including 
+			physicians, have come to rely on it for medical diagnosis - but that 
+			has never been the BMI's purpose. It is meant to be used as a simple 
+			means of classifying sedentary (physically inactive) individuals with 
+			an average body composition. </p>
+			<p>Click the next button to calculate a body mass index.</p>
+		</wiz:help>
+ 		
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+      <title>My Home (Testing)</title>
+  </head>
+    <body>
+  <ui:composition template="../templates/basePortal.xhtml">
+      <ui:param name="pageTitle" value="Load UMLS"/>
+      <ui:define name="bannerad">
+      </ui:define>
+      <ui:define name="contextArea">
+      </ui:define>
+      <ui:define name="pageBrand">
+      </ui:define>
+      <ui:define name="body">
+        <h:form id="umlsform">
+           <h:panelGrid columns="4">
+                <h:outputText value="Path: "/>
+                <h:inputText id="path" value="#{umls.path}" size="50" />
+               
+                <h:outputText value="Abbreviations: "/>
+                <h:inputText id="abbr" value="#{umls.abbrevFileName}" size="50" />
+                <h:outputText value="#{umls.abbrevResult}"/>
+           		<h:commandButton action="#{umls.loadAbbrev}" value="Load"/>
+
+                <h:outputText value="Sources: "/>
+                <h:inputText id="src" value="#{umls.sourceFileName}" size="50" />
+                <h:outputText value="#{umls.sourceResult}"/>
+           		<h:commandButton action="#{umls.loadSource}" value="Load"/>
+
+                <h:outputText value="Concepts: "/>
+                <h:inputText id="mrcons" value="#{umls.mrconsoFileName}" size="50" />
+                <h:outputText value="#{umls.mrconsoResult}"/>
+           		<h:commandButton action="#{umls.loadMrconso}" value="Load"/>
+           </h:panelGrid>
+           <h:commandButton action="#{umls.analyze}" value="Analyze"/>
+            <h:messages globalOnly="true" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	        <h:dataTable value="#{umls.loaderModel}" var="lc"
+	        	first="#{umls.firstRowIndex}" rows="#{umls.pageSize}" >
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Entity" />
+	                </f:facet>
+	                <h:outputText value="#{lc.entity}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="File" />
+	                </f:facet>
+	                <h:outputText value="#{lc.fileName}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Offset" />
+	                </f:facet>
+	                <h:outputText value="#{lc.offset}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Size" />
+	                </f:facet>
+	                <h:outputText value="#{lc.batchSize}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Status" />
+	                </f:facet>
+	                <h:outputText value="#{lc.status} " />
+	        		<h:commandLink immediate="true" action="#{umls.load}" >
+	        			<h:outputText value="Load"/>
+	        		</h:commandLink>
+	            </h:column>
+	        </h:dataTable>
+	        <h:commandButton value="&lt;&lt;" disabled="#{umls.scrollFirstDisabled}" action="#{umls.scrollFirst}" />
+	        <h:commandButton value="&lt;" disabled="#{umls.scrollPreviousDisabled}" action="#{umls.scrollPrevious}" />
+	        <h:outputText value=" #{umls.currentPage} of #{umls.lastPage} " />
+	        <h:commandButton value="&gt;" disabled="#{umls.scrollNextDisabled}" action="#{umls.scrollNext}" />
+	        <h:commandButton value="&gt;&gt;" disabled="#{umls.scrollLastDisabled}" action="#{umls.scrollLast}" />
+        </h:form>
+</ui:define>
+</ui:composition>
+</body>
+</html>

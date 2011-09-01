@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Diagnoses</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<c:set var="diagnoses" value="#{trim.trim.act.relationship['assessment'].act.relationship['diagnoses']}"/>
+		<table width="100%">
+			<thead>
+				<tr>
+					<th width="20%">Date</th>
+					<th width="61%">Diagnosis</th>
+					<th width="19%"></th>
+				</tr>
+			 	<c:forEach var="diagnosis" items="#{diagnoses.act.relationshipsList['diagnosis']}" varStatus="widgetIndex">
+			 		<c:set var="class" value="odd"/>
+					<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+			 		<tr class="#{class}" id="#{menu.elementLabel}:saveDiagnosis#{widgetIndex.index}" onmouseover="setBackground(this);" onmouseout="resetBackground(this);">
+			 			<td width="20%"><trim:TSAjax style="width:70px;" value="#{diagnosis.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+			 			<td width="61%"><h:outputText escape="false" value="#{diagnosis.act.observation.value.CE.displayName}"/></td>
+						<td width="19%">
+							<span style="float: left; padding: 0 5px 0 3px;"> <img
+									onclick="editPNTemplateDiagnosis('diagnosis', #{widgetIndex.index}, '#{menu.menuDataItem.parent01.path}:diagnoses:menu', 'wizSavePNDiagnoses', '#{menu.elementLabel}', 0);return false;"
+									alt="Edit" src="../images/edit.jpg" style="cursor: pointer;"
+									title="Edit"></img> </span>
+							<span style="float: right;"> <img
+									onclick="wizRemoveTemplate('managePNDiagnoses.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnDiagnosisDiv', 'tempPNDiagnoses.jsf');return false;"
+									alt="Remove" src="../images/delete.gif"
+									style="cursor: pointer;" title="Remove"></img> </span>
+						</td>
+					</tr>
+					<tr style="display: none;" class="editWidget" id="#{menu.elementLabel}:editDiagnosis#{widgetIndex.index}">
+						<h:inputHidden value="0" id="tempDiagnosisActionType#{widgetIndex.index}" />
+						<td width="20%"><trim:TSAjax id="effectiveDate#{widgetIndex.index}" style="width:70px;" value="#{diagnosis.act.effectiveTime.TS}" dateStyle="short"/></td>
+						<td width="61%"><h:outputText escape="false" value="#{diagnosis.act.observation.value.CE.displayName}"/></td>
+						<td width="19%">
+							<span style="float: left; padding: 0 5px 0 3px;"> <img
+									onclick="wizUpdatePNDiagnosis('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 0);return false;"
+									alt="Save" src="../images/save.gif" style="cursor: pointer;"
+									title="Save">
+								</img> </span>
+							<span style="float: right;"> <img
+									onclick="wizCancelTemplateDiagnosis('managePNDiagnoses.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnDiagnosisDiv', 'tempPNDiagnoses.jsf');return false;"
+									alt="Cancel" src="../images/undo.gif" style="cursor: pointer;"
+									title="Cancel">
+								</img> </span>
+						</td>
+					</tr>
+					<c:if test="#{diagnosis.act.title.ST.value!=''}">
+						<script>
+      							$('#{menu.elementLabel}:saveDiagnosis#{widgetIndex.index}').hide();
+      							$('#{menu.elementLabel}:editDiagnosis#{widgetIndex.index}').show();
+       					</script>
+					</c:if>
+			 	</c:forEach>
+			 	<tr  class="widgetAction">
+			 		<td colspan="3">
+			 			<a id="addPNDiagnosisLink" onclick="addPNTemplate('diagnosis', '#{menu.menuDataItem.parent01.path}:diagnoses:menu', 'wizSavePNDiagnoses', '#{menu.elementLabel}', 0);return false;" href="#">
+							Add diagnosis
+						</a>
+			 		</td>
+			 	</tr>
+		 	</thead>
+		</table>
+		
+	</ui:composition>
+</body>
+</html>

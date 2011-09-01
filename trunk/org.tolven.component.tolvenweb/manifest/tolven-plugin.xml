@@ -1,0 +1,1654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.tolvenweb" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.war" />
+		<import plugin-id="org.tolven.component.faces" />
+		<import plugin-id="org.tolven.component.faces.taglib" />
+		<import plugin-id="org.tolven.component.tolvenweb.taglibs.ccr" />
+		<import plugin-id="org.tolven.component.tolvenweb.taglibs.trim" />
+		<import plugin-id="org.tolven.component.tolvenweb.taglibs.wizard" />
+		<import plugin-id="org.tolven.component.tolvenear" />
+		<import plugin-id="org.tolven.component.composite" />
+		<import plugin-id="org.tolven.assembler.war" />
+		<import plugin-id="org.tolven.jaxrs" />
+		<import plugin-id="org.tolven.api.schemas" />
+	</requires>
+	
+	<extension-point id="warModule-declaration" parent-plugin-id="org.tolven.component.war" parent-point-id="warModule-declaration" extension-multiplicity="none">
+		<parameter-def id="context-id" default-value="tolvenweb" />
+	</extension-point>
+	
+	<!-- WAR Services -->
+	<extension-point id="WEB-INF-LIB-adaptor" parent-plugin-id="org.tolven.component.war" parent-point-id="WEB-INF-LIB-adaptor" />
+	<extension-point id="WEB-INF-CLASSES-adaptor" parent-plugin-id="org.tolven.component.war" parent-point-id="WEB-INF-CLASSES-adaptor" />
+	<extension-point id="WEB-ROOT-FILES-adaptor" parent-plugin-id="org.tolven.component.war" parent-point-id="WEB-ROOT-FILES-adaptor" />
+	<extension-point id="webDirectory-adaptor" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory-adaptor" />
+	<!-- WAR Services End -->
+	
+	<extension id="warModule" plugin-id="org.tolven.component.tolvenear" point-id="warModule">
+		<parameter id="web-uri" value="tolvenWEB.war" />
+		<parameter id="context-root" value="/Tolven" />
+	</extension>
+	<extension id="composite" plugin-id="org.tolven.component.composite" point-id="composite">
+		<parameter id="name" value="tolvenWEB" />
+	</extension>
+	<extension id="compositeExtensionPoint.war" plugin-id="org.tolven.component.war" point-id="compositeExtensionPoint">
+		<parameter id="name" value="war" />
+	</extension>
+	<extension id="compositeExtensionPoint.faces" plugin-id="org.tolven.component.faces" point-id="compositeExtensionPoint">
+		<parameter id="name" value="faces" />
+	</extension>
+	<extension id="compositeExtensionPoint.taglib" plugin-id="org.tolven.component.faces.taglib" point-id="compositeExtensionPoint">
+		<parameter id="name" value="taglib" />
+	</extension>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+
+	<!-- Remote Client -->
+	<extension-point id="remoteProductDir" parent-plugin-id="org.tolven.component.war" parent-point-id="remoteProductDir" extension-multiplicity="none">
+		<parameter-def id="dir" default-value="/download" />
+	</extension-point>
+	<extension-point parent-point-id="remoteFile" parent-plugin-id="org.tolven.component.war" id="remoteFile">
+		<parameter-def id="file" multiplicity="any" />
+		<parameter-def id="zip" multiplicity="any">
+			<parameter-def id="sourceDir" />
+			<parameter-def id="includes" multiplicity="none-or-one" />
+			<parameter-def id="include" multiplicity="any" />
+			<parameter-def id="excludes" multiplicity="none-or-one" />
+			<parameter-def id="exclude" multiplicity="any" />
+			<parameter-def id="destFile" />
+		</parameter-def>
+	</extension-point>
+	<!-- End Remote Client -->
+
+	<!-- Gauntlet Security -->
+	<extension id="org.tolven.web.security.VestibuleProcessor-propertySequence" plugin-id="org.tolven.component.war" point-id="propertySequence">
+		<parameter id="class" value="org.tolven.web.security.VestibuleProcessor" />
+		<parameter id="name" value="vestibuleJNDINames" />
+		<parameter id="defaultSequence" value="java:app/tolvenWEB/org.tolven.web.vestibule.QuestionAnswerVestibule,java:app/tolvenWEB/org.tolven.web.vestibule.SelectAccountVestibule" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.web.vestibule.QuestionAnswerVestibule" plugin-id="org.tolven.component.war" point-id="property">
+		<parameter id="class" value="org.tolven.web.security.VestibuleProcessor" />
+		<parameter id="name" value="vestibuleJNDINames" />
+		<parameter id="value" value="java:app/tolvenWEB/org.tolven.web.vestibule.QuestionAnswerVestibule" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.web.vestibule.SelectAccountVestibule" plugin-id="org.tolven.component.war" point-id="property">
+		<parameter id="class" value="org.tolven.web.security.VestibuleProcessor" />
+		<parameter id="name" value="vestibuleJNDINames" />
+		<parameter id="value" value="java:app/tolvenWEB/org.tolven.web.vestibule.SelectAccountVestibule" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Gauntlet Security -->
+
+	<!-- General Web -->
+	<extension id="com.sun.faces.verifyObjects-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
+		<!-- for Debugging -->
+		<parameter id="param-name" value="com.sun.faces.verifyObjects" />
+		<parameter id="param-value" value="true" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="com.sun.faces.validateXml-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
+		<!-- for Debugging -->
+		<parameter id="param-name" value="com.sun.faces.validateXml" />
+		<parameter id="param-value" value="true" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="javax.faces.DEFAULT_SUFFIX-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
+		<!-- Facelets - Use Documents Saved as *.xhtml -->
+		<parameter id="param-name" value="javax.faces.DEFAULT_SUFFIX" />
+		<parameter id="param-value" value=".xhtml" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="javax.faces.FACELETS_SKIP_COMMENTS-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
+		<!-- Ignore #{el} in comments -->
+		<parameter id="param-name" value="javax.faces.FACELETS_SKIP_COMMENTS" />
+		<parameter id="param-value" value="true" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="facelets.DEVELOPMENT-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
+		<!-- Special Debug Output for Development -->
+		<parameter id="param-name" value="facelets.DEVELOPMENT" />
+		<parameter id="param-value" value="false" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="javax.faces.FACELETS_REFRESH_PERIOD-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
+		<parameter id="param-name" value="javax.faces.FACELETS_REFRESH_PERIOD" />
+		<parameter id="param-value" value="2" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="javax.faces.CONFIG_FILES-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
+		<parameter id="param-name" value="javax.faces.CONFIG_FILES" />
+		<parameter id="param-value" value="/WEB-INF/faces-config.xml" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="javax.faces.STATE_SAVING_METHOD-context-param" plugin-id="org.tolven.component.war" point-id="context-param">
+		<parameter id="param-name" value="javax.faces.STATE_SAVING_METHOD" />
+		<parameter id="param-value" value="client" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="appRestful.url" plugin-id="org.tolven.component.war" point-id="context-param">
+		<parameter id="param-name" value="appRestful.url" />
+		<parameter id="param-value" value="#{pluginProperty['appRestful.url']}" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="welcome-file-list" plugin-id="org.tolven.component.war" point-id="welcome-file-list">
+		<parameter id="welcome-file" value="index.jsp" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="ConfigureListener-listener" plugin-id="org.tolven.component.war" point-id="listener">
+		<parameter id="listener-class" value="org.tolven.web.ConfigureListener" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End General Web -->
+
+	<!-- General Faces -->
+	<extension id="WizardPhases-lifecycle" plugin-id="org.tolven.component.faces" point-id="lifecycle">
+		<parameter id="phase-listener" value="org.tolven.web.faces.WizardPhases" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!--<extension id="org.tolven.web.faces.TolvenViewHandler-view-handler" plugin-id="org.tolven.component.faces" point-id="view-handler">
+		<parameter id="view-handler" value="org.tolven.web.faces.TolvenViewHandler" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.web.faces.TolvenFaceletViewHandler-view-handler" plugin-id="org.tolven.component.faces" point-id="view-handler">
+		<parameter id="view-handler" value="org.tolven.web.faces.TolvenFaceletViewHandler" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>-->
+	<extension id="org.tolven.web.el.MenuDataELResolver-el-resolver" plugin-id="org.tolven.component.faces" point-id="el-resolver">
+		<parameter id="el-resolver" value="org.tolven.web.el.MenuDataELResolver" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.web.PathELResolver-resolver" plugin-id="org.tolven.component.faces" point-id="el-resolver">
+		<parameter id="el-resolver" value="org.tolven.web.PathELResolver" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="en-localeConfig" plugin-id="org.tolven.component.faces" point-id="localeConfig">
+		<parameter id="default-locale" value="en" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End General Faces -->
+
+	<!-- Functional Directories -->
+	<extension-point id="ajaxDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="ajax" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="drilldownDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="drilldown" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="fiveDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="five" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="imagesDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="images" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="invitationDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="invitation" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="manageDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="manage" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="privateDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="private" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="publicDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="public" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Unprotected Data" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="scriptsDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="scripts" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="stylesDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="styles" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="templatesDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="templates" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="vestibuleDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="vestibule" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<extension-point id="wizardDirectory" parent-plugin-id="org.tolven.component.war" parent-point-id="webDirectory">
+		<parameter-def id="function" default-value="wizard" multiplicity="none-or-one" />
+		<parameter-def id="web-resource-name" default-value="Secure pages" multiplicity="none-or-one" />
+		<parameter-def id="target-plugin-id" default-value="org.tolven.component.tolvenweb" multiplicity="none-or-one" />
+		<parameter-def id="sourceDirectory" />
+	</extension-point>
+	<!-- End Functional Directories -->
+
+	<!-- META-INF ExtensionPoint -->
+	<extension-point id="META-INF" parent-plugin-id="org.tolven.assembler.war" parent-point-id="META-INF">
+		<parameter-def id="dir" />
+	</extension-point>
+
+	<!-- WEB-INF ExtensionPoint -->
+	<extension-point id="WEB-INF-LIB" parent-plugin-id="org.tolven.assembler.war" parent-point-id="WEB-INF-LIB">
+		<parameter-def id="jar" />
+	</extension-point>
+
+	<!-- Classes ExtensionPoint -->
+	<extension-point id="classes" parent-plugin-id="org.tolven.assembler.war" parent-point-id="classes">
+		<parameter-def id="dir" />
+	</extension-point>
+
+	<!-- Property ExtensionPoint -->
+	<extension-point parent-point-id="property" parent-plugin-id="org.tolven.assembler.war" id="property">
+		<parameter-def id="class" />
+		<parameter-def id="name" />
+		<parameter-def id="value" />
+	</extension-point>
+
+	<!-- Java Script Include ExtensionPoint -->
+	<extension-point id="portalScriptInclude" parent-plugin-id="org.tolven.assembler.war" parent-point-id="fileInclude">
+		<parameter-def id="matchExp" default-value="&lt;!-- TOLVEN__SCRIPT -->" multiplicity="none-or-one" />
+		<parameter-def id="targetFile" default-value="templates/portalTemplate.xhtml" multiplicity="none-or-one" />
+		<parameter-def id="includeFile" />
+	</extension-point>
+
+	<!-- Default Java Script Includes -->
+	<extension id="calendar" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/calendar.txt" />
+	</extension>
+	<extension id="datastructures" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/datastructures.txt" />
+	</extension>
+	<extension id="layercalendar" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/layercalendar.txt" />
+	</extension>
+	<extension id="prototype" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/prototype.txt" />
+	</extension>
+	<extension id="rico" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/rico.txt" />
+	</extension>
+	<extension id="tolven6" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/tolven6.txt" />
+	</extension>
+	<extension id="tolvenwiz" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/tolvenwiz.txt" />
+	</extension>
+	<!-- End Default Java Script Includes -->
+
+	<!-- Managed Beans -->
+	<extension id="activate-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Request scope bean, used for activation" />
+		<parameter id="managed-bean-name" value="activate" />
+		<parameter id="managed-bean-class" value="org.tolven.web.ActivateAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="prov-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Request scope bean, used for Provider setup" />
+		<parameter id="managed-bean-name" value="prov" />
+		<parameter id="managed-bean-class" value="org.tolven.web.ProviderAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="login-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Request scope bean, used during the login process" />
+		<parameter id="managed-bean-name" value="login" />
+		<parameter id="managed-bean-class" value="org.tolven.web.LoginAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="ques-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Used for Question-Answer process" />
+		<parameter id="managed-bean-name" value="ques" />
+		<parameter id="managed-bean-class" value="org.tolven.web.QuestionsAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="el-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Help to resolve EL included in Metadata" />
+		<parameter id="managed-bean-name" value="el" />
+		<parameter id="managed-bean-class" value="org.tolven.web.ELAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="ccr-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="ASTM CCR Actions" />
+		<parameter id="managed-bean-name" value="ccr" />
+		<parameter id="managed-bean-class" value="org.tolven.web.ccr.CCRAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="top-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Session-level bean, used by all pages" />
+		<parameter id="managed-bean-name" value="top" />
+		<parameter id="managed-bean-class" value="org.tolven.web.TopAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="reg-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Used for registration and activation activities" />
+		<parameter id="managed-bean-name" value="reg" />
+		<parameter id="managed-bean-class" value="org.tolven.web.RegisterAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="ldap-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Actions and context associated with LDAP maintenance" />
+		<parameter id="managed-bean-name" value="ldap" />
+		<parameter id="managed-bean-class" value="org.tolven.web.LDAPAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="menu-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Actions for menus" />
+		<parameter id="managed-bean-name" value="menu" />
+		<parameter id="managed-bean-class" value="org.tolven.web.MenuAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="gen-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Backing bean for virtual patient generation funtions" />
+		<parameter id="managed-bean-name" value="gen" />
+		<parameter id="managed-bean-class" value="org.tolven.web.PersonGenAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="acc-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Account-related request actions and context" />
+		<parameter id="managed-bean-name" value="acc" />
+		<parameter id="managed-bean-class" value="org.tolven.web.AccountAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="sys-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Sys Admin request actions and context" />
+		<parameter id="managed-bean-name" value="sys" />
+		<parameter id="managed-bean-class" value="org.tolven.web.SysAdmin" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="invitation-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Invitation-related request actions and context" />
+		<parameter id="managed-bean-name" value="invitation" />
+		<parameter id="managed-bean-class" value="org.tolven.web.InvitationAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="doc-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Backing Bean associated with Documents" />
+		<parameter id="managed-bean-name" value="doc" />
+		<parameter id="managed-bean-class" value="org.tolven.web.DocAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="trim-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Templated RIM related actions" />
+		<parameter id="managed-bean-name" value="trim" />
+		<parameter id="managed-bean-class" value="org.tolven.web.TRIMAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="demographics-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Used for Demographics activities" />
+		<parameter id="managed-bean-name" value="demographicsAct" />
+		<parameter id="managed-bean-class" value="org.tolven.web.DemographicsAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Managed Beans -->
+
+	<!-- Global Faces Validators -->
+	<extension id="attributeValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="attributeValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.AttributeValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Global Faces Validators -->
+
+	<!-- Global Faces Converters -->
+	<extension id="ageConverter" plugin-id="org.tolven.component.faces" point-id="globalConverter">
+		<parameter id="description" value="Register a Converter implementation for displaying a date as an age" />
+		<parameter id="converter-id" value="ageConverter" />
+		<parameter id="converter-class" value="org.tolven.web.AgeConverter" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="stringListConverter" plugin-id="org.tolven.component.faces" point-id="globalConverter">
+		<parameter id="description" value="Convert between a string and a List of Strings" />
+		<parameter id="converter-id" value="stringListConverter" />
+		<parameter id="converter-class" value="org.tolven.web.ccr.StringListConverter" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="attributeConverter" plugin-id="org.tolven.component.faces" point-id="globalConverter">
+		<parameter id="converter-id" value="attributeConverter" />
+		<parameter id="converter-class" value="org.tolven.web.faces.convert.AttributeConverter" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="DataTypeConverter" plugin-id="org.tolven.component.faces" point-id="globalConverter">
+		<parameter id="converter-id" value="DataTypeConverter" />
+		<parameter id="converter-class" value="org.tolven.web.faces.convert.DataTypeConverter" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="TrimDoubleConverter" plugin-id="org.tolven.component.faces" point-id="globalConverter">
+		<parameter id="converter-id" value="TrimDoubleConverter" />
+		<parameter id="converter-class" value="org.tolven.web.rim.DoubleConverter" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="TrimPQConverter" plugin-id="org.tolven.component.faces" point-id="globalConverter">
+		<parameter id="converter-id" value="TrimPQConverter" />
+		<parameter id="converter-class" value="org.tolven.web.rim.TrimPQConverter" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Global Faces Converters -->
+
+	<!-- CCR Tags -->
+	<extension id="tagSourceDirectory.ccr" plugin-id="org.tolven.component.tolvenweb.taglibs.ccr" point-id="tagSourceDirectory">
+		<parameter id="source-directory" value="ccr" />
+	</extension>
+	<!-- End CCR Tags -->
+
+	<!-- Trim Tags -->
+	<extension id="tagSourceDirectory.trim" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagSourceDirectory">
+		<parameter id="source-directory" value="trim" />
+	</extension>
+	<extension id="validator.validatePast" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagValidator">
+		<parameter id="tag-name" value="validatePast" />
+		<parameter id="validator-id" value="validatePast" />
+		<parameter id="validator-class" value="org.tolven.web.faces.ValidatePast" />
+	</extension>
+	<extension id="validator.validateFuture" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagValidator">
+		<parameter id="tag-name" value="validateFuture" />
+		<parameter id="validator-id" value="validateFuture" />
+		<parameter id="validator-class" value="org.tolven.web.faces.ValidateFuture" />
+	</extension>
+	<extension id="converter.convertTS" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagConverter">
+		<parameter id="tag-name" value="convertTS" />
+		<parameter id="converter-id" value="convertTS" />
+		<parameter id="converter-class" value="org.tolven.web.rim.TSConverter" />
+	</extension>
+	<extension id="converter.convertTSValue" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagConverter">
+		<parameter id="tag-name" value="convertTSValue" />
+		<parameter id="converter-id" value="convertTSValue" />
+		<parameter id="converter-class" value="org.tolven.web.rim.TSValueConverter" />
+	</extension>
+	<extension id="converter.valueSetLookupConverter" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagConverter">
+		<parameter id="tag-name" value="valueSetLookup" />
+		<parameter id="converter-id" value="valueSetLookupConverter" />
+		<parameter id="converter-class" value="org.tolven.web.ValueSetLookupConverter" />
+	</extension>
+	<extension id="zipCodeValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="zipCodeValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.ZipCodeValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension> 
+	<!-- End Trim Tags -->
+
+	<!-- Wizard Tags -->
+	<extension id="tagSourceDirectory.wizard" plugin-id="org.tolven.component.tolvenweb.taglibs.wizard" point-id="tagSourceDirectory">
+		<parameter id="source-directory" value="wizard" />
+	</extension>
+	<!-- End Wizard Tags -->
+
+	<!-- Navigation Rules -->
+	<extension id="/*-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/*" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="/public/activating" />
+			<parameter id="to-view-id" value="/public/activating.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="/public/register" />
+			<parameter id="to-view-id" value="/public/register.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="dispatch" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="customizeMenu" />
+			<parameter id="to-view-id" value="/private/customize.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="loggedOut" />
+			<parameter id="to-view-id" value="/public/logout.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="/vestibule/selectAccount" />
+			<parameter id="to-view-id" value="/vestibule/selectAccount.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="surescripts" />
+			<parameter id="to-view-id" value="/private/surescriptsMessageCenter.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/private/customize.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Configure menus" />
+		<parameter id="from-view-id" value="/private/customize.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.updateMenus}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="fail" />
+			<parameter id="to-view-id" value="/private/customize.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.editMenu}" />
+			<parameter id="from-outcome" value="edit" />
+			<parameter id="to-view-id" value="/private/customizeMenuItem.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/private/customizeMenuItem.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Configure menu" />
+		<parameter id="from-view-id" value="/private/customizeMenuItem.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.updateMenuItem}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/private/customize.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/five/upload.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Upload menu" />
+		<parameter id="from-view-id" value="/five/upload.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.addAttachment}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/upload.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/updateAccountRole.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Add/Update an account role" />
+		<parameter id="from-view-id" value="/manage/updateAccountRole.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{acc.updateAccountRole}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/accountRoles.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/accountRoles.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Manage account roles" />
+		<parameter id="from-view-id" value="/manage/accountRoles.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{acc.selectAccountRole}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/updateAccountRole.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="addRole" />
+			<parameter id="to-view-id" value="/manage/updateAccountRole.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/preferences.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Preferences" />
+		<parameter id="from-view-id" value="/manage/preferences.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="userCertificate" />
+			<parameter id="to-view-id" value="/manage/userCertificate.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="editUser" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="editAccount" />
+			<parameter id="to-view-id" value="/manage/editAccountProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="accountUsers" />
+			<parameter id="to-view-id" value="/manage/accountUsers.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="patGen" />
+			<parameter id="to-view-id" value="/manage/patGen.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="createAccountSponsorships" />
+			<parameter id="to-view-id" value="/manage/createAccountSponsorships.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="customize" />
+			<parameter id="to-view-id" value="/private/customize.jsf" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="accountRoles" />
+			<parameter id="to-view-id" value="/manage/accountRoles.jsf" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="editUserPreferences" />
+			<parameter id="to-view-id" value="/manage/editUserPreferences.jsf" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.refreshMetaData}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="editPractice" />
+			<parameter id="to-view-id" value="/manage/practice.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="editMyProviders" />
+			<parameter id="to-view-id" value="/manage/myProviders.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/patGen.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Generate Patients" />
+		<parameter id="from-view-id" value="/manage/patGen.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{gen.createCHRPatients}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/patGen.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/editAccountProfile.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Edit Account Preferences" />
+		<parameter id="from-view-id" value="/manage/editAccountProfile.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.updateAccount}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editAccountProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.addDemoUser}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editAccountProfile.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.addDemoUser}" />
+			<parameter id="from-outcome" value="fail" />
+			<parameter id="to-view-id" value="/manage/editAccountProfile.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{gen.createCHRPatients}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editAccountProfile.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.addSponsorship}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editAccountProfile.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.addSendAccount}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editAccountProfile.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.addSendAccount}" />
+			<parameter id="from-outcome" value="fail" />
+			<parameter id="to-view-id" value="/manage/editAccountProfile.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/accountUsers.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="List Account Users for an Account" />
+		<parameter id="from-view-id" value="/manage/accountUsers.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{acc.selectAccountUser}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editAccountUser.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.addDemoUser}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/accountUsers.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.addDemoUser}" />
+			<parameter id="from-outcome" value="fail" />
+			<parameter id="to-view-id" value="/manage/accountUsers.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/editAccountUser.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Edit an AccountUser" />
+		<parameter id="from-view-id" value="/manage/editAccountUser.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{acc.updateAccountUser}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/accountUsers.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="accountUsers" />
+			<parameter id="to-view-id" value="/manage/accountUsers.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/sponsoredUsers.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Sponsored Users" />
+		<parameter id="from-view-id" value="/manage/sponsoredUsers.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="close" />
+			<parameter id="to-view-id" value="/manage/createAccountSponsorships.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/editUserProfile.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Edit User Preferences" />
+		<parameter id="from-view-id" value="/manage/editUserProfile.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.sendTestMessage}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.updatePrefs}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="addPhoto" />
+			<parameter id="to-view-id" value="/manage/prefPhotos.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="error" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="deleteUser" />
+			<parameter id="to-view-id" value="/manage/deleteUser.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/prefPhotos.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="User Preferences - select photo for likeness, upload new photo(s)" />
+		<parameter id="from-view-id" value="/manage/prefPhotos.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{doc.selectUserLikeness}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{doc.selectNoUserLikeness}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.upload}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/prefPhotos.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="cancel" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="userPreferences" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/setup/createUser.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Special setup function" />
+		<parameter id="from-view-id" value="/setup/createUser.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{gen.newPerson}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/setup/createUser.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{gen.newUser}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/setup/createUser.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/public/register.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/public/register.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.sendTestMessage}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/public/register.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.register}" />
+			<parameter id="from-outcome" value="registered" />
+			<parameter id="to-view-id" value="/public/activating.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.register}" />
+			<parameter id="from-outcome" value="error" />
+			<parameter id="to-view-id" value="/public/register.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="cancel" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.register}" />
+			<parameter id="from-outcome" value="activated" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/public/notregistered.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/public/notregistered.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="loggedOut" />
+			<parameter id="to-view-id" value="/loggedOut.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/public/newDemoUser.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/public/newDemoUser.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="cancel" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="error" />
+			<parameter id="to-view-id" value="/public/newDemoUser.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.activate}" />
+			<parameter id="from-outcome" value="activated" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/deleteUser.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/manage/deleteUser.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="userPreferences" />
+			<parameter id="to-view-id" value="/manage/editUserProfile.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/five/providers.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/five/providers.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.sendCCR}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/providers.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/five/patients.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/five/patients.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.createPatient}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/patients.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/five/assAll.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/five/assAll.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.createAssessment}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/assAll.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/ajax/paneDispatch.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/ajax/paneDispatch.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.sendCCR}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/providers.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{trim.upload}" />
+			<parameter id="from-outcome" value="refresh" />
+			<parameter id="to-view-id" value="/drilldown/refresh.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{trim.upload}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/drilldown/drilldown.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{trim.upload}" />
+			<parameter id="from-outcome" value="fail" />
+			<parameter id="to-view-id" value="/drilldown/drilldown.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.createPatient}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/patients.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.createAssessment}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/assAll.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{gen.generatePeople}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/genPerson.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{gen.createPHR}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/familyDetail.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{gen.adoptFamily}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/familyDetail.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{gen.createCHRPatients}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/patientGen.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.createGraph}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/labGraph.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.evaluatePath}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/docDetail.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.newCCR}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/docList.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.genDM}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/problems.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/five/test/docDetail.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/five/test/docDetail.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.evaluatePath}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/docDetail.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.newCCR}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/docDetail.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/five/labGraph.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/five/labGraph.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{menu.createGraph}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/labGraph.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/setup/umls.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/setup/umls.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/setup/umls.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/publicHome.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/publicHome.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{top.createInitialUser}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/five/test/docList.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Document List" />
+		<parameter id="from-view-id" value="/five/test/docList.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.newCCR}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/five/test/docList.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/ccr/ccrtest.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="CCR Test" />
+		<parameter id="from-view-id" value="/ccr/ccrtest.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.reset}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/ccr/ccrtest.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.tog}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/ccr/ccrtest.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.submit}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/ccr/ccrtest.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ccr.add}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/ccr/ccrtest.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/private/admin/sysAdmin.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="System Administration" />
+		<parameter id="from-view-id" value="/private/admin/sysAdmin.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="add" />
+			<parameter id="to-view-id" value="/private/admin/addAccountType.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{sys.selectAccountType}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/private/admin/updateAccountType.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="cancel" />
+			<parameter id="to-view-id" value="/private/admin/index.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/private/admin/addAccountType.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Add Account Type" />
+		<parameter id="from-view-id" value="/private/admin/addAccountType.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="cancel" />
+			<parameter id="to-view-id" value="/private/admin/sysAdmin.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{sys.addAccountType}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/private/admin/sysAdmin.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{sys.addAccountType}" />
+			<parameter id="from-outcome" value="fail" />
+			<parameter id="to-view-id" value="/private/admin/addAccountType.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/private/admin/updateAccountType.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Update Account Type" />
+		<parameter id="from-view-id" value="/private/admin/updateAccountType.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="cancel" />
+			<parameter id="to-view-id" value="/private/admin/sysAdmin.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{sys.updateAccountType}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/private/admin/sysAdmin.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{sys.updateAccountType}" />
+			<parameter id="from-outcome" value="fail" />
+			<parameter id="to-view-id" value="/private/admin/updateAccountType.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/practice.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Publish Practice" />
+		<parameter id="from-view-id" value="/manage/practice.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="create" />
+			<parameter id="to-view-id" value="/manage/provider.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="edit" />
+			<parameter id="to-view-id" value="/manage/provider.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{prov.toggleStatus}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/practice.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{prov.toggleShowProvider}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/practice.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/provider.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Create or update a single provider" />
+		<parameter id="from-view-id" value="/manage/provider.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{prov.updateProvider}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/practice.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="practice" />
+			<parameter id="to-view-id" value="/manage/practice.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/myProviders.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="List of my provider (for a personal account)" />
+		<parameter id="from-view-id" value="/manage/myProviders.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{prov.viewMyProvider}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/viewMyProvider.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="search" />
+			<parameter id="to-view-id" value="/manage/myProviderSearch.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/myProviderSearch.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Select a provider (for a personal account)" />
+		<parameter id="from-view-id" value="/manage/myProviderSearch.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="myProviders" />
+			<parameter id="to-view-id" value="/manage/myProviders.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{prov.findAProvider}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/myProviderSearch.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{prov.addAProvider}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/myProviders.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/manage/editUserPreferences.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Edit User Preferences" />
+		<parameter id="from-view-id" value="/manage/editUserPreferences.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.saveUserPreferences}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/editUserPreferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="preferences" />
+			<parameter id="to-view-id" value="/manage/preferences.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="accountUsers" />
+			<parameter id="to-view-id" value="/manage/accountUsers.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+
+	<extension id="switch-/*-navigation-rule-contribution" plugin-id="org.tolven.component.faces" point-id="navigation-rule-contribution">
+		<parameter id="from-view-id" value="/*" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="switch" />
+			<parameter id="to-view-id" value="/private/switchAccount.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/vestibule/selectAccount.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="If the user needed to or wanted to select which account they will be operating under, move on to the appropriate next page." />
+		<parameter id="from-view-id" value="/vestibule/selectAccount.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{invitation.executeInvitation}" />
+			<parameter id="from-outcome" value="inviteSuccess" />
+			<parameter id="to-view-id" value="/vestibule/selectAccount.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="createAccount" />
+			<parameter id="from-outcome" value="createAccount" />
+			<parameter id="to-view-id" value="/vestibule/createAccount.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="administration" />
+			<parameter id="from-outcome" value="administration" />
+			<parameter id="to-view-id" value="/vestibule/admin/index.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{acc.login}" />
+			<parameter id="from-outcome" value="/private/application.jsf" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/vestibule/password.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Account selection password" />
+		<parameter id="from-view-id" value="/vestibule/password.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="error" />
+			<parameter id="to-view-id" value="/vestibule/password.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.verifyPassword}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/vestibule/selectAccount.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/vestibule/createAccount.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="" />
+		<parameter id="from-view-id" value="/vestibule/createAccount.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-outcome" value="cancel" />
+			<parameter id="to-view-id" value="/vestibule/selectAccount.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{reg.createNewAccount}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/vestibule/selectAccount.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/vestibule/askQuestions.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Ask Questions" />
+		<parameter id="from-view-id" value="/vestibule/askQuestions.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ques.updateAnswers}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/private/application.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{ques.updateAnswers}" />
+			<parameter id="from-outcome" value="error" />
+			<parameter id="to-view-id" value="/vestibule/askQuestions.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	
+	<!-- End Navigation Rules -->
+
+	<!-- Filters -->
+	<extension id="LogoutFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="LogoutFilter" />
+		<parameter id="filter-class" value="org.tolven.web.security.LogoutFilter" />
+		<parameter id="filter-sequence" value="110" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="LogoutFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="LogoutFilter" />
+		<parameter id="url-pattern" value="/loggedOut.jsf" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="SwitchAccountFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="SwitchAccountFilter" />
+		<parameter id="filter-class" value="org.tolven.web.security.SwitchAccountFilter" />
+		<parameter id="filter-sequence" value="130" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="SwitchAccountFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="SwitchAccountFilter" />
+		<parameter id="url-pattern" value="/private/switchAccount.jsf" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="GeneralSecurityFilter" plugin-id="org.tolven.component.war" point-id="security-filter">
+		<parameter id="filter-name" value="GeneralSecurityFilter" />
+		<parameter id="filter-class" value="org.tolven.web.security.GeneralSecurityFilter" />
+		<parameter id="filter-sequence" value="140" />
+		<parameter id="web-resource-name" value="Secure pages" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="UploadMultipartFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="UploadMultipartFilter" />
+		<parameter id="filter-class" value="org.tolven.web.UploadMultipartFilter" />
+		<parameter id="filter-sequence" value="1000" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="UploadMultipartFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="UploadMultipartFilter" />
+		<parameter id="url-pattern" value="*.jsf" />
+		<parameter id="url-pattern" value="*.jsp" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="ImageCacheFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="ImageCacheFilter" />
+		<parameter id="filter-class" value="org.tolven.web.ImageCacheFilter" />
+		<parameter id="filter-sequence" value="2000" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="ImageCacheFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="ImageCacheFilter" />
+		<parameter id="url-pattern" value="*.jpg" />
+		<parameter id="url-pattern" value="*.js" />
+		<parameter id="url-pattern" value="*.css" />
+		<parameter id="url-pattern" value="*.gif" />
+		<parameter id="url-pattern" value="*.png" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="XMLCacheFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="XMLCacheFilter" />
+		<parameter id="filter-class" value="org.tolven.web.XMLCacheFilter" />
+		<parameter id="filter-sequence" value="3000" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="XMLCacheFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="XMLCacheFilter" />
+		<parameter id="url-pattern" value="/ajax/*" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Filters -->
+
+	<!-- Servlets -->
+	<extension id="Resource Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Resource Servlet" />
+		<parameter id="servlet-class" value="org.tolven.web.servlet.ResourceServlet" />
+		<parameter id="load-on-startup" value="2" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Resource Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Resource Servlet" />
+		<parameter id="url-pattern" value="*.png" />
+		<parameter id="url-pattern" value="*.jpg" />
+		<parameter id="url-pattern" value="*.js" />
+		<parameter id="url-pattern" value="*.css" />
+		<parameter id="url-pattern" value="*.gif" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Faces Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Faces Servlet" />
+		<parameter id="servlet-class" value="javax.faces.webapp.FacesServlet" />
+		<parameter id="load-on-startup" value="4" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Faces Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Faces Servlet" />
+		<parameter id="url-pattern" value="*.jsf" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Ajax Command Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Ajax Command Servlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.AjaxServlet" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="web-resource-name" value="Secure pages" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Ajax Command Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Ajax Command Servlet" />
+		<parameter id="url-pattern" value="*.ajax" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Ajax Instantiation Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Ajax Instantiation Servlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.InstantiateServlet" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="web-resource-name" value="Secure pages" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Ajax Instantiation Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Ajax Instantiation Servlet" />
+		<parameter id="url-pattern" value="*.ajaxi" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Tolven Document Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Tolven Document Servlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.DocServlet" />
+		<parameter id="web-resource-name" value="Secure pages" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Tolven Document Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Tolven Document Servlet" />
+		<parameter id="url-pattern" value="/document" />
+		<parameter id="url-pattern" value="*.tdoc" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Async Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Async Servlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.AsyncServlet" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Async Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Async Servlet" />
+		<parameter id="url-pattern" value="*.async" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Generic Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Generic Servlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.GenericServlet" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="web-resource-name" value="Secure pages" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Generic Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Generic Servlet" />
+		<parameter id="url-pattern" value="*.ajaxc" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Favorites Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Favorites Servlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.FavoritesServlet" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Favorites Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Favorites Servlet" />
+		<parameter id="url-pattern" value="*.ajaxf" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Graph Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Graph Servlet" />
+		<parameter id="servlet-class" value="org.jfree.chart.servlet.DisplayChart" />
+		<parameter id="load-on-startup" value="7" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Graph Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Graph Servlet" />
+		<parameter id="url-pattern" value="*.graph" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Tolven Report Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="Tolven Report Servlet" />
+		<parameter id="servlet-class" value="org.tolven.web.servlet.ReportServlet" />
+		<parameter id="web-resource-name" value="Secure pages" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Tolven Report Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="Tolven Report Servlet" />
+		<parameter id="url-pattern" value="/report/*" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Servlets -->
+
+	<!-- Security -->
+	<extension id="Unprotected Data-security-constraint" plugin-id="org.tolven.component.war" point-id="security-constraint">
+		<parameter id="web-resource-collection">
+			<parameter id="web-resource-name" value="Unprotected Data" />
+		</parameter>
+		<parameter id="transport-guarantee" value="NONE" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="Secure Area-security-constraint" plugin-id="org.tolven.component.war" point-id="security-constraint">
+		<parameter id="web-resource-collection">
+			<parameter id="web-resource-name" value="Secure pages" />
+		</parameter>
+		<parameter id="transport-guarantee" value="CONFIDENTIAL" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="security-role" plugin-id="org.tolven.component.war" point-id="security-role">
+		<parameter id="role-name" value="*" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="session-config" plugin-id="org.tolven.component.war" point-id="session-config">
+		<parameter id="session-timeout" value="30" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Security -->
+
+	<extension id="env-entry-webContextId" plugin-id="org.tolven.component.war" point-id="env-entry">
+		<parameter id="env-entry-name" value="webContextId" />
+		<parameter id="env-entry-type" value="java.lang.String" />
+		<parameter id="env-entry-value" value="tolvenweb" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	
+	<!-- Error Page -->
+	<extension id="error-page" plugin-id="org.tolven.component.war" point-id="error-page">
+		<parameter id="error-code" value="500" />
+		<parameter id="location" value="/error.jsp" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="error-403-page" plugin-id="org.tolven.component.war" point-id="error-page">
+		<parameter id="error-code" value="403" />
+		<parameter id="location" value="/error-403.jsp" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Error Page -->
+
+</plugin>

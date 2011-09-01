@@ -1,0 +1,6 @@
+					</tolven:mapping>
+				</tolven:tolvenContext>
+			</jndi:binding>
+		</jndi:bindings>
+	</attribute>
+</mbean>

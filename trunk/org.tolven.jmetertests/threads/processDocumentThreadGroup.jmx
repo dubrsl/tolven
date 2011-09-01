@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="processDocumentThreadGroup" enabled="true">
+      <stringProp name="ThreadGroup.on_sample_error">stopthread</stringProp>
+      <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+        <boolProp name="LoopController.continue_forever">false</boolProp>
+        <stringProp name="LoopController.loops">1</stringProp>
+      </elementProp>
+      <stringProp name="ThreadGroup.num_threads">1</stringProp>
+      <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+      <longProp name="ThreadGroup.start_time">1289602698000</longProp>
+      <longProp name="ThreadGroup.end_time">1289602698000</longProp>
+      <boolProp name="ThreadGroup.scheduler">false</boolProp>
+      <stringProp name="ThreadGroup.duration"></stringProp>
+      <stringProp name="ThreadGroup.delay"></stringProp>
+    </ThreadGroup>
+    <hashTree>
+      <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+        <collectionProp name="CookieManager.cookies"/>
+        <boolProp name="CookieManager.clearEachIteration">false</boolProp>
+        <stringProp name="CookieManager.policy">rfc2109</stringProp>
+      </CookieManager>
+      <hashTree/>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="createUserSCConfig" enabled="true">
+        <stringProp name="TestPlan.comments">Create user with tolvenSSO role</stringProp>
+      </GenericController>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="2614219">USER</stringProp>
+            <stringProp name="-1915155313">USER_PASSWORD</stringProp>
+            <stringProp name="570880847">USER_SN</stringProp>
+            <stringProp name="570880351">USER_CN</stringProp>
+            <stringProp name="-959997655">USER_ROLES</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="1548113619">
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1472445847">tolvenSSO(tolvenSSO)|id=tolvenSSO,${ROLE_BASE_DN}</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="createUserIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/createUserSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="loginSCConfig" enabled="true"/>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="2614219">USER</stringProp>
+            <stringProp name="-1915155313">USER_PASSWORD</stringProp>
+            <stringProp name="-960305925">USER_REALM</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="825211695">
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="-568193752">${TOLVEN_REALM}</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="logionIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/loginSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="createAccountSCConfig_ECHR" enabled="true"/>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="-805828995">ACCOUNT_ADMIN</stringProp>
+            <stringProp name="-856692180">ACCOUNT_TYPE</stringProp>
+            <stringProp name="-788126330">ACCOUNT_TITLE</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="-921453768">
+              <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+              <stringProp name="3107368">echr</stringProp>
+              <stringProp name="-1405858160">${ACCOUNT_PREFIX}${TS}${CNT}</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">false</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="createAccountIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/createAccountSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="selectAccountSCConfig" enabled="true"/>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="false">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="-318209907">ACCOUNT_ID</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="25080">
+              <stringProp name="0"></stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="selectAccountIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/selectAccountSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="generateCCRSCConfig" enabled="true">
+        <stringProp name="TestPlan.comments">Returns ${CCR}</stringProp>
+      </GenericController>
+      <hashTree>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="generateCCRIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/generateCCRSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="processDocumentSCConfig" enabled="true">
+        <stringProp name="TestPlan.comments">Returns ${DOCUMENT_ID}</stringProp>
+      </GenericController>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="1644347675">DOCUMENT</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="-407601022">
+              <stringProp name="1146305570">${CCR}</stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="processDocumentIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/processDocumentSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="getDocumentSCConfig" enabled="true">
+        <stringProp name="TestPlan.comments">Returns ${DOCUMENT}</stringProp>
+      </GenericController>
+      <hashTree>
+        <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="false">
+          <collectionProp name="UserParameters.names">
+            <stringProp name="-1635298625">DOCUMENT_ID</stringProp>
+          </collectionProp>
+          <collectionProp name="UserParameters.thread_values">
+            <collectionProp name="25080">
+              <stringProp name="0"></stringProp>
+            </collectionProp>
+          </collectionProp>
+          <boolProp name="UserParameters.per_iteration">true</boolProp>
+        </UserParameters>
+        <hashTree/>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="getDocumentIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/getDocumentSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+      <CompareAssertion guiclass="TestBeanGUI" testclass="CompareAssertion" testname="Compare Assertion" enabled="true">
+        <boolProp name="compareContent">true</boolProp>
+        <longProp name="compareTime">-1</longProp>
+        <collectionProp name="stringsToSkip">
+          <elementProp name="" elementType="SubstitutionElement">
+            <stringProp name="regex">${CCR}</stringProp>
+            <stringProp name="substitute">${DOCUMENT}</stringProp>
+          </elementProp>
+        </collectionProp>
+      </CompareAssertion>
+      <hashTree/>
+      <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="logoutSCConfig" enabled="true"/>
+      <hashTree>
+        <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="logoutIC" enabled="true">
+          <stringProp name="IncludeController.includepath">simple-controllers/tolvenLogoutSC.jmx</stringProp>
+        </IncludeController>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

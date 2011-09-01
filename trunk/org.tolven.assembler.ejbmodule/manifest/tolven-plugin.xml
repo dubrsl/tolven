@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.assembler.ejbmodule" version="2.1.0" class="org.tolven.assembler.ejbmodule.EJBModuleAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<requires>
+		<import plugin-id="org.tolven.component.ejb" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="tpfclasses" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	
+	<extension-point id="abstractEJB" parent-plugin-id="org.tolven.component.ejb" parent-point-id="abstractEJB" extension-multiplicity="none" />
+	
+	<extension-point id="classes" extension-multiplicity="none">
+		<parameter-def id="dir" />
+	</extension-point>
+	<extension-point id="META-INF">
+		<parameter-def id="dir" />
+	</extension-point>
+	<!-- 
+	Define a value to be added to a property for a specified class. 
+	If override parameter is present, its property value will be removed from the finished EJB 
+    regardless of processing order. Used when overriding a session bean with, say, a subclass of the 
+    same bean. Similar to the Factory pattern but in the spirit of plugins.
+-->
+	<extension-point id="property" extension-multiplicity="none">
+		<parameter-def id="class" />
+		<parameter-def id="name" />
+		<parameter-def id="value" />
+		<parameter-def id="override" multiplicity="none-or-one" />
+	</extension-point>
+
+	<extension-point id="ldapPropertyAccessor">
+		<parameter-def id="class" multiplicity="any" />
+	</extension-point>
+	<extension-point id="orm" extension-multiplicity="one">
+		<parameter-def id="ormId" />
+		<parameter-def id="name" />
+		<parameter-def id="transaction-type" />
+		<parameter-def id="jta-data-source" />
+	</extension-point>
+	<extension-point id="persistence-unit">
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="provider" multiplicity="none-or-one" />
+		<parameter-def id="mapping-file" />
+		<parameter-def id="property" multiplicity="any">
+			<parameter-def id="name" />
+			<parameter-def id="value" />
+		</parameter-def>
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="persistence-unit-metadata">
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="persistence-unit-defaults" multiplicity="none-or-one">
+			<parameter-def id="schema" multiplicity="none-or-one" />
+		</parameter-def>
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="table-generator">
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="name" />
+		<parameter-def id="table" multiplicity="none-or-one" />
+		<parameter-def id="schema" multiplicity="none-or-one" />
+		<parameter-def id="pk-column-name" multiplicity="none-or-one" />
+		<parameter-def id="value-column-name" multiplicity="none-or-one" />
+		<parameter-def id="pk-column-value" multiplicity="none-or-one" />
+		<parameter-def id="initial-value" multiplicity="none-or-one" />
+		<parameter-def id="allocation-size" multiplicity="none-or-one" />
+		<parameter-def id="unique-constraint" multiplicity="any">
+			<parameter-def id="column-name" multiplicity="one-or-more" />
+		</parameter-def>
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="mapped-superclass">
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="class" />
+		<parameter-def id="attributes" multiplicity="none-or-one">
+			<parameter-def id="id" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="basic" multiplicity="any">
+				<parameter-def id="name" multiplicity="none-or-one" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+				<parameter-def id="lob" multiplicity="none-or-one" />
+				<parameter-def id="temporal" multiplicity="none-or-one" />
+				<parameter-def id="enumerated" multiplicity="none-or-one" />
+			</parameter-def>
+			<parameter-def id="version" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="many-to-one" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="join-column" multiplicity="any">
+					<parameter-def id="name" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="embedded" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="attribute-override" multiplicity="any">
+					<parameter-def id="name" />
+					<parameter-def id="column" multiplicity="any">
+						<parameter-def id="name" multiplicity="none-or-one" />
+						<parameter-def id="length" type="number" multiplicity="none-or-one" />
+						<parameter-def id="column-definition" multiplicity="none-or-one" />
+					</parameter-def>
+				</parameter-def>
+			</parameter-def>
+		</parameter-def>
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="entity">
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="class" />
+		<parameter-def id="table" multiplicity="none-or-one">
+			<parameter-def id="name" multiplicity="none-or-one" />
+			<parameter-def id="schema" multiplicity="none-or-one" />
+			<parameter-def id="unique-constraint" multiplicity="any">
+				<parameter-def id="column-name" multiplicity="one-or-more" />
+			</parameter-def>
+		</parameter-def>
+		<parameter-def id="discriminator-column" multiplicity="none-or-one">
+			<parameter-def id="name" multiplicity="none-or-one" />
+			<parameter-def id="length" type="number" multiplicity="none-or-one" />
+		</parameter-def>
+		<parameter-def id="attributes" multiplicity="none-or-one">
+			<parameter-def id="id" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="basic" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+				<parameter-def id="lob" multiplicity="none-or-one" />
+				<parameter-def id="temporal" multiplicity="none-or-one" />
+				<parameter-def id="enumerated" multiplicity="none-or-one" />
+			</parameter-def>
+			<parameter-def id="version" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="many-to-one" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="join-column" multiplicity="any">
+					<parameter-def id="name" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="embedded" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="attribute-override" multiplicity="any">
+					<parameter-def id="name" />
+					<parameter-def id="column" multiplicity="any">
+						<parameter-def id="name" multiplicity="none-or-one" />
+						<parameter-def id="length" type="number" multiplicity="none-or-one" />
+						<parameter-def id="column-definition" multiplicity="none-or-one" />
+					</parameter-def>
+				</parameter-def>
+			</parameter-def>
+		</parameter-def>
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+	<extension-point id="embeddable">
+		<parameter-def id="ormId" multiplicity="any" />
+		<parameter-def id="class" />
+		<parameter-def id="attributes" multiplicity="none-or-one">
+			<parameter-def id="id" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="basic" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+				<parameter-def id="lob" multiplicity="none-or-one" />
+				<parameter-def id="temporal" multiplicity="none-or-one" />
+				<parameter-def id="enumerated" multiplicity="none-or-one" />
+			</parameter-def>
+			<parameter-def id="version" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="column" multiplicity="none-or-one">
+					<parameter-def id="name" multiplicity="none-or-one" />
+					<parameter-def id="length" type="number" multiplicity="none-or-one" />
+					<parameter-def id="column-definition" multiplicity="none-or-one" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="many-to-one" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="join-column" multiplicity="any">
+					<parameter-def id="name" />
+				</parameter-def>
+			</parameter-def>
+			<parameter-def id="embedded" multiplicity="any">
+				<parameter-def id="name" />
+				<parameter-def id="attribute-override" multiplicity="any">
+					<parameter-def id="name" />
+					<parameter-def id="column" multiplicity="any">
+						<parameter-def id="name" multiplicity="none-or-one" />
+						<parameter-def id="length" type="number" multiplicity="none-or-one" />
+						<parameter-def id="column-definition" multiplicity="none-or-one" />
+					</parameter-def>
+				</parameter-def>
+			</parameter-def>
+		</parameter-def>
+		<parameter-def id="target-plugin-id" />
+	</extension-point>
+</plugin>

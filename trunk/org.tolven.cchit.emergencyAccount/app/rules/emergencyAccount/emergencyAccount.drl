@@ -1,0 +1,199 @@
+package emergencyAccount
+
+import java.util.*;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.doc.entity.*;
+import java.lang.Integer;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.app.bean.Mode;
+import org.tolven.app.bean.Plan;
+import org.tolven.core.entity.Status;
+import org.tolven.trim.api.ProcessTrimLocal;
+import org.tolven.logging.TolvenLogger;
+import org.tolven.doc.bean.TolvenMessage;
+import org.tolven.trim.process.ProcessTrim;
+import org.tolven.app.CreatorLocal;
+import org.tolven.app.ShareInfoLocal;
+import org.tolven.process.UniqueIdGenerator;
+import org.tolven.app.EmergencyAccountLocal;
+
+global org.tolven.trim.process.ProcessTrim processTrim;
+global org.tolven.app.AppEvalAdaptor app;
+global Date now;
+
+rule "Initialize ShareInfoBean"
+salience 5
+	when
+		eval(true)
+	then
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/ShareInfoBean!org.tolven.app.ShareInfoLocal"));
+		
+	end
+	
+rule "Initialize EmergencyAccountBean"
+salience 5
+	when
+		eval(true)
+	then
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/EmergencyAccountBean!org.tolven.app.EmergencyAccountLocal"));
+	end
+
+rule "Place selected Emergency Account account on Emergency Account list"
+	when
+		$msList: MenuStructure(path == "echr:admin:emergencyAccounts:account")
+		$ms: MenuStructure(role == "placeholder", path == "echr:admin:emergencyAccount")
+		$md: MenuData(menuStructure == $ms)
+		$emergencyAccountBean:EmergencyAccountLocal()
+		$trim: Trim(name == "emergencyAccount") 
+		$act: Act( ) from $trim.act
+		$accountDetailsRel: ActRelationship(name == "accountDetails") from $act.relationships
+	then
+		app.createReferenceMD( $md, $msList );
+		$emergencyAccountBean.setEmergencyAccount($accountDetailsRel.getAct().getObservation().getValues().get(0).getST().getValue());
+		app.info("Place  Emergency Account  on  Emergency Account list"); 
+	end
+
+rule "Place unique id on unique id list"
+	when
+		$msList: MenuStructure(path == "echr:patients:uniqueIds")
+		$ms: MenuStructure(role == "placeholder", path == "echr:patient:uniqueId")
+		$md: MenuData( menuStructure == $ms)
+	then
+		app.info("Place unique id on unique id list"); 
+		MenuData md = app.createReferenceMD($md, $msList);
+	end
+
+rule "Share problems with Emergency Account"
+	when
+		$shareInfo:ShareInfoLocal()
+		$trim: Trim(name=="docclin/evn/problem") 
+		Mode(direction == "local")
+		$tm: TolvenMessage()
+	then
+		app.info("Share problems with Emergency Account");
+		$shareInfo.startSharing($trim , app, $tm);	
+	end
+	
+rule "Share procedures with Emergency Account"
+	when
+		$shareInfo:ShareInfoLocal()
+		$trim: Trim(name=="pxDoc") 
+		Mode(direction == "local")
+		$tm: TolvenMessage()
+	then
+	app.info("Share procedures with Emergency Account");
+		$shareInfo.startSharing($trim , app, $tm);	
+	end
+	
+rule "Share drug allergies with Emergency Account"
+	when
+		$shareInfo:ShareInfoLocal()
+		$trim: Trim(name=="docclin/evn/drugAllergies") 
+		Mode(direction == "local")
+		$tm: TolvenMessage()
+	then
+	app.info("Share drug allergies with Emergency Account");
+		$shareInfo.startSharing($trim , app, $tm);	
+	end
+	
+rule "Share medication history with Emergency Account"
+	when
+		$shareInfo:ShareInfoLocal()
+		$trim: Trim(name=="obs/evn/medicationHistory") 
+		Mode(direction == "local")
+		$tm: TolvenMessage()
+	then
+	app.info("Share medication history with Emergency Account");
+		$shareInfo.startSharing($trim , app, $tm);	
+	end
+	
+rule "Share lab results with Emergency Account"
+	when
+		$shareInfo:ShareInfoLocal()
+		$trim: Trim(name=="labOrderDoc") 
+		Mode(direction == "local")
+		$tm: TolvenMessage()
+	then
+	app.info("Share lab results with Emergency Account");
+		$shareInfo.startSharing($trim , app, $tm);	
+	end	
+
+rule "Share patient prescription with Emergency Account"
+	when
+		$shareInfo:ShareInfoLocal()
+		$trim: Trim(name=="obs/evn/patientPrescription") 
+		Mode(direction == "local")
+		$tm: TolvenMessage()
+	then
+	app.info("Share patient prescription with Emergency Account");
+		$shareInfo.startSharing($trim , app, $tm);	
+	end
+	
+rule "Add Information to Emergency Account"
+	when
+		$trim: Trim(name == "docclin/evn/shareInfoIn") 
+		$ms: MenuStructure(path == "echr:newInfoInShare")
+        $md: MenuData(menuStructure == $ms)
+		$act: Act( ) from $trim.act 
+		$rel: ActRelationship(name == "sharingStatus", $label:label, $label.value == "1") from $act.relationships
+	then
+		app.info(">>>>>>>>>>Add Information to Emergency Account . . . . . . . . . . .");
+		processTrim.createMdForInShare($md);
+	end
+	
+rule "Place Medication History on active medication list"
+	when
+		$msList: MenuStructure(path == "echr:patient:medications:active")
+		$ms: MenuStructure(role == "placeholder", path == "echr:patient:currentMedication")
+		$md: MenuData( menuStructure == $ms && string06!="Discontinued")	
+		$trim:TrimEx(name=="docclin/evn/shareInfoIn")
+	then
+		MenuData md = app.createReferenceMD( $md, $msList );
+		app.info("Place Medication History on active medication list"); 
+	end
+	
+rule "Place Active Allegies on Acive list"
+	when
+		$msAllergy: MenuStructure(role == "placeholder", path == "echr:patient:allergy")
+		$msList: MenuStructure(role == "list", path == "echr:patient:allergies:active")
+		$trim:TrimEx(name=="docclin/evn/shareInfoIn")
+		$mdAllergy: MenuData(menuStructure == $msAllergy)
+	then
+		app.info("Place Active Allegies on Active list"); 
+		app.createReferenceMD($mdAllergy, $msList);
+	end
+	
+rule "Place Lab orders in lab order results  list"
+	salience 5
+	when
+	    $msList: MenuStructure( path == "echr:patient:orders:labResultsList" )
+	    $ms: MenuStructure( role == "placeholder", path == "echr:patient:laboratoryOrder" )
+	    $md: MenuData( menuStructure == $ms, string02 == "COMPLETED")
+	    $trim:TrimEx(name=="docclin/evn/shareInfoIn")
+	then
+	    MenuData md = app.createReferenceMD( $md, $msList );
+	    app.info("Added a lab order to lab orders results list");
+end
+
+rule "Place Lab order on Lab order summary list"
+	when
+		$msList: MenuStructure( path == "echr:patient:summary:labOrdersum" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:laboratoryOrder" )
+		$md: MenuData(menuStructure == $ms, string02 == "COMPLETED")
+		$trim:TrimEx(name=="docclin/evn/shareInfoIn")
+	then
+		app.createReferenceMD( $md, $msList );
+		app.info("Added a lab order to lab orders summary list");
+end
+
+rule "Medication on Medication summary list"
+	when
+		$msMedication: MenuStructure( role == "placeholder", path == "echr:patient:currentMedication" )
+		$mdMedication: MenuData( menuStructure == $msMedication , (string08!='Pending' && string08!='Error' && string06!="Discontinued" && actStatus!="nullified"))
+		$trim:TrimEx(name=="docclin/evn/shareInfoIn")
+	then
+		MenuData mdMedicationList = app.createReferenceMD( $mdMedication, "echr:patient:summary:medsum" );
+		app.info("Place medication reference for summary list");
+	end

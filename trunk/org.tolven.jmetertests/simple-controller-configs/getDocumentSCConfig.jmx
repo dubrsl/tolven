@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="getDocumentSCConfig" enabled="true">
+      <stringProp name="TestPlan.comments">Returns ${DOCUMENT}</stringProp>
+    </GenericController>
+    <hashTree>
+      <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="false">
+        <collectionProp name="UserParameters.names">
+          <stringProp name="-1635298625">DOCUMENT_ID</stringProp>
+        </collectionProp>
+        <collectionProp name="UserParameters.thread_values">
+          <collectionProp name="25080">
+            <stringProp name="0"></stringProp>
+          </collectionProp>
+        </collectionProp>
+        <boolProp name="UserParameters.per_iteration">true</boolProp>
+      </UserParameters>
+      <hashTree/>
+      <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="getDocumentIC" enabled="true">
+        <stringProp name="IncludeController.includepath">simple-controllers/getDocumentSC.jmx</stringProp>
+      </IncludeController>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

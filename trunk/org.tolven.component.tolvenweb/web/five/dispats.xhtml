@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>List of diabetes patients</title>
+  </head>
+  <body>
+  	<ui:composition>
+<script language="JavaScript" type="text/javascript">
+// <![CDATA[
+	dispatsGridz = new Rico.LiveGrid( '#{menu.element}LG', 15, #{menu.menuDataCount}, 
+				'menuData.ajax', 
+				{prefetchBuffer: false, 
+				tableClass: 'dataGrid', 
+				largeBufferSize: 4.0,
+				nearLimitFactor: 0.7,
+				requestParameters: [{name: 'element', value: visiblePage}],
+				loadingClass: 'dataGridLoading',
+				sortAscendImg: '../images/sort_asc.gif', 
+				sortDescendImg:'../images/sort_desc.gif'}); 
+	dispatsGridz.setSupressColumnRange( 0, 3);
+	dispatsGridz.addSortSupressColumn( 'name', 0, 3);
+	dispatsGridz.addSortSupressColumn( 'age', 0, 3);
+	dispatsGridz.addSortSupressColumn( 'sex', 0, 3);
+	dispatsGridz.addSortSupressColumn( 'disease', 3, 4);
+	dispatsGridz.addSortSupressColumn( 'onset', 4, 5);
+	dispatsGridz.requestContentRefresh(0);	
+	
+	prevdispatsFilterValue = '';
+	prevdiseaseFilterValue = '';
+
+	dispatsRequest = function( ) {
+		if (prevdispatsFilterValue.length==0 && prevdiseaseFilterValue.length==0) {
+			dispatsGridz.setRequestParams( {name: 'element', value: visiblePage} );
+		} else {
+			dispatsGridz.setRequestParams( 
+				{name: 'element', value: visiblePage}, 
+				{name: 'NameFilter', value: prevdispatsFilterValue}, 
+				{name: 'DiseaseFilter', value: prevdiseaseFilterValue} );
+		}
+//		dispatsGridz.setTotalRows(10);
+		dispatsGridz.resetContents();
+		dispatsGridz.requestContentRefresh(0);	
+	};
+	
+	dispatsFilterChange = function (element, vax) {
+		var vaxt;
+		if (vax==null) vaxt="";
+		else vaxt=vax;
+		if (prevdispatsFilterValue==vaxt) return; 
+		prevdispatsFilterValue = vaxt;
+		dispatsRequest();
+	};
+
+	diseaseFilterChange = function (element, vax) {
+		var vaxt;
+		if (vax==null) vaxt="";
+		else vaxt=vax;
+		if (prevdiseaseFilterValue==vaxt) return; 
+		prevdiseaseFilterValue = vaxt;
+		dispatsRequest();
+	};
+
+	dispatsGridEventFilter = new Form.Element.Observer( $("dispatsFilter"), 1, dispatsFilterChange );
+	diseaseGridEventFilter = new Form.Element.Observer( $("diseaseFilter"), 1, diseaseFilterChange );
+	$("dispatsFilter").focus();
+// ]]>
+</script>
+	<p>All diagnoses for all patients. A patient may be on this list more than once (or not at all if they have never had a diagnosis).</p> 
+			<form action="#" onsubmit="return false;">
+				Name Filter: <input name="dispatsFilter" type="text" id="dispatsFilter" />
+				Diagnosis Filter: <input name="diseaseFilter" type="text" id="diseaseFilter" />
+			</form>
+			<div id="#{menu.element}LGDG" style="width:780px">
+				<table id="#{menu.element}LG_header" >
+				  <thead>
+					  <tr>
+						  <th align="left" width="200px">Name</th>
+						  <th align="left" width="90px">Age</th>
+						  <th align="center" width="60px">Sex</th>
+						  <th align="left" width="160px">Disease</th>
+						  <th align="left" width="100px">Onset</th>
+					  </tr>
+				  </thead>
+				</table> 
+				<table id="#{menu.element}LG" >
+				  <tbody>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+					<tr><td width="200px">-</td><td width="90px">-</td><td align="center" width="60px">-</td><td width="160px">-</td><td width="100px">-</td></tr>
+				  </tbody>
+				</table>
+			</div> 
+		 
+	</ui:composition>
+  </body>
+</html>

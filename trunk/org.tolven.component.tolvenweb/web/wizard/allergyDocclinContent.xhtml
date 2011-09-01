@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"   
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+ <body>
+	<ui:composition template="docclinContent.xhtml">
+		<ui:define name="content">
+			<script type="text/javascript">
+				// <![CDATA[ 
+				AllergyDetail = function() {
+					return {
+						TEMPLATE_ID: 'path/allergyDetailTemplate',
+						showInfo: function(div, obj) {
+							$(div).innerHTML="<div style='width: 100%;height: auto; text-align: center;'>"+obj.message+"</div>";
+							if (obj.success) {
+								fade(div);
+							} else {
+								$(div).show();
+							}							
+						},
+						showHide: function(lesWidgetId,anchorId,root,seq) {
+							$(root+':'+lesWidgetId).show();
+							$(root+':'+anchorId).hide();
+							showStep(root,seq);
+						},
+						show: function(div, path, seq) {
+						
+							new Ajax.Updater(div, '/Tolven/wizard/allergyTemplate.jsf', {
+								parameters: { element: path , sequence: seq}
+							});
+							wizHideAjaxLoader();
+						},
+						remove: function(elem, id, seq,label) {
+							//AllergyDetail.save(elem, 2, id, seq,label);
+							var _params = '';
+							_params += '&index='+id;
+							_params += '&sequence='+seq;
+							wizShowAjaxLoader();
+							var instAjax = new Ajax.Request('processNonDrugAllergy.ajaxcchit', {
+								method: 'post',
+								parameters: 'actionType='+2+'&template='+this.TEMPLATE_ID+'&element='+elem+_params,
+								onComplete: function(req) {
+									try {
+										eval('var tmp='+req.responseText);
+										AllergyDetail.showInfo('msgAllergyDetails'+seq,tmp);
+									} catch (e) {
+										AllergyDetail.showInfo('msgAllergyDetails'+seq,{success: false, message: 'Failed to save data. Please contact support',error: req.responseText});
+									}
+									wizHideAjaxLoader();
+									AllergyDetail.show('allergyDetails'+seq,elem, seq);
+								}
+							});
+						},
+						save: function(elem,type,index, seq,label) {
+							var _params = '';
+							_params += '&reaction='+$(label+':reaction'+seq+index).value;
+							_params += '&severity='+$(label+':severity'+seq+index).value;
+							_params += '&index='+index;
+							_params += '&sequence='+seq;
+							
+						wizShowAjaxLoader();
+							var instAjax = new Ajax.Request('processNonDrugAllergy.ajaxcchit', {
+								method: 'post',
+								parameters: 'actionType='+type+'&template='+this.TEMPLATE_ID+'&element='+elem+_params,
+								onComplete: function(req) {
+									try {
+										eval('var tmp='+req.responseText);
+										AllergyDetail.showInfo('msgAllergyDetails'+seq,tmp);
+									} catch (e) {
+										AllergyDetail.showInfo('msgAllergyDetails'+seq,{success: false, message: 'Failed to save data. Please contact support',error: req.responseText});
+									}
+									wizHideAjaxLoader();
+									AllergyDetail.show('allergyDetails'+seq,elem, seq);
+								}
+							});
+						},
+						update: function(elem, id,seq) {
+							AllergyDetail.save(elem, 1, id, seq);
+						},
+						create: function(elem, seq,label) {		
+							AllergyDetail.save(elem, 0, '', seq,label);					
+						}
+					}
+				}();
+	
+			// ]]> 
+			</script>
+			<wiz:group title="#{msg.OnsetSymptoms}">
+		        <trim:TS id="effectiveTime#{rel.sequenceNumber}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" />
+		    </wiz:group>
+		    <wiz:group title="#{msg.AddtDetail}" >
+		        <wiz:yesno id="details#{rel.sequenceNumber}">Add?</wiz:yesno>
+		        <div class="widget" style="width: 100%;" id="allergyDetails#{index}" tvisible="$('#{menu.elementLabel}:details#{rel.sequenceNumber}').isTrue();">
+					<ui:include src="allergyTemplate.xhtml">
+						<ui:param name="rel" value="#{rel}"/>
+						<ui:param name="type" value="#{type}"/>
+						<ui:param name="index" value="#{index}"/>
+						<ui:param name="sequence" value="#{index}"/>
+					</ui:include>	     			
+				</div>
+				<div id="msgAllergyDetails#{index}"
+					style="color: red; font-weight: bold; text-align: center; width: 100%;"></div>
+			</wiz:group>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+

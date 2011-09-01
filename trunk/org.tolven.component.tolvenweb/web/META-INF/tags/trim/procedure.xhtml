@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<head>
+    <title>Checkbox Options</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+<!-- slot is passed in -->
+    <ui:composition>
+      <c:if test="#{type != 'site'}">
+          <c:choose>
+           <c:when test="#{not empty trim.trim.act.relationship[name] }">
+               <tr>
+                <td colspan="4">
+                 <h:selectBooleanCheckbox id="#{name}" value="#{trim.trim.act.relationship[name].enableRelationship}"/> #{title} </td>
+               </tr>
+           </c:when>
+           <c:otherwise>
+             <tr>
+                <td colspan="4">
+                 <h:selectBooleanCheckbox id="#{name}" value="#{trim.fieldMap[name]}" onclick="javascript:toggleGroup(this.name,this.checked)"/> #{title} </td>
+              </tr>
+              <tr>
+                <td style="width:33px;"/>
+                <td style="width:96%;">
+                  <table tvisible="$('#{menu.elementLabel}:#{name}').checked" style="width:100%;" id="#{menu.elementLabel}:#{name}Group">
+                    <tr>
+                    <c:forEach var="laterality" items="${fn:split(lateralityOpts, ',')}" varStatus="lateralityIndex">
+                       <c:set var="nameLaterality" value="#{name}#{laterality}"/>
+                          <td style="vertical-align:top;width:33%;">
+                            <c:choose>
+                              <c:when test="#{not empty trim.trim.act.relationship[nameLaterality] }">
+                                <h:selectBooleanCheckbox id="#{nameLaterality}" value="#{trim.trim.act.relationship[nameLaterality].enableRelationship}" onclick="javascript:toggleGroup(this.name,this.checked)"/> #{laterality}
+                              </c:when>
+                              <c:otherwise>
+                                  <h:selectBooleanCheckbox id="#{name}#{laterality}" value="#{trim.fieldMap[nameLaterality]}" onclick="javascript:toggleGroup(this.name,this.checked)"/> #{laterality}
+                                  <table tvisible="$('#{menu.elementLabel}:#{name}#{laterality}').checked" id="#{menu.elementLabel}:#{name}#{laterality}Group">                        
+                                   <c:forEach var="location" items="${fn:split(locations, ',')}" varStatus="locationIndex">
+                                      <c:set var="nameLateralityLocation" value="#{name}#{laterality}#{location}"/>
+                                      <tr>
+                                        <td style="padding-left:10px"/>
+                                        <td><h:selectBooleanCheckbox id="#{name}#{laterality}#{location}" value="#{trim.trim.act.relationship[nameLateralityLocation].enableRelationship}" /> 
+                                         #{trim.trim.act.relationship[nameLateralityLocation].act.relationship['laterality'].act.relationship['location'].act.observation.value.CE}                                  
+                                        </td>
+                                      </tr>
+                                   </c:forEach>
+                                  </table>                   
+                               </c:otherwise>
+                            </c:choose>
+                          </td>
+                    </c:forEach>
+                   </tr>
+                 </table>                
+                </td>
+              </tr>
+             </c:otherwise>        
+           </c:choose>
+        </c:if>
+
+        <c:if test="#{type == 'site'}">
+        <c:choose>
+           <c:when test="#{not empty trim.trim.act.relationship[name] }">
+               <tr>
+                <td colspan="4">
+                 <h:selectBooleanCheckbox id="#{name}" value="#{trim.trim.act.relationship[name].enableRelationship}"/> #{title} </td>
+               </tr>
+           </c:when>
+           <c:otherwise>
+               <tr>
+                <td colspan="4">
+                 <h:selectBooleanCheckbox id="#{name}" value="#{trim.fieldMap[name]}" onclick="javascript:toggleGroup(this.name,this.checked)"/> #{title} </td>
+               </tr>
+                <tr>
+                  <td style="width:33px;"/>
+                  <td style="width:96%;">
+                    <table tvisible="$('#{menu.elementLabel}:#{name}').checked" style="width:100%;" id="#{menu.elementLabel}:#{name}Group">
+                      <c:forEach var="laterality" items="${fn:split(lateralityOpts, ',')}" varStatus="lateralityIndex">
+                        <tr>
+                          <c:set var="nameLaterality" value="#{name}#{laterality}"/>
+                          <td><h:selectBooleanCheckbox id="#{nameLaterality}" value="#{trim.trim.act.relationship[nameLaterality].enableRelationship}" /> 
+                           #{trim.trim.act.relationship[nameLaterality].act.relationship['laterality'].act.relationship['location'].act.observation.value.CE}                                  
+                          </td>
+                        </tr>
+                      </c:forEach>
+                   </table>                
+                  </td>
+                </tr>
+           </c:otherwise>
+        </c:choose>        
+        </c:if>
+  	</ui:composition>
+
+</body>
+</html>

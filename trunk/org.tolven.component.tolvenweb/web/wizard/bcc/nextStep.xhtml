@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Handle next steps in a plan</title>
+</head>
+
+<body>
+    <ui:composition >
+    	<c:if test="#{nextStep.choices[0]!=null}">
+	    	<!-- Draw an arrow menu -->
+
+	   		<div class="choices" style="display:none;">
+	   			<ul>
+			    	<c:forEach var="choice" items="#{nextStep.choices}">
+		    			<li><a href="javascript:insertPlanChoice('#{menu.element}','#{arPath}','#{choice.include}')">#{choice.title}</a></li>
+			    	</c:forEach>
+	   			</ul>
+	   		</div>
+    	</c:if>
+		<!-- If there's an act, then include it. -->
+    	<c:if test="#{nextStep.act!=null}">
+	     	<ui:include src="#{nextStep.act.page}">
+	     		<ui:param name="treatment" value="#{nextStep.act}"/>
+	     	</ui:include>
+	     	<!-- 
+	     		Run through each relationship in the act looking for nextSteps. 
+	     		At this level a next step follows the previous step. 
+	    	-->
+	    	<c:forEach var="rel" items="#{nextStep.act.relationships}">
+		    	<c:if test="#{rel.name=='nextStep'}">
+			     	<ui:include src="nextStep.xhtml">
+			     		<ui:param name="stepNo" value="#{stepNo+1}"/>
+			     		<ui:param name="nextStep" value="#{rel}"/>
+			     		<ui:param name="arPath" value="#{arPath};nextStep,0"/>
+			     	</ui:include>
+		    	</c:if>
+		    </c:forEach>
+	     </c:if>
+	</ui:composition>
+</body>
+</html>

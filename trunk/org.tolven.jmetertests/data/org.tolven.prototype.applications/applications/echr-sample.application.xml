@@ -1,0 +1,58 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<extends path="echr">
+		<menu name="samples" title="Samples" page="/five/bar1.xhtml" visible="false">
+			<list name="all" title="My Samples" page="/five/list.xhtml" visible="true" drilldown="echr:sample">
+				<column name="Name" internal="string01" reference="true" width="20.0">
+					<from>#{sample.firstName} #{sample.middleName} #{sample.lastName}</from>
+				</column>
+				<column name="DOB" internal="date01" format="d MMM yyyy" width="7.0">
+					<from>#{sample.dob}</from>
+				</column>
+				<column name="TimeLow" internal="date02" format="d MMM yyyy" width="7.5">
+					<from>#{sample.effectiveTimeLow}</from>
+				</column>
+				<column name="TimeHigh" internal="date03" format="d MMM yyyy" width="7.5">
+					<from>#{sample.effectiveTimeHigh}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5"/>
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{sample.sex}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:sampleMenu">
+					<column name="Sample" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+			<instance name="wip" title="New" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml"/>
+		</menu>
+	</extends>
+	<extends path="echr">
+		<placeholder name="sample" title="Sample Events" page="/wizard/wizard.xhtml" heading="/five/sampleLink.xhtml">
+			<field name="lastName" internal="string01">
+				<from>#{act.participation['subject'].role.player.name.EN['L'].formattedParts['FAM']}</from>
+			</field>
+			<field name="firstName" internal="string02" >
+				<from>#{act.participation['subject'].role.player.name.EN['L'].formattedParts['GIV[0]']}</from>
+			</field>
+			<field name="middleName" internal="string03" >
+				<from>#{act.participation['subject'].role.player.name.EN['L'].formattedParts['GIV[1]']}</from>
+			</field>
+			<field name="sex" internal="string04" >
+				<from>#{act.participation['subject'].role.player.livingSubject.administrativeGenderCode.CE.code=='C0024554'?'Male':'Female'}</from>
+			</field>
+			<field name="gender" >
+				<from>#{act.participation['subject'].role.player.livingSubject.administrativeGenderCode.value}</from>
+			</field>
+			<field name="dob" internal="date01">
+				<from>#{act.participation['subject'].role.player.livingSubject.birthTime.TS}</from>
+			</field>
+			<field name="effectiveTimeLow" internal="date02">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date03">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+		</placeholder>
+	</extends>
+</application>

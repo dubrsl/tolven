@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.appserverproperties" version="2.1.0" class="org.tolven.appserverproperties.AppServerPropertiesPlugin" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<attributes>
+		<attribute id="guiComponentParentId" value="#{pluginProperty['guiComponentParentId']}" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.library.pluginframework.gui" />
+		<import plugin-id="org.tolven.library.application" />
+		<import plugin-id="org.tolven.api" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="tpfclasses" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension id="apiClasses" plugin-id="org.tolven.api" point-id="classes">
+		<parameter id="dir" value="api/classes" />
+	</extension>
+	<extension-point id="defaultServerProperties" extension-multiplicity="none">
+		<parameter-def id="appserver.default.propertiesFile" default-value="#{pluginProperty['appserver.default.propertiesFile']}" />
+	</extension-point>
+	<extension-point id="customServerProperties">
+		<parameter-def id="appserver.propertiesFile" />
+	</extension-point>
+	<extension-point id="tpfgui" extension-multiplicity="none" parent-point-id="runtimeLib" parent-plugin-id="org.tolven.library.pluginframework.gui">
+		<parameter-def multiplicity="none-or-one" id="tpfgui" />
+	</extension-point>
+</plugin>

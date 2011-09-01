@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<abstract>true</abstract>
+	<name>patientAct</name>
+	<author>Tolven</author>
+	<act classCode="OBS" moodCode="EVN">
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr">
+					<placeholder>
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr">
+					<placeholder>
+						<path>ephr:patient</path>
+					</placeholder>
+				</bind>
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{patient.path}</extension>
+					</II>
+				</id>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Patient Name</label>
+						<EN>
+							<label>Legal Name</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{patient.firstName}</ST>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{patient.middleName}</ST>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{patient.lastName}</ST>
+							</part>
+						</EN>
+					</name>
+				</player>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+	</act>
+</trim>

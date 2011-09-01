@@ -1,0 +1,62 @@
+dn: dc=tolven,dc=com
+objectClass: domain
+objectClass: top
+dc: tolven
+
+dn: ou=people,dc=tolven,dc=com
+objectClass: organizationalunit
+ou: people
+
+dn: ou=groups,dc=tolven,dc=com
+objectClass: organizationalunit
+ou: groups
+
+dn: uid=Manager,ou=people,dc=tolven,dc=com
+objectClass: person
+objectClass: inetorgperson
+objectClass: organizationalperson
+uid: Manager
+userPassword: {SSHA}eQvtFBTrpvYBoUs2K1WMi05mw83x8+Hh
+cn: Manager
+sn: Manager
+ds-privilege-name: password-reset
+
+dn: cn=Administrator,ou=groups,dc=tolven,dc=com
+objectClass: groupOfUniqueNames
+uniqueMember: uid=Manager,ou=people,dc=tolven,dc=com
+uniqueMember: uid=admin,ou=people,dc=tolven,dc=com
+cn: Administrator
+
+dn: uid=admin,ou=people,dc=tolven,dc=com
+objectClass: person
+objectClass: inetorgperson
+objectClass: organizationalperson
+uid: admin
+userPassword: {SSHA}itMxgS8Bxm66xF58p+u02i9+byJlcYYM
+cn: admin
+sn: admin
+ds-privilege-name: password-reset
+
+dn: uid=tolvenAnonymous,ou=people,dc=tolven,dc=com
+objectClass: person
+objectClass: inetorgperson
+objectClass: organizationalperson
+uid: tolvenAnonymous
+userPassword: {SSHA}UUuwcMXRoiubGHHx28XXjN9hrS/ayw26UHXL9w==
+cn: tolvenAnonymous
+sn: tolvenAnonymous
+
+dn: cn=tolvenSSO,ou=groups,dc=tolven,dc=com
+objectClass: groupOfUniqueNames
+uniqueMember: uid=admin,ou=people,dc=tolven,dc=com
+cn: tolvenSSO
+
+dn: cn=tolvenAdmin,ou=groups,dc=tolven,dc=com
+objectClass: groupOfUniqueNames
+uniqueMember: uid=admin,ou=people,dc=tolven,dc=com
+cn: tolvenAdmin
+
+dn: cn=tolvenAnonymous,ou=groups,dc=tolven,dc=com
+objectClass: groupOfUniqueNames
+uniqueMember: uid=tolvenAnonymous,ou=people,dc=tolven,dc=com
+cn: tolvenAnonymous

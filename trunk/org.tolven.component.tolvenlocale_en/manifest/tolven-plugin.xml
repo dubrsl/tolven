@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.tolvenlocale_en" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.composite" />
+		<import plugin-id="org.tolven.assembler.localemodule" />
+		<import plugin-id="org.tolven.component.tolvenear" />
+		<import plugin-id="org.tolven.component.locale" />
+	</requires>
+	<extension id="component" plugin-id="org.tolven.assembler.localemodule" point-id="component">
+		<parameter id="language-code" value="en" />
+		<parameter id="jar" value="tolvenLocale_en.jar" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenear" />
+	</extension>
+	<extension id="localeModule" plugin-id="org.tolven.component.tolvenear" point-id="localeModule">
+		<parameter id="jar" value="tolvenLocale_en.jar" />
+	</extension>
+	<extension id="composite" plugin-id="org.tolven.component.composite" point-id="composite">
+		<parameter id="name" value="tolvenLocale_en" />
+	</extension>
+	<extension id="org.tolven.component.tolvenear.RemoteExtensionPoints.locale" plugin-id="org.tolven.component.locale" point-id="compositeExtensionPoint">
+		<parameter id="name" value="locale" />
+	</extension>
+	<extension-point id="application-locale" parent-plugin-id="org.tolven.component.locale" parent-point-id="application-locale" />
+	<extension-point id="application-global-locale" parent-plugin-id="org.tolven.component.locale" parent-point-id="application-global-locale" />
+	<extension-point id="global-locale" parent-plugin-id="org.tolven.component.locale" parent-point-id="global-locale" />
+</plugin>

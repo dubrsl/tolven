@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>enc/apt/office</name>
+	<description>Office Visit</description>
+	<page>appointment.xhtml</page>
+	<drilldown>appointmentDD.xhtml</drilldown>
+	<menu>global:appointmentMenu</menu>
+	<reference>http://wikihit.org/wiki/index.php/Encounter</reference>
+	<application name="echr">
+		<instance>echr:patient:appointment</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<application name="ephr">
+		<instance>ephr:patient:appointment</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Scheduled</label>
+		</transition>
+		<transition name="complete" from="active" to="completed">
+			<label language="en">Completed</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="eie" from="active" to="nullified">
+			<label language="en">Entered in Error</label>
+		</transition>
+		<transition name="reviseCompleted" from="completed" to="completed">
+			<label language="en">Revise</label>
+		</transition>
+	</transitions>
+	<act classCode="ENC" moodCode="APT">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:appointment</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:appointment</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>OfficeVisit</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3.0</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Appointment</ST>
+		</title>
+		<text>
+			<ST/>
+		</text>
+		<effectiveTime>
+			<label>Appointment Date</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<patientEncounter>
+		</patientEncounter>
+		<participation name="location" typeCode="LOC">
+			<role xsi:type="Role" classCode="SDLOC">
+				<bind application="echr" phase="request">
+					<list cardinality="single">
+						<path>echr:admin:location:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<participation name="attender" typeCode="ATND">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+	</act>
+</trim>

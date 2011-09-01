@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.config.ldapkeycredentials" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.assembler.admin" />
+	</requires>
+	<extension id="ldap" plugin-id="org.tolven.assembler.admin" point-id="ldap">
+		<parameter id="ldap.groupId" value="#{pluginProperty['ldap.groupId']}" />
+		<parameter id="ldap.rootPasswordId" value="#{pluginProperty['ldap.rootPasswordId']}" />
+		<parameter id="ldapSSL.passwordProtected" value="#{pluginProperty['ldapSSL.passwordProtected']}" />
+		<parameter id="key">
+			<parameter id="ldapSSL.keyFile" value="#{pluginProperty['ldapSSL.keyFile']}" />
+			<parameter id="ldapSSL.certFile" value="#{pluginProperty['ldapSSL.certFile']}" />
+			<parameter id="ldapSSL.keyType" value="#{pluginProperty['ldapSSL.keyType']}" />
+		</parameter>
+		<parameter id="ldapSSL.trustStoreFile" value="#{pluginProperty['ldapSSL.trustStoreFile']}" />
+		<parameter id="ldapSSL.trustStoreType" value="#{pluginProperty['ldapSSL.trustStoreType']}" />
+		<parameter id="ldapSSL.trusted.groups" value="#{pluginProperty['ldapSSL.trusted.groups']}" />
+		<parameter id="ldap.credentialDir" value="#{pluginProperty['ldap.credentialDir']}" />
+	</extension>
+</plugin>

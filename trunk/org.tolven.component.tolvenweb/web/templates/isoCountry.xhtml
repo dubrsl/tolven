@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta http-equiv="Cache-Control" content="no-cache" />
+	<title>Certificate Information</title>
+</head>
+<body>
+	<ui:composition>
+		<h:panelGroup>
+			<h:selectOneMenu id="countryName" value="#{reg.tp.countryName}" required="true">
+				<f:selectItem itemLabel="UNITED STATES" itemValue="US"/>
+				<f:selectItem itemLabel="UNITED KINGDOM" itemValue="GB"/>
+				<f:selectItem itemLabel="AFGHANISTAN" itemValue="AF"/>
+				<f:selectItem itemLabel="ÅLAND ISLANDS" itemValue="AX" />
+				<f:selectItem itemLabel="ALBANIA" itemValue="AL" />
+				<f:selectItem itemLabel="ALGERIA" itemValue="DZ" />
+				<f:selectItem itemLabel="AMERICAN SAMOA" itemValue="AS" />
+				<f:selectItem itemLabel="ANDORRA" itemValue="AD"/> 
+				<f:selectItem itemLabel="ANGOLA" itemValue="AO" /> 
+				<f:selectItem itemLabel="ANGUILLA" itemValue="AI"/>
+				<f:selectItem itemLabel="ANTARCTICA" itemValue="AQ"/>
+				<f:selectItem itemLabel="ANTIGUA AND BARBUDA" itemValue="AG"/>
+				<f:selectItem itemLabel="ARGENTINA" itemValue="AR"/>
+				<f:selectItem itemLabel="ARMENIA" itemValue="AM"/>
+				<f:selectItem itemLabel="ARUBA" itemValue="AW"/>
+				<f:selectItem itemLabel="AUSTRALIA" itemValue="AU"/>
+				<f:selectItem itemLabel="AUSTRIA" itemValue="AT"/>
+				<f:selectItem itemLabel="AZERBAIJAN" itemValue="AZ"/>
+				<f:selectItem itemLabel="BAHAMAS" itemValue="BS"/>
+				<f:selectItem itemLabel="BAHRAIN" itemValue="BH"/>
+				<f:selectItem itemLabel="BANGLADESH" itemValue="BD"/>
+				<f:selectItem itemLabel="BARBADOS" itemValue="BB"/>
+				<f:selectItem itemLabel="BELARUS" itemValue="BY"/>
+				<f:selectItem itemLabel="BELGIUM" itemValue="BE"/>
+				<f:selectItem itemLabel="BELIZE" itemValue="BZ"/>
+				<f:selectItem itemLabel="BENIN" itemValue="BJ"/>
+				<f:selectItem itemLabel="BERMUDA" itemValue="BM"/>
+				<f:selectItem itemLabel="BHUTAN" itemValue="BT"/>
+				<f:selectItem itemLabel="BOLIVIA" itemValue="BO"/>
+				<f:selectItem itemLabel="BOSNIA AND HERZEGOVINA" itemValue="BA"/>
+				<f:selectItem itemLabel="BOTSWANA" itemValue="BW"/>
+				<f:selectItem itemLabel="BOUVET ISLAND" itemValue="BV"/>
+				<f:selectItem itemLabel="BRAZIL" itemValue="BR"/>
+				<f:selectItem itemLabel="BRITISH INDIAN OCEAN TERRITORY" itemValue="IO"/>
+				<f:selectItem itemLabel="BRUNEI DARUSSALAM" itemValue="BN"/>
+				<f:selectItem itemLabel="BULGARIA" itemValue="BG"/>
+				<f:selectItem itemLabel="BURKINA FASO" itemValue="BF"/>
+				<f:selectItem itemLabel="BURUNDI" itemValue="BI"/>
+				<f:selectItem itemLabel="CAMBODIA" itemValue="KH"/>
+				<f:selectItem itemLabel="CAMEROON" itemValue="CM"/>
+				<f:selectItem itemLabel="CANADA" itemValue="CA"/>
+				<f:selectItem itemLabel="CAPE VERDE" itemValue="CV"/>
+				<f:selectItem itemLabel="CAYMAN ISLANDS" itemValue="KY"/>
+				<f:selectItem itemLabel="CENTRAL AFRICAN REPUBLIC" itemValue="CF"/>
+				<f:selectItem itemLabel="CHAD" itemValue="TD"/>
+				<f:selectItem itemLabel="CHILE" itemValue="CL"/>
+				<f:selectItem itemLabel="CHINA" itemValue="CN"/>
+				<f:selectItem itemLabel="CHRISTMAS ISLAND" itemValue="CX"/>
+				<f:selectItem itemLabel="COCOS (KEELING) ISLANDS" itemValue="CC"/>
+				<f:selectItem itemLabel="COLOMBIA" itemValue="CO"/>
+				<f:selectItem itemLabel="COMOROS" itemValue="KM"/>
+				<f:selectItem itemLabel="CONGO" itemValue="CG"/>
+				<f:selectItem itemLabel="CONGO, THE DEMOCRATIC REPUBLIC OF THE" itemValue="CD"/>
+				<f:selectItem itemLabel="COOK ISLANDS" itemValue="CK"/>
+				<f:selectItem itemLabel="COSTA RICA" itemValue="CR"/>
+				<f:selectItem itemLabel="CÔTE D'IVOIRE" itemValue="CI"/>
+				<f:selectItem itemLabel="CROATIA" itemValue="HR"/>
+				<f:selectItem itemLabel="CUBA" itemValue="CU"/>
+				<f:selectItem itemLabel="CYPRUS" itemValue="CY"/>
+				<f:selectItem itemLabel="CZECH REPUBLIC" itemValue="CZ"/>
+				<f:selectItem itemLabel="DENMARK" itemValue="DK"/>
+				<f:selectItem itemLabel="DJIBOUTI" itemValue="DJ"/>
+				<f:selectItem itemLabel="DOMINICA" itemValue="DM"/>
+				<f:selectItem itemLabel="DOMINICAN REPUBLIC" itemValue="DO"/>
+				<f:selectItem itemLabel="ECUADOR" itemValue="EC"/>
+				<f:selectItem itemLabel="EGYPT" itemValue="EG"/>
+				<f:selectItem itemLabel="EL SALVADOR" itemValue="SV"/>
+				<f:selectItem itemLabel="EQUATORIAL GUINEA" itemValue="GQ"/>
+				<f:selectItem itemLabel="ERITREA" itemValue="ER"/>
+				<f:selectItem itemLabel="ESTONIA" itemValue="EE"/>
+				<f:selectItem itemLabel="ETHIOPIA" itemValue="ET"/>
+				<f:selectItem itemLabel="FALKLAND ISLANDS (MALVINAS)" itemValue="FK"/>
+				<f:selectItem itemLabel="FAROE ISLANDS" itemValue="FO"/>
+				<f:selectItem itemLabel="FIJI" itemValue="FJ"/>
+				<f:selectItem itemLabel="FINLAND" itemValue="FI"/>
+				<f:selectItem itemLabel="FRANCE" itemValue="FR"/>
+				<f:selectItem itemLabel="FRENCH GUIANA" itemValue="GF"/>
+				<f:selectItem itemLabel="FRENCH POLYNESIA" itemValue="PF"/>
+				<f:selectItem itemLabel="FRENCH SOUTHERN TERRITORIES" itemValue="TF"/>
+				<f:selectItem itemLabel="GABON" itemValue="GA"/>
+				<f:selectItem itemLabel="GAMBIA" itemValue="GM"/>
+				<f:selectItem itemLabel="GEORGIA" itemValue="GE"/>
+				<f:selectItem itemLabel="GERMANY" itemValue="DE"/>
+				<f:selectItem itemLabel="GHANA" itemValue="GH"/>
+				<f:selectItem itemLabel="GIBRALTAR" itemValue="GI"/>
+				<f:selectItem itemLabel="GREECE" itemValue="GR"/>
+				<f:selectItem itemLabel="GREENLAND" itemValue="GL"/>
+				<f:selectItem itemLabel="GRENADA" itemValue="GD"/>
+				<f:selectItem itemLabel="GUADELOUPE" itemValue="GP"/>
+				<f:selectItem itemLabel="GUAM" itemValue="GU"/>
+				<f:selectItem itemLabel="GUATEMALA" itemValue="GT"/>
+				<f:selectItem itemLabel="GUERNSEY" itemValue="GG"/>
+				<f:selectItem itemLabel="GUINEA" itemValue="GN"/>
+				<f:selectItem itemLabel="GUINEA-BISSAU" itemValue="GW"/>
+				<f:selectItem itemLabel="GUYANA" itemValue="GY"/>
+				<f:selectItem itemLabel="HAITI" itemValue="HT"/>
+				<f:selectItem itemLabel="HEARD ISLAND AND MCDONALD ISLANDS" itemValue="HM"/>
+				<f:selectItem itemLabel="HOLY SEE (VATICAN CITY STATE)" itemValue="VA"/>
+				<f:selectItem itemLabel="HONDURAS" itemValue="HN"/>
+				<f:selectItem itemLabel="HONG KONG" itemValue="HK"/>
+				<f:selectItem itemLabel="HUNGARY" itemValue="HU"/>
+				<f:selectItem itemLabel="ICELAND" itemValue="IS"/>
+				<f:selectItem itemLabel="INDIA" itemValue="IN"/>
+				<f:selectItem itemLabel="INDONESIA" itemValue="ID"/>
+				<f:selectItem itemLabel="IRAN, ISLAMIC REPUBLIC OF" itemValue="IR"/>
+				<f:selectItem itemLabel="IRAQ" itemValue="IQ"/>
+				<f:selectItem itemLabel="IRELAND" itemValue="IE"/>
+				<f:selectItem itemLabel="ISLE OF MAN" itemValue="IM"/>
+				<f:selectItem itemLabel="ISRAEL" itemValue="IL"/>
+				<f:selectItem itemLabel="ITALY" itemValue="IT"/>
+				<f:selectItem itemLabel="JAMAICA" itemValue="JM"/>
+				<f:selectItem itemLabel="JAPAN" itemValue="JP"/>
+				<f:selectItem itemLabel="JERSEY" itemValue="JE"/>
+				<f:selectItem itemLabel="JORDAN" itemValue="JO"/>
+				<f:selectItem itemLabel="KAZAKHSTAN" itemValue="KZ"/>
+				<f:selectItem itemLabel="KENYA" itemValue="KE"/>
+				<f:selectItem itemLabel="KIRIBATI" itemValue="KI"/>
+				<f:selectItem itemLabel="KOREA, DEMOCRATIC PEOPLE'S REPUBLIC OF" itemValue="KP"/>
+				<f:selectItem itemLabel="KOREA, REPUBLIC OF" itemValue="KR"/>
+				<f:selectItem itemLabel="KUWAIT" itemValue="KW"/>
+				<f:selectItem itemLabel="KYRGYZSTAN" itemValue="KG"/>
+				<f:selectItem itemLabel="LAO PEOPLE'S DEMOCRATIC REPUBLIC" itemValue="LA"/>
+				<f:selectItem itemLabel="LATVIA" itemValue="LV"/>
+				<f:selectItem itemLabel="LEBANON" itemValue="LB"/>
+				<f:selectItem itemLabel="LESOTHO" itemValue="LS"/>
+				<f:selectItem itemLabel="LIBERIA" itemValue="LR"/>
+				<f:selectItem itemLabel="LIBYAN ARAB JAMAHIRIYA" itemValue="LY"/>
+				<f:selectItem itemLabel="LIECHTENSTEIN" itemValue="LI"/>
+				<f:selectItem itemLabel="LITHUANIA" itemValue="LT"/>
+				<f:selectItem itemLabel="LUXEMBOURG" itemValue="LU"/>
+				<f:selectItem itemLabel="MACAO" itemValue="MO"/>
+				<f:selectItem itemLabel="MACEDONIA, THE FORMER YUGOSLAV REPUBLIC OF" itemValue="MK"/>
+				<f:selectItem itemLabel="MADAGASCAR" itemValue="MG"/>
+				<f:selectItem itemLabel="MALAWI" itemValue="MW"/>
+				<f:selectItem itemLabel="MALAYSIA" itemValue="MY"/>
+				<f:selectItem itemLabel="MALDIVES" itemValue="MV"/>
+				<f:selectItem itemLabel="MALI" itemValue="ML"/>
+				<f:selectItem itemLabel="MALTA" itemValue="MT"/>
+				<f:selectItem itemLabel="MARSHALL ISLANDS" itemValue="MH"/>
+				<f:selectItem itemLabel="MARTINIQUE" itemValue="MQ"/>
+				<f:selectItem itemLabel="MAURITANIA" itemValue="MR"/>
+				<f:selectItem itemLabel="MAURITIUS" itemValue="MU"/>
+				<f:selectItem itemLabel="MAYOTTE" itemValue="YT"/>
+				<f:selectItem itemLabel="MEXICO" itemValue="MX"/>
+				<f:selectItem itemLabel="MICRONESIA, FEDERATED STATES OF" itemValue="FM"/>
+				<f:selectItem itemLabel="MOLDOVA, REPUBLIC OF" itemValue="MD"/>
+				<f:selectItem itemLabel="MONACO" itemValue="MC"/>
+				<f:selectItem itemLabel="MONGOLIA" itemValue="MN"/>
+				<f:selectItem itemLabel="MONTENEGRO" itemValue="ME"/>
+				<f:selectItem itemLabel="MONTSERRAT" itemValue="MS"/>
+				<f:selectItem itemLabel="MOROCCO" itemValue="MA"/>
+				<f:selectItem itemLabel="MOZAMBIQUE" itemValue="MZ"/>
+				<f:selectItem itemLabel="MYANMAR" itemValue="MM"/>
+				<f:selectItem itemLabel="NAMIBIA" itemValue="NA"/>
+				<f:selectItem itemLabel="NAURU" itemValue="NR"/>
+				<f:selectItem itemLabel="NEPAL" itemValue="NP"/>
+				<f:selectItem itemLabel="NETHERLANDS" itemValue="NL"/>
+				<f:selectItem itemLabel="NETHERLANDS ANTILLES" itemValue="AN"/>
+				<f:selectItem itemLabel="NEW CALEDONIA" itemValue="NC"/>
+				<f:selectItem itemLabel="NEW ZEALAND" itemValue="NZ"/>
+				<f:selectItem itemLabel="NICARAGUA" itemValue="NI"/>
+				<f:selectItem itemLabel="NIGER" itemValue="NE"/>
+				<f:selectItem itemLabel="NIGERIA" itemValue="NG"/>
+				<f:selectItem itemLabel="NIUE" itemValue="NU"/>
+				<f:selectItem itemLabel="NORFOLK ISLAND" itemValue="NF"/>
+				<f:selectItem itemLabel="NORTHERN MARIANA ISLANDS" itemValue="MP"/>
+				<f:selectItem itemLabel="NORWAY" itemValue="NO"/>
+				<f:selectItem itemLabel="OMAN" itemValue="OM"/>
+				<f:selectItem itemLabel="PAKISTAN" itemValue="PK"/>
+				<f:selectItem itemLabel="PALAU" itemValue="PW"/>
+				<f:selectItem itemLabel="PALESTINIAN TERRITORY, OCCUPIED" itemValue="PS"/>
+				<f:selectItem itemLabel="PANAMA" itemValue="PA"/>
+				<f:selectItem itemLabel="PAPUA NEW GUINEA" itemValue="PG"/>
+				<f:selectItem itemLabel="PARAGUAY" itemValue="PY"/>
+				<f:selectItem itemLabel="PERU" itemValue="PE"/>
+				<f:selectItem itemLabel="PHILIPPINES" itemValue="PH"/>
+				<f:selectItem itemLabel="PITCAIRN" itemValue="PN"/>
+				<f:selectItem itemLabel="POLAND" itemValue="PL"/>
+				<f:selectItem itemLabel="PORTUGAL" itemValue="PT"/>
+				<f:selectItem itemLabel="PUERTO RICO" itemValue="PR"/>
+				<f:selectItem itemLabel="QATAR" itemValue="QA"/>
+				<f:selectItem itemLabel="REUNION" itemValue="RE"/>
+				<f:selectItem itemLabel="ROMANIA" itemValue="RO"/>
+				<f:selectItem itemLabel="RUSSIAN FEDERATION" itemValue="RU"/>
+				<f:selectItem itemLabel="RWANDA" itemValue="RW"/>
+				<f:selectItem itemLabel="SAINT BARTHÉLEMY" itemValue="BL"/>
+				<f:selectItem itemLabel="SAINT HELENA" itemValue="SH"/>
+				<f:selectItem itemLabel="SAINT KITTS AND NEVIS" itemValue="KN"/>
+				<f:selectItem itemLabel="SAINT LUCIA" itemValue="LC"/>
+				<f:selectItem itemLabel="SAINT MARTIN" itemValue="MF"/>
+				<f:selectItem itemLabel="SAINT PIERRE AND MIQUELON" itemValue="PM"/>
+				<f:selectItem itemLabel="SAINT VINCENT AND THE GRENADINES" itemValue="VC"/>
+				<f:selectItem itemLabel="SAMOA" itemValue="WS"/>
+				<f:selectItem itemLabel="SAN MARINO" itemValue="SM"/>
+				<f:selectItem itemLabel="SAO TOME AND PRINCIPE" itemValue="ST"/>
+				<f:selectItem itemLabel="SAUDI ARABIA" itemValue="SA"/>
+				<f:selectItem itemLabel="SENEGAL" itemValue="SN"/>
+				<f:selectItem itemLabel="SERBIA" itemValue="RS"/>
+				<f:selectItem itemLabel="SEYCHELLES" itemValue="SC"/>
+				<f:selectItem itemLabel="SIERRA LEONE" itemValue="SL"/>
+				<f:selectItem itemLabel="SINGAPORE" itemValue="SG"/>
+				<f:selectItem itemLabel="SLOVAKIA" itemValue="SK"/>
+				<f:selectItem itemLabel="SLOVENIA" itemValue="SI"/>
+				<f:selectItem itemLabel="SOLOMON ISLANDS" itemValue="SB"/>
+				<f:selectItem itemLabel="SOMALIA" itemValue="SO"/>
+				<f:selectItem itemLabel="SOUTH AFRICA" itemValue="ZA"/>
+				<f:selectItem itemLabel="SOUTH GEORGIA AND THE SOUTH SANDWICH ISLANDS" itemValue="GS"/>
+				<f:selectItem itemLabel="SPAIN" itemValue="ES"/>
+				<f:selectItem itemLabel="SRI LANKA" itemValue="LK"/>
+				<f:selectItem itemLabel="SUDAN" itemValue="SD"/>
+				<f:selectItem itemLabel="SURINAME" itemValue="SR"/>
+				<f:selectItem itemLabel="SVALBARD AND JAN MAYEN" itemValue="SJ"/>
+				<f:selectItem itemLabel="SWAZILAND" itemValue="SZ"/>
+				<f:selectItem itemLabel="SWEDEN" itemValue="SE"/>
+				<f:selectItem itemLabel="SWITZERLAND" itemValue="CH"/>
+				<f:selectItem itemLabel="SYRIAN ARAB REPUBLIC" itemValue="SY"/>
+				<f:selectItem itemLabel="TAIWAN, PROVINCE OF CHINA" itemValue="TW"/>
+				<f:selectItem itemLabel="TAJIKISTAN" itemValue="TJ"/>
+				<f:selectItem itemLabel="TANZANIA, UNITED REPUBLIC OF" itemValue="TZ"/>
+				<f:selectItem itemLabel="THAILAND" itemValue="TH"/>
+				<f:selectItem itemLabel="TIMOR-LESTE" itemValue="TL"/>
+				<f:selectItem itemLabel="TOGO" itemValue="TG"/>
+				<f:selectItem itemLabel="TOKELAU" itemValue="TK"/>
+				<f:selectItem itemLabel="TONGA" itemValue="TO"/>
+				<f:selectItem itemLabel="TRINIDAD AND TOBAGO" itemValue="TT"/>
+				<f:selectItem itemLabel="TUNISIA" itemValue="TN"/>
+				<f:selectItem itemLabel="TURKEY" itemValue="TR"/>
+				<f:selectItem itemLabel="TURKMENISTAN" itemValue="TM"/>
+				<f:selectItem itemLabel="TURKS AND CAICOS ISLANDS" itemValue="TC"/>
+				<f:selectItem itemLabel="TUVALU" itemValue="TV"/>
+				<f:selectItem itemLabel="UGANDA" itemValue="UG"/>
+				<f:selectItem itemLabel="UKRAINE" itemValue="UA"/>
+				<f:selectItem itemLabel="UNITED ARAB EMIRATES" itemValue="AE"/>
+				<f:selectItem itemLabel="UNITED KINGDOM" itemValue="GB"/>
+				<f:selectItem itemLabel="UNITED STATES" itemValue="US"/>
+				<f:selectItem itemLabel="UNITED STATES MINOR OUTLYING ISLANDS" itemValue="UM"/>
+				<f:selectItem itemLabel="URUGUAY" itemValue="UY"/>
+				<f:selectItem itemLabel="UZBEKISTAN" itemValue="UZ"/>
+				<f:selectItem itemLabel="VANUATU" itemValue="VU"/>
+				<f:selectItem itemLabel="VENEZUELA" itemValue="VE"/>
+				<f:selectItem itemLabel="VIET NAM" itemValue="VN"/>
+				<f:selectItem itemLabel="VIRGIN ISLANDS, BRITISH" itemValue="VG"/>
+				<f:selectItem itemLabel="VIRGIN ISLANDS, U.S." itemValue="VI"/>
+				<f:selectItem itemLabel="WALLIS AND FUTUNA" itemValue="WF"/>
+				<f:selectItem itemLabel="WESTERN SAHARA" itemValue="EH"/>
+				<f:selectItem itemLabel="YEMEN" itemValue="YE"/>
+				<f:selectItem itemLabel="ZAMBIA" itemValue="ZM"/>
+				<f:selectItem itemLabel="ZIMBABWE" itemValue="ZW"/>
+			</h:selectOneMenu>
+	     	<h:message for="countryName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	   	</h:panelGroup>
+	</ui:composition>
+</body>
+</html>

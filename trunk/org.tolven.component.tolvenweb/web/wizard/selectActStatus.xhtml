@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Select an encounter for those trims with an encounter</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    <wiz:group title="#{msg.Status}">
+      <h:selectOneMenu id="#{menu.elementLabel}#{index}status" value="#{rel.act.statusCodeValue}">
+          <c:choose>
+            <c:when test="#{not empty trim.trim.validTransitions[rel.act.statusCodeValue]}">
+              <c:forEach var="trans" items="#{trim.trim.validTransitions[rel.act.statusCodeValue]}">
+                <f:selectItem itemLabel="#{trans.label.value}" itemValue="#{trans.to}"/>
+              </c:forEach>
+            </c:when>
+            <c:otherwise>
+              <c:forEach var="entry" items="#{trim.trim.validTransitions}">
+                <c:if test="#{entry.key == null}">
+                   <c:forEach var="trans" items="#{entry.value}">
+                    <f:selectItem itemLabel="#{trans.label.value}" itemValue="#{trans.to}"/>
+                  </c:forEach>                       
+                </c:if>				        		   
+              </c:forEach>    
+            </c:otherwise>
+          </c:choose>
+      </h:selectOneMenu>        
+    </wiz:group> 
+</ui:composition>
+</body>
+</html>

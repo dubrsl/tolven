@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>List of active charts (patients)</title>
+  </head>
+  <body>
+  	<ui:composition>
+		 Patient list(s) and search #{menu.targetMenuPath.path}.
+		 <h:dataTable id="charts" value="#{acc.healthRecords}" var="hr" cellspacing="0" border="1" cellpadding="3">
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Id"/>
+           		</f:facet>
+           		<h:outputText id="hrid" value="#{hr.id}"/>
+           	</h:column>
+           	<h:column>
+           		<f:facet name="header">
+           			<h:outputText value="Name"/>
+           		</f:facet>
+           		<h:outputText id="hrn" value="#{hr.name}"/>
+           	</h:column>
+           </h:dataTable>
+		 
+	</ui:composition>
+  </body>
+</html>

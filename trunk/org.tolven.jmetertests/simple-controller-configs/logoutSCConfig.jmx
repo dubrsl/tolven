@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="logoutSC" enabled="true"/>
+    <hashTree>
+      <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="logoutIC" enabled="true">
+        <stringProp name="IncludeController.includepath">controller-components/tolvenLogoutSCC.jmx</stringProp>
+      </IncludeController>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

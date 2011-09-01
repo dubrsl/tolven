@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.dataextract" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.tolvenejb" />
+		<import plugin-id="org.tolven.component.tolvenweb" />
+		<import plugin-id="org.tolven.component.faces" />
+	</requires>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+	</extension>
+	<extension id="classes" plugin-id="org.tolven.component.tolvenweb" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+	</extension>
+	<extension id="privateDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="privateDirectory">
+		<parameter id="sourceDirectory" value="web/private" />
+	</extension>
+	<extension id="dataExtract-navigation-rule-contribution" plugin-id="org.tolven.component.faces" point-id="navigation-rule-contribution">
+		<parameter id="from-view-id" value="/private/customizeMenuItem.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{top.navAction}" />
+			<parameter id="from-outcome" value="dataExtract" />
+			<parameter id="to-view-id" value="/private/dataExtract.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/private/dataExtract.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Data Extraction" />
+		<parameter id="from-view-id" value="/private/dataExtract.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{de.csvDataExtract}" />
+			<parameter id="to-view-id" value="/private/dataExtract.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{de.xmlDataExtract}" />
+			<parameter id="to-view-id" value="/private/dataExtract.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="de-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Used for data extraction" />
+		<parameter id="managed-bean-name" value="de" />
+		<parameter id="managed-bean-class" value="org.tolven.web.DataExtractAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="PostgresqlSQL-property" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="org.tolven.app.bean.DataExtractBean" />
+		<parameter id="name" value="sqlDialectHandler" />
+		<parameter id="value" value="org.tolven.app.PostgresqlSQLDialectHandler" />
+	</extension>
+	<extension id="OracleSQL-property" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="org.tolven.app.bean.DataExtractBean" />
+		<parameter id="name" value="sqlDialectHandler" />
+		<parameter id="value" value="org.tolven.app.OracleSQLDialectHandler" />
+	</extension>
+</plugin>

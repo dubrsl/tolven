@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<abstract>true</abstract>	
+    <name>obs/evn/labOrder</name>    
+    <author>Tolven</author>
+    <menu>global:labOrderMenu</menu>
+	<act classCode="OBS" moodCode="RQO">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:labOrder</path>
+			</placeholder>
+		</bind>
+		<effectiveTime>
+			<label>Order for date</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+ 		<observation> 
+ 			<value>
+ 				<label>Reason</label>
+ 				<ST></ST>
+ 			</value>
+			<value>
+				<label>Priority</label>
+				<valueSet>priority</valueSet>
+				<CE/>
+			</value>
+ 			<value>
+ 				<label>Schedule</label>
+ 				<ST></ST>
+ 			</value>
+ 			<value>
+ 				<label>Frequency</label>
+ 				<ST></ST>
+ 			</value>
+ 			<value>
+ 				<label>Timing</label>
+ 				<ST></ST>
+ 			</value>
+			<value>
+				<label>Specimen Type</label>
+				<valueSet>specimenType</valueSet>
+				<CE/>
+			</value>
+			<value>
+				<label>Ccontainer Type</label>
+				<valueSet>containerType</valueSet>
+				<CE/>
+			</value>
+		</observation>
+	</act>
+</trim>

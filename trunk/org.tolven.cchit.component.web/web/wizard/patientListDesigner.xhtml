@@ -1,0 +1,622 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+	<head>
+	    <title>Patient List Designer</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	
+	<body>
+	    <ui:composition>
+			<div id="popupGrids">
+				<div id="#{top.accountType}:patient:diagnoses:menu" class="popupgrid"/>
+				<div id="#{top.accountType}:problems" class="popupgrid"/>
+				<div id="#{top.accountType}:medications" class="popupgrid"/>
+	  			<div id="#{top.accountType}:allergies" class="popupgrid"/>
+	  			<div id="#{top.accountType}:pxList" class="popupgrid"/>    
+	  			<div id="#{top.accountType}:labOrderList" class="popupgrid"/>
+	      	</div>
+	      	<div id="labTestValueSelectionDiv" style="display:none"  class="popupgrid">
+		      	<div class="popupgridheader">
+					<img class='closetab' src='../images/x_black.gif' onclick="$('labTestValueSelectionDiv').style.display='none'"/>&nbsp;
+		 		</div>
+	      		<table width="100%" height="100%" border="0px" cellpadding="10px" cellspacing="10px">
+	      			<tr>
+	      				<td valign="middle">Value:&nbsp;</td>
+	      				<td>
+		      				<select id="labTestOperator" name="labTestOperator" onChange="checkBetweenSelected()">
+		      					<option value="eq" selected="selected">Equals</option>
+		      					<option value="neq">Not Equal</option>
+		      					<option value="gt">Greater Than</option>
+		      					<option value="lt">Less Than</option>
+		      					<option value="bet">Between</option>
+		      				</select>
+	      				</td>
+	      				<td>
+	      					<input type="text" id="startVal" style="width:50px"/>
+	      					<div id="endValDiv" style="display:none">
+							&nbsp;&nbsp;and &nbsp;&nbsp;<input type="text" id="endVal" style="width:50px"/>
+						</div>
+						<input type="button" value="Go" onClick="addLabTest()"/>
+	      				</td>
+	      			</tr>
+	      		
+	      		</table>
+	      		<input type="hidden" id="tempTemplateName"/>
+	      		<input type="hidden" id="tempElement"/>
+	      		<input type="hidden" id="tempMethodArgs"/>
+	      			
+	      	</div>
+			<wiz:step title="#{trim.trim.act.relationship['generalDetail'].act.title.ST}">
+				<wiz:body>
+					<table width="100%">
+						<tr>
+							<td style="width:15%;">
+								<h:outputText value="#{trim.trim.act.relationship['generalDetail'].act.observation.values[0].label.value}*"/>
+							</td>
+							<td>
+								<h:inputText value="#{cchitMenu.init}" style="display:none;"/>					
+								<h:inputText id="listName" value="#{trim.trim.act.relationship['generalDetail'].act.observation.values[0].ST.value}" required="true" onkeyup="validateSpecialChars('#{menu.elementLabel}', 'listName', 'nameErrorMsg');" onblur="validateLen('#{menu.elementLabel}', 'listName', 'nameLenErrorMsg', 50);checkDuplicate(this, 'nameDupMsg', 'echr:patients', 'tabs');">
+									<f:validator validatorId="listNameValidator" />
+									<f:validator validatorId="patientListDuplicateValidator" />
+									<f:validateLength maximum="50"/>
+								</h:inputText>
+								<span id="nameErrorMsg" style="color:red;"></span>
+								<span id="nameLenErrorMsg" style="color:red;"></span>
+								<span id="nameDupMsg" style="color:red;"></span>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['generalDetail'].act.observation.values[1].label.value}"/>
+							</td>
+							<td>
+								<h:selectOneRadio id="scope" value="#{trim.trim.act.relationship['generalDetail'].act.observation.values[1].CE}" layout="lineDirection">
+				       				<f:selectItems value="#{trim.valueSets['yesNoValues']}"/>
+				       				<f:converter converterId="DataTypeConverter"/>
+				       			</h:selectOneRadio>
+							</td>
+						</tr>
+					</table>
+				</wiz:body>
+			</wiz:step>
+			<wiz:step title="#{trim.trim.act.relationship['patientAttributes'].act.title.ST}">
+				<wiz:body>
+					<table width="100%">
+						<tr>
+							<td style="width:15%;">
+								<h:outputText value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['patientAge'].act.observation.values[0].label.value}"/>
+							</td>
+							<td style="width:15%;">
+								<h:inputText id="age" value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['patientAge'].act.observation.values[0].ST.value}">
+									<f:validateLongRange minimum="0"/>
+								</h:inputText>
+							</td>
+							<td>
+								<h:selectOneRadio id="ageRelation" value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['patientAge'].act.observation.values[1].CE}" layout="pageDirection">
+				       				<f:selectItems value="#{trim.valueSets['patientAgeValues']}"/>
+				       				<f:converter converterId="DataTypeConverter"/>
+				       			</h:selectOneRadio>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[0].label.value}"/>
+							</td>
+							<td>
+								<h:selectOneMenu id="generRelation" value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[0].CE}">
+							      	<f:selectItems value="#{trim.valueSets['patientGenderValues']}" />
+									<f:converter converterId="DataTypeConverter"/>
+								</h:selectOneMenu>
+							</td>
+							<td>
+								<h:selectOneRadio id="genderRelation" value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[1].CE}" layout="pageDirection">
+				       				<f:selectItems value="#{trim.valueSets['includeExcludeValues']}"/>
+				       				<f:converter converterId="DataTypeConverter"/>
+				       			</h:selectOneRadio>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3">
+								<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['zipCode'].act.observation.values[0].label.value}"/>
+							</td>
+							<td>
+								<h:inputText id="zip" maxlength="9" value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['zipCode'].act.observation.values[0].ST.value}">
+									<f:validator validatorId="zipCodeValidator" />
+								</h:inputText>
+							</td>
+							<td>
+								<h:selectOneRadio id="zipCodeRelation" value="#{trim.trim.act.relationship['patientAttributes'].act.relationship['zipCode'].act.observation.values[1].CE}" layout="pageDirection">
+				       				<f:selectItems value="#{trim.valueSets['zipCodeValues']}"/>
+				       				<f:converter converterId="DataTypeConverter"/>
+				       			</h:selectOneRadio>
+							</td>
+						</tr>
+					</table>
+				</wiz:body>
+			</wiz:step>
+			<wiz:step title="#{trim.trim.act.relationship['diagnosticCodes'].act.title.ST}">
+				<wiz:body>
+					<table width="100%">
+						<tr>
+							<td style="width:15%;">
+								<h:outputText value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisInclude'].act.observation.values[0].label.value}"/>
+							</td>
+							<td style="width:15%;">
+								<h:inputText id="diagnosisIncludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisInclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'diagnosisInclude');"/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:patient:diagnoses:menu','#{top.accountType}:patient:diagnoses:menu', 'addValue', '#{menu.elementLabel}', 0)">Add Diagnosis</a>
+							</td>
+							<td style="width:20%;">
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'diagnosisInclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisInclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="diagnosisInclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisInclude'].enableRelationship}"/>
+								<h:outputText value="Include"/>
+							</td>
+							<td style="width:15%;">
+								<h:inputText id="diagnosisExcludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisExclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'diagnosisExclude');"/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:patient:diagnoses:menu','#{top.accountType}:patient:diagnoses:menu', 'addValue', '#{menu.elementLabel}', 1)">Add Diagnosis</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'diagnosisExclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisExclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="diagnosisExclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisExclude'].enableRelationship}"/>
+				       			<h:outputText value="Exclude"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5">
+								<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['problemInclude'].act.observation.values[0].label.value}"/>
+							</td>
+							<td>
+								<h:inputText id="problemIncludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['problemInclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'problemInclude');"/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:problems','#{top.accountType}:problems', 'addValue', '#{menu.elementLabel}', 0)">Add Problem</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'problemInclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['problemInclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="problemInclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['problemInclude'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+							<td>
+								<h:inputText id="problemExcludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['problemExclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'problemExclude');"/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:problems','#{top.accountType}:problems', 'addValue', '#{menu.elementLabel}', 1)">Add Problem</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'problemExclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['problemExclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="problemExclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['problemExclude'].enableRelationship}"/>
+				       			<h:outputText value="Exclude"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5">
+								<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['medicationsInclude'].act.observation.values[0].label.value}"/>
+							</td>
+							<td>
+								<h:inputText id="medicationsIncludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['medicationsInclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'medicationsInclude');"/>
+								<ui:include src="/wizard/wizMedicationPopupTemplate.xhtml"/>
+								<a class="inactive" href="#" onclick="javascript:wizAddMedicationWidget1('#{menu.elementLabel}:medicationsInclude');">Add Medication</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'medicationsInclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['medicationsInclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="medicationsInclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['medicationsInclude'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+							<td>
+								<h:inputText id="medicationsExcludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['medicationsExclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'medicationsExclude');"/>
+								<a class="inactive" href="#" onclick="javascript:wizAddMedicationWidget1('#{menu.elementLabel}:medicationsExclude');">Add Medication</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'medicationsExclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['medicationsExclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="medicationsExclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['medicationsExclude'].enableRelationship}"/>
+				       			<h:outputText value="Exclude"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5">
+								<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['allergiesInclude'].act.observation.values[0].label.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'allergiesInclude');"/>
+							</td>
+							<td>
+								<h:inputText id="allergiesIncludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['allergiesInclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'allergiesInclude');"/>
+								<ui:include src="/wizard/drugAllergyTemplate.xhtml"/>
+								<a class="inactive" href="#" onclick="javascript:enableAllergiesPopUP();">Add Drug Allergy</a>
+								<br/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:allergies','#{top.accountType}:allergies', 'addValue', '#{menu.elementLabel}', 0)">Add Non Drug Allergy</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'allergiesInclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['allergiesInclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="allergiesInclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['allergiesInclude'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+							<td>
+								<h:inputText id="allergiesExcludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['allergiesExclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'allergiesExclude');"/>
+								<a class="inactive" href="#" onclick="javascript:displayAllergiesPopUP();">Add Drug Allergy</a>
+								<br/>							 
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:allergies','#{top.accountType}:allergies', 'addValue', '#{menu.elementLabel}', 1)">Add Non Drug Allergy</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'allergiesExclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['allergiesExclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="allergiesExclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['allergiesExclude'].enableRelationship}"/>
+				       			<h:outputText value="Exclude"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="5">
+								<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['proceduresInclude'].act.observation.values[0].label.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'proceduresInclude');"/>
+							</td>
+							<td>
+								<h:inputText id="proceduresIncludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['proceduresInclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'proceduresInclude');"/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:pxList','#{top.accountType}:pxList', 'addValue', '#{menu.elementLabel}', 0)">Add Procedure</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'proceduresInclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['proceduresInclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="proceduresInclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['proceduresInclude'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+							<td>
+								<h:inputText id="proceduresExcludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['proceduresExclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'proceduresExclude');"/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:pxList','#{top.accountType}:pxList', 'addValue', '#{menu.elementLabel}', 1)">Add Procedure</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'proceduresExclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['proceduresExclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="proceduresExclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['proceduresExclude'].enableRelationship}"/>
+				       			<h:outputText value="Exclude"/>
+							</td>
+						</tr>
+						<!--  Modified to add Lab Test Results -->
+						<tr>
+							<td colspan="5">
+								<br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['labtestsInclude'].act.observation.values[0].label.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'labtestsInclude');"/>
+							</td>
+							<td>
+								<h:inputText id="labtestsIncludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['labtestsInclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'labtestsInclude');"/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:labOrderList','#{top.accountType}:labOrderList', 'addLabTestValue', '#{menu.elementLabel}', 0)">Add Lab Test</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'labtestsInclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['labtestsInclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="labtestsInclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['labtestsInclude'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+							<td>
+								<h:inputText id="labtestsExcludeCode" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['labtestsExclude'].act.observation.values[0].ST.value}" onchange="javascript:clearCheckboxIfNull(this, '#{menu.elementLabel}', 'labtestsExclude');"/>
+								<a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:labOrderList','#{top.accountType}:labOrderList', 'addLabTestValue', '#{menu.elementLabel}', 1)">Add Lab Test</a>
+							</td>
+							<td>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'labtestsExclude', "#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['labtestsExclude'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="labtestsExclude" value="#{trim.trim.act.relationship['diagnosticCodes'].act.relationship['labtestsExclude'].enableRelationship}"/>
+				       			<h:outputText value="Exclude"/>
+							</td>
+						</tr>
+					</table>
+				</wiz:body>
+			</wiz:step>
+			<wiz:step title="#{trim.trim.act.relationship['listDisplay'].act.title.ST}">
+				<wiz:body>
+					<table width="100%">
+						<tr>
+							<td style="width:15%;">
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[0].label.value}"/>
+							</td>
+							<td style="width:5%;">
+								<h:selectOneMenu id="nameDisplay" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[2].CE}" onchange="autoCheckbox(this, '#{menu.elementLabel}', 'nameColumn'); setHiddenFieldFromCombo(this, '#{menu.elementLabel}', 'nameDisplayVal');checkDuplicateAndDisable('#{menu.elementLabel}', 'nameDisplay', 'ageDisplay', 'raceDisplay', 'genderDisplay', 'zipDisplay');">
+							      	<f:selectItem itemLabel="Select" />
+							      	<f:selectItems value="#{trim.valueSets['orderValues']}" />
+									<f:converter converterId="DataTypeConverter"/>
+								</h:selectOneMenu>
+								<h:inputHidden id="nameDisplayVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[0].ST.value}"/>
+								<script>
+									//<![CDATA[
+										setDropDowns('#{menu.elementLabel}', 'nameDisplay', "nameDisplayVal");
+									// ]]>
+								</script>
+							</td>
+							<td style="width:5%;">
+								<h:outputText value="Column"/>
+							</td>
+							<td>
+								<h:selectBooleanCheckbox id="nameColumn" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].enableRelationship}" onclick="setHiddenFieldFromCheckbox(this, '#{menu.elementLabel}', 'nameColumnVal');"/>
+								<h:inputHidden id="nameColumnVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[1].ST.value}"/>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'nameColumn', "#{trim.trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[0].label.value}"/>
+							</td>
+							<td>
+								<h:selectOneMenu id="ageDisplay" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[2].CE}" onchange="autoCheckbox(this, '#{menu.elementLabel}', 'ageColumn'); setHiddenFieldFromCombo(this, '#{menu.elementLabel}', 'ageDisplayVal');checkDuplicateAndDisable('#{menu.elementLabel}', 'nameDisplay', 'ageDisplay', 'raceDisplay', 'genderDisplay', 'zipDisplay');">
+							      	<f:selectItem itemLabel="Select" />
+							      	<f:selectItems value="#{trim.valueSets['orderValues']}" />
+									<f:converter converterId="DataTypeConverter"/>
+								</h:selectOneMenu>
+								<h:inputHidden id="ageDisplayVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[0].ST.value}"/>
+								<script>
+									//<![CDATA[
+										setDropDowns('#{menu.elementLabel}', 'ageDisplay', "ageDisplayVal");
+									// ]]>
+								</script>
+							</td>
+							<td>
+								<h:outputText value="Column"/>
+							</td>
+							<td>
+								<h:selectBooleanCheckbox id="ageColumn" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].enableRelationship}" onclick="setHiddenFieldFromCheckbox(this, '#{menu.elementLabel}', 'ageColumnVal');"/>
+								<h:inputHidden id="ageColumnVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[1].ST.value}"/>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'ageColumn', "#{trim.trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[0].label.value}"/>
+							</td>
+							<td>
+								<h:selectOneMenu id="raceDisplay" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[2].CE}" onchange="autoCheckbox(this, '#{menu.elementLabel}', 'raceColumn'); setHiddenFieldFromCombo(this, '#{menu.elementLabel}', 'raceDisplayVal');checkDuplicateAndDisable('#{menu.elementLabel}', 'nameDisplay', 'ageDisplay', 'raceDisplay', 'genderDisplay', 'zipDisplay');">
+							      	<f:selectItem itemLabel="Select" />
+							      	<f:selectItems value="#{trim.valueSets['orderValues']}" />
+									<f:converter converterId="DataTypeConverter"/>
+								</h:selectOneMenu>
+								<h:inputHidden id="raceDisplayVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[0].ST.value}"/>
+								<script>
+									//<![CDATA[
+										setDropDowns('#{menu.elementLabel}', 'raceDisplay', "raceDisplayVal");
+									// ]]>
+								</script>								
+							</td>
+							<td>
+								<h:outputText value="Column"/>
+							</td>
+							<td>
+								<h:selectBooleanCheckbox id="raceColumn" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].enableRelationship}" onclick="setHiddenFieldFromCheckbox(this, '#{menu.elementLabel}', 'raceColumnVal');"/>
+								<h:inputHidden id="raceColumnVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[1].ST.value}"/>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'raceColumn', "#{trim.trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[0].label.value}"/>
+							</td>
+							<td>
+								<h:selectOneMenu id="genderDisplay" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[2].CE}" onchange="autoCheckbox(this, '#{menu.elementLabel}', 'genderColumn'); setHiddenFieldFromCombo(this, '#{menu.elementLabel}', 'genderDisplayVal');checkDuplicateAndDisable('#{menu.elementLabel}', 'nameDisplay', 'ageDisplay', 'raceDisplay', 'genderDisplay', 'zipDisplay');">
+							      	<f:selectItem itemLabel="Select" />
+							      	<f:selectItems value="#{trim.valueSets['orderValues']}" />
+									<f:converter converterId="DataTypeConverter"/>
+								</h:selectOneMenu>
+								<h:inputHidden id="genderDisplayVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[0].ST.value}"/>
+								<script>
+									//<![CDATA[
+										setDropDowns('#{menu.elementLabel}', 'genderDisplay', "genderDisplayVal");
+									// ]]>
+								</script>
+							</td>
+							<td>
+								<h:outputText value="Column"/>
+							</td>
+							<td>
+								<h:selectBooleanCheckbox id="genderColumn" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].enableRelationship}" onclick="setHiddenFieldFromCheckbox(this, '#{menu.elementLabel}', 'genderColumnVal');"/>
+								<h:inputHidden id="genderColumnVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[1].ST.value}"/>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'genderColumn', "#{trim.trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[0].label.value}"/>
+							</td>
+							<td>
+								<h:selectOneMenu id="zipDisplay" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[2].CE}" onchange="autoCheckbox(this, '#{menu.elementLabel}', 'zipColumn'); setHiddenFieldFromCombo(this, '#{menu.elementLabel}', 'zipDisplayVal');checkDuplicateAndDisable('#{menu.elementLabel}', 'nameDisplay', 'ageDisplay', 'raceDisplay', 'genderDisplay', 'zipDisplay');">
+							      	<f:selectItem itemLabel="Select" />
+							      	<f:selectItems value="#{trim.valueSets['orderValues']}" />
+									<f:converter converterId="DataTypeConverter"/>
+								</h:selectOneMenu>
+								<h:inputHidden id="zipDisplayVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[0].ST.value}"/>
+								<script>
+									//<![CDATA[
+										setDropDowns('#{menu.elementLabel}', 'zipDisplay', "zipDisplayVal");
+									// ]]>
+								</script>
+							</td>
+							<td>
+								<h:outputText value="Column"/>
+							</td>
+							<td>
+								<h:selectBooleanCheckbox id="zipColumn" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].enableRelationship}" onclick="setHiddenFieldFromCheckbox(this, '#{menu.elementLabel}', 'zipColumnVal');"/>
+								<h:inputHidden id="zipColumnVal" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[1].ST.value}"/>
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'zipColumn', "#{trim.trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[1].ST.value}");
+									// ]]>
+								</script>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4">
+								<br/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4">
+								<h:outputText value="Include in summary"/>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding-left:30px;">
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['diagnosis'].act.title.ST.value}"/>
+							</td>
+							<td colspan="3">
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'summaryDiagnosis', "#{trim.trim.act.relationship['listDisplay'].act.relationship['diagnosis'].act.observation.values[0].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="summaryDiagnosis" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['diagnosis'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding-left:30px;">
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['problem'].act.title.ST.value}"/>
+							</td>
+							<td colspan="3">
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'summaryProblem', "#{trim.trim.act.relationship['listDisplay'].act.relationship['problem'].act.observation.values[0].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="summaryProblem" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['problem'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding-left:30px;">
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['medications'].act.title.ST.value}"/>
+							</td>
+							<td colspan="3">
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'summaryMedications', "#{trim.trim.act.relationship['listDisplay'].act.relationship['medications'].act.observation.values[0].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="summaryMedications" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['medications'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding-left:30px;">
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['allergies'].act.title.ST.value}"/>
+							</td>
+							<td colspan="3">
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'summaryAllergies', "#{trim.trim.act.relationship['listDisplay'].act.relationship['allergies'].act.observation.values[0].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="summaryAllergies" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['allergies'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+						</tr>
+						<tr>
+							<td style="padding-left:30px;">
+								<h:outputText value="#{trim.trim.act.relationship['listDisplay'].act.relationship['procedures'].act.title.ST.value}"/>
+							</td>
+							<td colspan="3">
+								<script>
+									//<![CDATA[
+										preloadCheckValues('#{menu.elementLabel}', 'summaryProcedures', "#{trim.trim.act.relationship['listDisplay'].act.relationship['procedures'].act.observation.values[0].ST.value}");
+									// ]]>
+								</script>
+								<h:selectBooleanCheckbox id="summaryProcedures" value="#{trim.trim.act.relationship['listDisplay'].act.relationship['procedures'].enableRelationship}"/>
+				       			<h:outputText value="Include"/>
+							</td>
+						</tr>
+						
+					</table>
+				</wiz:body>
+			</wiz:step>
+			<script>
+				//<![CDATA[
+					disableNonEditableFields("#{trim.trim.act.relationship['generalDetail'].act.observation.values[2].ST.value}", '#{menu.elementLabel}');
+				// ]]>
+			</script>
+		</ui:composition>
+	</body>
+</html>

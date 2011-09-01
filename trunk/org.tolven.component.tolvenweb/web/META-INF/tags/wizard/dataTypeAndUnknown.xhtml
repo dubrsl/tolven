@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Select Data Type</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<!-- 
+	
+	Any one datatype and a checkbox with NullFlavor. This macro renders a Textbox (for PQ,ST etc) followed by a checkbox.
+	See breastSurgicalProcedure.html for implementation example. 
+	
+	This is a little different to dataTypeSelect.xhtml, where dataTypeSelect can accomodate any number of datatypes. 
+	dataTypeSelect macro renders dropdown of all available datatypes. See weight.xhtml for implementation example.
+	
+	  
+ -->
+    	<ui:composition>
+    		<c:if test="#{readonly!='true'}" >
+
+				<c:if test="#{value.nullValue != null}">
+					<h:inputText size="6" />
+					<h:selectBooleanCheckbox id="#{id}" value="true" 
+					onclick="{
+						$('#{menu.elementLabel}').setAttribute('stopAsync', 'true');      
+						$('#{menu.elementLabel}:enableFlag#{id}').value= 'true';
+						$('#{menu.elementLabel}:dataTypeDestination#{id}').value= &quot;#&quot; + &quot;{#{destination}}&quot;;
+						$('#{menu.elementLabel}:dataTypeSource#{id}').value= &quot;#&quot; + &quot;{trim.valueSet['#{valueSet}'].values[#{dataTypeIndex}]}&quot;;
+
+						ajaxSubmit4($('#{menu.elementLabel}'), $('#{menu.elementLabel}').parentNode.id, $('#{menu.elementLabel}').getAttribute('currentStep'));
+					}" >
+				</h:selectBooleanCheckbox>
+				<h:outputText value="#{trim.trim.valueSet[valueSet].values[nullFlavorIndex].label.value}"  />					 
+				</c:if>
+
+				<c:if test="#{value.nullValue == null}">
+						<!-- ObservationValueSetEx -->
+					  	<c:choose>
+							<c:when test="#{value.PQ != null}" >
+								<trim:PQ id="PQField#{id}" readonly="false" value="#{value}" />
+							</c:when>
+							<c:otherwise>
+								<!-- Add Other Datatype as when needed -->			
+							</c:otherwise>
+					  	</c:choose>
+
+					<h:selectBooleanCheckbox id="#{id}" value="false" 
+					onclick="{
+					 	$('#{menu.elementLabel}').setAttribute('stopAsync', 'true');      
+						$('#{menu.elementLabel}:enableFlag#{id}').value= 'true';
+						$('#{menu.elementLabel}:dataTypeDestination#{id}').value= &quot;#&quot; + &quot;{#{destination}}&quot;;
+						$('#{menu.elementLabel}:dataTypeSource#{id}').value= &quot;#&quot; + &quot;{trim.valueSet['#{valueSet}'].values[#{nullFlavorIndex}]}&quot;;
+
+						ajaxSubmit4($('#{menu.elementLabel}'), $('#{menu.elementLabel}').parentNode.id, $('#{menu.elementLabel}').getAttribute('currentStep'));
+					}" >
+				</h:selectBooleanCheckbox>
+				<h:outputText value="#{trim.trim.valueSet[valueSet].values[nullFlavorIndex].label.value}"  />
+									 
+				</c:if>
+
+			 <h:inputText id="enableFlag#{id}" value="#{compute.property['enabled']}" style="display: none;" converter="javax.faces.Boolean"/>
+			 <h:inputText id="dataTypeDestination#{id}" value="#{compute.property['dataTypeDestination']}" style="display: none;" />
+			 <h:inputText id="dataTypeSource#{id}" value="#{compute.property['dataTypeSource']}" style="display: none;" />
+			 
+		  
+		  </c:if> 
+ 
+ 
+ 		<c:if test="#{readonly=='true'}" >
+			<c:if test="#{value.nullValue != null}">
+				<h:outputText value="#{trim.trim.valueSet[valueSet].values[nullFlavorIndex].label.value}"  />					 
+			</c:if>		
+			
+			<c:if test="#{value.nullValue == null}">
+				<!-- ObservationValueSetEx -->
+			  	<c:choose>
+					<c:when test="#{value.PQ != null}" >
+								<trim:PQ  id="PQField#{id}" readonly="true" value="#{value}" />
+					</c:when>
+					<c:otherwise>
+						<!-- Add Other Datatypes as when needed -->			
+					</c:otherwise>
+			  	</c:choose>
+			</c:if>
+			
+		</c:if>
+	</ui:composition>
+</body>
+</html>

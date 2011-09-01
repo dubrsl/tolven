@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Multiple Allergies - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+		
+		      <h:dataTable value="#{trim.trim.act.relationships}" var="rel" width="800px">
+		                <h:column >
+			                <f:facet name="header">
+			                    <h:outputText value="Alergies" />
+			                </f:facet>
+			                	<h:outputText value="#{rel.act.observation.value.CE.displayName}" />
+			            </h:column>
+
+			            <h:column >
+			                <f:facet name="header">
+			                    <h:outputText value="Onset of Symptoms" />
+			                </f:facet>
+			                	<trim:TS id="effectiveTime#{rel.sequenceNumber}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+			            </h:column>
+			            <h:column>
+			                <f:facet name="header">
+							<h:outputText value="Reaction"/>
+			                </f:facet>
+							<trim:CE id="reaction#{rel.sequenceNumber}" valueSet="reaction" value="#{rel.act.relationship['reaction'].act.observation.value}" layout="pageDirection" readonly="true"/>
+			            </h:column>
+			            <h:column>
+			                <f:facet name="header">
+						<h:outputText value="Severity"/>
+			                </f:facet>
+						<trim:CE id="severity" valueSet="severity" value="#{rel.act.relationship['severity'].act.observation.value}" layout="pageDirection" readonly="true" />
+			            </h:column>
+            		</h:dataTable>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

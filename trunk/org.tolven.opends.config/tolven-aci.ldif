@@ -1,0 +1,32 @@
+dn: ou=people,dc=tolven,dc=com
+changetype: modify
+add: aci
+aci: (target="ldap:///*,ou=people,dc=tolven,dc=com")(targetattr="*") (version 3.0; acl "Tolven Manager"; allow (all) groupdn="ldap:///cn=Administrator,ou=groups,dc=tolven,dc=com";)
+
+dn: ou=groups,dc=tolven,dc=com
+changetype: modify
+add: aci
+aci: (target="ldap:///*,ou=groups,dc=tolven,dc=com")(targetattr="*") (version 3.0; acl "Tolven Manager"; allow (all) groupdn="ldap:///cn=Administrator,ou=groups,dc=tolven,dc=com";)
+
+dn: ou=people,dc=tolven,dc=com
+changetype: modify
+add: aci
+aci: (target="ldap:///*,ou=people,dc=tolven,dc=com")(targetattr="*") (version 3.0; acl "Tolven Anonymous"; allow (all) groupdn="ldap:///cn=tolvenAnonymous,ou=groups,dc=tolven,dc=com";)
+aci: (target="ldap:///*,ou=people,dc=tolven,dc=com")(targetattr="userPassword||authPassword||userCertificate||userPKCS12") (version 3.0; acl "Tolven Self Modifiable"; allow(read,search,compare) userdn="ldap:///self";)
+aci: (targetattr="audio||authPassword||description||displayName||givenName||homePhone||homePostalAddress||initials||jpegPhoto||labeledURI||mobile||pager||postalAddress||postalCode||preferredLanguage||telephoneNumber||userPassword||userCertificate||userPKCS12") (version 3.0; acl "Tolven Self entry modification"; allow (write) userdn="ldap:///self";)
+
+dn:ou=people,dc=tolven,dc=com
+changetype:modify
+add:aci
+aci: (targetattr = "objectclass || inetuserstatus || iplanet-am-user-login-statu
+ s || iplanet-am-user-account-life || iplanet-am-session-quota-limit || iplanet-a
+ m-user-alias-list ||  iplanet-am-session-max-session-time || iplanet-am-session-
+ max-idle-time || iplanet-am-session-get-valid-sessions || iplanet-am-session-des
+ troy-sessions || iplanet-am-session-add-session-listener-on-all-sessions || ipla
+ net-am-user-admin-start-dn || iplanet-am-auth-post-login-process-class || iplane
+ t-am-saml-user || iplanet-am-saml-password || iplanet-am-user-federation-info ||
+ iplanet-am-user-federation-info-key || ds-pwp-account-disabled || sun-fm-saml2-
+ nameid-info || sun-fm-saml2-nameid-infokey || sunAMAuthInvalidAttemptsData || me
+ mberof || member")(targetfilter="(!(userdn=cn=Administrator,ou=groups,dc=tolven,
+ dc=com))")(version 3.0; acl "OpenAM User self modification denied"; deny (write)
+  userdn ="ldap:///self";)

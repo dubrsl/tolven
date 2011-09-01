@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Login using RESTful API</title>
+    </head>
+    <body>
+    	<table style="width:50%">
+    		<tr><td>
+    		    <form action="/openam/UI/login" method="POST" target="results">
+				  Username: <input type="text" name="IDToken1" /><br />
+				  Password: <input type="password" name="IDToken2" /><br />
+  					<input type="submit" value="Login" />
+				</form>
+			</td>
+    		<td>
+    		<p>Get user details</p>
+    		    <form action="/api/user/details" method="GET" name="details" target="results">
+				    Fields: <textarea cols="30" rows="3" name="fields">cn,countryName,dn,givenName,lastLogin,locale,organizationName,primaryMail,stateOrProvince,sn,timezone</textarea>
+				    <br />
+  					<input type="submit" value="Get Details" />
+				</form>
+			</td>
+    		<td>
+    		<p>Technically, logout invalidates the SSL session.</p>
+    		    <form action="/openam/UI/login" method="POST" target="results">
+  					<input type="submit" value="Logout" />
+				</form>
+			</td></tr>
+		</table>
+    </body>
+</html>
+				

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.jaxrs" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<!-- 
+	Any plugin mentioned in extensions below will need declaration in the requires element. 
+	The most common plugins are already included. Add additional plugins as needed. 
+-->
+	<requires>
+		<import plugin-id="org.tolven.component.war" />
+		<import plugin-id="org.tolven.component.tolvenejb" />
+		<import plugin-id="org.tolven.component.tolvenweb" />
+		<import plugin-id="org.tolven.api" />
+		<import plugin-id="org.tolven.dataextract" />
+		<import plugin-id="org.tolven.config.appserver" />
+	</requires>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="publicDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="publicDirectory">
+		<parameter id="sourceDirectory" value="web/public" />
+	</extension>
+	<extension id="JAXRSServlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="JAXRSServlet" />
+		<parameter id="servlet-class" value="com.sun.jersey.spi.container.servlet.ServletContainer" />
+		<parameter id="web-resource-name" value="Secure pages" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.api" />
+	</extension>
+
+	<extension id="JAXRSServletPackages" plugin-id="org.tolven.component.war" point-id="context-param">
+		<!-- Jersey link to Tolven API class -->
+		<parameter id="param-name" value="com.sun.jersey.config.property.packages" />
+		<parameter id="param-value" value="org.tolven.jersey" />
+		<parameter id="target-plugin-id" value="org.tolven.api" />
+	</extension>
+
+	<extension id="JAXRSMapping" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="JAXRSServlet" />
+		<parameter id="url-pattern" value="/*" />
+		<parameter id="target-plugin-id" value="org.tolven.api" />
+	</extension>
+	<extension id="apiclasses" plugin-id="org.tolven.component.war" point-id="classes">
+		<parameter id="dir" value="api/classes" />
+		<parameter id="target-plugin-id" value="org.tolven.api" />
+	</extension>
+	<extension id="webclasses" plugin-id="org.tolven.component.war" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	
+	<extension id="RESTfulContextListener-listener" plugin-id="org.tolven.component.war" point-id="listener">
+		<parameter id="listener-class" value="org.tolven.restful.RESTfulContextListener" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+</plugin>

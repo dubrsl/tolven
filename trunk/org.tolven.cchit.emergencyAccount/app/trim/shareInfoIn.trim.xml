@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://tolven.org/xsd/trim4">
+	<name>docclin/evn/shareInfoIn</name>
+	<page>inShareInfo.xhtml</page>
+	<drilldown>inShareInfoDD.xhtml</drilldown>
+	<application name="echr">
+		<instance>echr:newInfoInShare</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+	</act>
+</trim>

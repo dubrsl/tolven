@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.component.application" version="2.1.0" class="org.tolven.component.application.Application" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.library.application" />
+		<import plugin-id="org.tolven.api" />
+		<import plugin-id="org.tolven.assembler.admin" />
+	</requires>
+	<runtime>
+		<library id="classes" path="tpf/classes/" type="code" />
+	</runtime>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension-point id="applications">
+		<parameter-def id="dir"/>
+	</extension-point>
+	<extension-point id="rules">
+		<parameter-def id="dir" />
+	</extension-point>
+	<extension-point id="trims">
+		<parameter-def id="dir" />
+	</extension-point>
+	<extension-point id="reports">
+		<parameter-def id="dir" />
+	</extension-point>
+	<extension id="apiClasses" plugin-id="org.tolven.api" point-id="classes">
+		<parameter id="dir" value="api/classes" />
+	</extension>
+</plugin>

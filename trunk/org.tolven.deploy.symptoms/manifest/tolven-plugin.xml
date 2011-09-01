@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.deploy.symptoms" version="2.1.0" 
+	class="org.tolven.deploy.symptoms.LoaderSymptoms" 
+	vendor="Tolven">
+	<requires>
+		<!-- 
+			<import plugin-id="org.tolven.component.tolvenejb" />
+			<import plugin-id="org.tolven.component.tolvenweb" />
+		-->
+		<import plugin-id="org.tolven.library.application" />
+	</requires>
+	<runtime>
+		<library id="classes" path="tpf/classes/" type="code">
+			<export prefix="*" />
+		</library>
+	</runtime>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<!-- tolvenWeb components, uncomment those that have actual content
+		<extension id="ajaxDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="ajaxDirectory">
+		<parameter id="sourceDirectory" value="web/ajax" />
+		</extension>
+		<extension id="drilldownDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="drilldownDirectory">
+		<parameter id="sourceDirectory" value="web/drilldown" />
+		</extension>
+		<extension id="fiveDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="fiveDirectory">
+		<parameter id="sourceDirectory" value="web/five" />
+		</extension>
+		<extension id="imagesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="imagesDirectory">
+		<parameter id="sourceDirectory" value="web/images" />
+		</extension>
+		<extension id="invitationDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="invitationDirectory">
+		<parameter id="sourceDirectory" value="web/invitation" />
+		</extension>
+		<extension id="manageDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="manageDirectory">
+		<parameter id="sourceDirectory" value="web/manage" />
+		</extension>
+		<extension id="privateDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="privateDirectory">
+		<parameter id="sourceDirectory" value="web/private" />
+		</extension>
+		<extension id="publicDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="publicDirectory">
+		<parameter id="sourceDirectory" value="web/public" />
+		</extension>
+		<extension id="scriptsDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="scriptsDirectory">
+		<parameter id="sourceDirectory" value="web/scripts" />
+		</extension>
+		<extension id="stylesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="stylesDirectory">
+		<parameter id="sourceDirectory" value="web/styles" />
+		</extension>
+		<extension id="templatesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="templatesDirectory">
+		<parameter id="sourceDirectory" value="web/templates" />
+		</extension>
+		<extension id="vestibuleDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="vestibuleDirectory">
+		<parameter id="sourceDirectory" value="web/vestibule" />
+		</extension>
+		<extension id="wizardDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="wizardDirectory">
+		<parameter id="sourceDirectory" value="web/wizard" />
+		</extension>
+	-->
+	<!-- 
+		Add a value to a property associated with a specific class.
+		Copy this prototype for each property added to a class in EJB
+		The class name is the one being configured. The name and value of the property
+		are defined by tha class. 
+		In many cases, the value is the name of your class, below.
+		<extension id="property" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="com.myorg.SomeClass" />
+		<parameter id="name" value="myProperty1" />
+		<parameter id="value" value="myProperty1Value" />
+		</extension>
+	-->
+	<!-- 
+		Classes that will be deployed to the EJB component
+		<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+		</extension>
+	-->
+</plugin>

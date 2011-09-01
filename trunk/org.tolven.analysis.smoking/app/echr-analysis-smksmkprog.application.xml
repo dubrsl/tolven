@@ -1,0 +1,233 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<property accountType="echr" name="org.tolven.cohort.smk.includeCodes"></property>
+	<property accountType="echr" name="org.tolven.cohort.smk.excludeCodes"></property>
+	<property accountType="echr" name="org.tolven.cohort.smk.smkprogsnapshot.target">90</property>
+	<property accountType="echr" name="org.tolven.cohort.smk.smkprogsnapshot.intervalValue">1</property>
+	<property accountType="echr" name="org.tolven.cohort.smk.smkprogsnapshot.intervalUnit">Month</property>
+	<property accountType="echr" name="org.tolven.cohort.smk.smkprogsnapshot.chartRange">12</property>
+	<property accountType="echr" name="org.tolven.cohort.smk.smkprogsnapshot.chartDataTitle">% Patients</property>
+	<property accountType="echr" name="org.tolven.cohort.smk.smkprogsnapshot.chartTargetTitle">Target</property>
+	<extends path="echr:cohort">
+		<placeholder name="smkprogsnapshot" title="Smoking Cessation Snapshot" page="/five/snapshot.xhtml" heading="/five/snapshotLink.xhtml">
+			<field name="name" internal="string01" />
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="cohort" internal="parent01">
+				<from>#{cohort}</from>
+			</field>
+			<field name="targetPercent" internal="_extended" type="real" />
+			<field name="allCount" internal="_extended" type="real" />
+			<field name="normCount" internal="_extended" type="real" />
+			<field name="abnormCount" internal="_extended" type="real" />
+			<list name="all" title="Patients" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{smkprogsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{smkprogsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{smkprogsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(smkprogsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{smkprogsnapshotresult.patient.sex}</from>
+					<from>#{smkprogsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="SmokingProgram" width="12.0" visible="true" internal="string07">
+					<from>#{smkprogsnapshotresult.smokingProgram}</from>
+				</column>
+			</list>
+			<list name="prog" title="On Smoking Program" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{smkprogsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{smkprogsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{smkprogsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(smkprogsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{smkprogsnapshotresult.patient.sex}</from>
+					<from>#{smkprogsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="SmokingProgram" width="12.0" visible="true" internal="string07">
+					<from>#{smkprogsnapshotresult.smokingProgram}</from>
+				</column>
+			</list>
+			<list name="noprog" title="Not On Smoking Program" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{smkprogsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{smkprogsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{smkprogsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(smkprogsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{smkprogsnapshotresult.patient.sex}</from>
+					<from>#{smkprogsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="SmokingProgram" width="12.0" align="right" visible="true">
+					<from>#{smkprogsnapshotresult.result.pqValue01}</from>
+				</column>
+			</list>
+		</placeholder>
+	</extends>
+	<extends path="echr:cohort:smkprogsnapshot">
+		<placeholder name="smkprogsnapshotresult" title="Smoking Cessation Snapshot Result">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="smkprogsnapshot" internal="parent01">
+				<from>#{smkprogsnapshot}</from>
+			</field>
+			<field name="patient" internal="parent02">
+				<from>#{patient}</from>
+			</field>
+			<field name="result" internal="parent03">
+				<from>#{result}</from>
+			</field>
+			<field name="smokingProgram" internal="string07">
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:cohort:snapshots">
+		<list name="smkprogsnapshot" title="Smoking Cessation" sequence="400" initialSort="Date" page="/five/list.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot">
+			<column name="Name" internal="string01" reference="true" width="25.0">
+				<from>#{smkprogsnapshot.cohort.name}</from>
+			</column>
+			<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm:ss" width="15.0">
+				<from>#{smkprogsnapshot.effectiveTime}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:analysis:portal">
+		<portlet name="smksmkprogsnapshotsum" portalColumn="1" sequence="2" title="Smoking Cessation" page="/five/analysis/smksmkprogAnalysis.xhtml" visible="true" />
+	</extends>
+	<extends path="echr:analysis">
+		<menu name="smksmkprogsnapshot" title="Smoking Cessation" sequence="400" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All Results" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{smkprogsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{smkprogsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{smkprogsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(smkprogsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{smkprogsnapshotresult.patient.sex}</from>
+					<from>#{smkprogsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="SmokingProgram" width="12.0" visible="true" internal="string07">
+					<from>#{smkprogsnapshotresult.smokingProgram}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{smkprogsnapshotresult.smkprogsnapshot.effectiveTime}</from>
+				</column>
+			</list>
+			<list name="prog" title="Normal A1c" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{smkprogsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{smkprogsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{smkprogsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(smkprogsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{smkprogsnapshotresult.patient.sex}</from>
+					<from>#{smkprogsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="SmokingProgram" width="12.0" visible="true" internal="string07">
+					<from>#{smkprogsnapshotresult.smokingProgram}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{smkprogsnapshotresult.smkprogsnapshot.effectiveTime}</from>
+				</column>
+			</list>
+			<list name="noprog" title="High A1c" page="/five/analysisSnapshotList.xhtml" visible="true" drilldown="echr:cohort:smkprogsnapshot:smkprogsnapshotresult">
+				<column name="Name" width="20.0">
+					<from>#{smkprogsnapshotresult.patient.lastName}, #{smkprogsnapshotresult.patient.firstName} #{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="Last" visible="false">
+					<from>#{smkprogsnapshotresult.patient.lastName}</from>
+				</column>
+				<column name="First" visible="false">
+					<from>#{smkprogsnapshotresult.patient.firstName}</from>
+				</column>
+				<column name="Middle" visible="false">
+					<from>#{smkprogsnapshotresult.patient.middleName}</from>
+				</column>
+				<column name="DOB" format="d MMM yyyy" width="7.0">
+					<from>#{smkprogsnapshotresult.patient.dob}</from>
+				</column>
+				<column name="Age" width="4.5">
+					<from>#{age(smkprogsnapshotresult.patient.dob, accountUser)}</from>
+				</column>
+				<column name="Sex" width="6.0">
+					<from>#{smkprogsnapshotresult.patient.sex}</from>
+					<from>#{smkprogsnapshotresult.patient.gender}</from>
+				</column>
+				<column name="SmokingProgram" width="12.0" align="right" visible="true">
+					<from>#{smkprogsnapshotresult.result.pqValue01}</from>
+				</column>
+				<column name="LastSnapshotDate" internal="date01" format="MMM-dd-yyyy" visible="never">
+					<from>#{smkprogsnapshotresult.smkprogsnapshot.effectiveTime}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+</application>

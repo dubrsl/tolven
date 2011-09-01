@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Select Account using RESTful API</title>
+		<script type="text/javascript">
+		
+			function getProperty() {
+				var mygetrequest = new XMLHttpRequest();
+				mygetrequest.onreadystatechange = function() {
+					if (mygetrequest.readyState == 4) {
+						if (mygetrequest.status == 200
+								|| window.location.href.indexOf("http") == -1) {
+							document.getElementById("pvalue").value = mygetrequest.responseText;
+						} else {
+							alert("An error has occured making the request");
+						}
+					}
+				}
+				var namevalue = encodeURIComponent(document.getElementById("pname").value);
+				mygetrequest.open("GET", "/api/accounts/property?pname=" + namevalue, true);
+				mygetrequest.send(null);
+			}
+
+			function setProperty() {
+				var mypostrequest = new XMLHttpRequest();
+				mypostrequest.onreadystatechange = function() {
+					if (mypostrequest.readyState == 4) {
+						if (mypostrequest.status == 200
+								|| window.location.href.indexOf("http") == -1) {
+							document.getElementById("pvalue").value = mypostrequest.responseText;
+						}
+					}
+				}
+				var namevalue = encodeURIComponent(document.getElementById("pname").value);
+				var thevalue = encodeURIComponent(document.getElementById("pvalue").value);
+				var parameters = "pname=" + namevalue + "&amp;pvalue=" + thevalue;
+				mypostrequest.open("POST", "/api/accounts/property", true);
+				mypostrequest.setRequestHeader("Content-type",	"application/x-www-form-urlencoded");
+				mypostrequest.send(parameters);
+			}
+		</script>
+    </head>
+    <body>
+    <table style="width:90%">
+    	<tr><td>
+		   		<p>Get Account Details</p>
+			    <form action="/api/account/details" method="GET" name="details" target="results">
+				    Fields: <textarea cols="30" rows="3" name="fields">title,accountType,timeZone,locale,emailFormat,disableAutoRefresh,manualMetadataUpdate,accountPublicKey</textarea>
+				    <br />
+					<input type="submit" value="Get Details" />
+				</form>
+			</td>
+			<td><p>Edit Account Property</p>
+			    <form action="/api/accounts/property" method="GET" name="property" target="results">
+			    	Name: <input type="text" name="pname" id="pname"></input><input type="button" value="Get" onclick="getProperty()"/><br/>
+				    Value: <textarea cols="50" rows="15" name="pvalue" id="pvalue"></textarea>
+				    <br /><input type="button" value="Set" onclick="setProperty()"/>
+			    </form>
+			</td>
+			
+<!-- 			<td><p>Set Account Property</p>
+			    <form action="/api/accounts/property" method="POST" name="property" target="results">
+			    	Name: <input type="text" name="pname"></input><br/>
+				    Value: <textarea cols="50" rows="15" name="pvalue"></textarea>
+				    <br />
+					<input type="submit" value="Set Property" />
+				</form>
+			</td>
+			<td>
+				<p>Get Account Property</p>
+			    <form action="/api/accounts/property" method="GET" name="property" target="results">
+			    	<span style="alight:top">Name: <input type="text" name="pname"></input><br/>
+					<input type="submit" value="Get Property" /></span>
+				</form>
+				</td> -->
+			</tr>
+			<tr>
+				<td><p>Set Account Type Property</p>
+			    <form action="/api/accountTypes/property" method="POST" name="property" target="results">
+			    	Name: <input type="text" name="pname"></input><br/>
+				    Value: <textarea cols="50" rows="15" name="pvalue"></textarea>
+				    <br />
+					<input type="submit" value="Set Property" />
+				</form>
+			</td></tr>
+		</table>
+    </body>
+</html>
+				

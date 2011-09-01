@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<name>reg/evn/provider</name>
+	<description>Provider</description>
+	<page>provider.xhtml</page>
+	<drilldown>providerDD.xhtml</drilldown>
+	<menu>global:providerMenu</menu>
+	<application name="echr">
+		<instance>echr:provider</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<application name="ephr">
+		<instance>ephr:provider</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<act classCode="REG" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0000000</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Provider</ST>
+		</title>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PROV">
+				<bind application="echr" phase="create">
+					<placeholder bindAction="merge">
+						<path>echr:provider</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr" phase="create">
+					<placeholder bindAction="merge">
+						<path>ephr:provider</path>
+					</placeholder>
+				</bind>
+				<id/>
+				<name>
+					<label>Provider Name</label>
+					<use>L</use>
+					<EN>
+						<part>
+							<label>Name</label>
+							<ST/>
+						</part>
+					</EN>
+				</name>
+			</role>
+		</participation>
+		<compute>
+			<type>org.tolven.provider.compute.ResolveProviderId</type>
+		</compute>
+	</act>
+   <field name="system">
+        <value xsi:type="xs:long">0</value>
+    </field>
+   <field name="selectSpecialty">
+        <value xsi:type="xs:boolean">false</value>
+    </field>
+   <field name="specialty">
+        <value xsi:type="xs:long">0</value>
+    </field>
+   <field name="selectProvider">
+        <value xsi:type="xs:boolean">false</value>
+    </field>
+   <field name="provider">
+        <value xsi:type="xs:long">0</value>
+    </field>
+   <field name="providerId">
+        <value xsi:type="xs:long">0</value>
+    </field>
+</trim>

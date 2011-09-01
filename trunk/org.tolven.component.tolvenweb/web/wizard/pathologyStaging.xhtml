@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Staging</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="Enter #{menu.menuDataItem.string01}" >
+			<wiz:body>
+			<wiz:group title="Accession Numbers">
+			</wiz:group>
+
+			<wiz:group title="Laterality">
+			<table width="100%">
+			<tr>
+				<td style="width:300px;">
+					<wiz:enableMultipleRelationsCheckBox act="#{trim.trim.act}" id="llaterality" fieldName="leftLaterality" itemLabel="Left"  itemValue="true" relations="left_StagingType" >
+					</wiz:enableMultipleRelationsCheckBox>
+				</td>
+				<td style="width:300px;">
+					<wiz:enableMultipleRelationsCheckBox act="#{trim.trim.act}" id="rlaterality" fieldName="rightLaterality" itemLabel="Right"  itemValue="true" relations="right_StagingType" >
+					</wiz:enableMultipleRelationsCheckBox>
+				</td>			
+			</tr>
+			
+			<tr>
+				<td valign="top" >
+				
+					<table tvisible="$('#{menu.elementLabel}:llaterality').checked" width="100%" >
+					<tr>
+					<td valign="top">
+						<wiz:group title="Left Staging" >
+							<wiz:enableMultipleRelationsRadio id="leftStaging" 
+											act="#{trim.trim.act}"
+											valueSet="stagingType" 
+											value="#{trim.trim.act.relationship['left_StagingType'].act.observation.value}" 
+											valueSetDisplayNamesAndRelations="y=left_y_NeoadjuvantTherapy,left_y_Tumor,left_y_Node,left_y_Metastatis,left_y_CalculatedStaging,left_y_ClinicalStaging;yTNM=left_yTNM_NeoadjuvantTherapy,left_yTNM_Tumor,left_yTNM_Node,left_yTNM_Metastatis,left_yTNM_CalculatedStaging,left_yTNM_ClinicalStaging"  />
+						</wiz:group>
+						
+						<wiz:enableMultipleRelationsRadioContent valueSet="stagingType"  ceDisplayName="y" enableRadioId="leftStaging" >
+							<table width="100%">
+							 	<tr>
+							 	<td>
+							 		
+									<wiz:group title="#{trim.trim.act.relationship['left_y_NeoadjuvantTherapy'].act.observation.value.label.value}">
+										<trim:selectManyCheck id="left_yNeoadjuvantTherapy" slot="#{trim.trim.act.relationship['left_y_NeoadjuvantTherapy'].act.observation}" layout="pageDirection" style="float:left;"/>
+									</wiz:group >	
+									<wiz:group title="#{trim.trim.act.relationship['left_y_Tumor'].act.title.ST.value}" >
+										<trim:CE id="left_yTumor" valueSet="tumor" value="#{trim.trim.act.relationship['left_y_Tumor'].act.observation.value}"  />
+									</wiz:group>
+									<wiz:group title="#{trim.trim.act.relationship['left_y_Node'].act.title.ST.value}" >
+										<trim:CE id="left_yNode" valueSet="node" value="#{trim.trim.act.relationship['left_y_Node'].act.observation.value}"  />
+									</wiz:group> 
+									<wiz:group title="#{trim.trim.act.relationship['left_y_Metastatis'].act.title.ST.value}" >
+										<trim:CE id="left_yMetastasis" valueSet="metastasis" value="#{trim.trim.act.relationship['left_y_Metastatis'].act.observation.value}"  />
+									</wiz:group>					
+									<wiz:group title="#{trim.trim.act.relationship['left_y_CalculatedStaging'].act.title.ST.value}" >
+										<trim:ST id="left_yCalculatedStaging" value="#{trim.trim.act.relationship['left_y_CalculatedStaging'].act.observation.value}"  />
+									</wiz:group>							
+									<wiz:group title="#{trim.trim.act.relationship['left_y_ClinicalStaging'].act.title.ST.value}" >
+										<trim:ST id="left_yClinicalStaging" value="#{trim.trim.act.relationship['left_y_ClinicalStaging'].act.observation.value}"  />
+									</wiz:group>													
+							 	</td>
+							 	</tr> 
+							 </table>
+						 </wiz:enableMultipleRelationsRadioContent>
+						<wiz:enableMultipleRelationsRadioContent valueSet="stagingType"  ceDisplayName="yTNM" enableRadioId="leftStaging" >						 
+							 <table width="100%">
+							 	<tr>
+							 	<td>
+									<wiz:group title="#{trim.trim.act.relationship['left_yTNM_NeoadjuvantTherapy'].act.observation.value.label.value}">
+										<trim:selectManyCheck id="left_yTNMNeoadjuvantTherapy" slot="#{trim.trim.act.relationship['left_yTNM_NeoadjuvantTherapy'].act.observation}" layout="pageDirection" style="float:left;"/>
+									</wiz:group >		
+									<wiz:group title="#{trim.trim.act.relationship['left_yTNM_Tumor'].act.title.ST.value}" >
+										<trim:CE id="left_yTNMTumor" valueSet="tumor" value="#{trim.trim.act.relationship['left_yTNM_Tumor'].act.observation.value}"  />
+									</wiz:group>
+									<wiz:group title="#{trim.trim.act.relationship['left_yTNM_Node'].act.title.ST.value}" >
+										<trim:CE id="left_yTNMNode" valueSet="node" value="#{trim.trim.act.relationship['left_yTNM_Node'].act.observation.value}"  />
+									</wiz:group>
+									<wiz:group title="#{trim.trim.act.relationship['left_yTNM_Metastatis'].act.title.ST.value}" >
+										<trim:CE id="left_yTNMMetastasis" valueSet="metastasis" value="#{trim.trim.act.relationship['left_yTNM_Metastatis'].act.observation.value}"  />
+									</wiz:group>					
+									<wiz:group title="#{trim.trim.act.relationship['left_yTNM_CalculatedStaging'].act.title.ST.value}" >
+										<trim:ST id="left_yTNMCalculatedStaging" value="#{trim.trim.act.relationship['left_yTNM_CalculatedStaging'].act.observation.value}"  />
+									</wiz:group>							
+									<wiz:group title="#{trim.trim.act.relationship['left_yTNM_ClinicalStaging'].act.title.ST.value}" >
+										<trim:ST id="left_yTNMClinicalStaging" value="#{trim.trim.act.relationship['left_yTNM_ClinicalStaging'].act.observation.value}"  />
+									</wiz:group>												
+							 	</td>
+							 	</tr> 
+							 </table>
+						 </wiz:enableMultipleRelationsRadioContent>
+					</td>
+					</tr>
+					</table>					
+					
+					
+			 	</td>
+			 	<td valign="top">
+					<table tvisible="$('#{menu.elementLabel}:rlaterality').checked" width="100%">
+					<tr>
+					<td valign="top">			 	
+						<wiz:group title="Right Staging" >
+						
+							<wiz:enableMultipleRelationsRadio id="rightStaging" 
+											act="#{trim.trim.act}"
+											valueSet="stagingType" 
+											value="#{trim.trim.act.relationship['right_StagingType'].act.observation.value}" 
+											valueSetDisplayNamesAndRelations="y=right_y_NeoadjuvantTherapy,right_y_Tumor,right_y_Node,right_y_Metastatis,right_y_CalculatedStaging,right_y_ClinicalStaging;yTNM=right_yTNM_NeoadjuvantTherapy,right_yTNM_Tumor,right_yTNM_Node,right_yTNM_Metastatis,right_yTNM_CalculatedStaging,right_yTNM_ClinicalStaging"  />
+						</wiz:group>
+						
+						<wiz:enableMultipleRelationsRadioContent valueSet="stagingType"  ceDisplayName="y" enableRadioId="rightStaging" >
+							<table width="100%">
+							 	<tr>
+							 	<td>
+									<wiz:group title="#{trim.trim.act.relationship['right_y_NeoadjuvantTherapy'].act.observation.value.label.value}">
+										<trim:selectManyCheck id="right_yNeoadjuvantTherapy" slot="#{trim.trim.act.relationship['right_y_NeoadjuvantTherapy'].act.observation}" layout="pageDirection" style="float:left;"/>
+									</wiz:group >		
+									<wiz:group title="#{trim.trim.act.relationship['right_y_Tumor'].act.title.ST.value}" >
+										<trim:CE id="right_yTumor" valueSet="tumor" value="#{trim.trim.act.relationship['right_y_Tumor'].act.observation.value}"  />
+									</wiz:group>
+									<wiz:group title="#{trim.trim.act.relationship['right_y_Node'].act.title.ST.value}" >
+										<trim:CE id="right_yNode" valueSet="node" value="#{trim.trim.act.relationship['right_y_Node'].act.observation.value}"  />
+									</wiz:group>
+									<wiz:group title="#{trim.trim.act.relationship['right_y_Metastatis'].act.title.ST.value}" >
+										<trim:CE id="right_yMetastasis" valueSet="metastasis" value="#{trim.trim.act.relationship['right_y_Metastatis'].act.observation.value}"  />
+									</wiz:group>					
+									<wiz:group title="#{trim.trim.act.relationship['right_y_CalculatedStaging'].act.title.ST.value}" >
+										<trim:ST id="right_yCalculatedStaging" value="#{trim.trim.act.relationship['right_y_CalculatedStaging'].act.observation.value}"  />
+									</wiz:group>							
+									<wiz:group title="#{trim.trim.act.relationship['right_y_ClinicalStaging'].act.title.ST.value}" >
+										<trim:ST id="right_yClinicalStaging" value="#{trim.trim.act.relationship['right_y_ClinicalStaging'].act.observation.value}"  />
+									</wiz:group>													
+							 	</td>
+							 	</tr> 
+							 </table>
+						</wiz:enableMultipleRelationsRadioContent>
+						<wiz:enableMultipleRelationsRadioContent valueSet="stagingType"  ceDisplayName="yTNM" enableRadioId="rightStaging" >						 
+							<table width="100%">
+							 	<tr>
+							 	<td>
+									<wiz:group title="#{trim.trim.act.relationship['right_yTNM_NeoadjuvantTherapy'].act.observation.value.label.value}">
+										<trim:selectManyCheck id="right_yTNMNeoadjuvantTherapy" slot="#{trim.trim.act.relationship['right_yTNM_NeoadjuvantTherapy'].act.observation}" layout="pageDirection" style="float:left;"/>
+									</wiz:group >		
+									<wiz:group title="#{trim.trim.act.relationship['right_yTNM_Tumor'].act.title.ST.value}" >
+										<trim:CE id="right_yTNMTumor" valueSet="tumor" value="#{trim.trim.act.relationship['right_yTNM_Tumor'].act.observation.value}"  />
+									</wiz:group>
+									<wiz:group title="#{trim.trim.act.relationship['right_yTNM_Node'].act.title.ST.value}" >
+										<trim:CE id="right_yTNMNode" valueSet="node" value="#{trim.trim.act.relationship['right_yTNM_Node'].act.observation.value}"  />
+									</wiz:group>
+									<wiz:group title="#{trim.trim.act.relationship['right_yTNM_Metastatis'].act.title.ST.value}" >
+										<trim:CE id="right_yTNMMetastasis" valueSet="metastasis" value="#{trim.trim.act.relationship['right_yTNM_Metastatis'].act.observation.value}"  />
+									</wiz:group>					
+									<wiz:group title="#{trim.trim.act.relationship['right_yTNM_CalculatedStaging'].act.title.ST.value}" >
+										<trim:ST id="right_yTNMCalculatedStaging" value="#{trim.trim.act.relationship['right_yTNM_CalculatedStaging'].act.observation.value}"  />
+									</wiz:group>							
+									<wiz:group title="#{trim.trim.act.relationship['right_yTNM_ClinicalStaging'].act.title.ST.value}" >
+										<trim:ST id="right_yTNMClinicalStaging" value="#{trim.trim.act.relationship['right_yTNM_ClinicalStaging'].act.observation.value}"  />
+									</wiz:group>													
+													 		
+							 	</td>
+							 	</tr> 
+							 </table>
+						</wiz:enableMultipleRelationsRadioContent>						 					
+					</td>
+					</tr>
+					</table>					
+					
+				</td>
+			</tr>
+			
+			</table>
+			</wiz:group>
+			
+			<wiz:group title="Clinician doing staging ">
+                <h:selectOneMenu id="admit" value="#{trim.trim.act.participation['clinician'].role.id.for[top.accountUser.account].extension}">
+                	<f:selectItems value="#{trim.list['echr:admin:staff:all~Name']}"/>
+                </h:selectOneMenu>
+			</wiz:group>
+
+			
+			</wiz:body>
+			
+			<wiz:help>
+				<h1>Weight</h1>
+				<p>Holding your breath doesn't help much.</p>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>

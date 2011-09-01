@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created using JasperAssistant (http://www.jasperassistant.com) -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="path1" pageWidth="612" pageHeight="791" whenNoDataType="AllSectionsNoDetail" columnWidth="576" leftMargin="18" rightMargin="18" topMargin="36" bottomMargin="18">
+	<property name="com.jasperassistant.designer.Grid" value="false"/>
+	<property name="com.jasperassistant.designer.SnapToGrid" value="true"/>
+	<property name="com.jasperassistant.designer.GridWidth" value="12"/>
+	<property name="com.jasperassistant.designer.GridHeight" value="12"/>
+	<import value="org.tolven.core.entity.AccountUser"/>
+	<import value="org.tolven.app.el.AgeFormat"/>
+	<import value="org.tolven.report.ProcedureReportDataSource"/>
+	<import value="org.tolven.report.TolvenReportDataSource"/>
+	<style name="Base" isDefault="false" isBlankWhenNull="true" fontName="Helvetica" fontSize="8" pdfFontName="Helvetica"/>
+	<style name="PatientName" isDefault="false" style="Base" fontSize="24" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="HeaderDetail" isDefault="false" style="Base" fontSize="10" pdfFontName="Helvetica"/>
+	<style name="HeaderDetailBD" isDefault="false" style="Base" fontSize="10" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<style name="SectionHeader" isDefault="false" style="Base" markup="none" fontSize="10" isBold="true" isItalic="true" pdfFontName="Helvetica-BoldOblique"/>
+	<style name="BaseBD" isDefault="false" style="Base" markup="none" isBlankWhenNull="true" fontSize="8" isBold="true" pdfFontName="Helvetica-Bold"/>
+	<parameter name="tolvenQueryString" class="java.lang.String">
+		<defaultValueExpression><![CDATA["echr:patients:all"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tolvenQueryParameter" class="java.lang.String">
+		<defaultValueExpression><![CDATA["echr:patient-NNNN"]]></defaultValueExpression>
+	</parameter>
+	<field name="dob" class="java.util.Date"/>
+	<field name="lastName" class="java.lang.String"/>
+	<field name="path" class="java.lang.String"/>
+	<field name="firstName" class="java.lang.String"/>
+	<field name="middleName" class="java.lang.String"/>
+	<field name="mrn" class="java.lang.String"/>
+	<field name="primaryName" class="java.lang.String"/>
+	<field name="surgeonName" class="java.lang.String"/>
+	
+	<group name="Patient" isStartNewPage="true">
+		<groupExpression><![CDATA[$V{REPORT_COUNT}]]></groupExpression>
+		<groupHeader>
+			<band height="37">
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="PatientName" stretchType="RelativeToTallestObject" x="0" y="0" width="576" height="35"/>
+					<box padding="0">
+						<pen lineStyle="Solid"/>
+						<bottomPen lineWidth="2.0"/>
+					</box>
+					<textElement>
+						<font fontName="Helvetica" pdfFontName="Helvetica-Bold"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[($F{lastName} == null ? "" : $F{lastName}) + ($F{firstName} == null ? "" : ", " + $F{firstName}) + ($F{middleName} == null ? "" : " " + $F{middleName})]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="DOB" isReprintHeaderOnEachPage="true">
+		<groupHeader>
+			<band height="14">
+				<frame>
+					<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="576" height="14"/>
+					<box padding="0"/>
+					<textField isStretchWithOverflow="true" hyperlinkType="None">
+						<reportElement style="HeaderDetail" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="0" width="54" height="14"/>
+						<textElement verticalAlignment="Top" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["DOB:"]]></textFieldExpression>
+					</textField>
+					<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" hyperlinkType="None">
+						<reportElement style="HeaderDetailBD" stretchType="RelativeToTallestObject" mode="Transparent" x="54" y="0" width="72" height="14"/>
+						<textElement verticalAlignment="Top" markup="none"/>
+						<textFieldExpression class="java.sql.Timestamp"><![CDATA[$F{dob}]]></textFieldExpression>
+					</textField>
+					<textField isStretchWithOverflow="true" pattern="MM/dd/yyyy" hyperlinkType="None">
+						<reportElement style="Base" stretchType="RelativeToTallestObject" x="504" y="0" width="72" height="14"/>
+						<box topPadding="1" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+						<textElement textAlignment="Right" verticalAlignment="Top" markup="none"/>
+						<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+					</textField>
+					<textField isStretchWithOverflow="true" hyperlinkType="None">
+						<reportElement style="Base" stretchType="RelativeToTallestObject" x="270" y="0" width="234" height="14"/>
+						<box topPadding="1" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+						<textElement verticalAlignment="Top" markup="none"/>
+					</textField>
+					<textField isStretchWithOverflow="true" hyperlinkType="None">
+						<reportElement style="HeaderDetailBD" stretchType="RelativeToTallestObject" x="126" y="0" width="144" height="14"/>
+						<textElement textAlignment="Center" verticalAlignment="Top" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["(current age" + ($F{dob} == null ? "" : " " + AgeFormat.toAgeString($F{dob}, new Date())) + ")"]]></textFieldExpression>
+					</textField>
+				</frame>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="MRN" isReprintHeaderOnEachPage="true">
+		<groupHeader>
+			<band height="14">
+				<frame>
+					<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="576" height="14"/>
+					<textField isStretchWithOverflow="true" hyperlinkType="None">
+						<reportElement style="HeaderDetail" stretchType="RelativeToTallestObject" x="0" y="0" width="54" height="14"/>
+						<textElement verticalAlignment="Top" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["MRN:"]]></textFieldExpression>
+					</textField>
+					<textField isStretchWithOverflow="true" hyperlinkType="None">
+						<reportElement style="HeaderDetailBD" stretchType="RelativeToTallestObject" x="54" y="0" width="216" height="14"/>
+						<textElement verticalAlignment="Top" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA[$F{mrn}]]></textFieldExpression>
+					</textField>
+					<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+						<reportElement style="Base" stretchType="RelativeToTallestObject" mode="Transparent" x="270" y="0" width="306" height="14"/>
+						<box topPadding="1" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+						<textElement textAlignment="Right" verticalAlignment="Top" markup="html"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["Providers: "+($F{primaryName}!=null?$F{primaryName}:"")+ " " +($F{surgeonName} != null?$F{surgeonName}:"")]]></textFieldExpression>
+					</textField>
+				</frame>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="SummaryHeader">
+		<groupHeader>
+			<band height="14">
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="SectionHeader" mode="Transparent" x="0" y="0" width="576" height="14"/>
+					<box padding="0">
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Summary"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="SummaryAndClinicalNotes">
+		<groupHeader>
+			<band height="14">
+				<subreport>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="216" height="14" backcolor="#E8E8E8"/>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<subreportParameter name="SIDE">
+						<subreportParameterExpression><![CDATA["Right"]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="path">
+						<subreportParameterExpression><![CDATA[$F{path}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new JREmptyDataSource(1)]]></dataSourceExpression>
+					<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[TolvenReportDataSource.getJasperReport("path1SummaryLR")]]></subreportExpression>
+				</subreport>
+				<subreport>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="223" y="0" width="216" height="14" backcolor="#E8E8E8"/>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<subreportParameter name="SIDE">
+						<subreportParameterExpression><![CDATA["Left"]]></subreportParameterExpression>
+					</subreportParameter>
+					<subreportParameter name="path">
+						<subreportParameterExpression><![CDATA[$F{path}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new JREmptyDataSource(1)]]></dataSourceExpression>
+					<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[TolvenReportDataSource.getJasperReport("path1SummaryLR")]]></subreportExpression>
+				</subreport>
+				<subreport>
+					<reportElement positionType="Float" stretchType="RelativeToBandHeight" mode="Opaque" x="446" y="0" width="130" height="14" backcolor="#E8E8E8"/>
+					<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+					<subreportParameter name="path">
+						<subreportParameterExpression><![CDATA[$F{path}]]></subreportParameterExpression>
+					</subreportParameter>
+					<dataSourceExpression><![CDATA[new JREmptyDataSource(1)]]></dataSourceExpression>
+					<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[TolvenReportDataSource.getJasperReport("path1SummaryO")]]></subreportExpression>
+				</subreport>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="ProceduresHeader">
+		<groupFooter>
+			<band height="229" isSplitAllowed="false">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true" hyperlinkType="None">
+					<reportElement stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="13" width="576" height="72" backcolor="#FFFFFF"/>
+					<box padding="0">
+						<pen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Middle" markup="none"/>
+				</textField>
+				<frame>
+					<reportElement x="0" y="109" width="576" height="8"/>
+				</frame>
+				<frame>
+					<reportElement x="0" y="119" width="264" height="110"/>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="0" y="0" width="144" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Right" verticalAlignment="Middle" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["10 Year Risk Estimate"]]></textFieldExpression>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="0" y="20" width="144" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Right" verticalAlignment="Middle" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["None"]]></textFieldExpression>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="0" y="40" width="144" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Right" verticalAlignment="Middle" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["Hormonal Therapy"]]></textFieldExpression>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="0" y="60" width="144" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Right" verticalAlignment="Middle" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["Chemotherapy"]]></textFieldExpression>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="0" y="80" width="144" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Right" verticalAlignment="Middle" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["Combined"]]></textFieldExpression>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="144" y="20" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="144" y="60" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="198" y="40" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="144" y="40" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="144" y="80" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="144" y="0" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["Recur"]]></textFieldExpression>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="198" y="0" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["Mort"]]></textFieldExpression>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="198" y="60" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="198" y="20" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					</textField>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="198" y="80" width="54" height="20"/>
+						<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="7">
+							<pen lineWidth="1.0" lineStyle="Solid"/>
+						</box>
+						<textElement textAlignment="Center" verticalAlignment="Middle" markup="none"/>
+					</textField>
+				</frame>
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="SectionHeader" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="89" width="576" height="14"/>
+					<box padding="0">
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Treatment Plan"]]></textFieldExpression>
+				</textField>
+				<frame>
+					<reportElement x="288" y="119" width="288" height="110"/>
+					<frame>
+						<reportElement x="0" y="0" width="156" height="30"/>
+						<textField isBlankWhenNull="true" hyperlinkType="None">
+							<reportElement style="BaseBD" x="0" y="3" width="14" height="14"/>
+							<box padding="0">
+								<pen lineWidth="1.0"/>
+							</box>
+							<textElement/>
+						</textField>
+						<textField hyperlinkType="None">
+							<reportElement style="BaseBD" x="14" y="0" width="142" height="20"/>
+							<box topPadding="0" leftPadding="7" bottomPadding="0" rightPadding="0"/>
+							<textElement verticalAlignment="Middle"/>
+							<textFieldExpression class="java.lang.String"><![CDATA["Radiation Oncology:"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="0" y="30" width="156" height="30"/>
+						<textField isBlankWhenNull="true" hyperlinkType="None">
+							<reportElement style="BaseBD" x="0" y="3" width="14" height="14"/>
+							<box padding="0">
+								<pen lineWidth="1.0"/>
+							</box>
+							<textElement markup="none"/>
+						</textField>
+						<textField hyperlinkType="None">
+							<reportElement style="BaseBD" x="14" y="0" width="142" height="20"/>
+							<box topPadding="0" leftPadding="7" bottomPadding="0" rightPadding="0"/>
+							<textElement verticalAlignment="Middle" markup="none"/>
+							<textFieldExpression class="java.lang.String"><![CDATA["Medical Oncology:"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="0" y="60" width="156" height="22"/>
+						<textField isBlankWhenNull="true" hyperlinkType="None">
+							<reportElement style="BaseBD" x="0" y="3" width="14" height="14"/>
+							<box padding="0">
+								<pen lineWidth="1.0"/>
+							</box>
+							<textElement markup="none"/>
+						</textField>
+						<textField hyperlinkType="None">
+							<reportElement style="BaseBD" x="14" y="0" width="142" height="20"/>
+							<box topPadding="0" leftPadding="7" bottomPadding="0" rightPadding="0"/>
+							<textElement verticalAlignment="Middle" markup="none"/>
+							<textFieldExpression class="java.lang.String"><![CDATA["Surgical Oncology"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<textField hyperlinkType="None">
+						<reportElement style="BaseBD" x="14" y="87" width="142" height="21"/>
+						<box topPadding="0" leftPadding="7" bottomPadding="0" rightPadding="0"/>
+						<textElement verticalAlignment="Middle" markup="none"/>
+						<textFieldExpression class="java.lang.String"><![CDATA["Other:"]]></textFieldExpression>
+					</textField>
+					<frame>
+						<reportElement x="156" y="0" width="61" height="30"/>
+						<textField isBlankWhenNull="true" hyperlinkType="None">
+							<reportElement style="BaseBD" x="0" y="3" width="14" height="14"/>
+							<box padding="0">
+								<pen lineWidth="1.0"/>
+							</box>
+							<textElement markup="none"/>
+						</textField>
+						<textField hyperlinkType="None">
+							<reportElement style="Base" x="14" y="0" width="43" height="20"/>
+							<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="0"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle" markup="none"/>
+							<textFieldExpression class="java.lang.String"><![CDATA["UCSF"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="156" y="30" width="61" height="30"/>
+						<textField isBlankWhenNull="true" hyperlinkType="None">
+							<reportElement style="BaseBD" x="0" y="3" width="14" height="14"/>
+							<box padding="0">
+								<pen lineWidth="1.0"/>
+							</box>
+							<textElement markup="none"/>
+						</textField>
+						<textField hyperlinkType="None">
+							<reportElement style="Base" x="14" y="0" width="43" height="20"/>
+							<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="0"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle" markup="none"/>
+							<textFieldExpression class="java.lang.String"><![CDATA["UCSF"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="216" y="0" width="72" height="30"/>
+						<textField isBlankWhenNull="true" hyperlinkType="None">
+							<reportElement style="BaseBD" x="0" y="3" width="14" height="14"/>
+							<box padding="0">
+								<pen lineWidth="1.0"/>
+							</box>
+							<textElement markup="none"/>
+						</textField>
+						<textField hyperlinkType="None">
+							<reportElement style="Base" x="14" y="0" width="54" height="20"/>
+							<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="0"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle" markup="none"/>
+							<textFieldExpression class="java.lang.String"><![CDATA["Outside"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement x="216" y="30" width="72" height="30"/>
+						<textField isBlankWhenNull="true" hyperlinkType="None">
+							<reportElement style="BaseBD" x="0" y="3" width="14" height="14"/>
+							<box padding="0">
+								<pen lineWidth="1.0"/>
+							</box>
+							<textElement markup="none"/>
+						</textField>
+						<textField hyperlinkType="None">
+							<reportElement style="Base" x="14" y="0" width="54" height="20"/>
+							<box topPadding="0" leftPadding="4" bottomPadding="0" rightPadding="0"/>
+							<textElement textAlignment="Left" verticalAlignment="Middle" markup="none"/>
+							<textFieldExpression class="java.lang.String"><![CDATA["Outside"]]></textFieldExpression>
+						</textField>
+					</frame>
+				</frame>
+				<textField isStretchWithOverflow="true" hyperlinkType="None">
+					<reportElement style="SectionHeader" stretchType="RelativeToTallestObject" mode="Transparent" x="0" y="-1" width="576" height="14" forecolor="#000000" backcolor="#FFFFFF"/>
+					<box padding="0"/>
+					<textElement textAlignment="Left" verticalAlignment="Top" markup="none"/>
+					<textFieldExpression class="java.lang.String"><![CDATA["Clinical Notes"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<detail>
+		<band height="14">
+			<subreport>
+				<reportElement x="0" y="0" width="576" height="14"/>
+				<parametersMapExpression><![CDATA[$P{REPORT_PARAMETERS_MAP}]]></parametersMapExpression>
+				<subreportParameter name="path">
+					<subreportParameterExpression><![CDATA[$F{path}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new TolvenReportDataSource("echr:patient:procedureGroups:active", $F{path}, (AccountUser)$P{REPORT_PARAMETERS_MAP}.get("accountUser"))]]></dataSourceExpression>
+				<subreportExpression class="net.sf.jasperreports.engine.JasperReport"><![CDATA[TolvenReportDataSource.getJasperReport("path1Procedures")]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

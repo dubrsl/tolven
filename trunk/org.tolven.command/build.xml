@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.command">
+	<!-- 
+	Build file for org.tolven.command
+	-->
+	<import file="../plugin/buildImport.xml"/>
+
+	<property name="buildFolder" value="build"/>
+	<!-- 
+	Source code will be included in the devLib jar file if true. Otherwise, source code
+	known to this build script will not be in the plugin
+	 -->
+	<property name="includeSourceInDevLib" value="true"/>
+
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
+		<zip destfile="${zipFileName}">
+			<!-- Add Manifest section -->
+			<zipfileset dir="manifest"/>
+		</zip>
+		<!-- Each section adds itself to the zip file-->
+		<antcall target="buildSection">
+			<param name="section" value="tpf"/>
+		</antcall>
+		<jar destfile="build/tpf.jar">
+			<zipfileset dir="build/tpf/classes" />
+		</jar>
+		<!-- Add DevLib.jar to plugin zip -->
+		<zip destfile="${zipFileName}" update="true">
+			<zipfileset dir="${buildFolder}">
+				<include name="devLib.jar"/>
+				<include name="tpf.jar"/>
+			</zipfileset>
+		</zip>
+	</target>
+</project>

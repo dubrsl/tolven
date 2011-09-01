@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="createAccountTypeSCConfig" enabled="true">
+      <stringProp name="TestPlan.comments">Returns ${ACCOUNTTYPE_LOCATION}</stringProp>
+    </GenericController>
+    <hashTree>
+      <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="false">
+        <collectionProp name="UserParameters.names">
+          <stringProp name="1551248669">knownType</stringProp>
+        </collectionProp>
+        <collectionProp name="UserParameters.thread_values">
+          <collectionProp name="25080">
+            <stringProp name="0"></stringProp>
+          </collectionProp>
+        </collectionProp>
+        <boolProp name="UserParameters.per_iteration">true</boolProp>
+      </UserParameters>
+      <hashTree/>
+      <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+        <collectionProp name="UserParameters.names">
+          <stringProp name="1344398795">ACCOUNTTYPE_CREATABLE</stringProp>
+          <stringProp name="1158432875">ACCOUNTTYPE_CSS</stringProp>
+          <stringProp name="-1401186697">ACCOUNTTYPE_HOME_PAGE</stringProp>
+          <stringProp name="1551944739">ACCOUNTTYPE_LOGO</stringProp>
+          <stringProp name="872868544">ACCOUNTTYPE_TITLE</stringProp>
+          <stringProp name="-285426068">ACCOUNTTYPE_CREATE_ACCOUNT_PAGE</stringProp>
+        </collectionProp>
+        <collectionProp name="UserParameters.thread_values">
+          <collectionProp name="-403094908">
+            <stringProp name="97196323">false</stringProp>
+            <stringProp name="1741906794">/styles/${KNOWNTYPE}.css</stringProp>
+            <stringProp name="-227811020">homePage${KNOWNTYPE}.jsf</stringProp>
+            <stringProp name="532367546">/images/${KNOWNTYPE}.png</stringProp>
+            <stringProp name="-1862263130">TemplateFor${KNOWNTYPE}</stringProp>
+            <stringProp name="-968602394">createAccountPage${KNOWNTYPE}.jsf</stringProp>
+          </collectionProp>
+        </collectionProp>
+        <boolProp name="UserParameters.per_iteration">true</boolProp>
+      </UserParameters>
+      <hashTree/>
+      <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="createAccountTypeIC" enabled="true">
+        <stringProp name="IncludeController.includepath">simple-controllers/createAccountTypeSC.jmx</stringProp>
+      </IncludeController>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

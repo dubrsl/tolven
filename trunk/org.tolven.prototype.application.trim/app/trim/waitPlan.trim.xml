@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>proc/prp/waitPlan</name>
+	<description>Wait Plan</description>
+	<reference></reference>
+	<act classCode="ACT" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:procedure</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:procedure</path>
+			</placeholder>
+		</bind>
+		<page>wait.xhtml</page>
+		<drilldown>waitDD.xhtml</drilldown>
+		<code>
+			<CD>
+				<code>Plan</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3.0</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Wait</ST>
+		</title>
+		<text>
+			<label>Wait</label>
+			<ST/>
+		</text>
+		<effectiveTime>
+			<IVL_TS>
+				<low>
+					<label>Projected Start Date</label>
+					<TS/>
+				</low>
+				<high>
+					<label>Projected End Date</label>
+					<TS/>
+				</high>
+				<width>
+					<PQ>
+						<value>0.0</value>
+						<unit>days</unit>
+					</PQ>
+				</width>
+			</IVL_TS>
+			<PIVL>
+				<period>
+					<PQ>
+						<value>1.0</value>
+						<unit>day</unit>
+					</PQ>
+				</period>
+				<count>
+					<INT>
+						<value>0</value>
+					</INT>
+				</count>
+			</PIVL>
+		</effectiveTime>
+		<relationship name="nextStep" direction="OUT" typeCode="COMP" optional="true" repeating="true">
+			<choice name="surgery" title="Surgery" include="proc/prp/surgery/breast"/>
+			<choice name="chemo" title="Chemotherapy" include="proc/prp/chemo/breast"/>
+			<choice name="xrt" title="Radiation" include="proc/prp/radiation/breast"/>
+			<choice name="hrt" title="Hormone Replacement" include="proc/prp/hrt/breast"/>
+			<choice name="wait" title="Wait" include="proc/prp/waitPlan"/>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.ComputePlan</type>
+		</compute>
+	</act>
+
+</trim>

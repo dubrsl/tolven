@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Murmur intensity</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:step title="#{msg.global_GettingStarted}" >
+			<wiz:body>
+				<p>How to enter your weight</p>
+				<p>In this form you will enter your weight. Take your shoes off. Weigh yourself.</p>
+				<p>Click the next button to enter your weight.</p>
+			</wiz:body>
+			<wiz:help>
+				<h1>getting Started</h1>
+				<p>Help provides additional information about each page</p>
+				<p>You can close this form by clicking the [x] above at any time. The form will remain in your list of new activity so that yuo can continue at any time later.
+				If you want to completely cancel the form prior to submission, removing all traces of the form from the system, click the Cancel button.
+				Once submitted, you will not be able to Cancel the form.</p>
+			</wiz:help>
+		</wiz:step>
+		<wiz:step title="Enter #{menu.menuDataItem.string01}" >
+			<wiz:body>
+				<wiz:group title="#{menu.menuDataItem.string01}"> 
+					<trim:CE id="heartMurmurIntensity" valueSet="heartMurmurGradeValueSet" value="#{trim.trim.act.observation.value}" layout="pageDirection"/>
+				</wiz:group>
+			</wiz:body>
+			<wiz:help>
+				<p>TBD</p>
+			</wiz:help>
+		</wiz:step>
+	</ui:composition>
+</body>
+</html>

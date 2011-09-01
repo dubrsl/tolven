@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Cache-Control" content="no-cache" />
+		<title>Register new Tolven User</title>
+    </head>
+    <body>
+    <ui:composition template="/templates/simplePage.xhtml">
+      <ui:param name="pageTitle" value="Register as a new Tolven demo user"/>
+      <ui:define name="body">
+        <h:form id="register">
+	        <h:panelGrid columns="2">
+	            <h:outputText value="Reference Code" rendered="#{reg.referenceRequired}"/>
+	            <h:panelGroup rendered="#{reg.referenceRequired}">
+	                <h:inputText id="referenceCode" value="#{reg.tp.referenceCode}" size="10" required="true"/>
+	                <h:message for="referenceCode" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	            <h:outputText value="First Name"/>
+	            <h:panelGroup>
+	                <h:inputText id="givenName" value="#{reg.tp.givenName}" size="20" required="true"/>
+	                <h:message for="givenName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	           <h:outputText value="Last Name"/>
+	            <h:panelGroup>
+	                <h:inputText id="sn" value="#{reg.tp.sn}" size="20" required="true"/>
+	                <h:message for="sn" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	            <h:outputText value="A unique user id"/>
+	            <h:panelGroup>
+	                <h:inputText id="uid" value="#{reg.tp.uid}" size="15" required="false"/>
+	                <h:message for="uid" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	            <h:outputText value="Email address"/>
+	            <h:panelGroup>
+	                <h:inputText id="uid2" value="#{reg.tp.primaryMail}" size="50" required="true"/>
+	                <h:message for="uid2" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	            <h:outputText value="Organization Unit Name"/>
+	            <h:panelGroup>
+	                <h:inputText id="organizationUnitName" value="#{reg.tp.organizationUnitName}" size="50" required="true"/>
+	                <h:message for="organizationUnitName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	            <h:outputText value="Organization Name"/>
+	            <h:panelGroup>
+	                <h:inputText id="organizationName" value="#{reg.tp.organizationName}" size="50" required="true"/>
+	                <h:message for="organizationName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	            <h:outputText value="State Or Province"/>
+	            <h:panelGroup>
+	                <h:inputText id="stateOrProvince" value="#{reg.tp.stateOrProvince}" size="50" required="true"/>
+	                <h:message for="stateOrProvince" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+            	<h:outputText value="Country Name"/>
+            	<ui:include src="../templates/isoCountry.xhtml"/>
+	            <h:outputText value="Password"/>
+	            <h:panelGroup>
+	                <h:inputSecret id="userPassword" value="#{reg.tp.userPassword}" size="25" required="true"/>
+	                <h:message for="userPassword" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	            <h:outputText value="Repeat Password"/>
+	            <h:panelGroup>
+	                <h:inputSecret id="userPassword2" value="#{reg.repeatUserPassword}" size="25" required="true"/>
+	                <h:message for="userPassword2" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+	            </h:panelGroup>
+	        </h:panelGrid>
+            <h:panelGroup rendered="#{reg.referenceRequired}">
+            <p>A reference code is required to login.</p>
+            </h:panelGroup>
+	            <p>When you click Activate, you will be returned to the login page where you can login
+	            by entering your user id and password.</p>
+	        <h:commandButton action="cancel" value="Cancel" immediate="true"/>
+	        <h:commandButton action="#{reg.activate}" value="Activate"/>
+        </h:form>
+      </ui:define>
+    </ui:composition>
+    </body>
+</html>

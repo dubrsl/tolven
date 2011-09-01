@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.library.jboss-rules" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<extension-point id="lib" extension-multiplicity="none">
+		<parameter-def id="antlr-runtime" default-value="jars/antlr-runtime-3.0.jar" multiplicity="none-or-one" />
+		<parameter-def id="core" default-value="jars/core-3.2.3.v_686_R32x.jar" multiplicity="none-or-one" />
+		<parameter-def id="drools-compiler" default-value="jars/drools-compiler-4.0.7.jar" multiplicity="none-or-one" />
+		<parameter-def id="drools-core" default-value="jars/drools-core-4.0.7.jar" multiplicity="none-or-one" />
+		<parameter-def id="mvel" default-value="jars/mvel-1.3.1-java1.4.jar" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jarDir" default-value="jars" />
+	</extension-point>
+</plugin>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.assembler.webxml" version="2.1.0" class="org.tolven.assembler.webxml.WebXMLAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<attributes>
+		<attribute value="template-web.xml" id="template-webxml" />
+	</attributes>
+	<requires>
+		<import plugin-id="org.tolven.component.war" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="tpfclasses" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension-point id="warExtensionPoint">
+		<parameter-def id="id" />
+	</extension-point>
+	<extension-point id="abstractWAR" parent-plugin-id="org.tolven.component.war" parent-point-id="abstractWAR" extension-multiplicity="none" />
+</plugin>

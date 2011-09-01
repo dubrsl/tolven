@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xs="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<abstract>true</abstract>
+	<name>obs/evn/problem</name>
+	<page>problem.xhtml</page>
+	<drilldown>problemDD.xhtml</drilldown>
+	<menu>global:problemMenu</menu>
+	<reference>http://wikihit.org/wiki/index.php/Problem</reference>
+	<application name="ephr">
+		<instance>ephr:patient:problem</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:problem</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:problem</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:problem</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>C0332139</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Problem</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of Problem</label>
+			<new datatype="TS" function="now" />
+		</effectiveTime>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id />
+			</role>
+		</participation>
+		<relationship name="episodicity" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Episodicity</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Episodicity</label>
+						<valueSet>episodicity</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="severity" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Severity</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Severity</label>
+						<valueSet>severity</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="course" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Course</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Course</label>
+						<valueSet>course</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="onset" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Onset</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Onset</label>
+						<valueSet>onset</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="encounter" direction="IN" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<bind application="echr" phase="create">
+					<placeholder bindAction="exist" optional="true">
+						<path>echr:patient:encounter</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr" phase="create">
+					<placeholder bindAction="exist" optional="true">
+						<path>ephr:patient:encounter</path>
+					</placeholder>
+				</bind>
+				<bind application="echr" phase="request">
+					<list cardinality="single">
+						<path>echr:patient:encounters:active</path>
+					</list>
+				</bind>
+				<id />
+				<title>
+					<ST>Encounter</ST>
+				</title>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.Copy</type>
+			<property name="destination">
+				<value xsi:type="xs:string">\#{trim.act.text.ST.value}</value>
+			</property>
+			<property name="source">
+				<value xsi:type="xs:string">\#{trim.act.title.ST.value} \#{trim.act.observation.value.CE.displayName}</value>
+			</property>
+		</compute>
+	</act>
+	<valueSet name="episodicity">
+		<CE>
+			<displayName>New episode</displayName>
+			<code>C0565959</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Ongoing episode</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="severity">
+		<CE>
+			<displayName>Mild</displayName>
+			<code>C0547040</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Mild to moderate</displayName>
+			<code>C1299392</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Moderate</displayName>
+			<code>C0205081</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Moderate to severe</displayName>
+			<code>C1299393</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Severe</displayName>
+			<code>C0205082</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fatal</displayName>
+			<code>C1302234</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="course">
+		<CE>
+			<displayName>Acute</displayName>
+			<code>C0205178</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Chronic</displayName>
+			<code>C0205191</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Recurrent</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="onset">
+		<CE>
+			<displayName>Gradual onset</displayName>
+			<code>C0332164</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Sudden onset</displayName>
+			<code>C1272517</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Acute onset</displayName>
+			<code>C1276802</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Insidious onset</displayName>
+			<code>C1298634</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Subacute onset</displayName>
+			<code>C1298635</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="install" name="install">
+
+	<property file="build-v2-override.properties" />
+	<property file="build-v2.properties" />
+	<property file="${password.properties.file}" />
+	<property file="${database.properties.file}" />
+
+	<target name="props">
+		<condition property="INCLUDE.LEGACYPOSTGRESQL">
+			<equals arg1="${tolven.database.code}" arg2="legacypostgresql" />
+		</condition>
+		<condition property="INCLUDE.ORACLE">
+			<equals arg1="${tolven.database.code}" arg2="oracle" />
+		</condition>
+		<condition property="INCLUDE.TOLVEN.KIT">
+			<equals arg1="${include.tolven.kit}" arg2="true" />
+		</condition>
+		<condition property="INCLUDE.TOLVEN.OPENDS">
+			<equals arg1="${include.tolven.opends}" arg2="true" />
+		</condition>
+		<condition property="INCLUDE.SHIRO">
+			<equals arg1="${tolven.security.code}" arg2="shiro" />
+		</condition>
+		<condition property="INCLUDE.OPENAM">
+			<equals arg1="${tolven.security.code}" arg2="openam" />
+		</condition>
+		<condition property="INCLUDE.APPSERVER">
+			<equals arg1="${include.appserver}" arg2="true" />
+		</condition>
+		<condition property="INCLUDE.GLASSFISH3">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${tolven.appserver.code}" arg2="glassfish3" />
+			</and>
+		</condition>
+		<condition property="INCLUDE.JBOSS6">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${tolven.appserver.code}" arg2="jboss6" />
+			</and>
+		</condition>
+		<condition property="INCLUDE.GATEKEEPER.DEPLOY">
+			<and>
+				<istrue value="${INCLUDE.SHIRO}" />
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${include.gatekeeperear.deploy}" arg2="true" />
+			</and>
+		</condition>
+		<condition property="INCLUDE.TOLVENEAR.DEPLOY">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${include.tolvenear.deploy}" arg2="true" />
+			</and>
+		</condition>
+		<condition property="INCLUDE.APPSERVER.UPLOAD">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${include.appserver.upload}" arg2="true" />
+			</and>
+		</condition>
+		<condition property="appserver.home" value="${glassfish.dir}" else="${jboss6.dir}">
+			<equals arg1="${tolven.appserver.code}" arg2="glassfish3" />
+		</condition>
+	</target>
+
+	<target name="requirements-guide" depends="props" description="requirements-guide">
+		<tstamp>
+			<format property="timestamp" pattern="yyyyMMddHHmmss" />
+		</tstamp>
+		<guide-echo args="Guide Creation Timestamp: ${timestamp}" />
+		<guide-echo args="" />
+
+		<guide-echo args="Install Prerequisite Software" />
+		<guide-echo args="" />
+
+		<guide-echo args="Install Ant" />
+		<guide-echo args="Set environment variable ANT_HOME e.g: ANT_HOME=${ant.home}" />
+		<guide-echo args="Add ANT_HOME bin directory to the system path" />
+		<guide-echo args="Execute in command window to ensure path is correct" />
+		<guide-echo args="ant -version" />
+		<condition property="ant" value="${ant.home}/bin/ant.bat" else="${ant.home}/bin/ant">
+			<os family="windows" />
+		</condition>
+		<exec executable="${ant}" outputproperty="ant.home.version.output" failonerror="true">
+			<arg line="-version" />
+		</exec>
+		<guide-echo args="${ant.home.version.output}" />
+		<guide-echo args="" />
+
+		<guide-echo args="Install Java JDK" />
+		<guide-echo args="Set environment variable JAVA_HOME e.g: JAVA_HOME=${java.home}" />
+		<guide-echo args="Add JAVA_HOME bin directory to the system path" />
+		<guide-echo args="Execute in command window to ensure path is correct" />
+		<guide-echo args="java -version" />
+		<exec executable="${java.home}/bin/java" outputproperty="java.home.version.output" failonerror="true">
+			<arg line="-version" />
+		</exec>
+		<guide-echo args="${java.home.version.output}" />
+		<guide-echo args="" />
+
+		<antcall target="requirements-guide-legacypostgresql" />
+
+		<guide-echo args="Initial Tolven Components Directory" />
+		<guide-echo args="Use this directory to gather all of the components required for the installation." />
+		<guide-echo args="Create the directory ${initial.tolven.components.dir}" />
+		<guide-echo args="" />
+
+		<ant antfile="build-v2-kit.xml" target="requirements-guide" />
+
+		<basename property="jdbc.driver.full-basename" file="${jdbc.driver}" />
+		<guide-echo args="Download JDBC Driver: ${jdbc.driver.full-basename} from database site" />
+		<dirname property="jdbc.driver.dirname" file="${jdbc.driver}" />
+		<guide-echo args="Place ${jdbc.driver.full-basename} in: ${jdbc.driver.dirname}" />
+		<guide-echo args="" />
+
+		<ant antfile="build-v2-opends.xml" target="requirements-guide" />
+		<ant antfile="build-v2-openam.xml" target="requirements-guide" />
+		<ant antfile="build-v2-glassfish.xml" target="requirements-guide" />
+		<ant antfile="build-v2-jboss6.xml" target="requirements-guide" />
+
+		<guide-echo args="Set Up Your Security Environment" />
+		<guide-echo args="" />
+		<guide-echo args="Set Up Server Name" />
+		<guide-echo args="If you don't have a domain name registered on the internet, you can add an entry to the hosts file for each node containing the IP address and the domain name - each name with at least two dots" />
+		<guide-echo args="192.168.1.101 ${tolven.domain.default}" />
+		<guide-echo args="" />
+
+		<basename property="common.keystore.src.full-basename" file="${common.keystore.src}" />
+		<guide-echo args="Set Up SSL Keystore" />
+		<dirname property="common.keystore.src.dirname" file="${common.keystore.src}" />
+		<guide-echo args="cd ${common.keystore.src.dirname}" />
+		<guide-echo args="keytool -genkey -alias tolven -dname &quot;cn=${tolven.domain.default}, ou=services, o=tolven, c=US&quot; -keystore keystore.jks -storepass tolven -keypass tolven -validity 7300" />
+		<guide-echo args="" />
+
+		<basename property="common.truststore.src.full-basename" file="${common.truststore.src}" />
+		<guide-echo args="Set Up SSL Truststore" />
+		<dirname property="common.truststore.src.dirname" file="${common.truststore.src}" />
+		<guide-echo args="cd ${common.truststore.src.dirname}" />
+		<guide-echo args="keytool -export  -alias tolven -file cert.cer -rfc -keystore keystore.jks -storepass tolven" />
+		<guide-echo args="keytool -import -alias ${tolven.domain.default} -file cert.cer -keystore cacerts.jks -trustcacerts -storepass tolven -keypass tolven" />
+		<guide-echo args="" />
+
+		<basename property="mdbuser.keystore.src.full-basename" file="${mdbuser.keystore.src}" />
+		<guide-echo args="Set Up MQKeystore" />
+		<dirname property="mdbuser.keystore.src.dirname" file="${mdbuser.keystore.src}" />
+		<guide-echo args="cd ${mdbuser.keystore.src.dirname}" />
+		<guide-echo args="keytool -genkeypair -alias mdbuser -keyalg RSA -dname &quot;cn=mdbuser, ou=services, o=tolven, c=US&quot; -keystore tolvendev-mdbuser.p12 -storetype pkcs12 -storepass tolven -keypass tolven -validity 7300" />
+		<guide-echo args="" />
+
+	</target>
+
+	<target name="requirements-guide-legacypostgresql" if="INCLUDE.LEGACYPOSTGRESQL">
+		<guide-echo args="Install database using database documentation" />
+		<guide-echo args="Add the PostgreSQL schemas manually (schemas are in wiki) using a vendor tools e.g. pgAdminIII, psql etc)" />
+		<guide-echo args="" />
+	</target>
+
+	<target name="install-requirements" depends="requirements-guide" description="install-requirements">
+		<ant antfile="build-v2-kit.xml" target="install-requirements" />
+		<ant antfile="build-v2-opends.xml" target="install-requirements" />
+		<ant antfile="build-v2-openam.xml" target="install-requirements" />
+		<ant antfile="build-v2-glassfish.xml" target="install-requirements" />
+		<ant antfile="build-v2-jboss6.xml" target="install-requirements" />
+		<ant antfile="build-v2-policyagent.xml" target="install-requirements" />
+	</target>
+
+	<target name="install" depends="install-requirements" description="install">
+		<ant antfile="build-v2-kit.xml" target="install" />
+		<ant antfile="build-v2-opends.xml" target="install" />
+		<ant antfile="build-v2-openam.xml" target="install" />
+		<antcall target="install-appserver" />
+	</target>
+
+	<target name="install-appserver" if="INCLUDE.APPSERVER">
+		<ant antfile="build-v2-glassfish.xml" target="install" />
+		<ant antfile="build-v2-policyagent.xml" target="install" />
+		<ant antfile="build-v2-jboss6.xml" target="install" />
+	</target>
+
+	<target name="config-tolven" depends="props" description="config-tolven">
+		<ant antfile="build-v2-kit.xml" target="assemble-tolven" />
+		<antcall target="include-config-tolven-opends" />
+		<antcall target="include-config-openam" />
+		<antcall target="config-tolven-appserver" />
+	</target>
+
+	<target name="include-config-tolven-opends" if="INCLUDE.TOLVEN.OPENDS">
+		<ant antfile="build-v2-opends.xml" target="start-opends" />
+		<ant antfile="build-v2-kit.xml" target="unzip-opends-plugin" />
+		<ant antfile="build-v2-opends.xml" target="config-opends" />
+	</target>
+
+	<target name="include-config-openam" if="INCLUDE.OPENAM">
+		<ant antfile="build-v2-openam.xml" target="start-openam" />
+		<ant antfile="build-v2-openam.xml" target="config-openam" />
+	</target>
+
+	<target name="config-tolven-appserver" if="INCLUDE.APPSERVER">
+		<ant antfile="build-v2-policyagent.xml" target="config-policyagent" />
+		<ant antfile="build-v2-glassfish.xml" target="config-tolven-appserver" />
+		<ant antfile="build-v2-jboss6.xml" target="config-tolven-appserver" />
+		<antcall target="include-appserver-upload" />
+	</target>
+
+	<target name="include-appserver-upload" if="INCLUDE.APPSERVER.UPLOAD">
+		<ant antfile="build-v2-kit.xml" target="update-authorization-urls" />
+		<ant antfile="build-v2-kit.xml" target="update-db-indexes" />
+		<ant antfile="build-v2-kit.xml" target="update-appserver-properties" />
+		<ant antfile="build-v2-kit.xml" target="create-system-queue-users" />
+		<ant antfile="build-v2-kit.xml" target="configPhase3" />
+	</target>
+
+	<macrodef name="guide-echo">
+		<attribute name="args" />
+		<sequential>
+			<echo message="@{args}${line.separator}" file="${guide.file}" append="true" />
+		</sequential>
+	</macrodef>
+
+</project>

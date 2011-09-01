@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <head>
+        <title>List of providers for this patient</title>
+  </head>
+  <body>
+  	<ui:composition>
+		<h:form id="myprovform">
+			<p>The following is a list of my providers:</p>
+		    <h:dataTable value="#{trim.outboundPatientLinks}" var="mpp" styleClass="general">
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Id"/>
+	                </f:facet>
+	                <h:outputText value="#{mpp.id}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Provider Name"/>
+	                </f:facet>
+	                <h:outputText value="#{mpp.provider.name}" />
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Status"/>
+	                </f:facet>
+	                <h:outputText value="#{mpp.status}" rendered="#{mpp.providerPatient!=null}"/>
+	                <h:outputText value="pending provider acceptance" rendered="#{mpp.providerPatient==null}"/>
+	            </h:column>
+	            <h:column>
+	                <f:facet name="header">
+	                    <h:outputText value="Action"/>
+	                </f:facet>
+					<h:commandLink action="#{prov.viewMyProvider}"  >
+						<h:outputText value="View"/>
+					</h:commandLink>
+	           </h:column>
+	        </h:dataTable>
+		</h:form>		 
+	</ui:composition>
+  </body>
+</html>

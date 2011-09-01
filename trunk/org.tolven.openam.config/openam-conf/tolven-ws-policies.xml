@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE Policies
+PUBLIC "-//Sun Java System Access Manager 7.1 2006Q3 Admin CLI DTD//EN" "jar://com/sun/identity/policy/policyAdmin.dtd">
+
+<Policies>
+	<Policy name="tolvenws.policy" referralPolicy="false" active="true">
+		<Rule name="https://-*-.able.com:8443/ws/EchoService/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/ws/EchoService/*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/ws/DocumentService/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/ws/DocumentService/*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/ws/GeneratorService/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/ws/GeneratorService/*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Rule name="https://-*-.able.com:8443/ws/TrimService/*">
+			<ServiceName name="iPlanetAMWebAgentService" />
+			<ResourceName name="https://-*-.able.com:8443/ws/TrimService/*" />
+			<AttributeValuePair>
+				<Attribute name="POST" />
+				<Value>allow</Value>
+			</AttributeValuePair>
+		</Rule>
+		<Subjects>
+			<Subject name="tolvenWS" type="AMIdentitySubject" includeType="inclusive">
+				<AttributeValuePair>
+					<Attribute name="Values" />
+					<Value>id=tolvenWS,ou=group,dc=opensso,dc=tolven,dc=org</Value>
+				</AttributeValuePair>
+			</Subject>
+		</Subjects>
+	</Policy>
+
+</Policies>

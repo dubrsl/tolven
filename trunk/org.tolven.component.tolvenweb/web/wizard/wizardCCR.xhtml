@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Generic CCR Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='allergy'}">
+			<ui:include src="/drilldown/allergyDD.xhtml"/>
+		</c:if>
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='medication'}">
+			<ui:include src="/drilldown/medicationDD.xhtml"/>
+		</c:if>
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='diagnosis'}">
+			<ui:include src="/drilldown/diagnosisDD.xhtml"/>
+		</c:if>
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='problem'}">
+			<ui:include src="/drilldown/problemDD.xhtml"/>
+		</c:if>
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='procedure'}">
+			<ui:include src="/drilldown/procedureDD.xhtml"/>
+		</c:if>
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='procedureGroup'}">
+			<ui:include src="/drilldown/procedureDD.xhtml"/>
+		</c:if>
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='observation'}">
+			<ui:include src="/drilldown/observationDD.xhtml"/>
+		</c:if>						
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='immunization'}">
+			<ui:include src="/drilldown/immunizationDD.xhtml"/>
+		</c:if>						
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='plan'}">
+			<ui:include src="/drilldown/planDD.xhtml"/>
+		</c:if>						
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='request'}">
+			<ui:include src="/drilldown/requestDD.xhtml"/>
+		</c:if>						
+		<c:if test="#{menu.drilldownItem.menuStructure.node=='result'}">
+			<ui:include src="/drilldown/resultDD.xhtml"/>
+		</c:if>						
+		<wiz:group title="#{msg.XML}" >
+  			<a href="#" onclick="$('#{menu.elementLabel}rawxml').toggle();">#{msg.ShowHide}</a>
+<div id="#{menu.elementLabel}rawxml" style="display:none">
+<pre>
+#{trim.trimXML}
+</pre>
+</div>
+		</wiz:group>
+	</ui:composition>
+</body>
+</html>

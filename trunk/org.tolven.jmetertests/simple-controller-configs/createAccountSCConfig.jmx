@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="2.1">
+  <hashTree>
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="createAccountSCConfig" enabled="true">
+      <stringProp name="TestPlan.comments">Returns ${ACCOUNT_ID},${ACCOUNT_LOCATION}</stringProp>
+    </GenericController>
+    <hashTree>
+      <UserParameters guiclass="UserParametersGui" testclass="UserParameters" testname="User Parameters" enabled="true">
+        <collectionProp name="UserParameters.names">
+          <stringProp name="-805828995">ACCOUNT_ADMIN</stringProp>
+          <stringProp name="-856692180">ACCOUNT_TYPE</stringProp>
+          <stringProp name="-788126330">ACCOUNT_TITLE</stringProp>
+        </collectionProp>
+        <collectionProp name="UserParameters.thread_values">
+          <collectionProp name="-921453768">
+            <stringProp name="1520820036">${USER_PREFIX}${TS}${CNT}</stringProp>
+            <stringProp name="3107368">echr</stringProp>
+            <stringProp name="-1405858160">${ACCOUNT_PREFIX}${TS}${CNT}</stringProp>
+          </collectionProp>
+        </collectionProp>
+        <boolProp name="UserParameters.per_iteration">true</boolProp>
+      </UserParameters>
+      <hashTree/>
+      <IncludeController guiclass="IncludeControllerGui" testclass="IncludeController" testname="createAccountIC" enabled="true">
+        <stringProp name="IncludeController.includepath">simple-controllers/createAccountSC.jmx</stringProp>
+      </IncludeController>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+</jmeterTestPlan>

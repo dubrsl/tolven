@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.cchit.component.ejb" version="2.1.0" vendor="Tolven">
+
+	<requires>
+    	<import plugin-id="org.tolven.component.tolvenejb" />
+     	<import plugin-id="org.tolven.component.application" />
+	 	<import plugin-id="org.tolven.assembler.ejbmodule" />
+	 	
+	</requires>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<!-- Add EJB classes -->
+	<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+	     <parameter id="dir" value="ejb/classes" />
+	</extension>
+	
+	
+</plugin>

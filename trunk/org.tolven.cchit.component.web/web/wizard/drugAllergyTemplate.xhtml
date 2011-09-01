@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"   
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+	<head>
+	    <title>Drug Allergy Popup Template</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+	
+	<body>
+	    <ui:composition>
+	    	<h:inputText id="allergySelected" style="display:none;font-weight: bold;border: 0px;"/>
+	    	<input type="text"  id="formIdValue" value="#{menu.elementLabel}"  style="display:none"/>
+ 			<input type="text"  id="elementValue" value="#{menu.element}"  style="display:none" />
+ 			<input type="text"  id="rowId" value="#{fdb.rowId}"  style="display:none"/>
+			<h:inputHidden id="invokeStorageForDrugAllergy" value="#{fdb.hidden}"></h:inputHidden>
+			<div id="allergiesFromFDBPopUP" class="popupgrid" style="display:none; top: 142.5px; left: 302.1px;">
+				<div class="popupgridheader">
+					<img onclick="closeAllergiesPopUp()" src="../images/x_black.gif" class="closetab"/>
+				</div>
+				<div class="paneBody">
+					<div class="grid" style="border: 1px solid rgb(153, 153, 153); width: 465px;">
+						 <table class="filter">
+						 	<tbody>
+						 		<tr>
+						 			<td class="menuActions">
+						 				Drug Allergens 
+						 				<h:inputText value="#{fdb.filterValue}" onkeyup="startFilteringAllergy('#{menu.elementLabel}', '#{menu.element}', this);"/>
+						 			   	<img src="../images/search.jpg" style="vertical-align: middle;" onclick="startFilteringAllergy('#{menu.elementLabel}', '#{menu.element}');"/>
+						 			</td>
+						 			<td style="text-align: right;">
+						 				<div>
+						 					<img alt="First" id="first_imgDrugAllergy" style="cursor: pointer;text-decoration: underline;margin-right: 5px;" onclick="selectFirst('DrugAllergy')"/>
+						 					<img alt="Previous" id="previous_imgDrugAllergy"  style="cursor: pointer;text-decoration: underline;margin-right: 5px;" onclick="selectPrevious('DrugAllergy')"/>
+						 					<img alt="Next" id="next_imgDrugAllergy" style="cursor: pointer;text-decoration: underline;margin-right: 5px;" onclick="selectNext('DrugAllergy')"/>
+						 					<img alt="Last"  id="last_imgDrugAllergy" style="cursor: pointer;text-decoration: underline;margin-right: 5px;" onclick="selectLast('DrugAllergy')"/>
+						 				</div>
+						 			</td>
+						 		</tr>
+						 	</tbody>
+						 </table>
+						 <table>
+						<thead>
+							<tr>
+								<th style="text-align: left; width: 25.5em; cursor: pointer;" >Allergen Name<span>
+								  <img height="5" width="9" src="../images/sort_asc.gif"/></span>
+								</th>
+								<th style="text-align: left; width: 15.5em; cursor: pointer;" >Allergen Type<span>
+								  <img height="5" width="9" src="../images/sort_asc.gif"/></span>
+								</th>
+							</tr>
+						</thead>
+					</table>
+					<table style="max-height: 265.312px; width:100%">
+						<tr>
+							<td colspan="2">
+								<div style="height:265.312px;" id="mainDiv">
+									<h:dataTable  id="allergyTable" width="100%" styleClass="gridBody" var="allergy" value="#{fdb.allergyList}"   rowClasses="odd,even" > 
+			 							<h:column>
+			 								<h:outputText value="#{allergy.allergen}"  style="cursor: pointer;text-decoration: underline;"  onclick="saveAllergy(this , '#{menu.elementLabel}', '#{menu.element}')" />
+			 							</h:column>
+			 							<h:column>
+			 							    <h:outputText value="#{allergy.type}" />
+			 							</h:column>
+			 						</h:dataTable>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<div class="foot">
+							
+								<span id="startLimitDrugAllergy" > </span> <f:verbatim> - </f:verbatim>
+								<span id="endLimitDrugAllergy"  > </span> <f:verbatim> of  </f:verbatim>
+								<h:outputText id ="totalcountDrugAllergy" value=" #{fdb.totalAllergyCount} items" />
+								<h:outputText id="filteredcountDrugAllergy"  value="" />
+									
+								</div>
+							</td>
+						</tr>
+					</table>
+					</div>	 
+				</div> 				
+			</div>
+		</ui:composition>
+	</body>
+</html>

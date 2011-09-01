@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ContinuityOfCareRecord xmlns="urn:astm-org:CCR">
+    <Version>V1.0</Version>
+    <Patient>
+        <ActorID>AC000001</ActorID>
+    </Patient>
+    <Body>
+        <Problems>
+            <Problem>
+                <DateTime>
+                    <Type>
+                        <Text>Date of Onset</Text>
+                    </Type>
+                    <ExactDateTime>1980-08-11T16:50:44-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Problem</Text>
+                </Type>
+                <Description>
+                    <Text>Hay Fever</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Problem>
+        </Problems>
+        <Alerts>
+            <Alert>
+                <DateTime>
+                    <Type>
+                        <Text>Start Date</Text>
+                    </Type>
+                    <ExactDateTime>1980-08-11T16:50:44-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Allergy</Text>
+                </Type>
+                <Description>
+                    <Text>Ragweed</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Alert>
+            <Alert>
+                <DateTime>
+                    <Type>
+                        <Text>Start Date</Text>
+                    </Type>
+                    <ExactDateTime>1980-08-11T16:50:44-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Allergy</Text>
+                </Type>
+                <Description>
+                    <Text>Cedar Pollen</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Alert>
+            <Alert>
+                <DateTime>
+                    <Type>
+                        <Text>Start Date</Text>
+                    </Type>
+                    <ExactDateTime>1980-08-11T16:50:44-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Allergy</Text>
+                </Type>
+                <Description>
+                    <Text>Leaf Mold</Text>
+                </Description>
+                <Status>
+                    <Text>Active</Text>
+                </Status>
+            </Alert>
+        </Alerts>
+        <Encounters>
+            <Encounter>
+                <DateTime>
+                    <Type>
+                        <Text>Encounter DateTime</Text>
+                    </Type>
+                    <ExactDateTime>1980-08-13T07:23:25-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Physician Office Visit</Text>
+                </Type>
+                <Description>
+                    <Text>Routine well-baby checkup</Text>
+                </Description>
+            </Encounter>
+            <Encounter>
+                <DateTime>
+                    <Type>
+                        <Text>Encounter DateTime</Text>
+                    </Type>
+                    <ExactDateTime>1981-09-22T20:43:57-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Physician Office Visit</Text>
+                </Type>
+                <Description>
+                    <Text>Routine well-baby checkup</Text>
+                </Description>
+            </Encounter>
+            <Encounter>
+                <DateTime>
+                    <Type>
+                        <Text>Encounter DateTime</Text>
+                    </Type>
+                    <ExactDateTime>1982-08-09T13:48:01-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Physician Office Visit</Text>
+                </Type>
+                <Description>
+                    <Text>Routine well-baby checkup</Text>
+                </Description>
+            </Encounter>
+            <Encounter>
+                <DateTime>
+                    <Type>
+                        <Text>Encounter DateTime</Text>
+                    </Type>
+                    <ExactDateTime>1983-09-08T01:17:47-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Physician Office Visit</Text>
+                </Type>
+                <Description>
+                    <Text>Routine well-baby checkup</Text>
+                </Description>
+            </Encounter>
+            <Encounter>
+                <DateTime>
+                    <Type>
+                        <Text>Encounter DateTime</Text>
+                    </Type>
+                    <ExactDateTime>1984-08-16T18:12:43-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Physician Office Visit</Text>
+                </Type>
+                <Description>
+                    <Text>Routine well-baby checkup</Text>
+                </Description>
+            </Encounter>
+            <Encounter>
+                <DateTime>
+                    <Type>
+                        <Text>Encounter DateTime</Text>
+                    </Type>
+                    <ExactDateTime>1985-09-16T18:39:01-07:00</ExactDateTime>
+                </DateTime>
+                <Type>
+                    <Text>Physician Office Visit</Text>
+                </Type>
+                <Description>
+                    <Text>Routine well-baby checkup</Text>
+                </Description>
+            </Encounter>
+        </Encounters>
+    </Body>
+    <Actors>
+        <Actor>
+            <ActorObjectID>AC000001</ActorObjectID>
+            <Person>
+                <Name>
+                    <CurrentName>
+                        <Given>Russell</Given>
+                        <Middle>Marcus</Middle>
+                        <Family>Haessly</Family>
+                    </CurrentName>
+                </Name>
+                <DateOfBirth>
+                    <ExactDateTime>1979-01-13T00:00:00-08:00</ExactDateTime>
+                </DateOfBirth>
+                <Gender>
+                    <Text>Male</Text>
+                </Gender>
+            </Person>
+            <IDs>
+                <Type>
+                    <Text>DemoPatient</Text>
+                </Type>
+                <ID>19345085</ID>
+            </IDs>
+        </Actor>
+    </Actors>
+</ContinuityOfCareRecord>

@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Cache-Control" content="no-cache" />
+		<title>Create User</title>
+    </head>
+    <body>
+	    <ui:composition>
+			<h:graphicImage value="/images/tolven-login-backimage.png" rendered="true" />
+			<div style="clear:both"/>
+			<hr/>
+			<h2>Create User</h2>
+	        <h:form id="register">
+		        <h:panelGrid columns="2">
+	               	<h:outputText value="Realm"/>
+	 				<h:selectOneMenu id="realm" value="#{createUser.realm}" required="true">
+	                	<f:selectItems value="#{createUser.realms}" />
+	                </h:selectOneMenu>
+		            <h:outputText value="First Name"/>
+		            <h:panelGroup>
+		                <h:inputText id="givenName" value="#{createUser.tp.givenName}" size="20" required="true"/>
+		                <h:message for="givenName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		           <h:outputText value="Last Name"/>
+		            <h:panelGroup>
+		                <h:inputText id="sn" value="#{createUser.tp.sn}" size="20" required="true"/>
+		                <h:message for="sn" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		            <h:outputText value="A unique user id"/>
+		            <h:panelGroup>
+		                <h:inputText id="uid" value="#{createUser.tp.uid}" size="15" required="true"/>
+		                <h:message for="uid" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		            <h:outputText value="Email address"/>
+		            <h:panelGroup>
+		                <h:inputText id="uid2" value="#{createUser.tp.primaryMail}" size="50" required="true"/>
+		                <h:message for="uid2" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		            <h:outputText value="Organization Unit Name"/>
+		            <h:panelGroup>
+		                <h:inputText id="organizationUnitName" value="#{createUser.tp.organizationUnitName}" size="50" required="true"/>
+		                <h:message for="organizationUnitName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		            <h:outputText value="Organization Name"/>
+		            <h:panelGroup>
+		                <h:inputText id="organizationName" value="#{createUser.tp.organizationName}" size="50" required="true"/>
+		                <h:message for="organizationName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		            <h:outputText value="State Or Province"/>
+		            <h:panelGroup>
+		                <h:inputText id="stateOrProvince" value="#{createUser.tp.stateOrProvince}" size="50" required="true"/>
+		                <h:message for="stateOrProvince" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		            <h:outputText value="Password"/>
+		            <h:panelGroup>
+		                <h:inputSecret id="userPassword" value="#{createUser.tp.userPassword}" size="25" required="true"/>
+		                <h:message for="userPassword" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		            <h:outputText value="Repeat Password"/>
+		            <h:panelGroup>
+		                <h:inputSecret id="userPassword2" value="#{createUser.repeatUserPassword}" size="25" required="true"/>
+		                <h:message for="userPassword2" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		        </h:panelGrid>
+				<div style="clear:both"/>
+				<hr/>
+		        <h:panelGrid columns="2">
+		            <h:outputText value="Admin"/>
+		            <h:panelGroup>
+		                <h:inputText id="admin" value="#{createUser.admin}" size="25" required="true"/>
+		                <h:message for="admin" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		            <h:outputText value="Admin Password"/>
+		            <h:panelGroup>
+		                <h:inputSecret id="adminPassword" value="#{createUser.adminPassword}" size="25" required="true"/>
+		                <h:message for="adminPassword" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+		            </h:panelGroup>
+		        </h:panelGrid>
+		        <h:commandButton action="#{createUser.activate}" value="Activate"/>
+		        <h:commandButton action="cancel" value="Cancel" immediate="true"/>
+	        </h:form>
+			<div style="clear:both"/>
+			<hr/>
+	    </ui:composition>
+    </body>
+</html>

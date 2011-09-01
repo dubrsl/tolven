@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Diagnosis - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+			<c:if test="#{empty trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}">
+				No Diagnosis is added
+			</c:if>
+			<c:if test="#{not empty trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}">
+		      <h:dataTable value="#{trim.trim.act.relationships}" var="rel" width="800px">
+		      
+			            <h:column >
+			                <f:facet name="header">
+			                    <h:outputText value="Diagnosis" />
+			                </f:facet>
+			                	<h:outputText value="#{rel.act.observation.value.CE.displayName}" />
+			            </h:column>
+
+			            <h:column >
+			                <f:facet name="header">
+			                    <h:outputText value="Date of Diagnosis" />
+			                </f:facet>
+			                	<trim:TS id="effectiveTimeDD#{rel.sequenceNumber}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+			            </h:column>
+			            <h:column>
+			                <f:facet name="header">
+							<h:outputText value="Location"/>
+			                </f:facet>
+							<trim:selectManyCheck id="diagLocationDD#{rel.sequenceNumber}" valueset="diagnosisLocationVS" slot="#{rel.act.relationship['diagnosisLocation'].act.observation}" readonly="true" />
+			            </h:column>
+			            <h:column>
+			                <f:facet name="header">
+								<h:outputText value="Metastatic"/>
+			                </f:facet>
+								<trim:CE id="isMetastaticDD#{rel.sequenceNumber}" valueSet="isMetastaticVS" value="#{rel.act.relationship['isMetastatic'].act.observation.value}" readonly="true"/>
+			            </h:column>
+
+			            <h:column>
+			                <f:facet name="header">
+						<h:outputText value="Metastatic Location"/>
+			                </f:facet>
+							<trim:selectManyCheck id="metastaticLocationDD#{rel.sequenceNumber}" valueset="metastaticLocationVC" slot="#{rel.act.relationship['metastaticLocation'].act.observation}" readonly="true" />
+			            </h:column>
+
+
+			            <h:column>
+			                <f:facet name="header">
+						<h:outputText value="Other Metastatic Location"/>
+			                </f:facet>
+							<trim:ED id="otherMetastaticDD#{rel.sequenceNumber}" value="#{rel.act.relationship['otherMetastaticLocation'].act.observation.value}"  readonly="true" />			            </h:column>
+
+   						<h:column>
+			                <f:facet name="header">
+						<h:outputText value="Other Diagnosis"/>
+			                </f:facet>
+							<trim:ED id="otherDiagnosisDD#{rel.sequenceNumber}" value="#{rel.act.relationship['otherDiagnosis'].act.observation.value}"  readonly="true" />
+			            </h:column>
+
+
+
+			            <h:column>
+			                <f:facet name="header">
+						<h:outputText value="Current Status"/>
+			                </f:facet>
+							<trim:CE id="currentStatusDD#{rel.sequenceNumber}" valueSet="currentStatusVS" value="#{rel.act.relationship['currentStatus'].act.observation.value}" readonly="true"/>
+			            </h:column>
+
+
+            		</h:dataTable>		
+			</c:if>		
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.analysis.cholesterol" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.component.application" />
+		<import plugin-id="org.tolven.component.tolvenweb" />
+		<import plugin-id="org.tolven.component.tolvenlocale" />
+		<import plugin-id="org.tolven.component.war" />
+		<import plugin-id="org.tolven.component.faces" />
+		<import plugin-id="org.tolven.component.tolvenejb" />
+		<import plugin-id="org.tolven.analysis" />
+	</requires>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+		<parameter id="dir" value="app" />
+	</extension>
+	<extension id="rules" plugin-id="org.tolven.component.application" point-id="rules">
+		<parameter id="dir" value="app/rules" />
+	</extension>
+	<extension id="fiveDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="fiveDirectory">
+		<parameter id="sourceDirectory" value="web/five" />
+	</extension>
+	<extension id="manageDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="manageDirectory">
+		<parameter id="sourceDirectory" value="web/manage" />
+	</extension>
+	<extension id="locale-en-application-locale" plugin-id="org.tolven.component.tolvenlocale" point-id="application-locale">
+		<parameter id="application-name" value="echr" />
+		<parameter id="properties-file" value="locale_en/echr/AppBundle_en.properties" />
+	</extension>
+	<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+		<parameter id="dir" value="ejb/classes" />
+	</extension>
+	<extension id="org.tolven.cohort.chlstrl-property" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+		<parameter id="class" value="org.tolven.analysis.bean.SnapshotBean" />
+		<parameter id="name" value="org.tolven.cohort.chlstrl" />
+		<parameter id="value" value="java:global/tolven/tolvenEJB/AnalysisChartBean!org.tolven.analysis.CohortSnapshotLocal" />
+	</extension>
+	<extension id="org.tolven.cohort.chlstrl-navigation-rule-contribution" plugin-id="org.tolven.component.faces" point-id="navigation-rule-contribution">
+		<parameter id="from-view-id" value="/manage/analysis/analysisAdmin.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{top.navAction}" />
+			<parameter id="from-outcome" value="org.tolven.cohort.chlstrl" />
+			<parameter id="to-view-id" value="/manage/analysis/chlstrlAnalysisAdmin.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="org.tolven.cohort.chlstrl.ldlsnapshot-navigation-rule-contribution" plugin-id="org.tolven.component.faces" point-id="navigation-rule-contribution">
+		<parameter id="from-view-id" value="/manage/analysis/analysisAdmin.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{top.navAction}" />
+			<parameter id="from-outcome" value="org.tolven.cohort.chlstrl.ldlsnapshot" />
+			<parameter id="to-view-id" value="/manage/analysis/chlstrlldlAnalysisAdmin.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="/analysis/chlstrlldlAnalysisAdmin.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="Manage chlstrlldl Analysis" />
+		<parameter id="from-view-id" value="/manage/analysis/chlstrlldlAnalysisAdmin.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{cohortAnalysis.updateProperties}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/manage/analysis/analysisAdmin.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{cohortAnalysis.updateProperties}" />
+			<parameter id="from-outcome" value="error" />
+			<parameter id="to-view-id" value="/manage/analysis/chlstrlldlAnalysisAdmin.xhtml" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+</plugin>

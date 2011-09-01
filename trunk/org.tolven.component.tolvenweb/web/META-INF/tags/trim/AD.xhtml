@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>An Address</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+		<wiz:group title="#{value.label.value}">
+	    	<h:dataTable value="#{value.parts}" var="adxp" id="address">
+				<h:column>
+					<h:outputText value="#{adxp.label.value}*" rendered="#{adxp.label.value!='Address Line 2' and adxp.label.value!='Country'}" readonly="true" style="width:125px;border:0px"/>
+					<h:outputText value="#{adxp.label.value}" rendered="#{adxp.label.value=='Address Line 2' or adxp.label.value=='Country'}" readonly="true" style="width:125px;border:0px"/>
+				</h:column>
+				<h:column>
+					<h:inputText id="zipCode" value="#{adxp.ST.value}" maxlength="9" rendered="#{adxp.label.value=='Zip' and readonly!='true'}">
+    					<f:validator validatorId="zipCodeValidator" />
+    				</h:inputText>
+					<h:selectOneMenu id="states" value="#{adxp.ST.value}" rendered="#{adxp.label.value=='State' and readonly!='true'}" style="width:125px;" onclick="setState(this,'#{menu.elementLabel}','#{menu.element}')">
+						<f:selectItems value="#{trim.valueSets['states']}"/>
+					</h:selectOneMenu>
+					<h:inputText value="#{adxp.ST.value}" rendered="#{adxp.label.value!='Zip'and adxp.label.value!='State' and readonly!='true'}"/>
+					<h:outputText value="#{adxp.ST.value}" rendered="#{readonly=='true'}"/>
+				</h:column>
+	    	</h:dataTable> 
+	    </wiz:group>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir=".">
+	<target name="plugin-distribute">
+		<copy toDir="${plugins.assembly.dir}" overwrite="true" preservelastmodified="true">
+			<fileset dir="..">
+				<include name="*.jar"/>
+				<include name="*.war"/>
+			</fileset>
+		</copy>
+	</target>
+	<target name="plugin-post-distribute"/>
+</project>

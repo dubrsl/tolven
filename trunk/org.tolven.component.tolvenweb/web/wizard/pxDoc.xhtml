@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Procedures</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<c:if test="#{top.accountType=='echr'}">
+			<h:inputText id="computeEnableSharing"  value="#{trim.trim.act.computes[2].property['enabled']}" style="display: none;" />
+			<script>
+				//<![CDATA[
+					$('#{menu.elementLabel}:computeEnableSharing').value=true;
+				// ]]>
+			</script>
+		</c:if>
+		<h:inputText id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" style="display: none;" />			
+		<h:inputText  id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" style="display: none;" />
+		<h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
+		<h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />		
+      	<div id="popupGrids">
+  			<div id="#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}" class="popupgrid"/>          
+      	</div>
+		<wiz:step title="#{trim.trim.act.relationship['type'].act.title.ST.value}" >
+			<wiz:body>
+				<div id="procedureDocclinDiv" class="widget" style="width: 100%; margin-left: 0px;">
+					<script>
+						showOrderAssociationsDropDown("#{menu.element}","procedureDocclinDiv","px","","#{menu.elementLabel}");
+					</script> 
+				</div>
+				<div id="msgProcedureDocclin" style="color: red;font-weight: bold;text-align: center;" ></div>
+				<div id="addNewOrderAnchor">
+					<a onclick="openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'wizSaveProcedureDocclin', '#{menu.elementLabel}', 0)" href="#">Add Procedures</a>
+				</div>
+				<script>
+					openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'wizSaveProcedureDocclin', '#{menu.elementLabel}', 0);
+				</script>
+				<h:inputHidden value="0" id="checkRelationship">
+					<f:validator validatorId="nullRelationshipValidator" />
+					<f:attribute name="name" value="Procedure"/>
+				</h:inputHidden>
+			</wiz:body>
+		</wiz:step>
+		<wiz:step title="#{trim.trim.act.relationship['encounter'].act.title.ST.value}">
+			<wiz:body>
+				<table>
+					<tr>
+						<td><h:outputText value="#{trim.trim.act.relationship['encounter'].act.observation.value.label.value} :"/></td>
+						<td>
+							<h:selectOneMenu id="orderAssociateEncounters" value="#{trim.trim.act.relationship['encounter'].act.observation.value.CE}">
+								<f:selectItems value="#{trim.valueSets['encounter']}"/>
+				            	<f:converter converterId="DataTypeConverter"/>
+				        	</h:selectOneMenu>
+				        </td>
+				    </tr>
+				 </table>
+			</wiz:body>
+		</wiz:step> 		
+	</ui:composition>
+</body>
+</html>

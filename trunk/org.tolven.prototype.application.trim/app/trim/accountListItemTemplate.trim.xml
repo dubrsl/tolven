@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<name>accountListItemTemplate</name>
+	<description>Template for harvesting favorite item</description>
+	<author>Tolven</author>
+	<reference />
+	<act classCode="OBS" moodCode="EVN">
+		<relationship typeCode="PERT" direction="OUT" name="favoriteItem">
+			<act classCode="OBS" moodCode="EVN">
+				<bind application="echr">
+					<placeholder bindAction="create">
+						<path>echr:accountList:favorite</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr">
+					<placeholder bindAction="create">
+						<path>echr:accountList:favorite</path>
+					</placeholder>
+				</bind>
+				<id />
+				<title>
+					<ST></ST>
+				</title>
+				<observation>
+					<value>
+						<ST></ST>
+					</value>
+					<value>
+						<ST></ST>
+					</value>
+				</observation>
+				<relationship typeCode="PERT" direction="OUT" name="path">
+					<act classCode="OBS" moodCode="EVN">
+						<title>
+							<ST></ST>
+						</title>
+					</act>
+				</relationship>
+			</act>
+		</relationship>
+	</act>
+</trim>

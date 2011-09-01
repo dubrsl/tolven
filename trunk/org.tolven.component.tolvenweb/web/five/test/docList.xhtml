@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <head>
+        <title>document list</title>
+    </head>
+    <body>
+        <ui:composition>
+<script language="JavaScript" type="text/javascript">
+// <![CDATA[
+#{menu.elementLabel}DG = new Rico.LiveGrid( '#{menu.element}LG', 10, #{doc.XMLDocumentCount}, 
+  'xmlDocList.ajax', 
+  {prefetchBuffer: true, 
+  requestParameters: [{name: 'element', value: visiblePage}],
+  sortAscendImg: '../images/sort_asc.gif', 
+  sortDescendImg:'../images/sort_desc.gif'});  
+// ]]>
+</script>
+<p>	A list of documents owned by any account of which the the logged in user is a member. 
+<strong>This is a forced security violation</strong>  for demo purposes only. 
+Normally, a user is not allowed to see documents (or anything) in accounts other than 
+the one they are logged into. This query shows that if that restriction were  breached, 
+documents in an account other than the account the user is currently logged into, even 
+if that user is a member of the other account, will not be viewable or computable 
+because the document is encryped. </p>
+<p>In order to ssee the failure, you must have access to more than one account and attempt to read a document in an account you are not currently logged into.</p>
+<div style="width:800px">
+	<table id="#{menu.element}LG_header">
+	  <thead>
+		  <tr>
+			  <th align="right" width="60px">ID</th>
+			  <th align="left" width="200px">Binding Context</th>
+			  <th align="left" width="200px">Author</th>
+			  <th align="left" width="100px">Status</th>
+			  <th align="left" width="200px">Account</th>
+		  </tr>
+	  </thead>
+	</table> 
+	<table id="#{menu.element}LG" >
+	  <tbody>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+			<tr><td  align="right" width="60px">-</td><td  align="left" width="200px">-</td><td  align="left" width="100px">-</td><td  align="left" width="200px">-</td><td  align="left" width="200px">-</td></tr>
+	  </tbody>
+	</table>
+</div>
+		</ui:composition>
+	</body>
+</html>

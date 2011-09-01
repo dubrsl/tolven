@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.jaas" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<!-- DEPRECATED -->
+	<!--<requires>
+		<import plugin-id="org.tolven.config.appserver" />
+	</requires>
+	<extension-point id="lib" extension-multiplicity="none">
+		<parameter-def id="tolvenJAAS" default-value="tolvenJAAS.jar" multiplicity="none-or-one" />
+	</extension-point>
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	<extension id="libJar" plugin-id="org.tolven.config.appserver" point-id="libJar">
+		<parameter id="jar" value="tolvenJAAS.jar" />
+	</extension>-->
+</plugin>

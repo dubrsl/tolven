@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin id="org.tolven.assembler.connectormodule" version="2.1.0" class="org.tolven.assembler.connectormodule.ConnectorModuleAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<requires>
+		<import plugin-id="org.tolven.component.rar" />
+	</requires>
+	<runtime>
+		<library type="code" path="tpf/classes/" id="classes" />
+	</runtime>
+	<extension-point extension-multiplicity="none" id="devLib">
+		<parameter-def default-value="devLib.jar" id="jar" />
+	</extension-point>
+	<extension-point id="abstractRAR" parent-plugin-id="org.tolven.component.rar" parent-point-id="abstractRAR" extension-multiplicity="none" />
+</plugin>

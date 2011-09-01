@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Medication - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+	 	<c:choose>
+	  		<c:when test="#{menu.xmlNS=='urn:tolven-org:trim:4.0'}">
+				<h2><h:outputText value="#{menu.menuDataItem.string01}"/></h2>
+				<h:panelGrid columns="2" >
+					<h:outputText value="#{msg.Date}: "/>
+					<trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+					<h:outputText value="#{msg.Product}: " />
+					<trim:CE id="material" layout="pageDirection" readonly="true" valueSet="material" value="#{trim.trim.act.participation['consumable'].role.player.code}"/>
+				</h:panelGrid>
+	  		</c:when>
+	  		<c:when test="#{menu.xmlNS=='urn:astm-org:CCR'}">
+	 			<p>#{msg.FromCCRDocument}</p>
+		  	   <h:panelGrid columns="2" >
+		            <h:outputText value="#{msg.Date}:"/>
+		            <h:outputText value="#{menu.menuDataItem.date01}"/>
+		            <h:outputText value="#{msg.Medication}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string01}"/>
+		            <h:outputText value="#{msg.Quantity}:"/>
+		            <h:outputText value="#{menu.menuDataItem.pqValue02}"/>
+		            <h:outputText value="#{msg.Source}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string02}"/>
+		            <h:outputText value="#{msg.Status}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string03}"/>		            
+		            <h:outputText value="Directions:"/>
+		            <h:outputText value="#{menu.menuDataItem.string05}"/>		            
+		            <h:outputText value="Instructions:"/>
+		            <h:outputText value="#{menu.menuDataItem.string07}"/>		            
+		            		            
+		        </h:panelGrid>
+	  		</c:when>
+	  		<c:when test="#{menu.xmlNS=='urn:hl7-org:v3'}">
+	  			<h:outputText value="No CDA Format available"/>
+	  		</c:when>
+	  		<c:when test="#{menu.drilldownItemDoc.schemaURI=='nuh'}">
+	  			<h:outputText value="NUH Data:"/>
+		  	   <h:panelGrid columns="2" >
+		            <h:outputText value="#{msg.Date}:"/>
+		            <h:outputText value="#{menu.menuDataItem.date01}"/>
+		            <h:outputText value="#{msg.Medication}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string01}"/>
+		            <h:outputText value="#{msg.Quantity}:"/>
+		            <h:outputText value="#{menu.menuDataItem.pqValue02}"/>
+		            <h:outputText value="#{msg.Source}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string02}"/>
+		            <h:outputText value="#{msg.Status}:"/>
+		            <h:outputText value="#{menu.menuDataItem.string03}"/>		            
+		            <h:outputText value="Directions:"/>
+		            <h:outputText value="#{menu.menuDataItem.string05}"/>		            
+		        </h:panelGrid>
+	  		</c:when>
+			<c:otherwise>
+	  			<h:outputText value="No CDA Format available"/>
+			</c:otherwise>
+		</c:choose>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

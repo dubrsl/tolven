@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="org.tolven.config.glassfishcredentials" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+	<requires>
+		<import plugin-id="org.tolven.assembler.admin" />
+	</requires>
+	<extension id="appserver" plugin-id="org.tolven.assembler.admin" point-id="appserver">
+		<parameter id="appserver.groupId" value="#{pluginProperty['appserver.groupId']}" />
+		<parameter id="appserverSSL.keyStoreFile" value="#{pluginProperty['appserverSSL.keyStoreFile']}" />
+		<parameter id="appserverSSL.keyStoreType" value="#{pluginProperty['appserverSSL.keyStoreType']}" />
+		<parameter id="appserverSSL.trustStoreFile" value="#{pluginProperty['appserverSSL.trustStoreFile']}" />
+		<parameter id="appserverSSL.trustStoreType" value="#{pluginProperty['appserverSSL.trustStoreType']}" />
+		<parameter id="appserverSSL.trusted.groups" value="#{pluginProperty['appserverSSL.trusted.groups']}" />
+		<parameter id="appserver.credentialDir" value="#{pluginProperty['appserver.credentialDir']}" />
+		<parameter id="appserver.active" value="#{pluginProperty['appserver.active']}" />
+	</extension>
+</plugin>

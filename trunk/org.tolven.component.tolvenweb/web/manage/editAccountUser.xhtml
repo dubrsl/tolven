@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<head>
+    <title>Edit AccountUser</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition template="/templates/simplePage.xhtml">
+        <ui:param name="pageTitle" value="#{msg.User} #{acc.selectedAccountUser.user.ldapUID}"/>
+        <ui:define name="body">
+			<c:set var="msg" value="#{top.appBundle}" />
+          <h:form id="accountUser" rendered="#{top.accountAdmin}">
+        	<div class="breadcrumbs">
+				<h:commandLink value="#{msg.Application}" action="dispatch" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+				<h:commandLink value="#{msg.Preferences}" action="preferences" immediate="true"/>
+				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
+				<h:commandLink value="#{msg.AccountUsers}" action="accountUsers" immediate="true"/>
+			</div>
+        	<h:panelGrid columns="2">
+        	
+				<h:outputText value="#{msg.User}"/>
+				<h:outputText value="#{acc.selectedAccountUser.user.ldapUID}" />
+
+				<h:outputText value="#{msg.AccountUserId}"/>
+				<h:outputText value="#{acc.selectedAccountUser.id}" />
+
+				<h:outputText value="#{msg.Status}"/>
+				<h:selectOneMenu id="status2" value="#{acc.selectedAccountUser.status}" rendered="#{acc.selectedAccountUser.id!=top.accountUserId}">
+               		<f:selectItem itemValue="active" itemLabel="#{msg.active}"/>
+               		<f:selectItem itemValue="inactive" itemLabel="#{msg.inactive}"/>
+				</h:selectOneMenu>
+				<h:outputText value="#{msg.active}" rendered="#{acc.selectedAccountUser.id==top.accountUserId}" />
+
+				<h:outputText value="#{msg.Administrator}"/>
+				<h:panelGroup rendered="#{acc.selectedAccountUser.id==top.accountUserId}">
+					<h:inputHidden id="admin1" value="#{acc.selectedAccountUser.accountPermission}" />
+					<h:outputText value="#{msg.me}" />
+				</h:panelGroup>
+				<h:selectBooleanCheckbox id="admin2" value="#{acc.selectedAccountUser.accountPermission}" rendered="#{acc.selectedAccountUser.id!=top.accountUserId}"/>
+
+				<h:outputText value="#{msg.Roles}"/>
+				<h:panelGroup >
+					<h:selectManyCheckbox value="#{acc.selectedAccountUserRoleItems}" layout="pageDirection">
+						<f:selectItems value="#{acc.accountRoleItems}" />
+					</h:selectManyCheckbox>
+				</h:panelGroup>
+
+				<h:outputText value="#{msg.StaffMemberAssociation}" rendered="#{top.accountType=='echr'}"/>
+				<h:selectOneMenu value="#{acc.selectedAccountUser.openMeFirst}" rendered="#{top.accountType=='echr'}">
+	               	<f:selectItem itemValue="#{null}" itemLabel="#{msg.SelectStaffMember}"/>
+	               	<c:forEach var="staffNames" items="#{trim.list['echr:admin:staff:all~Name status']}">
+	               	<c:set var="name" value="${fn:split(staffNames.label, ' ')}"  />
+	               	
+	               	<f:selectItem  itemLabel="#{name[0]} #{name[1]} #{name[2]}" itemValue="#{staffNames.value}"/>
+	               	
+	               	</c:forEach>
+				</h:selectOneMenu>
+        	</h:panelGrid>
+			<h:inputHidden value="#{acc.selectedAccountUser.id}"/>
+			<h:commandButton value="#{msg.Update}" action="#{acc.updateAccountUser}"/>
+	      </h:form>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>

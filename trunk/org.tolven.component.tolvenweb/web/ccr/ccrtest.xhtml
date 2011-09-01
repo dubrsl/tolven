@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ccr="http://www.tolven.org/jsf/ccr"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <head>
+        <title>CCR Template Test</title>
+    </head>
+    <body>
+	<f:view>
+    	<h:form id="ccr">
+	    	<ccr:person person="#{ccr.actor.person}"/>
+	    	<h:selectBooleanCheckbox id="debugFlag" value="#{ccr.debug}"/>
+	    	<h:outputLabel for="debugFlag" value="Show Debug"/>
+	    	<h:commandButton value="Reset" immediate="true" action="#{ccr.reset}"/>
+	    	<h:commandButton value="#{msg.Submit}" action="#{ccr.submit}"/>
+    	</h:form>
+    </f:view>
+    </body>
+</html>
+
+

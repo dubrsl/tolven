@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>Snapshot Panel</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+<ui:composition>
+	<h:form id="snapshotForm">
+		<fieldset>
+			<legend>Snapshot Panel</legend> 
+			<h:panelGrid>
+				<h:panelGrid columns="2">
+					<h:outputText value="Next Snapshot: " />
+					<h:inputText id="nextSnapshot" value="#{snapshot.nextScheduledDateString}" size="30" readonly="true"/>
+					<h:outputText value="Snapshot Interval: " />
+					<h:inputText id="intervalValue" value="#{top.accountUser.account.property[intervalValueProperty]}" size="30" required="true"
+						validatorMessage=" Interval value is an integer with a minimum of 1"
+						requiredMessage=" An Interval is required">
+						<f:validateLongRange minimum="1" />
+					</h:inputText>
+					<h:outputText value="Chart Range: " />
+					<h:inputText id="chartRange" value="#{top.accountUser.account.property[chartRangeProperty]}" size="30" required="true"
+						validatorMessage=" Chart range is an integer with a minimum of 1"
+						requiredMessage=" A chart range is required">
+						<f:validateLongRange minimum="1" />
+					</h:inputText>
+					<h:outputText value="Units:" />
+					<h:selectOneRadio id="intervalUnit" value="#{top.accountUser.account.property[intervalUnitProperty]}">
+						<f:selectItem itemLabel="Month" itemValue="Month" />
+						<f:selectItem itemLabel="Quarter" itemValue="Quarter" />
+						<f:selectItem itemLabel="Year" itemValue="Year" />
+					</h:selectOneRadio>
+				</h:panelGrid>
+				<h:panelGrid columns="3">
+					<h:commandButton action="#{snapshot.snapshotNow}" value="Snapshot Now" id="snapShotButton">
+						<f:setPropertyActionListener target="#{snapshot.cohortType}" value="#{cohortType}" />
+						<f:setPropertyActionListener target="#{snapshot.snapshotType}" value="#{snapshotType}" />
+					</h:commandButton>
+					<h:commandButton action="#{snapshot.startSchedule}" value="Start Schedule">
+						<f:setPropertyActionListener target="#{snapshot.cohortType}" value="#{cohortType}" />
+						<f:setPropertyActionListener target="#{snapshot.snapshotType}" value="#{snapshotType}" />
+					</h:commandButton>
+					<h:commandButton action="#{snapshot.cancelSchedule}" value="Cancel Schedule">
+						<f:setPropertyActionListener target="#{snapshot.cohortType}" value="#{cohortType}" />
+						<f:setPropertyActionListener target="#{snapshot.snapshotType}" value="#{snapshotType}" />
+					</h:commandButton>
+				</h:panelGrid>
+				<h:message for="intervalValue" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
+				<h:message for="chartRange" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
+				<h:message for="snapShotButton" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
+			</h:panelGrid>
+		</fieldset>
+	</h:form>
+</ui:composition>
+
+</body>
+</html>

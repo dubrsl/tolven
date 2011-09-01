@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>Patient Reports</title>
+</head>
+<body>
+<ui:composition>
+	<h4>Select a report to download in PDF format</h4>
+	<a href="../report/?reportName=path1&amp;reportType=jrxml&amp;tolvenQuery=echr:patient&amp;tolvenQueryParameter=#{menu.drilldownItem.path}">Patient Pathology Summary</a>
+</ui:composition>
+</body>
+</html>

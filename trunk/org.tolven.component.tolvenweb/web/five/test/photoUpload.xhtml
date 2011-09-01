@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+<title>Uploaded Photos</title>
+</head>
+<body>
+<ui:composition>
+	<h:outputText value="#{param.element}:reset " /> <br/>
+	<a id="#{param.element}:reset" href="#" style="display:none"
+		onclick="photoGrid = new Rico.LiveGrid( 'photoDG', 10, #{doc.photoCount}, 
+						'photoList.ajax', 
+						{prefetchBuffer: true, 
+						sortAscendImg: '../images/sort_asc.gif', 
+						sortDescendImg:'../images/sort_desc.gif'});">Load
+	photos</a>
+	<iframe id="uploaderIframe" name="uploader" style="display:none" ></iframe> 
+	<form id="uploadForm" target="uploader" method="post" enctype="multipart/form-data" 
+		action="xxx.tdoc?userId=#{top.user.id}">
+		File to upload: <input type="file" name="upfile" /><br/>
+		<input type="submit" value="Upload Now" />
+	</form>
+	<a href="javascript:getRemoteContent('#{param.element}');">Refresh</a>
+	<div id="photoListPane" style="width:180px; ">
+	<table id="photoDG_header">
+		<tr>
+			<th class="col1">ID</th>
+			<th class="col2">Media Type</th>
+		</tr>
+	</table>
+	<div id="photoDG_container">
+	<div id="photoViewPort">
+	<table id="photoDG">
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+		<tr>
+			<td class="col1">-</td>
+			<td class="col2">-</td>
+		</tr>
+	</table>
+	</div>
+	</div>
+	</div>
+</ui:composition>
+</body>
+</html>
