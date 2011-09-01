@@ -1,2 +1,0 @@
-update-agent -e / -b TolvenRESTfulAgent -D ../../../openam-conf/tolven-agent-attributes.txt
-delete-identities -e / -i agentadmin -t User

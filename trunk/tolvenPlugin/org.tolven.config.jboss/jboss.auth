@@ -1,3 +1,0 @@
-tolvenLDAP {
-    org.jboss.security.ClientLoginModule required;
-};

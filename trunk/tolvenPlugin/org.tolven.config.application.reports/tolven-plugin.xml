@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.config.application.reports" version="0.0.1" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
-	<requires>
-		<import plugin-id="org.tolven.component.application" />
-	</requires>
-	<extension id="reports" plugin-id="org.tolven.component.application" point-id="reports">
-		<parameter id="dir" value="#{pluginProperty['report.dir']}" />
-	</extension>
-</plugin>

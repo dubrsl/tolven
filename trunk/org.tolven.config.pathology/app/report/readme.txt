@@ -1,1 +1,0 @@
-This directory contains Jasper Report definitions jrxml which will be uploaded during configPhase3.
