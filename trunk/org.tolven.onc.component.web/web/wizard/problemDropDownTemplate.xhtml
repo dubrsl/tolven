@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Select a Problem</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<c:set var="problems" value="#{trim.trim.act.relationship['problems']}"/>
+    	
+		<h:selectOneMenu id="orderAssociateProblems#{param['widgetIndex']}" style="width: 140px;" value="" onclick="selectAssociateItem('Problem','orderAssociateProblems#{param['widgetIndex']}','#{menu.elementLabel}','associateProblemValue#{param['widgetIndex']}')" >
+			<f:selectItem  itemValue="#{null}" itemLabel="None" value="#{null}"/>
+			<c:forEach items="#{trim.list['echr:patient:problems:all~Problem:Status']}" var="problem">
+			<c:set var="probItems" value="${fn:split(problem.label, ':')}"/>
+				<c:if test="#{probItems[1]=='ACTIVE'}">
+					<f:selectItem itemValue="#{probItems[0]}" itemLabel="#{probItems[0]}"/>
+				</c:if>
+			</c:forEach>
+    		<c:forEach var="problem" items="#{problems.act.relationshipsList['problem']}" varStatus="widgetIndex">
+    			<f:selectItem itemValue="#{problem.act.observation.values[0].CE.displayName}" itemLabel="#{problem.act.observation.values[0].CE.displayName}"/>
+    		</c:forEach>
+    	</h:selectOneMenu>
+    	<br/>
+    	<span>
+			<a onclick="callOpenTemplateFunc('echr:problems', 'echr:problems', 'wizSaveOrderAssociateProblem', '#{menu.elementLabel}', 0,'#{param['widgetIndex']}');return false;" href="#">
+				Add problem
+			</a>
+	    </span>
+	</ui:composition>
+</body>
+</html>

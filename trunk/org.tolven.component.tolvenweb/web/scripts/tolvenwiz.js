@@ -1525,3 +1525,199 @@ function instantiateAction(actionPath){
 function setProblemNameValue(srcElement,destElement){
 	$(destElement).value = $(srcElement).options[$(srcElement).selectedIndex].text;
 }
+
+function validatePrescriberDateFields(root) {
+	if (comparePrescDates(root + ":FieldquesactiveStartTime", root + ":FieldquesactiveEndTime") == 1 ) {
+		$(root+"prescGreater").style.display="block";
+		$(root+"prescMinDiff").style.display="none";
+		$(root+"prescSameTime").style.display="none";
+		$(root+"nextButton").disabled=true;
+		//alert("Active Start Time should not be greater than the Active End Time. Form can not be submitted.");
+	}else if(comparePrescDates(root + ":FieldquesactiveStartTime", root + ":FieldquesactiveEndTime") == -1 ){
+		$(root+"prescGreater").style.display="none";
+		$(root+"prescMinDiff").style.display="block";
+		$(root+"prescSameTime").style.display="none";
+		$(root+"nextButton").disabled=true;
+		//alert("The Difference between Active Start Time and Active End Time must be atleast 30 Days. Form can not be submitted.");
+	}else if(comparePrescDates(root + ":FieldquesactiveStartTime", root + ":FieldquesactiveEndTime") == 0 ){
+		$(root+"prescGreater").style.display="none";
+		$(root+"prescMinDiff").style.display="none";
+		$(root+"prescSameTime").style.display="block";
+		$(root+"nextButton").disabled=true;
+		//alert("Both Active Start Time and End Time are the same.The Difference between Active Start Time and Active End Time must be atleast 30 Days. Form can not be submitted.");
+	}else if(comparePrescDates(root + ":FieldquesactiveStartTime", root + ":FieldquesactiveEndTime") == -2 ){
+		$(root+"prescGreater").style.display="none";
+		$(root+"prescMinDiff").style.display="none";
+		$(root+"prescSameTime").style.display="none";
+		$(root+"nextButton").disabled=false;
+	}else{
+		$(root+"prescGreater").style.display="none";
+		$(root+"prescMinDiff").style.display="none";
+		$(root+"prescSameTime").style.display="none";
+		$(root+"nextButton").disabled=false;
+	}
+}
+
+function comparePrescDates(date1Id, date2Id) {
+	var date1Str = $(date1Id).value;
+	var date1Obj = new Date(date1Str);
+	var date2Str = $(date2Id).value;
+	var date2Obj = new Date(date2Str);
+	if (date1Str != "" && date2Str != "") {
+		if (date1Obj > date2Obj) {
+				return 1;
+		}	
+		else if (date1Obj < date2Obj) {
+			if(Date.parse(date1Obj) - Date.parse(date2Obj) <= -2592000000){	//2505600000
+				return -2;
+			}else{
+				return -1;
+			}	
+		}
+		else {
+			return 0;
+		}
+	}
+}
+
+function validateName(id , root , nameDiv){
+	var nextButton = $(root+"nextButton");
+	var val = $(root+":"+id).value;
+	var spaceFormat = /^[\S]{0,35}$/;
+	if(val == ""){
+		    $(nameDiv).style.display="none";
+		    nextButton.disabled = false;
+	}else if(val.search(spaceFormat) == -1){
+	    	$(nameDiv).style.display="block";
+	    	nextButton.disabled = true;
+	}else{
+		    $(nameDiv).style.display="none";
+		    nextButton.disabled = false;
+	}	
+}
+
+
+/**
+ * Method to validate address line1. Should contain space separated values and PO/P O is not allowed here. 
+ * @param id 
+ * @param root menu.elementLabel
+ * @param poDiv Error div for PO validation.
+ * @param spaceDiv Space div for space validation.
+ * @return
+ */
+function validateAddress(id,root, poDiv, spaceDiv) {
+		var nextButton = $(root+"nextButton");
+		var val = $(root+":"+id).value;
+		var poFormat = /((P)O)|((P)(\s)O)/;
+		var spaceFormat = /([\S]+\s)+[\S]+$/;
+		if(val.search(spaceFormat) == -1){
+			if(val.search(poFormat) == -1){
+				$(poDiv).style.display="none";
+				$(spaceDiv).style.display="block";
+		        nextButton.disabled = true;
+			}else{
+				$(spaceDiv).style.display="none";
+				$(poDiv).style.display="block";
+			    nextButton.disabled = true;
+		    }
+		}else{
+			$(spaceDiv).style.display="none";
+			nextButton.disabled = false;
+		}
+		if(val.search(poFormat) != -1){
+			$(poDiv).style.display="block";
+			nextButton.disabled = true;
+		}
+		if(val==""){
+		    $(spaceDiv).style.display="none";
+		    $(poDiv).style.display="none";
+		    nextButton.disabled = false;
+		}  
+}
+function strStartsWith(str, prefix) {
+    return str.indexOf(prefix);
+}
+
+function checkGender(root){
+	var gender = $("sex").childNodes[1].innerHTML.split("</legend>")[1];
+	if (strStartsWith(gender,"Select") == 0){
+		$(root+"submitButton").disabled = true;
+		document.getElementById("errorGender").style.display="block";
+	}else{
+		$(root+"submitButton").disabled = false;
+		document.getElementById("errorGender").style.display="none";
+	}
+}
+
+function onlyNumbers(evt)
+{
+    var e = evt; // for trans-browser compatibility
+    var charCode = e.which || e.keyCode;   
+    if (charCode > 31 && (charCode <45 || charCode > 57) || charCode==45 || charCode==47||charCode==46){
+        return false;
+    }
+    else{   
+        return true;
+    }
+}
+
+function onlyNumbersNotZero(evt)
+{
+    var e = evt; // for trans-browser compatibility
+    var charCode = e.which || e.keyCode;   
+    if (charCode > 31 && (charCode <45 || charCode > 57) || charCode==45 || charCode==47||charCode==46 ||charCode==48){
+        return false;
+    }
+    else{   
+        return true;
+    }
+}
+function onlyNumbersAndDot(evt)
+{
+    var e = evt; // for trans-browser compatibility
+    var charCode = e.which || e.keyCode;   
+    if (charCode > 31 && (charCode <45 || charCode > 57) || charCode==45 || charCode==47){
+        return false;
+    }
+    else{   
+        return true;
+    }
+}
+/*
+ *Function to check for valid email, zip + 4 code and phone number. 
+ * Modified for ssn validation
+ * @Vineetha 
+ */
+function checkFormat(id,root, msgContainerId){  
+		var val = $(root+":"+id).value;
+		var decimalFormat ="";
+		if(id == "phone" || id == "HomePhone" || id == "WorkPhone" || id == "CellPhone"){
+			decimalFormat=/^(?![0]{10})+(\d{10})/;
+		}else if(id == "extension"){
+			decimalFormat=/^\d{4}$/;
+		}else if(id == "zip"){
+			decimalFormat=/(^\d{5}$)|(^\d{5}\d{4}$)/;
+		}else if(id == "email" || id == "primaryEmailId" || id == "secondaryEmailId"){
+			decimalFormat=/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,6}$/;
+		}else if(id == "dea"){
+			decimalFormat=/^[a-zA-Z]{2}[0-9]{7}$/;
+		}else if(id == "FX"){
+			decimalFormat=/^(?![0]{10})+(\d{10})/;
+		}else if(id == "spi"){
+			decimalFormat=/^\d{10}$/;
+		}else if(id == "npi"){
+			decimalFormat=/^\d{10}$/;
+		}else if(id == "ssn"){
+			decimalFormat=/^\d{9}$/;
+		}
+		
+		if(val.search(decimalFormat)==-1){
+		    $(msgContainerId).style.display="block";
+		}else{
+		    $(msgContainerId).style.display="none";
+		}
+		if(val==""){
+		    $(msgContainerId).style.display="none";
+		}  
+		
+}

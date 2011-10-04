@@ -12,27 +12,27 @@ public interface LoginPasswordLocal {
      * Backup a login password.
      * 
      * @param uid
-     * @param realm
      * @param password
+     * @param realm
      * @param securityQuestion
      * @param securityQuestionAnswer
      * @return
      * @throws AuthenticationException 
      */
-    public byte[] backupPassword(String uid, String realm, char[] password, String securityQuestion, char[] securityQuestionAnswer) throws AuthenticationException;
+    public byte[] backupPassword(String uid, char[] password, String realm, String securityQuestion, char[] securityQuestionAnswer) throws AuthenticationException;
     
     /**
      * Change a login password.
      * 
      * @param uid
-     * @param realm
      * @param oldPassword
+     * @param realm
      * @param newPassword
      * @param securityQuestion
      * @param securityAnswer
      * @throws AuthenticationException
      */
-    public void changePassword(String uid, String realm, char[] oldPassword, char[] newPassword, String securityQuestion, char[] securityAnswer) throws AuthenticationException;
+    public void changePassword(String uid, char[] oldPassword, String realm, char[] newPassword, String securityQuestion, char[] securityAnswer) throws AuthenticationException;
 
     /**
      * Find a login password security question.
@@ -55,23 +55,23 @@ public interface LoginPasswordLocal {
      * Recover a password.
      * 
      * @param uid
-     * @param realm
      * @param newPassword
+     * @param realm
      * @param securityQuestion
      * @param securityQuestionAnswer
      * @throws AuthenticationException
      */
-    public void recoverPassword(String uid, String realm, char[] newPassword, String securityQuestion, char[] securityQuestionAnswer) throws AuthenticationException;
+    public void recoverPassword(String uid, char[] newPassword, String realm, String securityQuestion, char[] securityQuestionAnswer) throws AuthenticationException;
 
     /**
      * Reset a password.
      * 
      * @param uid
      * @param realm
-     * @param newPassword
      * @param admin
      * @param adminPassword
      * @throws AuthenticationException
      */
-    public void resetPassword(String uid, String realm, char[] newPassword, String admin, char[] adminPassword) throws AuthenticationException;
+    public char[] resetPassword(String uid, String realm, String admin, char[] adminPassword) throws AuthenticationException;
+    
 }

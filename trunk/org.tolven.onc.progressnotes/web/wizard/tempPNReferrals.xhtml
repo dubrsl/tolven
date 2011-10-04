@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Referrals</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<c:set var="referrals" value="#{trim.trim.act.relationship['plan'].act.relationship['referrals']}"/>
+		<table width="100%">
+			<thead>
+				<tr>
+					<th width="20%">Date</th>
+					<th width="61%">Referrals</th>
+					<th width="19%"></th>
+				</tr>
+			 	<c:forEach var="referral" items="#{referrals.act.relationshipsList['referral']}" varStatus="widgetIndex">
+			 		<c:set var="class" value="odd"/>
+					<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+			 		<tr class="#{class}" id="#{menu.elementLabel}:saveReferrals#{widgetIndex.index}" onmouseover="setBackground(this);" onmouseout="resetBackground(this);">
+			 			<td width="20%"><trim:TSAjax style="width:70px;" value="#{referral.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+			 			<td width="61%"><h:outputText escape="false" value="#{referral.act.code.CE.displayName}"/></td>
+						<td width="19%">
+							<span style="float: left; padding: 0 5px 0 3px;"> <img
+									onclick="editPNTemplateReferrals('referral', #{widgetIndex.index}, 'echr:referralRequestList', 'wizSavePNReferrals', '#{menu.elementLabel}', 0);return false;"
+									alt="Edit" src="../images/edit.jpg" style="cursor: pointer;"
+									title="Edit"></img> 
+							</span>
+							<span style="float: right;"> <img
+									onclick="wizRemoveTemplate('managePNReferrals.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnReferralDiv', 'tempPNReferrals.jsf');return false;"
+									alt="Remove" src="../images/delete.gif"
+									style="cursor: pointer;" title="Remove"></img> 
+							</span>
+						</td>
+					</tr>
+					<tr style="display: none;" class="editWidget" id="#{menu.elementLabel}:editReferrals#{widgetIndex.index}">
+						<h:inputHidden value="0" id="tempReferralsActionType#{widgetIndex.index}" />
+						<td width="20%"><trim:TSAjax id="effectiveReferralDate#{widgetIndex.index}" style="width:70px;" value="#{referral.act.effectiveTime.TS}" dateStyle="short"/></td>
+						<td width="61%"><h:outputText escape="false" value="#{referral.act.code.CE.displayName}"/></td>
+						<td width="19%">
+							<span style="float: left; padding: 0 5px 0 3px;"> <img
+									onclick="wizUpdatePNReferrals('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 0);return false;"
+									alt="Save" src="../images/save.gif" style="cursor: pointer;"
+									title="Save">
+								</img> </span>
+							<span style="float: right;"> <img
+									onclick="wizCancelTemplateReferrals('managePNReferrals.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnReferralDiv', 'tempPNReferrals.jsf');return false;"
+									alt="Cancel" src="../images/undo.gif" style="cursor: pointer;"
+									title="Cancel">
+								</img> </span>
+						</td>
+					</tr>
+					<c:if test="#{referral.act.title.ST.value!=''}">
+						<script>
+      							$('#{menu.elementLabel}:saveReferrals#{widgetIndex.index}').hide();
+      							$('#{menu.elementLabel}:editReferrals#{widgetIndex.index}').show();
+       					</script>
+					</c:if>
+			 	</c:forEach>
+			 	<tr  class="widgetAction">
+			 		<td colspan="3">
+			 			<a id="addPNReferralLink" onclick="addPNTemplate('referral', 'echr:referralRequestList', 'wizSavePNReferrals', '#{menu.elementLabel}', 0);return false;" href="#">
+							Add referral
+						</a>
+			 		</td>
+			 	</tr>
+		 	</thead>
+		</table>
+		
+	</ui:composition>
+</body>
+</html>

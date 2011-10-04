@@ -15,6 +15,8 @@
  */
 package org.tolven.shiro.web.filter.mgt;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.ejb.EJB;
@@ -37,12 +39,32 @@ import org.tolven.shiro.authz.entity.TolvenAuthorization;
 
 public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
 
-    private Logger logger = Logger.getLogger(TolvenFilterChainResolver.class);
-    
     @EJB
     private TolvenAuthorizationLocal authBean;
 
+    private Map<String, Class<?>> filterClasses;
     private FilterConfig filterConfig;
+
+    //TODO External these filters, to make the configurable
+    private String[] filters = {
+            "anon,org.apache.shiro.web.filter.authc.AnonymousFilter",
+            "authc,org.apache.shiro.web.filter.authc.FormAuthenticationFilter",
+            "authcBasic,org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter",
+            "perms,org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter",
+            "port,org.apache.shiro.web.filter.authz.PortFilter",
+            "rest,org.apache.shiro.web.filter.authz.HttpMethodPermissionFilter",
+            "roles,org.apache.shiro.web.filter.authz.RolesAuthorizationFilter",
+            "ssl,org.apache.shiro.web.filter.authz.SslFilter",
+            "user,org.apache.shiro.web.filter.authc.UserFilter",
+            "tssl,org.tolven.shiro.web.servlet.TolvenSslFilter",
+            "tauthc,org.tolven.shiro.web.servlet.TolvenFormAuthenticationFilter",
+            "rsauthz,org.tolven.shiro.web.servlet.RSAuthorizationFilter",
+            "preauthc,org.tolven.shiro.web.servlet.PreAuthFormAuthenticationFilter",
+            "rspreauthz,org.tolven.shiro.web.servlet.RSPreAuthFilter",
+            "wspreauthz,org.tolven.shiro.web.servlet.WSPreAuthFilter",
+            "wsauthz,org.tolven.shiro.web.servlet.WSAuthorizationFilter" };
+    
+    private Logger logger = Logger.getLogger(TolvenFilterChainResolver.class);
 
     public TolvenFilterChainResolver() {
     }
@@ -105,7 +127,7 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
             if (logger.isDebugEnabled()) {
                 logger.debug("Adding filters to temporary manager");
             }
-            for (Entry<String, Filter> entry : getFilterChainManager().getFilters().entrySet()) {
+            for (Entry<String, Filter> entry : getFilters().entrySet()) {
                 temporaryManager.addFilter(entry.getKey(), entry.getValue(), init);
             }
             if (logger.isDebugEnabled()) {
@@ -114,7 +136,7 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
             try {
                 temporaryManager.createChain(authorizationURI, filterString);
             } catch (Exception ex) {
-                throw new RuntimeException("Could not create chain: " + authorizationURI + " for filters: " + filterString  + " in context: " + getFilterConfig().getServletContext().getContextPath(), ex);
+                throw new RuntimeException("Could not create chain: " + authorizationURI + " for filters: " + filterString + " in context: " + getFilterConfig().getServletContext().getContextPath(), ex);
             }
             if (logger.isDebugEnabled()) {
                 logger.debug("Created filter chain: " + authorizationURI + " with " + filterString);
@@ -124,8 +146,39 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
         }
     }
 
+    private Map<String, Class<?>> getFilterClasses() {
+        if(filterClasses == null) {
+            filterClasses = new HashMap<String, Class<?>>();
+            for (String filter : filters) {
+                String name = filter.substring(0, filter.indexOf(","));
+                String value = filter.substring(filter.indexOf(",") + 1);
+                try {
+                    Class<?> clazz = Class.forName(value);
+                    filterClasses.put(name, clazz);
+                } catch (Exception ex) {
+                    throw new RuntimeException("Could not create class", ex);
+                }
+            }
+        }
+        return filterClasses;
+    }
+
     public FilterConfig getFilterConfig() {
         return filterConfig;
+    }
+
+    private Map<String, Filter> getFilters() {
+        Map<String, Filter> map = new HashMap<String, Filter>();
+        for (Entry<String, Class<?>> entry : getFilterClasses().entrySet()) {
+            try {
+                String name = entry.getKey();
+                Class<?> clazz = entry.getValue();
+                map.put(name, (Filter) clazz.newInstance());
+            } catch (Exception ex) {
+                throw new RuntimeException("RuntimeException", ex);
+            }
+        }
+        return map;
     }
 
     public void setFilterConfig(FilterConfig filterConfig) {

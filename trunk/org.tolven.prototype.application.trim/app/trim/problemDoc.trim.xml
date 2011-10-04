@@ -73,17 +73,6 @@
 				<id/>
 			</role>
 		</participation>
-
-		<relationship name="type" direction="OUT" typeCode="PERT" >
-			<act classCode="OBS" moodCode="EVN">
-				<title>
-					<ST>Problem</ST>
-				</title>
-				<text>
-					<ST>problems</ST>					
-				</text>
-			</act>
-		</relationship>
 		<relationship name="encounter" direction="OUT" typeCode="PERT" >
 			<act classCode="OBS" moodCode="EVN">
 				<title>
@@ -93,23 +82,6 @@
 		 			<value>
 		 				<label>Associate with Encounter</label>
 		 				<valueSet>encounter</valueSet>
-		 			</value>
-		 		</observation>
-			</act>
-		</relationship>
-		<relationship name="submitStatus" direction="OUT" typeCode="PERT" >
-			<act classCode="OBS" moodCode="EVN">
-				<title>
-					<ST>Status</ST>
-				</title>
-				<observation>
-	                <value>
-	                    <label>Count</label>
-	                    <INT><value></value></INT>
-	                </value>
-	                <value>
-	                    <label>isSubmitted</label>
-	                    <ST></ST>
 		 			</value>
 		 		</observation>
 			</act>

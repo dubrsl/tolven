@@ -16,8 +16,8 @@ package org.tolven.gatekeeper;
 import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.naming.AuthenticationException;
 
+import org.tolven.exeption.GatekeeperSecurityException;
 import org.tolven.naming.TolvenPerson;
 import org.tolven.session.TolvenSessionWrapperFactory;
 
@@ -33,13 +33,12 @@ public class ResetLoginPasswordAction {
     private String cn;
 
     @EJB
-    private LDAPLocal ldapBean;
+    private LdapLocal ldapBean;
 
     @EJB
     private LoginPasswordLocal loginPasswordBean;
 
     private String newUserPassword;
-    private String newUserPassword2;
     private String searchUid;
     private String sn;
     private String uid;
@@ -51,12 +50,15 @@ public class ResetLoginPasswordAction {
         TolvenPerson tp = null;
         try {
             tp = getLdapBean().findTolvenPerson(getSearchUid(), getRealm());
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage("findUserForm", new FacesMessage("Access denied"));
-            return "error";
         } catch (Exception ex) {
-            throw new RuntimeException("Could not find user " + getUid() + " in realm: " + getRealm(), ex);
+            GatekeeperSecurityException gex = GatekeeperSecurityException.getRootGatekeeperException(ex);
+            if (gex == null) {
+                throw new RuntimeException("Could not find user " + getUid() + " in realm: " + getRealm(), ex);
+            } else {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("findUserForm", new FacesMessage(gex.getMessage()));
+                return "error";
+            }
         }
         if (tp == null) {
             FacesContext.getCurrentInstance().addMessage("findUserForm", new FacesMessage("No result found for user: " + getUid() + " in realm: " + getRealm()));
@@ -84,7 +86,7 @@ public class ResetLoginPasswordAction {
         return cn;
     }
 
-    public LDAPLocal getLdapBean() {
+    public LdapLocal getLdapBean() {
         return ldapBean;
     }
 
@@ -94,10 +96,6 @@ public class ResetLoginPasswordAction {
 
     public String getNewUserPassword() {
         return newUserPassword;
-    }
-
-    public String getNewUserPassword2() {
-        return newUserPassword2;
     }
 
     public String getRealm() {
@@ -121,25 +119,20 @@ public class ResetLoginPasswordAction {
     }
 
     public String resetLoginPassword() {
-        boolean error = false;
-        if (!getNewUserPassword().equals(getNewUserPassword2())) {
-            FacesContext.getCurrentInstance().addMessage("resetpasswd:newUserPassword", new FacesMessage("Both passwords must match"));
-            FacesContext.getCurrentInstance().addMessage("resetpasswd:newUserPassword2", new FacesMessage("Both passwords must match"));
-            error = true;
-        }
-        if (error) {
-            return "error";
-        }
         try {
-            getLoginPasswordBean().resetPassword(getUid(), getRealm(), getNewUserPassword().toCharArray(), getAdmin(), getAdminPassword().toCharArray());
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage("resetpasswdForm", new FacesMessage("Access denied"));
-            return "error";
+            //TODO The resetPassword will be emailed to a user, once email functionality is ported to gatekeeper
+            newUserPassword = new String(getLoginPasswordBean().resetPassword(getUid(), getRealm(), getAdmin(), getAdminPassword().toCharArray()));
         } catch (Exception ex) {
-            throw new RuntimeException("Could not reset login password for user " + getUid() + " in realm: " + getRealm(), ex);
+            GatekeeperSecurityException gex = GatekeeperSecurityException.getRootGatekeeperException(ex);
+            if (gex == null) {
+                throw new RuntimeException("Could not reset login password for user " + getUid() + " in realm: " + getRealm(), ex);
+            } else {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("resetpasswdForm", new FacesMessage(gex.getFormattedMessage()));
+                return "error";
+            }
         }
-        FacesContext.getCurrentInstance().addMessage("resetpasswdForm", new FacesMessage("Password reset for user " + getUid() + " in realm: " + getRealm()));
+        FacesContext.getCurrentInstance().addMessage("resetpasswdForm", new FacesMessage("Password reset for user " + getUid() + " in realm: " + getRealm() + ": " + getNewUserPassword()));
         setUid(null);
         setCn(null);
         setSn(null);
@@ -160,10 +153,6 @@ public class ResetLoginPasswordAction {
 
     public void setNewUserPassword(String newUserPassword) {
         this.newUserPassword = newUserPassword;
-    }
-
-    public void setNewUserPassword2(String newUserPassword2) {
-        this.newUserPassword2 = newUserPassword2;
     }
 
     public void setSearchUid(String searchUid) {

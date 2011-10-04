@@ -1,0 +1,81 @@
+.error
+{
+color: red;
+}
+.widget{
+	margin-left: 10px;
+	border-left: 1px solid #999999;
+	border-top: 1px solid #999999;
+	border-bottom: 1px solid #999999;
+}
+.widget th {
+	padding:0em;
+	overflow:hidden; 
+	border-right:1px solid #999999;
+}
+
+.widget td {
+	padding-left:0.25em;
+	padding-right:0.25em;
+	overflow:hidden; 
+	border-right:1px solid #999999;
+}
+
+.widget tr.even {
+	background:#EEFFFF; 
+}
+
+.widget tr.odd {
+	background:#FFFFFF; 
+}
+
+.widget tr.on {
+	background-color: #F2F2F2;
+}
+
+.widget tr.widgetAction {
+	border-top: 1px solid #999999;
+}
+.widget tr.editWidget td {
+	padding: 2px 0 0;
+	background-color: #F2F2F2;
+}
+.widget tr.editWidget tr td {
+	border-right:none;
+	padding-left:0.25em;
+	padding-right:0.25em;
+	padding-bottom:5px;
+	overflow:hidden; 
+}
+.widget a.actionLink{
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 11px;
+}
+.widget a.actionLink:hover{
+	text-decoration: underline;
+}
+table.stripe tr { 
+  vertical-align: middle;
+}
+table.stripe tr.even {
+  background-color:#eee;
+}
+table.stripe tr:hover {
+  background:#90B4D7; 
+  vertical-align: middle;
+  color:#FFFFFF;
+}
+#ajaxOverlay {
+	background-color:#000;
+	left:0;
+	position:absolute;
+	top:0;
+	z-index:90;
+	opacity:0;
+	filter: alpha(opacity = 0);
+}
+#ajaxLoader{
+	z-index:100;
+	position:absolute;
+}

@@ -208,7 +208,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	     * @author vineetha
 	     * Added on: 1/18/2011 
 	     */
-		
+
 	    else if (uri.endsWith("wizNullify.ajaxi")) {
 			String element = req.getParameter( "element");
 			String action = req.getParameter( "action");
@@ -490,11 +490,9 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
                             response.sendError(599, "To sign a document, the signer's password is required");
                             return;
                         }
-
                         String principal = (String) sessionWrapper.getPrincipal();
                         String realm = sessionWrapper.getRealm();
-                        boolean passwordVerfied = rsGatekeeperClientBean.verifyUserPassword(principal, realm, password.toCharArray());
-
+                        boolean passwordVerfied = rsGatekeeperClientBean.verifyUserPassword(principal, password.toCharArray(), realm);
                         if (!passwordVerfied) {
                             response.sendError(599, "Incorrect password");
                             return;

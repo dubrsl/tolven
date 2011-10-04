@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+<head>
+    <title>Registered Nurse</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+    	<input type="hidden" id="accountId" value="#{top.accountId}"/>
+		
+		<wiz:step title="Demographics" >
+			<wiz:body>
+				<wiz:group title="#{trim.trim.act.participation['subject'].role.player.name.label.value}">
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[0]'].label.value}*
+							</td>
+							<td width="40%">
+								<h:inputText id="firstName" onkeyup="validateName('firstName', '#{menu.elementLabel}', 'noSpaceFirst');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[0]'].ST.value}" size="20" required="true" maxlength="35">
+									<f:validator validatorId="noSpaceInBetweenValidator" />
+								</h:inputText>
+								 <span id="noSpaceFirst" style="display: none; color: red;">
+									<h:outputText value="No space allowed in First Name."/>
+						    	 </span>
+							</td>
+						</tr>
+					</table>
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[1]'].label.value}
+							</td>
+							<td width="40%">
+								<h:inputText id="middleName" onkeyup="validateName('middleName', '#{menu.elementLabel}', 'noSpaceMiddle');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['GIV[1]'].ST.value}" size="20" maxlength="35">
+									<f:validator validatorId="noSpaceInBetweenValidator" />
+								</h:inputText>
+								<span id="noSpaceMiddle" style="display: none; color: red;">
+									<h:outputText value="No space allowed in Middle Name."/>
+						    	 </span>
+							</td>
+						</tr>
+					</table>
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['FAM'].label.value}*
+							</td>
+							<td width="40%">
+								<h:inputText id="lastName"  onkeyup="validateName('lastName', '#{menu.elementLabel}', 'noSpaceLast');" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['FAM'].ST.value}" size="20" required="true" maxlength="35">
+									<f:validator validatorId="noSpaceInBetweenValidator" />
+								</h:inputText>
+								<span id="noSpaceLast" style="display: none; color: red;">
+									<h:outputText value="No space allowed in Last Name."/>
+						    	 </span>
+							</td>
+						</tr>
+					</table>
+					<table width ="85%" cellpadding="5">
+						<tr>
+							<td width="10%">
+								#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['SFX'].label.value}
+							</td>
+							<td width="40%">
+								<h:inputText id="suffix" value="#{trim.trim.act.participation['subject'].role.player.name.EN['L'].part['SFX'].ST.value}" size="20" maxlength="10"/>
+							</td>
+						</tr>
+					</table>
+				</wiz:group>
+				<wiz:group title="#{trim.trim.act.participation['subject'].role.player.livingSubject.administrativeGenderCode.label.value}">
+					<trim:valueSetMenu id="gender" slot="#{trim.trim.act.participation['subject'].role.player.livingSubject.administrativeGenderCode}" />
+				</wiz:group>
+				<wiz:group title="#{trim.trim.act.participation['subject'].role.player.person.addr.label.value}">
+					<table width ="100%" cellpadding="5">
+					    <tr>
+					    	<td width="60%">
+					    		<table width="100%">
+					    				<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['AL[0]'].label.value}*
+											</td>
+											<td width="72%">
+												<h:inputText id="addressLine1" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['AL[0]'].ST.value}"
+												 size="20" onkeyup="validateAddress('addressLine1', '#{menu.elementLabel}', 'errorAdd', 'errorAddSpace');" required="true" maxlength="35">
+												 	<f:validator validatorId="addressLine1Validator" />
+												 </h:inputText>
+												 <span id="errorAdd" style="display: none; color: red;">
+													<h:outputText value="PO box number not allowed here."/>
+											    </span>
+											    <span id="errorAddSpace" style="display: none; color: red;">
+													<h:outputText value="Address Line 1 must contain space."/>
+										    	</span>
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['CTY'].label.value}*
+											</td>
+											<td width="72%">
+												<h:inputText id="city" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['CTY'].ST.value}" size="20" required="true" maxlength="35"/>
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['STA'].label.value}*
+											</td>
+											<td width="72%" >
+											    <h:selectOneMenu id="state" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['STA'].ST.value}"  required="true">
+											    <f:selectItem itemLabel="Select" itemValue="#{null}" />
+											    <f:selectItems value="#{demographicsAct.statesUsa}" />
+											    </h:selectOneMenu>
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['ZIP'].label.value}*
+											</td>
+											<td width="72%">
+												<h:inputText id="zip" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['ZIP'].ST.value}" required="true"
+												 size="20" maxlength="9" onkeyup="checkFormat('zip', '#{menu.elementLabel}', 'errorZip');" onkeypress="return onlyNumbers(event);">
+												 	<f:validator validatorId="zipCodeValidator" />
+												 </h:inputText>
+												 <span id="errorZip" style="display: none; color: red;">
+													<h:outputText value="Enter zip + 4 code."/>
+											    </span>	
+											</td>
+										</tr>
+										<tr>
+											<td width="28%">
+												#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['CNT'].label.value}
+											</td>
+											<td width="72%">
+												<h:inputText id="country" value="#{trim.trim.act.participation['subject'].role.player.person.addr.AD['WP'].part['CNT'].ST.value}" size="20" />
+											</td>
+										</tr>
+										
+									</table>
+						    	</td>
+						    	
+						    </tr>
+						</table>
+				</wiz:group>				
+			</wiz:body>
+			<wiz:help>
+				<p></p>
+			</wiz:help>
+		</wiz:step>
+		
+  
+		<wiz:help title="#{trim.trim.description}">
+			<p>Help provides additional information about each page</p>
+			<p>We need to know the name, age, and gender of the person being added.</p>
+		</wiz:help>		
+		
+	</ui:composition>
+</body>
+</html>
+

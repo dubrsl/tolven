@@ -436,6 +436,7 @@ pre {
 
 .paneBody {
 	padding: 0.5em;
+	overflow:auto;
 }
 
 .notices td.effective {

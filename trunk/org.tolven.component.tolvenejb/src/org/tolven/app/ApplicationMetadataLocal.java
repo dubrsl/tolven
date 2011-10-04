@@ -82,4 +82,5 @@ public interface ApplicationMetadataLocal {
     public String fullPath( MenuStructure ms );
     public void processTrimMenus( java.util.List<Placeholder> trimMenus );
     public java.util.List<AccountMenuStructure> getMatchingMenuStructures( String path);
+	public boolean createStateNames(String stateCode, String stateName);
 }

@@ -14,6 +14,7 @@
 		<!-- Each section adds itself to the zip file-->
 		<antcall target="buildSection">
 			<param name="section" value="web" />
+			<param name="lib" value="lib/shiro-web-1.1.0.jar" />
 		</antcall>
 		<!-- Add DevLib.jar to plugin zip -->
 		<zip destfile="${zipFileName}" update="true">

@@ -243,7 +243,7 @@ public class RESTfulClient {
     protected Cookie login() {
         WebResource webResource = getAuthWebResource().path(getGatekeeperRsLoginPath());
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("uid", getUserId());
+        formData.add("username", getUserId());
         formData.add("password", new String(getPassword()));
         formData.add("realm", new String(getRealm()));
         ClientResponse response = webResource.post(ClientResponse.class, formData);

@@ -1,0 +1,13 @@
+<application name="global" creatable="false" title="Global Menus" 
+	xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure ">
+	<trimMenu name="global:assessmentDocMenu">
+		<field name="trialForm" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="name" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+</application>
+	

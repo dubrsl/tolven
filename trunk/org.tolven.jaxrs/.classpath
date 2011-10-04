@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="api/source"/>
 	<classpathentry kind="src" path="web/source"/>
+	<classpathentry kind="src" path="api/source"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/devLib"/>
 	<classpathentry kind="lib" path="lib/openssoclientsdk.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.tolven.component.tolvenejb"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.tolven.dataextract"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

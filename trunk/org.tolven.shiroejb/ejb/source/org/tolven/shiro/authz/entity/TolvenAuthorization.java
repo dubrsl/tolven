@@ -12,7 +12,6 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id: TolvenAuthorization.java 2592 2011-08-22 08:44:53Z joe.isaac $
  */  
 package org.tolven.shiro.authz.entity;
 

@@ -14,7 +14,6 @@
 package org.tolven.gatekeeper.bean;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -33,12 +32,14 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.ejb.EJB;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.naming.AuthenticationException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.tolven.gatekeeper.LDAPLocal;
+import org.tolven.exeption.GatekeeperAuthenticationException;
+import org.tolven.exeption.GatekeeperAuthorizationException;
+import org.tolven.exeption.GatekeeperSecurityException;
+import org.tolven.gatekeeper.LdapLocal;
 import org.tolven.gatekeeper.LoginPasswordLocal;
 import org.tolven.gatekeeper.SecurityQuestionLocal;
 import org.tolven.gatekeeper.entity.DefaultPasswordBackup;
@@ -67,7 +68,7 @@ public class LoginPasswordBean implements LoginPasswordLocal {
     private EntityManager em;
 
     @EJB
-    private LDAPLocal ldapBean;
+    private LdapLocal ldapBean;
     
     @EJB
     private SecurityQuestionLocal securityQuestionBean;
@@ -80,17 +81,17 @@ public class LoginPasswordBean implements LoginPasswordLocal {
      * Backup a login password.
      * 
      * @param uid
-     * @param realm
      * @param password
+     * @param realm
      * @param securityQuestion
      * @param securityQuestionAnswer
      * @return
      */
     @Override
-    public byte[] backupPassword(String uid, String realm, char[] password, String securityQuestion, char[] securityQuestionAnswer) throws AuthenticationException {
-        boolean passwordVerified = getLdapBean().verifyPassword(uid, realm, password);
+    public byte[] backupPassword(String uid, char[] password, String realm, String securityQuestion, char[] securityQuestionAnswer) {
+        boolean passwordVerified = getLdapBean().verifyPassword(uid, password, realm);
         if (!passwordVerified) {
-            throw new AuthenticationException("Access denied");
+            throw new GatekeeperAuthenticationException("Backup password for: " + uid, uid, realm);
         }
         if (securityQuestion == null && securityQuestionAnswer != null) {
             throw new RuntimeException("Failed to backup password for: " + uid + " in realm: " + realm + ". A security question is provided without an answer");
@@ -122,7 +123,7 @@ public class LoginPasswordBean implements LoginPasswordLocal {
                 } finally {
                     outputStreamWriter.close();
                 }
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 throw new RuntimeException("Could not not convert password from char[] to bytes", ex);
             }
             byte[] encryptedPassword = cipher.doFinal(baos.toByteArray());
@@ -137,28 +138,26 @@ public class LoginPasswordBean implements LoginPasswordLocal {
      * Change a login password.
      * 
      * @param uid
-     * @param realm
      * @param oldPassword
+     * @param realm
      * @param newPassword
      * @param securityQuestion
      * @param securityAnswer
-     * @throws AuthenticationException
      */
     @Override
-    public void changePassword(String uid, String realm, char[] oldPassword, char[] newPassword, String securityQuestion, char[] securityAnswer) throws AuthenticationException {
+    public void changePassword(String uid, char[] oldPassword, String realm, char[] newPassword, String securityQuestion, char[] securityAnswer) {
         if (securityQuestion == null && securityAnswer != null || securityQuestion != null && securityAnswer == null) {
             throw new RuntimeException("A securtiy question needs to be paired with a security answer");
         }
         try {
-            getLdapBean().changeUserPassword(uid, realm, oldPassword, newPassword);
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Access Denied");
+            getLdapBean().changeUserPassword(uid, oldPassword, realm, newPassword);
+        } catch (GatekeeperSecurityException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new RuntimeException("Failed to change login password for: " + uid + " in realm: " + realm, ex);
         }
         try {
-            backupPassword(uid, realm, newPassword, securityQuestion, securityAnswer);
+            backupPassword(uid, newPassword, realm, securityQuestion, securityAnswer);
         } catch (Exception ex) {
             if (securityQuestion == null) {
                 throw new RuntimeException("Changed password, but failed to remove backup password for: " + uid + " in realm: " + realm, ex);
@@ -219,7 +218,7 @@ public class LoginPasswordBean implements LoginPasswordLocal {
         return getSecurityQuestionBean().findSecurityQuestions(SecurityQuestionPurpose.LOGIN_PASSWORD_BACKUP.value());
     }
 
-    public LDAPLocal getLdapBean() {
+    public LdapLocal getLdapBean() {
         return ldapBean;
     }
 
@@ -239,11 +238,11 @@ public class LoginPasswordBean implements LoginPasswordLocal {
         return securityQuestionBean;
     }
 
-    private char[] recoverLoginPassword(String uid, String realm, String securityQuestion, char[] securityQuestionAnswer, String passwordPurpose) throws AuthenticationException {
+    private char[] recoverLoginPassword(String uid, String realm, String securityQuestion, char[] securityQuestionAnswer, String passwordPurpose) {
         try {
             PasswordBackup passwordBackup = findPasswordBackup(uid, realm);
             if (passwordBackup == null) {
-                throw new RuntimeException("No password recovery available for '" + passwordPurpose + "' using security question: '" + securityQuestion + "'");
+                throw new GatekeeperAuthorizationException("Recover login password for: " + passwordPurpose + " using security question: '" + securityQuestion + "'", uid, realm);
             }
             //String pbeKeyAlgorithm = propertiesBean.getProperty(PBE_KEY_ALGORITHM_PROP);
             String pbeKeyAlgorithm = PBE_KEY_ALGORITHM;
@@ -258,9 +257,10 @@ public class LoginPasswordBean implements LoginPasswordLocal {
             ByteBuffer byteBuffer = ByteBuffer.wrap(password);
             CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
             return decoder.decode(byteBuffer).array();
+        } catch (GatekeeperSecurityException ex) {
+            throw ex;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Failed to recover login password");
+            throw new RuntimeException("Failed to recover login password");
         }
     }
 
@@ -268,21 +268,16 @@ public class LoginPasswordBean implements LoginPasswordLocal {
      * Recover a password.
      * 
      * @param uid
-     * @param realm
      * @param newPassword
+     * @param realm
      * @param securityQuestion
      * @param securityQuestionAnswer
-     * @throws AuthenticationException
      */
     @Override
-    public void recoverPassword(String uid, String realm, char[] newPassword, String securityQuestion, char[] securityQuestionAnswer) throws AuthenticationException {
+    public void recoverPassword(String uid, char[] newPassword, String realm, String securityQuestion, char[] securityQuestionAnswer) {
         char[] recoveredPassword = recoverLoginPassword(uid, realm, securityQuestion, securityQuestionAnswer, SecurityQuestionPurpose.LOGIN_PASSWORD_BACKUP.value());
-        if (recoveredPassword == null) {
-            // It is intentional not to let users know exactly which is incorrect
-            throw new AuthenticationException("Access denied");
-        }
-        getLdapBean().changeUserPassword(uid, realm, recoveredPassword, newPassword);
-        backupPassword(uid, realm, newPassword, securityQuestion, securityQuestionAnswer);
+        getLdapBean().changeUserPassword(uid, recoveredPassword, realm, newPassword);
+        backupPassword(uid, newPassword, realm, securityQuestion, securityQuestionAnswer);
     }
 
     /**
@@ -290,14 +285,12 @@ public class LoginPasswordBean implements LoginPasswordLocal {
      * 
      * @param uid
      * @param realm
-     * @param newPassword
      * @param admin
      * @param adminPassword
-     * @throws AuthenticationException
      */
     @Override
-    public void resetPassword(String uid, String realm, char[] newPassword, String admin, char[] adminPassword) throws AuthenticationException {
-        getLdapBean().resetUserPassword(uid, realm, newPassword, admin, adminPassword);
+    public char[] resetPassword(String uid, String realm, String admin, char[] adminPassword) {
+        return getLdapBean().resetUserPassword(uid, realm, admin, adminPassword);
     }
 
     private void storeEncryptedPassword(byte[] encryptedPassword, byte[] salt, int iterationCount, String uid, String realm, String securityQuestion) {

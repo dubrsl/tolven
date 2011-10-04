@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -50,6 +51,10 @@ import org.java.plugin.registry.ExtensionPoint;
 import org.java.plugin.registry.ExtensionPoint.ParameterDefinition;
 import org.java.plugin.registry.PluginDescriptor;
 import org.tolven.plugin.TolvenCommandPlugin;
+import org.tolven.plugin.repository.ConfigPluginsWrapper;
+import org.tolven.plugin.repository.bean.PluginDetail;
+import org.tolven.plugin.repository.bean.PluginPropertyDetail;
+import org.tolven.plugin.repository.bean.Plugins;
 import org.tolven.security.hash.TolvenMessageDigest;
 import org.tolven.tools.ant.TolvenJar;
 import org.tolven.tools.ant.TolvenReplaceRegExp;
@@ -74,6 +79,7 @@ public class WARAssembler extends TolvenCommandPlugin {
     public static final String EXNPT_ABSTRACT_WAR = "abstractWAR";
     public static final String EXNPT_CLASSES = "classes";
     public static final String EXNPT_FILE_INCLUDE = "fileInclude";
+    public static final String EXTENSIONPOINT_SCRIPT_SORT_ORDER = "scriptsOrder";
     public static final String EXNPT_ID = "extension-point";
     public static final String EXNPT_METAINF = "META-INF";
     public static final String EXNPT_REMOTE_FILE = "remoteFile";
@@ -569,7 +575,12 @@ public class WARAssembler extends TolvenCommandPlugin {
                 if (!targetFile.exists()) {
                     throw new RuntimeException(targetFilename + " is not available for the war file");
                 }
-                for (Extension exn : fileIncludeExnPt.getConnectedExtensions()) {
+                //sort the java script file includes
+                PluginPropertyDetail propertyDetail = getPluginProperty(pd.getId(),EXTENSIONPOINT_SCRIPT_SORT_ORDER);
+                Collection<Extension> extensions = fileIncludeExnPt.getConnectedExtensions();
+                if(propertyDetail != null && propertyDetail.getValue() != null && propertyDetail.getValue().trim().length() > 0)
+                	extensions = sortScriptIncludes(extensions,propertyDetail);
+                for (Extension exn : extensions) {
                     String includeFilename = exn.getParameter("includeFile").valueAsString();
                     if (includeFilename == null) {
                         throw new RuntimeException(exn.getUniqueId() + " must supply a value for includeFile");
@@ -595,7 +606,7 @@ public class WARAssembler extends TolvenCommandPlugin {
             StringBuffer buff = new StringBuffer();
             Map<String, Object> info = fileIncludesMap.get(targetFile);
             List<File> includeFiles = (List<File>) info.get("includeFiles");
-            Collections.sort(includeFiles);
+            //Collections.sort(includeFiles);
             for (File includeFile : includeFiles) {
                 buff.append(FileUtils.readFileToString(includeFile) + "\n");
             }
@@ -986,5 +997,57 @@ public class WARAssembler extends TolvenCommandPlugin {
         }
         return propertySequenceMapping;
     }
-
+    /** Sort the javascript file includes based on the order defined in tolven-config/plugins.xml
+     * an example sorting order configuration would be
+     * <plugin id="org.tolven.component.tolvenweb">
+		  <root />
+		 	<property name="scriptsOrder" value="org.tolven.component.tolvenweb@prototype,org.tolven.component.tolvenweb@datastructures"/>
+		 </plugin> 
+	 
+     * @param extensions
+     * @param propertyDetail
+     * @return
+     */
+    public List<Extension> sortScriptIncludes(Collection<Extension> extensions,PluginPropertyDetail propertyDetail){
+    	List<Extension> sortedExtensions = new ArrayList<Extension>(extensions.size());
+    	Map<String,Extension> namedExtensions = getNamedExtensions(extensions);
+    	String[] scriptsOrder = propertyDetail.getValue().split(",");
+    	if(scriptsOrder != null ){
+    		for(String detail:scriptsOrder){
+				if(namedExtensions.containsKey(detail)){
+					sortedExtensions.add(namedExtensions.get(detail));
+					namedExtensions.remove(detail);
+				}    			
+    		}
+    	}
+    	//add unordered extensions at the bottom
+    	sortedExtensions.addAll(namedExtensions.values());
+    	return sortedExtensions;
+    }
+    private Map<String,Extension> getNamedExtensions(Collection<Extension> extensions){
+    	Map<String,Extension> namedExtensions = new HashMap<String, Extension>(extensions.size());
+    	for(Extension extension:extensions){
+    		namedExtensions.put(extension.getUniqueId(), extension);
+    	}
+    	return namedExtensions;
+    }
+    /** Method to find a property in a plugin in tolven-config/plugins.xml. 
+     * This method can find the property only if it exists at one level deep. 
+     * @param pluginName
+     * @param propertyName
+     * @return
+     */
+    private PluginPropertyDetail getPluginProperty(String pluginName,String propertyName) {
+    	ConfigPluginsWrapper pluginsWrapper = getPluginsWrapper();
+    	Plugins plugins = pluginsWrapper.getPlugins();
+    	for(PluginDetail pluginDetail: plugins.getPlugin()){
+    		if(pluginDetail.getId().equalsIgnoreCase(pluginName)){
+    			for(PluginPropertyDetail propertyDetail: pluginDetail.getProperty()){
+    				if(propertyDetail.getName().equalsIgnoreCase(propertyName))
+    					return propertyDetail;
+    			}
+    		}
+    	}
+    	return null;
+    }    
 }

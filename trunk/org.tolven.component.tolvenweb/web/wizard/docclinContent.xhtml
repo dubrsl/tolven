@@ -23,25 +23,25 @@
 				</c:if>
 			</div>
 			<wiz:group title="#{rel.act.observation.value.CE.displayName}">
-        <table style="width:100%;">
-          <tr>
-            <td style="width:60%;">
-							<wiz:group title="#{type}">
-								<h:outputText value="#{rel.act.observation.value.CE.displayName}"/>
-							</wiz:group>
-            </td>
-            <td style="width:30%;">
-              <c:if test="#{not empty trim.list[':patient:share:accountShares~Name']}">
-	              <wiz:group title="#{msg.SendTo}">
-	              	<h:selectManyCheckbox value="#{rel.act.sendTos}" >
-	              		<f:selectItems value="#{trim.partyList[':patient:share:accountShares~Name']}"/>
-	                </h:selectManyCheckbox>
-	              </wiz:group>
-              </c:if>		              
-            </td>
-          </tr>
-        </table>
-		    <ui:insert name="content"/>
+	        <table style="width:100%;">
+	          <tr>
+	            <td style="width:60%;">
+					<wiz:group title="#{type}">
+						<h:outputText value="#{rel.act.observation.value.CE.displayName}"/>
+					</wiz:group>
+	     	    </td>
+	            <td style="width:30%;">
+	              <c:if test="#{not empty trim.list[':patient:share:accountShares~Name']}">
+		              <wiz:group title="#{msg.SendTo}">
+		              	<h:selectManyCheckbox value="#{rel.act.sendTos}" >
+		              		<f:selectItems value="#{trim.partyList[':patient:share:accountShares~Name']}"/>
+		                </h:selectManyCheckbox>
+		              </wiz:group>
+	              </c:if>		              
+	            </td>
+	          </tr>
+	        </table>
+		 	<ui:insert name="content"/>
 			</wiz:group>
 		</wiz:body>		
 	</wiz:step>

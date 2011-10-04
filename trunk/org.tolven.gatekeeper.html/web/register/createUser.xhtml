@@ -14,8 +14,26 @@
 			<h:graphicImage value="/images/tolven-login-backimage.png" rendered="true" />
 			<div style="clear:both"/>
 			<hr/>
+
+			<h:form id="registerNavigateHomeForm">
+				<h:panelGrid columns="3">
+			    	<h:commandLink id="navigateHome" action="home">
+						<h:outputText value="Home Page" />
+			    	</h:commandLink>
+					<h:outputText value="|" />
+			    	<h:commandLink id="manageLoginPassword" action="manageLoginPassword">
+						<h:outputText value="Login Password Manager"/>
+			    	</h:commandLink>
+		    	</h:panelGrid>
+			</h:form>
+			<div style="clear:both"/>
+			<hr/>
+		
 			<h2>Create User</h2>
-	        <h:form id="register">
+			<div style="clear:both"/>
+			<hr/>
+		
+	        <h:form id="createUserForm">
 		        <h:panelGrid columns="2">
 	               	<h:outputText value="Realm"/>
 	 				<h:selectOneMenu id="realm" value="#{createUser.realm}" required="true">
@@ -56,16 +74,6 @@
 		                <h:inputText id="stateOrProvince" value="#{createUser.tp.stateOrProvince}" size="50" required="true"/>
 		                <h:message for="stateOrProvince" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
 		            </h:panelGroup>
-		            <h:outputText value="Password"/>
-		            <h:panelGroup>
-		                <h:inputSecret id="userPassword" value="#{createUser.tp.userPassword}" size="25" required="true"/>
-		                <h:message for="userPassword" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
-		            </h:panelGroup>
-		            <h:outputText value="Repeat Password"/>
-		            <h:panelGroup>
-		                <h:inputSecret id="userPassword2" value="#{createUser.repeatUserPassword}" size="25" required="true"/>
-		                <h:message for="userPassword2" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
-		            </h:panelGroup>
 		        </h:panelGrid>
 				<div style="clear:both"/>
 				<hr/>
@@ -83,7 +91,9 @@
 		        </h:panelGrid>
 		        <h:commandButton action="#{createUser.activate}" value="Activate"/>
 		        <h:commandButton action="cancel" value="Cancel" immediate="true"/>
+				<h:inputHidden id="hiddenGeneratedPassword" value="#{createUser.generatedPassword}" />
 	        </h:form>
+			<h:message for="createUserForm" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg" />
 			<div style="clear:both"/>
 			<hr/>
 	    </ui:composition>

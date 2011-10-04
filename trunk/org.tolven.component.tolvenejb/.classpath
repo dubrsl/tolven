@@ -6,5 +6,7 @@
 	<classpathentry kind="lib" path="lib/jakarta-httpcore-4.0-alpha1.jar"/>
 	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
+	<classpathentry kind="lib" path="ejb/lib/jakarta-httpcore-4.0-alpha1.jar"/>
+	<classpathentry kind="lib" path="conf/sun-ejb-jar.xml"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

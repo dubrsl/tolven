@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -47,6 +48,7 @@ import org.tolven.app.entity.AccountMenuStructure;
 import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuLocator;
 import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.StateNames;
 import org.tolven.core.AccountDAOLocal;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountType;
@@ -1545,6 +1547,43 @@ public class ApplicationMetadata implements ApplicationMetadataLocal {
 		} catch (Exception e) {
 			throw new RuntimeException( "Error uploading properties for " + app.getName(), e);
 		}
+	}
+	
+	/**
+	 * Method to check whether state name exists.
+	 * @param mdRefill
+	 * @return
+	 */
+	private boolean checkForStateName(String stateCode){
+		String qs = null;
+		Query query = null;
+		qs = String.format(Locale.US, "SELECT sn FROM StateNames sn WHERE sn.stateCode = :code");
+		query = em.createQuery( qs );
+		query.setParameter( "code", stateCode);
+		if(query.getResultList() != null && query.getResultList().size() > 0){
+			return true;
+		}
+		return false;	
+	}
+	
+	/**
+	 * Method to load state names into StateNames table in Surescripts schema.
+	 * @param stateCode
+	 * @param name
+	 */
+	public boolean createStateNames(String stateCode, String name) {
+		if (!checkForStateName(stateCode)) {
+			StateNames stateName = new StateNames();
+			stateName.setStateCode(stateCode);
+			stateName.setStateName(name);
+			persistStateName(stateName);
+			return true;
+		}
+		return false;
+	}
+	
+	public void persistStateName( StateNames stateName ) {
+		em.persist(stateName);
 	}
 	
 	public MenuLocal getMenuBean() {

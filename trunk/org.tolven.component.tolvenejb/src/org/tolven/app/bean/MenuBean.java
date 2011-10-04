@@ -2181,4 +2181,25 @@ public class MenuBean implements MenuLocal, MenuRemote {
         return properties;
     }
 
+    /**
+	 * Finds the reference id map based on conditions.
+	 * 
+	 * @author valsaraj
+	 * added on 06/08/2010
+	 * @param conditions
+	 * @return referenceIdMap
+	 */
+	public Map<String, String> findReferenceIds(String conditions) {
+		Query query = em.createQuery("SELECT md FROM MenuData md " +
+						"WHERE " + conditions);
+		Map<String, String> referenceIdMap = new HashMap<String, String>();		
+		List<MenuData> mdList = query.getResultList();
+		
+		for (MenuData menuData : mdList) {
+			referenceIdMap.put(menuData.getString01().toLowerCase(), menuData.getPath());
+		}
+		
+		return referenceIdMap;
+	}
+    
 }

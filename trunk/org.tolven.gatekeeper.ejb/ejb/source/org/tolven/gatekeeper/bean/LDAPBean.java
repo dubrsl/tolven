@@ -21,25 +21,23 @@ import java.util.List;
 
 import javax.ejb.Local;
 import javax.ejb.Stateless;
-import javax.naming.AuthenticationException;
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
-import org.tolven.gatekeeper.CertificateHelper;
-import org.tolven.gatekeeper.LDAPLocal;
+import org.tolven.exeption.GatekeeperSecurityException;
+import org.tolven.gatekeeper.LdapLocal;
+import org.tolven.ldap.LdapException;
+import org.tolven.ldap.LdapManager;
 import org.tolven.naming.LdapRealmContext;
 import org.tolven.naming.TolvenContext;
 import org.tolven.naming.TolvenPerson;
+import org.tolven.security.cert.CertificateHelper;
+import org.tolven.shiro.realm.ldap.TolvenJndiLdapContextFactory;
 
 /**
  * Interface to communicate with LDAP based on a realm lookup of the Directory service
@@ -48,71 +46,30 @@ import org.tolven.naming.TolvenPerson;
  *
  */
 @Stateless()
-@Local(LDAPLocal.class)
-public class LDAPBean implements LDAPLocal {
+@Local(LdapLocal.class)
+public class LdapBean implements LdapLocal {
 
-    private CertificateHelper certificateHelper = null;
-
-    private Logger logger = Logger.getLogger(LDAPBean.class);
+    private Logger logger = Logger.getLogger(LdapBean.class);
 
     /**
-     * Change user password
+     * Change userPassword
      * 
      * @param uid
-     * @param realm
      * @param oldPassword
+     * @param realm
      * @param newPassword
-     * @throws AuthenticationException 
      */
     @Override
-    public void changeUserPassword(String uid, String realm, char[] oldPassword, char[] newPassword) throws AuthenticationException {
-        TolvenPerson tolvenPerson = null;
+    public void changeUserPassword(String uid, char[] oldPassword, String realm, char[] newPassword) {
+        LdapManager ldapManager = null;
         try {
-            tolvenPerson = findTolvenPerson(uid, realm);
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Change password for TolvenPerson: " + uid + " in realm: " + realm + " by: " + uid + " is denied");
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to change password for TolvenPerson: " + uid + " in realm " + realm + " by: " + uid, ex);
-        }
-        if (tolvenPerson == null) {
-            throw new AuthenticationException("Change password for TolvenPerson: " + uid + " in realm: " + realm + " by: " + uid + " is denied");
-        }
-        LdapContext ctx = null;
-        try {
-            tolvenPerson.setUserPassword(new String(newPassword));
-            byte[] bytes = tolvenPerson.getUserPKCS12();
-            if (bytes != null) {
-                byte[] userCertificateBytes;
-                byte[] newKeyStoreBytes;
-                try {
-                    KeyStore keyStore = CertificateHelper.getKeyStore(bytes, oldPassword);
-                    CertificateHelper.changeKeyStorePassword(keyStore, oldPassword, newPassword);
-                    userCertificateBytes = CertificateHelper.getX509CertificateByteArray(keyStore);
-                    newKeyStoreBytes = CertificateHelper.toByteArray(keyStore, newPassword);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    throw new AuthenticationException("Access denied");
-                }
-                tolvenPerson.setUserCertificate(userCertificateBytes);
-                tolvenPerson.setUserPKCS12(newKeyStoreBytes);
-            }
             LdapRealmContext ldapRealmContext = getLdapRealmContext(realm);
-            String tolvenPersonDN = ldapRealmContext.getDN(tolvenPerson.getUid());
-            tolvenPerson.setDn(tolvenPersonDN);
-            ctx = getLadpContext(ldapRealmContext, tolvenPerson.getUid(), oldPassword);
-            Attributes attrs = new BasicAttributes(true);
-            attrs.put(tolvenPerson.getAttribute("userCertificate"));
-            attrs.put(tolvenPerson.getAttribute("userPassword"));
-            attrs.put(tolvenPerson.getAttribute("userPKCS12"));
-            ctx.modifyAttributes(tolvenPerson.getDn(), DirContext.REPLACE_ATTRIBUTE, attrs);
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Change password for TolvenPerson: " + uid + " in realm: " + realm + " by: " + uid + " is denied");
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to change password for TolvenPerson: " + uid + " in realm " + realm + " by: " + uid, ex);
+            ldapManager = ldapRealmContext.getLdapManager(uid, oldPassword);
+            ldapManager.changePassword(newPassword);
         } finally {
-            close(ctx, realm);
+            if (ldapManager != null) {
+                ldapManager.disconnect();
+            }
         }
     }
 
@@ -127,53 +84,73 @@ public class LDAPBean implements LDAPLocal {
     }
 
     /**
-     * Create a TolvenPerson
+     * Create a TolvenPerson, supplying the uid, realm, userPassword and userPKCS12 explicitly, although
+     * tolvenPerson may contain those, as well as other attributes
      * 
      * @param tolvenPerson
-     * @param userPKCS12
+     * @param uid
+     * @param uidPassword
      * @param realm
-     * @param userPassword
+     * @param base64UserPKCS12
      * @param admin
      * @param adminPassword
      * @return
-     * @throws AuthenticationException 
      */
     @Override
-    public TolvenPerson createTolvenPerson(TolvenPerson tolvenPerson, String uid, String realm, char[] uidPassword, String base64UserPKCS12, String admin, char[] adminPassword) throws AuthenticationException {
-        LdapContext ctx = null;
+    public char[] createTolvenPerson(TolvenPerson tolvenPerson, String uid, char[] uidPassword, String realm, String base64UserPKCS12, String admin, char[] adminPassword) {
+        LdapManager ldapManager = null;
         try {
-            if (base64UserPKCS12 == null) {
-                /*
-                 * TODO gatekeeper needs access to a bean like TolvenProperties, rather than use System.getProperty() directly
-                 */
-                String userKeysOptional = System.getProperty("tolven.security.user.keysOptional");
-                if (Boolean.parseBoolean(userKeysOptional)) {
-                    logger.info("tolven.security.user.keysOptional=true, so no user credentials will be generated for " + uid + " in realm: " + realm);
-                } else {
-                    getCertificateHelper().createCredentials(tolvenPerson, uidPassword);
-                    logger.info("Generating user credentials for " + uid + " in realm: " + realm);
-                }
-            } else {
-                getCertificateHelper().updateCredentials(tolvenPerson, base64UserPKCS12, uidPassword);
+            if (base64UserPKCS12 != null) {
+                updateUserCredentials(tolvenPerson, uidPassword, base64UserPKCS12);
             }
             LdapRealmContext ldapRealmContext = getLdapRealmContext(realm);
-            ctx = getLadpContext(ldapRealmContext, admin, adminPassword);
+            ldapManager = ldapRealmContext.getLdapManager(admin, adminPassword);
             String tolvenPersonDN = ldapRealmContext.getDN(tolvenPerson.getUid());
-            tolvenPerson.setDn(tolvenPersonDN);
-            ctx.createSubcontext(tolvenPerson.getDn(), tolvenPerson.dirAttributes(false));
-            logger.info("Added " + tolvenPerson.getDn() + " to LDAP realm: " + realm + " for admin: " + admin);
-            return tolvenPerson;
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Creation of TolvenPerson: " + tolvenPerson.getUid() + " in realm: " + realm + " by admin: " + admin + " is denied");
+            char[] generatedPassword = ldapManager.createUser(tolvenPersonDN, uidPassword, tolvenPerson.dirAttributes(false));
+            logger.info(admin + " added " + tolvenPersonDN + " to LDAP realm: " + realm);
+            return generatedPassword;
+        } catch (GatekeeperSecurityException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new RuntimeException("Failed to create TolvenPerson: " + tolvenPerson.getUid() + " in realm " + realm + " for admin " + admin, ex);
         } finally {
-            close(ctx, realm);
+            if (ldapManager != null) {
+                ldapManager.disconnect();
+            }
         }
     }
+    
+    private void updateUserCredentials(TolvenPerson tolvenPerson, char[] userPassword, String base64UserPKCS12) {
+        if (userPassword == null) {
+            throw new RuntimeException("A base64UserPKCS12 has been supplied without the accompanying user password");
+        }
+        byte[] userPKCS12Bytes = null;
+        try {
+            userPKCS12Bytes = Base64.decodeBase64(base64UserPKCS12.getBytes("UTF-8"));
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not convert base64UserPKCS12 to bytes", ex);
+        }
+        KeyStore userPKCS12KeyStore = CertificateHelper.getKeyStore(userPKCS12Bytes, userPassword);
+        byte[] certBytes = CertificateHelper.getX509CertificateByteArray(userPKCS12KeyStore);
+        tolvenPerson.setAttributeValue("userPKCS12", userPKCS12Bytes);
+        tolvenPerson.setAttributeValue("userCertificate", certBytes);
+    }
 
-    private List<TolvenPerson> findTolvenPerson(LdapContext ctx, String peopleBaseName, String principalLdapName, String realm, int maxResults, int timeLimit) throws AuthenticationException {
+    /**
+     * Create a TolvenPerson, supplying the uid and realm explicitly, although tolvenPerson may contain those, as well as other attributes
+     * The userPassword and credentials will be generated automatically
+     * @param tolvenPerson
+     * @param uid
+     * @param realm
+     * @param admin
+     * @param adminPassword
+     * @return
+     */
+    public char[] createTolvenPerson(TolvenPerson tolvenPerson, String uid, String realm, String admin, char[] adminPassword) {
+        return createTolvenPerson(tolvenPerson, uid, null, realm, null, admin, adminPassword);
+    }
+
+    private List<TolvenPerson> findTolvenPerson(LdapContext ctx, String peopleBaseName, String principalLdapName, String realm, int maxResults, int timeLimit) {
         NamingEnumeration<SearchResult> namingEnum = null;
         SearchControls ctls = new SearchControls();
         ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -186,9 +163,8 @@ public class LDAPBean implements LDAPLocal {
                 SearchResult rslt = namingEnum.next();
                 searchResults.add(new TolvenPerson(rslt));
             }
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Search for TolvenPerson: " + principalLdapName + " in realm: " + realm + " is denied");
+        } catch (GatekeeperSecurityException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new RuntimeException("Could not search for TolvenPerson: " + principalLdapName + " in realm: " + realm + ": ", ex);
         }
@@ -201,14 +177,13 @@ public class LDAPBean implements LDAPLocal {
      * @param uid
      * @param realm
      * @return
-     * @throws AuthenticationException
      */
     @Override
-    public TolvenPerson findTolvenPerson(String uid, String realm) throws AuthenticationException {
+    public TolvenPerson findTolvenPerson(String uid, String realm) {
         LdapContext ctx = null;
         try {
             LdapRealmContext ldapRealmContext = getLdapRealmContext(realm);
-            ctx = getLadpContext(ldapRealmContext, ldapRealmContext.getAnonymousUser(), ldapRealmContext.getAnonymousUserPassword().toCharArray());
+            ctx = getLadpContext(ldapRealmContext.getAnonymousUser(), ldapRealmContext.getAnonymousUserPassword().toCharArray(), realm);
             SearchControls ctls = new SearchControls();
             ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             ctls.setCountLimit(1);
@@ -220,9 +195,8 @@ public class LDAPBean implements LDAPLocal {
             } else {
                 return tolvenPersons.get(0);
             }
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Search for TolvenPerson: " + uid + " in realm: " + realm + " is denied");
+        } catch (GatekeeperSecurityException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new RuntimeException("Could not find user " + uid + " in realm " + realm, ex);
         } finally {
@@ -230,25 +204,17 @@ public class LDAPBean implements LDAPLocal {
         }
     }
 
-    private CertificateHelper getCertificateHelper() {
-        if (certificateHelper == null) {
-            certificateHelper = new CertificateHelper();
-        }
-        return certificateHelper;
-    }
-
-    private LdapContext getLadpContext(LdapRealmContext ldapRealmContext, String principal, char[] password) throws NamingException {
-        LdapContext ctx = getSystemLdapContext(ldapRealmContext);
-        String principalDN = ldapRealmContext.getDN(principal);
-        ctx.addToEnvironment(Context.SECURITY_PRINCIPAL, principalDN);
-        ctx.addToEnvironment(Context.SECURITY_CREDENTIALS, new String(password));
+    private LdapContext getLadpContext(String principal, char[] password, String realm) {
+        TolvenJndiLdapContextFactory ldapContextFactory = new TolvenJndiLdapContextFactory(realm);
         try {
-            //AUTHENTICATE CREDENTIALS BY CREATING AN INITIAL LDAP CONTEXT
-            new InitialLdapContext(ctx.getEnvironment(), null);
-        } catch (AuthenticationException ex) {
-            throw new AuthenticationException("Access denied");
+            LdapRealmContext ldapRealmContext = getLdapRealmContext(realm);
+            String principalDN = ldapRealmContext.getDN(principal);
+            return ldapContextFactory.getLdapContext(principalDN, password);
+        } catch (GatekeeperSecurityException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not get System ldap context", ex);
         }
-        return ctx;
     }
 
     private LdapRealmContext getLdapRealmContext(String realm) {
@@ -261,93 +227,57 @@ public class LDAPBean implements LDAPLocal {
         }
     }
 
-    private LdapContext getSystemLdapContext(LdapRealmContext ldapRealmContext) {
-        String ldapJndiName = ldapRealmContext.getJndiName();
-        if (ldapJndiName == null) {
-            throw new RuntimeException("The ldapJndiName in the LdapRealmContext is null");
-        }
-        try {
-            InitialLdapContext ictx = new InitialLdapContext();
-            LdapContext ctx = (LdapContext) ictx.lookup(ldapJndiName);
-            /* Glassfish does not pass through these properties, even though it is aware of them?
-             * Without com.sun.jndi.ldap.LdapCtxFactory, authentication is NOT carried out
-             */
-            ctx.addToEnvironment(Context.INITIAL_CONTEXT_FACTORY,  "com.sun.jndi.ldap.LdapCtxFactory");
-            ctx.addToEnvironment("java.naming.ldap.attributes.binary", "userPKCS12");
-            if (logger.isDebugEnabled()) {
-                String providerURL = (String) ctx.getEnvironment().get(Context.PROVIDER_URL);
-                logger.debug("LDAP providerURL=" + providerURL);
-            }
-            return ctx;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("Failed to lookup " + ldapJndiName, ex);
-        }
-    }
-
+    /**
+     * Reset userPassword
+     * 
+     * @param uid
+     * @param realm
+     * @param admin
+     * @param adminPassword
+     * @return
+     */
     @Override
-    public void resetUserPassword(String uid, String realm, char[] newPassword, String admin, char[] adminPassword) throws AuthenticationException {
-        TolvenPerson tolvenPerson = null;
+    public char[] resetUserPassword(String uid, String realm, String admin, char[] adminPassword) {
+        LdapManager ldapManager = null;
         try {
-            tolvenPerson = findTolvenPerson(uid, realm);
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Reset password for TolvenPerson: " + uid + " in realm: " + realm + " by: " + uid + " is denied");
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to reset password for TolvenPerson: " + uid + " in realm " + realm + " by: " + uid, ex);
-        }
-        if (tolvenPerson == null) {
-            throw new AuthenticationException("Reset password for TolvenPerson: " + uid + " in realm: " + realm + " by: " + uid + " is denied");
-        }
-        LdapContext ctx = null;
-        try {
-            tolvenPerson.setUserPassword(new String(newPassword));
-            /*
-             * TODO gatekeeper needs access to a bean like TolvenProperties, rather than use System.getProperty() directly
-             */
-            String userKeysOptional = System.getProperty("tolven.security.user.keysOptional");
-            if (Boolean.parseBoolean(userKeysOptional)) {
-                logger.info("tolven.security.user.keysOptional=true, so no user credentials generated for " + tolvenPerson.getDn() + " in realm: " + realm);
-            } else {
-                getCertificateHelper().createCredentials(tolvenPerson, newPassword);
-                logger.info("Generated user credentials for " + tolvenPerson.getDn() + " in realm: " + realm);
-            }
             LdapRealmContext ldapRealmContext = getLdapRealmContext(realm);
-            String tolvenPersonDN = ldapRealmContext.getDN(tolvenPerson.getUid());
-            tolvenPerson.setDn(tolvenPersonDN);
-            ctx = getLadpContext(ldapRealmContext, admin, adminPassword);
-            ctx.modifyAttributes(tolvenPerson.getDn(), DirContext.REPLACE_ATTRIBUTE, tolvenPerson.dirAttributes(true));
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            throw new AuthenticationException("Change password for TolvenPerson: " + uid + " in realm: " + realm + " by: " + uid + " is denied");
-        } catch (Exception ex) {
-            throw new RuntimeException("Failed to change password for TolvenPerson: " + uid + " in realm " + realm + " by: " + uid, ex);
+            ldapManager = ldapRealmContext.getLdapManager(admin, adminPassword);
+            String userDN = ldapRealmContext.getDN(uid);
+            return ldapManager.resetPassword(userDN);
         } finally {
-            close(ctx, realm);
+            if (ldapManager != null) {
+                ldapManager.disconnect();
+            }
         }
     }
 
     /**
-     * 
+     * Verify password.
      * @param uid
-     * @param realm
      * @param password
+     * @param realm
      * @return
      */
-    public boolean verifyPassword(String uid, String realm, char[] password) {
-        LdapContext ctx = null;
+    @Override
+    public boolean verifyPassword(String uid, char[] password, String realm) {
+        LdapManager ldapManager = null;
         try {
             LdapRealmContext ldapRealmContext = getLdapRealmContext(realm);
-            //Creating the InitialLdapContext results in password verification
-            ctx = getLadpContext(ldapRealmContext, uid, password);
+            ldapManager = ldapRealmContext.getLdapManager(uid, password);
+            ldapManager.checkPassword();
             return true;
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            return false;
+        } catch (LdapException ex) {
+            if (ex.getLDAPErrorCode() == LdapException.PASSWORD_VALIDATION) {
+                return false;
+            } else {
+                throw ex;
+            }
         } catch (Exception ex) {
             throw new RuntimeException("Failed to verify password for uid: " + uid + " in realm " + realm + " by: " + uid, ex);
         } finally {
-            close(ctx, realm);
+            if (ldapManager != null) {
+                ldapManager.disconnect();
+            }
         }
     }
 

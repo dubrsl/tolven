@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>patientListDesigner</name>
+	<description>Patient List Designer</description>
+	<page>patientListDesigner.xhtml</page>
+	<drilldown>patientListDesignerDD.xhtml</drilldown>
+	<application name="ephr">
+		<instance>ephr:patients:wip</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patients:wip</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Patient List Designer</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="reviseTerminated" from="terminated" to="terminated">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="terminateActive" from="active" to="terminated">
+			<label language="en">Terminate</label>
+		</transition>
+		<transition name="reactivate" from="terminated" to="active">
+			<label language="en">Reactivate</label>
+		</transition>
+	</transitions>	
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patientListDefinition</path>
+			</placeholder>
+		</bind>
+		<id>
+			<II>
+				<label>Internal ID (do not change)</label>
+				<root>#{computeIDRoot(account)}</root>
+				<extension>#{patientListDefinition.path}</extension>
+				<displayable>false</displayable>
+			</II>
+		</id>
+		<statusCode>#{patientListDefinition.actStatus}</statusCode>
+		<title>
+	      	<ST>Patient List Designer</ST>
+	    </title>
+	    <effectiveTime>
+	      	<label>Date</label>
+	      	<new datatype="TS" function="now" />
+	    </effectiveTime>
+		<relationship typeCode="NAME" direction="IN" name="generalDetail">
+			<act moodCode="EVN" classCode="ENTRY">
+				<title>
+					<ST>General Detail</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Patient List Name</label>
+						<ST>#{from(source.listName,patientListDefinition.listName)}</ST>
+					</value>
+					<value>
+						<label>Private List</label>
+						<valueSet>yesNoValues</valueSet>
+						<CE>
+							<displayName>#{from(source.privateListDisplayName,patientListDefinition.privateListDisplayName)}</displayName>
+							<code>#{from(source.privateListCode,patientListDefinition.privateListCode)}</code>
+							<codeSystem>#{from(source.privateListCodeSystem,patientListDefinition.privateListCodeSystem)}</codeSystem>
+							<codeSystemVersion>#{from(source.privateListCodeSystemVersion,patientListDefinition.privateListCodeSystemVersion)}</codeSystemVersion>
+						</CE>
+					</value>
+					<value>
+						<label>Patient List Name Copy</label>
+						<ST>#{from(source.listName,patientListDefinition.listName)}</ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="NAME" direction="IN" name="patientAttributes">
+			<act moodCode="EVN" classCode="ENTRY">
+				<title>
+					<ST>Patient Attributes</ST>
+				</title>
+				<relationship typeCode="NAME" direction="IN" name="patientAge">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Patient Age</label>
+								<ST>#{from(source.age,patientListDefinition.age)}</ST>
+							</value>
+							<value>
+								<valueSet>patientAgeValues</valueSet>
+								<CE>
+									<displayName>#{from(source.ageDisplayName,patientListDefinition.ageDisplayName)}</displayName>
+									<code>#{from(source.ageCode,patientListDefinition.ageCode)}</code>
+									<codeSystem>#{from(source.ageCodeSystem,patientListDefinition.ageCodeSystem)}</codeSystem>
+									<codeSystemVersion>#{from(source.ageCodeSystemVersion,patientListDefinition.ageCodeSystemVersion)}</codeSystemVersion>
+								</CE>
+							</value>							
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="patientGender">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Patient Gender</label>
+								<valueSet>patientGenderValues</valueSet>
+								<CE>
+									<displayName>#{from(source.genderDisplayName,patientListDefinition.genderDisplayName)}</displayName>
+									<code>#{from(source.genderCode,patientListDefinition.genderCode)}</code>
+									<codeSystem>#{from(source.genderCodeSystem,patientListDefinition.genderCodeSystem)}</codeSystem>
+									<codeSystemVersion>#{from(source.genderCodeSystemVersion,patientListDefinition.genderCodeSystemVersion)}</codeSystemVersion>
+								</CE>
+							</value>
+							<value>
+								<valueSet>includeExcludeValues</valueSet>
+								<CE>
+									<displayName>#{from(source.genderRelationalDisplayName,patientListDefinition.genderRelationalDisplayName)}</displayName>
+									<code>#{from(source.genderRelationalCode,patientListDefinition.genderRelationalCode)}</code>
+									<codeSystem>#{from(source.genderRelationalCodeSystem,patientListDefinition.genderRelationalCodeSystem)}</codeSystem>
+									<codeSystemVersion>#{from(source.genderRelationalCodeSystemVersion,patientListDefinition.genderRelationalCodeSystemVersion)}</codeSystemVersion>
+								</CE>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="zipCode">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Zip Code</label>
+								<ST>#{from(source.zip,patientListDefinition.zip)}</ST>
+							</value>
+							<value>
+								<valueSet>zipCodeValues</valueSet>
+								<CE>
+									<displayName>#{from(source.zipRelationalDisplayName,patientListDefinition.zipRelationalDisplayName)}</displayName>
+									<code>#{from(source.zipRelationalCode,patientListDefinition.zipRelationalCode)}</code>
+									<codeSystem>#{from(source.zipRelationalCodeSystem,patientListDefinition.zipRelationalCodeSystem)}</codeSystem>
+									<codeSystemVersion>#{from(source.zipRelationalCodeSystemVersion,patientListDefinition.zipRelationalCodeSystemVersion)}</codeSystemVersion>
+								</CE>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+			</act>	
+		</relationship>
+		<relationship typeCode="NAME" direction="IN" name="diagnosticCodes">
+			<act moodCode="EVN" classCode="ENTRY">
+				<title>
+					<ST>Diagnostic Codes</ST>
+				</title>
+				<relationship typeCode="NAME" direction="IN" name="diagnosisInclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Diagnosis</label>
+								<ST>#{from(source.diagnosisIncludeCode,patientListDefinition.diagnosisIncludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.diagnosisInclude,patientListDefinition.diagnosisInclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="diagnosisExclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Diagnosis</label>
+								<ST>#{from(source.diagnosisExcludeCode,patientListDefinition.diagnosisExcludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.diagnosisExclude,patientListDefinition.diagnosisExclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="problemInclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Problem</label>
+								<ST>#{from(source.problemIncludeCode,patientListDefinition.problemIncludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.problemInclude,patientListDefinition.problemInclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="problemExclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Problem</label>
+								<ST>#{from(source.problemExcludeCode,patientListDefinition.problemExcludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.problemExclude,patientListDefinition.problemExclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="medicationsInclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Medications</label>
+								<ST>#{from(source.medicationsIncludeCode,patientListDefinition.medicationsIncludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.medicationsInclude,patientListDefinition.medicationsInclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="medicationsExclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Medications</label>
+								<ST>#{from(source.medicationsExcludeCode,patientListDefinition.medicationsExcludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.medicationsExclude,patientListDefinition.medicationsExclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="allergiesInclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Allergies</label>
+								<ST>#{from(source.allergiesIncludeCode,patientListDefinition.allergiesIncludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.allergiesInclude,patientListDefinition.allergiesInclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="allergiesExclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Allergies</label>
+								<ST>#{from(source.allergiesExcludeCode,patientListDefinition.allergiesExcludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.allergiesExclude,patientListDefinition.allergiesExclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="proceduresInclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Procedures</label>
+								<ST>#{from(source.proceduresIncludeCode,patientListDefinition.proceduresIncludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.proceduresInclude,patientListDefinition.proceduresInclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="proceduresExclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Procedures</label>
+								<ST>#{from(source.proceduresExcludeCode,patientListDefinition.proceduresExcludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.proceduresExclude,patientListDefinition.proceduresExclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="labtestsInclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>LabTests</label>
+								<ST>#{from(source.labtestsIncludeCode,patientListDefinition.labtestsIncludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.labtestsInclude,patientListDefinition.labtestsInclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="labtestsExclude">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>LabTests</label>
+								<ST>#{from(source.labtestsExcludeCode,patientListDefinition.labtestsExcludeCode)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.labtestsExclude,patientListDefinition.labtestsExclude)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+			</act>
+		</relationship>		
+		<relationship typeCode="NAME" direction="IN" name="listDisplay">
+			<act moodCode="EVN" classCode="ENTRY">
+				<title>
+					<ST>List Display</ST>
+				</title>
+				<relationship typeCode="NAME" direction="IN" name="patientName">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Patient Name</label>
+								<ST>#{from(source.nameOrder,patientListDefinition.nameOrder)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.nameColumn,patientListDefinition.nameColumn)}</ST>
+							</value>
+							<value>
+								<valueSet>orderValues</valueSet>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="patientAge">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Patient Age</label>
+								<ST>#{from(source.ageOrder,patientListDefinition.ageOrder)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.ageColumn,patientListDefinition.ageColumn)}</ST>
+							</value>
+							<value>
+								<valueSet>orderValues</valueSet>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="patientRace">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Patient Race</label>
+								<ST>#{from(source.raceOrder,patientListDefinition.raceOrder)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.raceColumn,patientListDefinition.raceColumn)}</ST>
+							</value>
+							<value>
+								<valueSet>orderValues</valueSet>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="patientGender">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Patient Gender</label>
+								<ST>#{from(source.genderOrder,patientListDefinition.genderOrder)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.genderColumn,patientListDefinition.genderColumn)}</ST>
+							</value>
+							<value>
+								<valueSet>orderValues</valueSet>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="zipCode">
+					<act moodCode="EVN" classCode="ENTRY">
+						<observation>
+							<value>
+								<label>Zip Code</label>
+								<ST>#{from(source.zipOrder,patientListDefinition.zipOrder)}</ST>
+							</value>
+							<value>
+								<ST>#{from(source.zipColumn,patientListDefinition.zipColumn)}</ST>
+							</value>
+							<value>
+								<valueSet>orderValues</valueSet>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="diagnosis">
+					<act moodCode="EVN" classCode="ENTRY">
+						<title>
+							<ST>Diagnosis</ST>
+						</title>
+						<observation>
+							<value>
+								<ST>#{from(source.diagnosisSummary,patientListDefinition.diagnosisSummary)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="problem">
+					<act moodCode="EVN" classCode="ENTRY">
+						<title>
+							<ST>Problem</ST>
+						</title>
+						<observation>
+							<value>
+								<ST>#{from(source.problemSummary,patientListDefinition.problemSummary)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="medications">
+					<act moodCode="EVN" classCode="ENTRY">
+						<title>
+							<ST>Medications</ST>
+						</title>
+						<observation>
+							<value>
+								<ST>#{from(source.medicationsSummary,patientListDefinition.medicationsSummary)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="allergies">
+					<act moodCode="EVN" classCode="ENTRY">
+						<title>
+							<ST>Allergies</ST>
+						</title>
+						<observation>
+							<value>
+								<ST>#{from(source.allergiesSummary,patientListDefinition.allergiesSummary)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="NAME" direction="IN" name="procedures">
+					<act moodCode="EVN" classCode="ENTRY">
+						<title>
+							<ST>Procedures</ST>
+						</title>
+						<observation>
+							<value>
+								<ST>#{from(source.proceduresSummary,patientListDefinition.proceduresSummary)}</ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+			</act>
+		</relationship>		
+	</act>
+	<valueSet name="yesNoValues">
+		<CE>
+		   <displayName>Yes</displayName>
+		   <code>C1299392</code>
+		   <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+		   <codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+		   <displayName>No</displayName>
+		   <code>C0547040</code>
+		   <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+		   <codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>	   
+	</valueSet>
+	<valueSet name="patientAgeValues">
+        <CE>
+            <displayName>Less Than</displayName>
+            <code>C0183108</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Greater Than</displayName>
+            <code>C0183107</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Equal</displayName>
+            <code>C0183106</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+    </valueSet>
+    <valueSet name="patientGenderValues">
+        <CE>
+            <displayName>Male</displayName>
+            <code>C0183108</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Female</displayName>
+            <code>C0183107</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Indeterminate or Both</displayName>
+            <code>C0183106</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+    </valueSet>    
+    <valueSet name="includeExcludeValues">
+        <CE>
+            <displayName>Include</displayName>
+            <code>C0183108</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Exclude</displayName>
+            <code>C0183107</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+    </valueSet>
+    <valueSet name="zipCodeValues">
+        <CE>
+            <displayName>Not Equal to</displayName>
+            <code>C0183108</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Equal</displayName>
+            <code>C0183107</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+    </valueSet>
+    <valueSet name="orderValues">
+        <CE>
+            <displayName>1</displayName>
+            <code>C0183108</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>2</displayName>
+            <code>C0183107</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>3</displayName>
+            <code>C0183106</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>4</displayName>
+            <code>C0183105</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>5</displayName>
+            <code>C0183104</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+        </CE>
+    </valueSet>
+</trim>

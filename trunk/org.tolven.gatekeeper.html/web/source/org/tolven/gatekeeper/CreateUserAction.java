@@ -20,9 +20,9 @@ import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
-import javax.naming.AuthenticationException;
 import javax.naming.InitialContext;
 
+import org.tolven.exeption.GatekeeperSecurityException;
 import org.tolven.naming.TolvenContext;
 import org.tolven.naming.TolvenPerson;
 
@@ -34,13 +34,13 @@ public class CreateUserAction {
 
     private String admin;
     private String adminPassword;
-    
+    private String generatedPassword;
+
     @EJB
-    private LDAPLocal ldapBean;
-    
+    private LdapLocal ldapBean;
+
     private String realm;
     private List<SelectItem> realms;
-    private String repeatUserPassword;
     private TolvenPerson tp;
 
     public CreateUserAction() {
@@ -55,15 +55,11 @@ public class CreateUserAction {
         */
         boolean error = false;
         if (!getTp().getUid().matches("[\\w\\.\\_\\-]+")) {
-            FacesContext.getCurrentInstance().addMessage("register:uid", new FacesMessage("UserId can only contain letters, numbers, space, '.', '-', or '_'"));
+            FacesContext.getCurrentInstance().addMessage("createUserForm:uid", new FacesMessage("UserId can only contain letters, numbers, space, '.', '-', or '_'"));
             error = true;
         }
-        if (!getRepeatUserPassword().equals(getTp().getUserPassword())) {
-            FacesContext.getCurrentInstance().addMessage("register:userPassword2", new FacesMessage("Both passwords must match"));
-            error = true;
-        }
-        if (getLDAPLocal().findTolvenPerson(tp.getUid(), getRealm()) != null) {
-            FacesContext.getCurrentInstance().addMessage("register:uid", new FacesMessage("This id is already in use, please select another"));
+        if (getLdapLocal().findTolvenPerson(tp.getUid(), getRealm()) != null) {
+            FacesContext.getCurrentInstance().addMessage("createUserForm:uid", new FacesMessage("This id is already in use, please select another"));
             error = true;
         }
         if (error) {
@@ -71,14 +67,18 @@ public class CreateUserAction {
         }
         getTp().setCn(getTp().getGivenName() + " " + getTp().getSn());
         try {
-            getLDAPLocal().createTolvenPerson(tp, getTp().getUid(), getRealm(), getTp().getUserPassword().toCharArray(), null, getAdmin(), getAdminPassword().toCharArray());
-        } catch (AuthenticationException ex) {
-            ex.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage("register:adminPassword", new FacesMessage(ex.getMessage()));
-            return "error";
+            generatedPassword = new String(getLdapLocal().createTolvenPerson(tp, getTp().getUid(), null, getRealm(), null, getAdmin(), getAdminPassword().toCharArray()));
         } catch (Exception ex) {
-            throw new RuntimeException("Could not register and activate user " + getTp().getUid() + " for admin: " + getAdmin(), ex);
+            GatekeeperSecurityException gex = GatekeeperSecurityException.getRootGatekeeperException(ex);
+            if (gex == null) {
+                throw new RuntimeException("Could not register and activate user " + getTp().getUid() + " for admin: " + getAdmin(), ex);
+            } else {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("createUserForm:adminPassword", new FacesMessage(gex.getFormattedMessage()));
+                return "error";
+            }
         }
+        FacesContext.getCurrentInstance().addMessage("createUserForm", new FacesMessage("Password generated for user " + getTp().getUid() + " in realm: " + getRealm() + ": " + getGeneratedPassword()));
         return "success";
     }
 
@@ -90,7 +90,11 @@ public class CreateUserAction {
         return adminPassword;
     }
 
-    private LDAPLocal getLDAPLocal() {
+    public String getGeneratedPassword() {
+        return generatedPassword;
+    }
+
+    private LdapLocal getLdapLocal() {
         return ldapBean;
     }
 
@@ -115,10 +119,6 @@ public class CreateUserAction {
         return realms;
     }
 
-    public String getRepeatUserPassword() {
-        return repeatUserPassword;
-    }
-
     public TolvenPerson getTp() {
         if (tp == null) {
             tp = new TolvenPerson();
@@ -134,12 +134,12 @@ public class CreateUserAction {
         this.adminPassword = adminPassword;
     }
 
-    public void setRealm(String realm) {
-        this.realm = realm;
+    public void setGeneratedPassword(String generatedPassword) {
+        this.generatedPassword = generatedPassword;
     }
 
-    public void setRepeatUserPassword(String repeatUserPassword) {
-        this.repeatUserPassword = repeatUserPassword;
+    public void setRealm(String realm) {
+        this.realm = realm;
     }
 
     public void setTp(TolvenPerson tp) {

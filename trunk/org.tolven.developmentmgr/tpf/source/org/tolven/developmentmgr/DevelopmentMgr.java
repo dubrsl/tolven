@@ -46,14 +46,11 @@ import org.tolven.plugin.TolvenCommandPlugin;
 public class DevelopmentMgr extends TolvenCommandPlugin {
 
     public static final String CMD_LINE_DEVLIB_OPTION = "devLib";
-    public static final String CMD_LINE_NODELETE_OPTION = "noDelete"; //If specified, do not delete existing devLib directory
 
     public static final String MESSAGE_DIGEST_ALGORITHM = "md5";
     private static final String EXTENSIONPOINT_DEVLIB = "devLib";
 
     private Logger logger = Logger.getLogger(DevelopmentMgr.class);
-    
-    private CommandLine commandLine = null;
 
     @Override
     protected void doStart() throws Exception {
@@ -63,7 +60,7 @@ public class DevelopmentMgr extends TolvenCommandPlugin {
     @Override
     public void execute(String[] args) throws Exception {
         logger.debug("*** execute ***");
-        commandLine = getCommandLine(args);
+        CommandLine commandLine = getCommandLine(args);
         if (commandLine.hasOption(CMD_LINE_DEVLIB_OPTION)) {
             deployPluginJARs();
         }
@@ -87,8 +84,6 @@ public class DevelopmentMgr extends TolvenCommandPlugin {
         optionGroup.setRequired(true);
         Option devLibOption = new Option(CMD_LINE_DEVLIB_OPTION, CMD_LINE_DEVLIB_OPTION, false, "\"deploy development library\"");
         optionGroup.addOption(devLibOption);
-        Option noDeleteOption = new Option(CMD_LINE_DEVLIB_OPTION, CMD_LINE_NODELETE_OPTION, false, "\"do not delete existing development library\"");
-        optionGroup.addOption(noDeleteOption);
         cmdLineOptions.addOptionGroup(optionGroup);
         return cmdLineOptions;
     }
@@ -137,25 +132,10 @@ public class DevelopmentMgr extends TolvenCommandPlugin {
             }
         }
         if (devLibDir.exists()) {
-            if (commandLine.hasOption(CMD_LINE_NODELETE_OPTION)) {
-            	logger.debug("CMD_LINE_NODELETE_OPTION is set");
-            	FileUtils.moveDirectory(devLibDir, new File(devLibDir.getAbsolutePath() + ".tmp"));
-            } else {
-            	logger.debug("CMD_LINE_NODELETE_OPTION is not set");
-                FileUtils.deleteDirectory(devLibDir);
-            }
+            FileUtils.deleteDirectory(devLibDir);
         }
         for (File newSourceJar : newSourceJars) {
             logger.debug("Add to development library " + newSourceJar.getPath());
-            File destFile = new File(devLibDir.getAbsolutePath() + File.separator + newSourceJar.getName());
-            if (destFile.exists()) {
-            	if (!destFile.delete()) {
-            		destFile.renameTo(new File(destFile.getAbsolutePath() + ".renamed"));
-            	}
-            }
-            if (destFile.exists()) {
-            	destFile.delete();
-            }
             FileUtils.moveFileToDirectory(newSourceJar, devLibDir, true);
         }
     }

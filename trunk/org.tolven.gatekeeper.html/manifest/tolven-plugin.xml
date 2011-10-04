@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.gatekeeper.html" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.gatekeeper.html" version="2.1.1" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.component.war" />
 		<import plugin-id="org.tolven.shiroweb" />
@@ -243,6 +243,16 @@
 		<parameter id="description" value="Create a user" />
 		<parameter id="from-view-id" value="/register/createUser.xhtml" />
 		<parameter id="navigation-case">
+			<parameter id="from-action" value="home" />
+			<parameter id="to-view-id" value="/home/home.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="manageLoginPassword" />
+			<parameter id="to-view-id" value="/passwordmgr/manageLoginPassword.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
 			<parameter id="from-outcome" value="cancel" />
 			<parameter id="to-view-id" value="/passwordmgr/manageLoginPassword.xhtml" />
 			<parameter id="redirect" />
@@ -254,8 +264,7 @@
 		<parameter id="navigation-case">
 			<parameter id="from-action" value="#{createUser.activate}" />
 			<parameter id="from-outcome" value="success" />
-			<parameter id="to-view-id" value="/home/home.xhtml" />
-			<parameter id="redirect" />
+			<parameter id="to-view-id" value="/register/createUser.xhtml" />
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.html" />
 	</extension>
@@ -285,6 +294,45 @@
 			<parameter id="from-outcome" value="cancel" />
 			<parameter id="to-view-id" value="/passwordmgr/manageLoginPassword.xhtml" />
 			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.html" />
+	</extension>
+	
+	<extension id="/passwordmgr/mustChangeLoginPassword.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="User must change their password" />
+		<parameter id="from-view-id" value="/passwordmgr/mustChangeLoginPassword.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{changepasswd.mustChangeLoginPassword}" />
+			<parameter id="from-outcome" value="error" />
+			<parameter id="to-view-id" value="/passwordmgr/mustChangeLoginPassword.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{changepasswd.mustChangeLoginPassword}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/public/logout.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.html" />
+	</extension>
+	
+	<extension id="/passwordmgr/passwordExpiring.xhtml-navigation-rule" plugin-id="org.tolven.component.faces" point-id="navigation-rule">
+		<parameter id="description" value="User password is expiring" />
+		<parameter id="from-view-id" value="/passwordmgr/passwordExpiring.xhtml" />
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{changepasswd.mustChangeLoginPassword}" />
+			<parameter id="from-outcome" value="error" />
+			<parameter id="to-view-id" value="/passwordmgr/passwordExpiring.xhtml" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{changepasswd.mustChangeLoginPassword}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/public/logout.xhtml" />
+			<parameter id="redirect" />
+		</parameter>
+		<parameter id="navigation-case">
+			<parameter id="from-action" value="#{changepasswd.later}" />
+			<parameter id="from-outcome" value="success" />
+			<parameter id="to-view-id" value="/passwordmgr/passwordExpiring.xhtml" />
 		</parameter>
 		<parameter id="target-plugin-id" value="org.tolven.gatekeeper.html" />
 	</extension>

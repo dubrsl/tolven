@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>labResultDoc</name>
+	<description>New laboratory result</description>
+	<drilldown>labResultDocDD.xhtml</drilldown>
+	<application name="echr" signatureRequired="true">
+		<instance>echr:patient:result</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<message>
+		<sender>
+			<providerName></providerName>
+		</sender>
+		<receiver></receiver>
+	</message>
+	<act moodCode="EVN" classCode="PROC">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="create">
+				<path>echr:patient:result</path>
+			</placeholder>
+		</bind>
+		<title>
+			<ST>Laboratory Order Result</ST>
+		</title>
+		<effectiveTime>
+			<label>Analysis time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<relationship name="specimen" direction="IN" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<label>Specimen type</label>
+					<ST></ST>
+				</title>
+				<observation>
+					<value>
+						<label>Specimen Source</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Specimen Quality</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Specimen Condition</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Specimen Reject Reason</label>
+						<ST></ST>
+					</value>
+				</observation>
+				
+			</act>
+		</relationship>
+		<relationship name="test" direction="IN" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Laboratory Order</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Ordering MD</label>
+						<ST></ST>	
+					</value>
+					<value>
+						<label>Lab</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="result" direction="IN" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST></ST>
+				</title>
+				<code>
+					<ST></ST>
+				</code>
+				<text>
+					<label>Interp</label>
+					<ST></ST>					
+				</text>
+				<observation>
+					<value>
+						<label>Result</label>
+						<PQ>
+							<originalText></originalText>
+							<value></value>
+							<unit></unit>
+						</PQ>
+					</value>
+					<value>
+						<label>Normal Range</label>
+						<PQ>
+							<originalText></originalText>
+							<unit></unit>
+						</PQ>
+					</value>
+					<value>
+						<label>Abnormal Flags</label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>LOINC CODE</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+    </act>	
+</trim>

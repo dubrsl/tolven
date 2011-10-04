@@ -17,6 +17,7 @@
 
 package org.tolven.restful;
 
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,6 +35,13 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.tolven.app.ApplicationMetadataLocal;
 import org.tolven.app.MenuLocal;
@@ -44,6 +52,7 @@ import org.tolven.core.entity.Account;
 import org.tolven.doc.RulesLocal;
 import org.tolven.report.ReportLocal;
 import org.tolven.util.ExceptionFormatter;
+import org.w3c.dom.Document;
 
 import com.sun.jersey.multipart.BodyPart;
 import com.sun.jersey.multipart.MultiPart;
@@ -74,6 +83,9 @@ public class LoadApplicationResources {
 
     @EJB
     private TrimLocal trimBean;
+    
+    //XPath variable
+	XPath xpath = XPathFactory.newInstance().newXPath();
 
     public LoadApplicationResources() {
     }
@@ -322,5 +334,47 @@ public class LoadApplicationResources {
             return Response.status(500).type(MediaType.TEXT_PLAIN).entity("Trim " + trimName + ": " + ExceptionFormatter.toSimpleString(ex, "\\n")).build();
         }
     }
+    
+    /**
+     * Queue a process to activate new trim headers.
+     * @return true if there's more work to be done
+     */
+    @Path("loadStateNames")
+    @POST
+    @Consumes(MediaType.APPLICATION_XML)
+    public Response loadStateNames(String xml) {
+
+    	try {
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			factory.setNamespaceAware(true); // never forget this!
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(new ByteArrayInputStream(xml.getBytes()));
+			
+			
+			String stateCode=(String)path("/StateNames/StateCode/text()").evaluate(doc, XPathConstants.STRING );
+			String stateName=(String)path("/StateNames/StateName/text()").evaluate(doc, XPathConstants.STRING );
+			
+			//System.out.println("State Code: "+stateCode+"  State Description: "+stateDescription  );
+			
+			getApplicationMetadataBean().createStateNames(stateCode,stateName);
+			
+    	} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		}
+        return Response.ok().build();
+    }
+    
+    /**
+	 * Method to compile xpath expression 
+	 * @param expression - String representing the expression
+	 * @return 
+	 */
+	private XPathExpression path( String expression ) {
+		try {
+			return xpath.compile(expression);
+		} catch (XPathExpressionException e) {
+			throw new RuntimeException( "Invalue XPath Expression", e );
+		}
+	}
 
 }

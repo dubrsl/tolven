@@ -19,10 +19,15 @@ import javax.naming.InitialContext;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import org.apache.log4j.Logger;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
 import org.apache.shiro.web.util.WebUtils;
+import org.tolven.exeption.GatekeeperAuthenticationException;
 import org.tolven.naming.TolvenContext;
 import org.tolven.naming.WebContext;
 import org.tolven.shiro.authc.UsernamePasswordRealmToken;
@@ -37,6 +42,8 @@ public class TolvenFormAuthenticationFilter extends FormAuthenticationFilter {
 
     public static final String DEFAULT_REALM_PARAM = "realm";
 
+    private Logger logger = Logger.getLogger(TolvenFormAuthenticationFilter.class);
+
     private String realmParam = DEFAULT_REALM_PARAM;
 
     public TolvenFormAuthenticationFilter() {
@@ -47,9 +54,8 @@ public class TolvenFormAuthenticationFilter extends FormAuthenticationFilter {
         String username = getUsername(request);
         String password = getPassword(request);
         String realm = getRealm(request);
-        boolean rememberMe = false; //isRememberMe(request);
         String host = getHost(request);
-        return new UsernamePasswordRealmToken(username, password, realm, rememberMe, host);
+        return new UsernamePasswordRealmToken(username, password, realm, host);
     }
 
     protected String getRealm(ServletRequest request) {
@@ -62,6 +68,7 @@ public class TolvenFormAuthenticationFilter extends FormAuthenticationFilter {
 
     @Override
     protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
+        logger.info("LOGIN_FAILED: " + token.getPrincipal() + " in realm: " + ((UsernamePasswordRealmToken) token).getRealm());
         super.onLoginFailure(token, e, request, response);
         try {
             WebUtils.issueRedirect(request, response, "/public/loginFailed.jsp");
@@ -69,6 +76,27 @@ public class TolvenFormAuthenticationFilter extends FormAuthenticationFilter {
             throw new RuntimeException("Could not redirect to loginFailed.jsp", ex);
         }
         return false;
+    }
+
+    @Override
+    protected boolean onLoginSuccess(AuthenticationToken token, Subject subject, ServletRequest request, ServletResponse response) throws Exception {
+        String realm = ((UsernamePasswordRealmToken) token).getRealm();
+        logger.info("LOGIN_SUCCEEDED: " + token.getPrincipal() + " in realm: " + realm);
+        Session session = SecurityUtils.getSubject().getSession();
+        Boolean passwordExpired = (Boolean) session.removeAttribute(GatekeeperAuthenticationException.PASSWORD_EXPIRED);
+        String formattedExpiration = (String) session.getAttribute(GatekeeperAuthenticationException.PASSWORD_EXPIRING);
+        if (passwordExpired != null && passwordExpired) {
+            logger.info("Password expired for: " + token.getPrincipal() + " in realm: " + realm);
+            WebUtils.issueRedirect(request, response, "/passwordmgr/mustChangeLoginPassword.jsf");
+            return false;
+        } else if (formattedExpiration != null) {
+            logger.info("Password expiring for: " + token.getPrincipal() + " in realm: " + realm + ": " + formattedExpiration);
+            session.setAttribute("passwordExpiringLaterPage", getSuccessUrl());
+            WebUtils.issueRedirect(request, response, "/passwordmgr/passwordExpiring.jsf");
+            return false;
+        } else {
+            return super.onLoginSuccess(token, subject, request, response);
+        }
     }
 
     @Override

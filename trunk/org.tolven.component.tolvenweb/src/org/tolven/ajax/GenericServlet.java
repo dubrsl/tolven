@@ -19,7 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.tolven.app.CCHITLocal;
 import org.tolven.app.MenuEventHandler;
 import org.tolven.app.MenuLocal;
 import org.tolven.app.bean.MenuPath;
@@ -47,8 +46,6 @@ public class GenericServlet extends HttpServlet {
     @EJB
     private ProviderLocal providerBean;
     
-    @EJB
-    private CCHITLocal cchitBean;
     protected void getProviderOptions(HttpServletRequest req, HttpServletResponse resp) {
         try {
             Writer writer=resp.getWriter();
@@ -193,7 +190,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    	String conditions =  " md.string01 IS NOT NULL AND md.status='ACTIVE' AND md.account.id=" + activeAccountUser.getAccount().getId() + " AND md.path LIKE 'echr:patientListDefinition-%'";
 	    	Map<String, String> refIdMap = new HashMap<String, String>();
 	    	if ("pld".equals(source)) {  			
-	    		refIdMap = cchitBean.findReferenceIds(conditions);
+	    		refIdMap = menuBean.findReferenceIds(conditions);
 			}
 	    	
 	    	/**

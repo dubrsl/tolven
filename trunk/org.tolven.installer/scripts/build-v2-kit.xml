@@ -276,16 +276,16 @@
 
 	<target name="create-system-queue-users" depends="props" if="INCLUDE.TOLVEN.OPENDS">
 		<guide-echo args="Create adminAppQueue User" />
-		<tpf args="-plugin org.tolven.user -create -uid ${adminApp.queue.user} -commonName ${adminApp.queue.user} -surname ${adminApp.queue.user} -realm ${adminApp.queue.realm} -userPassword ${adminApp.queue.password} -emails dev.adminApp@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA -country US" />
+		<tpf args="-plugin org.tolven.user -create -uid ${adminApp.queue.user} -commonName ${adminApp.queue.user} -surname ${adminApp.queue.user} -realm ${adminApp.queue.realm} -userPassword ${adminApp.queue.password} -emails dev.adminApp@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA" />
 		<guide-echo args="" />
 		<guide-echo args="Create generatorQueue User" />
-		<tpf args="-plugin org.tolven.user -create -uid ${generator.queue.user} -commonName ${generator.queue.user} -surname ${generator.queue.user} -realm ${generator.queue.realm} -userPassword ${generator.queue.password} -emails dev.generator@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA -country US" />
+		<tpf args="-plugin org.tolven.user -create -uid ${generator.queue.user} -commonName ${generator.queue.user} -surname ${generator.queue.user} -realm ${generator.queue.realm} -userPassword ${generator.queue.password} -emails dev.generator@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA" />
 		<guide-echo args="" />
 		<guide-echo args="Create invitationQueue User" />
-		<tpf args="-plugin org.tolven.user -create -uid ${invitation.queue.user} -commonName ${invitation.queue.user} -surname ${invitation.queue.user} -realm ${invitation.queue.realm} -userPassword ${invitation.queue.password} -emails dev.invitation@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA -country US" />
+		<tpf args="-plugin org.tolven.user -create -uid ${invitation.queue.user} -commonName ${invitation.queue.user} -surname ${invitation.queue.user} -realm ${invitation.queue.realm} -userPassword ${invitation.queue.password} -emails dev.invitation@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA" />
 		<guide-echo args="" />
 		<guide-echo args="Create ruleQueue User" />
-		<tpf args="-plugin org.tolven.user -create -uid ${rule.queue.user} -commonName ${rule.queue.user} -surname ${rule.queue.user} -userPKCS12 ${rule.queue.keystore} -realm ${rule.queue.realm} -userPassword ${rule.queue.password} -emails dev.rule@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA -country US" />
+		<tpf args="-plugin org.tolven.user -create -uid ${rule.queue.user} -commonName ${rule.queue.user} -surname ${rule.queue.user} -userPKCS12 ${rule.queue.keystore} -realm ${rule.queue.realm} -userPassword ${rule.queue.password} -emails dev.rule@tolven.org -organizationUnit tolven -organization tolven -stateOrProvince CA" />
 		<guide-echo args="" />
 	</target>
 

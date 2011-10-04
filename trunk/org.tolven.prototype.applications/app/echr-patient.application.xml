@@ -864,7 +864,7 @@
 				<column name="Problem" internal="string01" reference="true" width="45.0">
 					<from>#{problem.title}</from>
 				</column>
-				<column name="Code" internal="string06" reference="true" width="15.0" visible="false">
+				<column name="Code" internal="string06" reference="true" width="15.0" >
 					<from>#{problem.code}</from>
 				</column>
 				<column name="Source" internal="string02" width="10.0">
@@ -880,13 +880,16 @@
 				</action>
 			</list>
 			<list name="suspended" title="Suspended" page="/five/list.xhtml" visible="true" drilldown=":problem">
-				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0" visible="false">
 					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="DateUpdated" internal="date02" format="MMM-dd-yyyy" width="15.0">
+					<from>#{now}</from>
 				</column>
 				<column name="Problem" internal="string01" reference="true" width="45.0">
 					<from>#{problem.title}</from>
 				</column>
-				<column name="Code" internal="string06" reference="true" width="15.0" visible="false">
+				<column name="Code" internal="string06" reference="true" width="15.0" >
 					<from>#{problem.code}</from>
 				</column>
 				<column name="Source" internal="string02" width="10.0">
@@ -898,13 +901,16 @@
 				</column>
 			</list>
 			<list name="nullified" title="Nullified" page="/five/list.xhtml" visible="true" drilldown=":problem">
-				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0" visible="false">
 					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="DateUpdated" internal="date02" format="MMM-dd-yyyy" width="15.0">
+					<from>#{now}</from>
 				</column>
 				<column name="Problem" internal="string01" reference="true" width="45.0">
 					<from>#{problem.title}</from>
 				</column>
-				<column name="Code" internal="string06" reference="true" width="15.0" visible="false">
+				<column name="Code" internal="string06" reference="true" width="15.0" >
 					<from>#{problem.code}</from>
 				</column>
 				<column name="Source" internal="string02" width="10.0">
@@ -916,13 +922,16 @@
 				</column>
 			</list>
 			<list name="completed" title="Completed" page="/five/list.xhtml" visible="true" drilldown=":problem">
-				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0" visible="false">
 					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="DateUpdated" internal="date02" format="MMM-dd-yyyy" width="15.0">
+					<from>#{now}</from>
 				</column>
 				<column name="Problem" internal="string01" reference="true" width="45.0">
 					<from>#{problem.title}</from>
 				</column>
-				<column name="Code" internal="string06" reference="true" width="15.0" visible="false">
+				<column name="Code" internal="string06" reference="true" width="15.0" >
 					<from>#{problem.code}</from>
 				</column>
 				<column name="Source" internal="string02" width="10.0">
@@ -940,7 +949,7 @@
 				<column name="Problem" internal="string01" reference="true" width="45.0">
 					<from>#{problem.title}</from>
 				</column>
-				<column name="Code" internal="string06" reference="true" width="15.0" visible="false">
+				<column name="Code" internal="string06" reference="true" width="15.0" >
 					<from>#{problem.code}</from>
 				</column>
 				<column name="Source" internal="string02" width="10.0">
@@ -957,15 +966,18 @@
 	<extends path="echr:patient">
 		<placeholder name="medication" title="Medication" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/medicationLink.xhtml">
 			<field name="title" internal="string01" >
+				<from>#{act.observation.value.CE.displayName}</from>
 				<from>#{trim.isName['obs/evn/currentMedicationHistory'].act.relationship['CurrentMedication'].act.observation.values[0].ST.value}</from>
 				<from>#{act.participations[0].role.player.code.CE.displayName}</from>
 				<from>#{act.text.ST.value}</from>			
 				<from>#{trim.description}</from>		
-			</field>				
+			</field>	
 			<field name="code" internal="string06" >
+				<from>#{act.observation.value.CE.code}</from>
 				<from>#{act.participation['consumableProduct'].role.player.code.CE.code}</from>				
 			</field>
 			<field name="start" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
 				<from>#{act.effectiveTime.IVLTS.low.date}</from>
 				<from>#{trim.isName['obs/evn/currentMedicationHistory'].act.relationship['CurrentMedication'].act.observation.values[1].TS.date}</from>
 				<from>#{act.observation.values[2].TS.date}</from>
@@ -1013,6 +1025,11 @@
 				<from>#{act.relationship['comments'].act.text.originalText}</from>
 				<from>#{act.observation.values[6].ST.value}</from>				
 			</field>
+			<field name="brand" internal="string07" >
+			</field>
+			<field name="source" internal="string08" >
+			</field>			
+						
 		</placeholder>
 	</extends>
 	<extends path="echr:patient:summary">

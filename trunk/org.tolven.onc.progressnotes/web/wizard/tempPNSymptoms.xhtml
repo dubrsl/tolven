@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Symptoms</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<c:set var="symptoms" value="#{trim.trim.act.relationship['subjective'].act.relationship['symptoms']}"/>
+		<table width="100%">
+			<thead>
+				<tr>
+					<th width="20%" align="center">Add to Problem List</th>
+					<th width="40%">Symptoms</th>
+					<th width="20%">Date of Onset</th>
+					<th></th>
+				</tr>
+				<c:forEach var="symptom" items="#{symptoms.act.relationshipsList['symptom']}" varStatus="widgetIndex">
+   					<c:if test="#{symptom!=null}">
+   						<c:set var="class" value="odd"/>
+   						<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+    					<tr class="#{class}" id="#{menu.elementLabel}:saveSymptom#{widgetIndex.index}" onmouseover="setBackground(this);" onmouseout="resetBackground(this);" > 
+       						<td align="center">
+       							<h:selectBooleanCheckbox id="addSymptomToList#{widgetIndex.index}" value="#{symptom.enableRelationship}" onclick ="wizUpdatePNSymptom('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 1, this.checked);"/>
+  							</td>
+				 			<td>
+				 				<h:outputText escape="false" value="#{symptom.act.observation.values[0].CE.displayName}"/>
+			 				</td>
+				 			<td>
+				 				<trim:TSAjax id="osSymptomDate#{widgetIndex.index}" value="#{symptom.act.effectiveTime.TS}" dateStyle="short" style="width:70%;" readonly="true"/>
+				 			</td>
+								<td align="center" style="vertical-align: middle;">
+									<span style="padding-left: 3px; float: left;"> <img
+											onclick="editPNTemplate('symptom', #{widgetIndex.index}, 'echr:symptoms', 'wizSavePNSymptom', '#{menu.elementLabel}', 0);return false;"
+											alt="Edit" src="../images/edit.jpg" style="cursor: pointer;"
+											title="Edit"></img> </span>
+									<span style="float: right;"> <img
+											onclick="wizRemoveTemplate('managePNSymptoms.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnSymptomDiv', 'tempPNSymptoms.jsf');return false;"
+											alt="Remove" src="../images/delete.gif"
+											style="cursor: pointer;" title="Remove"></img> </span>
+								</td>
+							</tr>
+      					<tr style="display:none;" class="editWidget" id="#{menu.elementLabel}:editSymptom#{widgetIndex.index}">
+       						<td colspan="4">
+       							<table style="width:100%;">
+        							<tr>
+	      								<td width="20%" align="center">
+	      									<h:selectBooleanCheckbox id="addSymptomList#{widgetIndex.index}" value="#{symptom.enableRelationship}" onclick="wizUpdatePNSymptom('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 1, this.checked);"/>
+     									</td>
+							 			<td width="40%">
+							 				<h:outputText escape="false" value="#{symptom.act.observation.values[0].CE.displayName}"/>
+						 				</td>
+							 			<td width="20%">
+							 				<trim:TSAjax id="onsetSymptomDate#{widgetIndex.index}" value="#{symptom.act.effectiveTime.TS}" dateStyle="short" style="width:70%;" />
+							 			</td>
+	       								<td style="width:19%;" align="center" valign="middle">
+												<span style="float: left; padding-left: 3px;"> <img
+														onclick="wizUpdatePNSymptom('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 0);return false;"
+														style="cursor: pointer;" alt="Save"
+														src="../images/save.gif" title="Save"></img> </span>
+												<!-- 
+			        						<a class="actionLink" href="javascript:wizCancelUpdate('Symptom#{widgetIndex.index}','#{menu.elementLabel}')" title="Cancel">
+			        							cancel
+			        						</a>
+			        						 -->
+	       								</td>
+         							</tr>
+       							</table>
+       						</td>
+       					</tr>
+       					<c:if test="#{symptom.act.title.ST.value!=''}">
+       						<script>
+       							$('#{menu.elementLabel}:saveSymptom#{widgetIndex.index}').hide();
+       							$('#{menu.elementLabel}:editSymptom#{widgetIndex.index}').show();
+       						</script>
+       					</c:if>
+   					</c:if>
+   				</c:forEach>
+			 	<tr  class="widgetAction">
+			 		<td colspan="4">
+			 			<a id="addPNSymptomLink" onclick="addPNTemplate('symptom', 'echr:symptoms', 'wizSavePNSymptom', '#{menu.elementLabel}', 0);return false;" href="#">
+							Add symptom
+						</a>
+			 		</td>
+			 	</tr>
+		 	</thead>
+		</table>
+	</ui:composition>
+</body>
+</html>

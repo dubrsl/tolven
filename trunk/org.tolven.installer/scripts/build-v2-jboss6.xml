@@ -281,8 +281,10 @@
 		<guide-echo args="     keystoreFile=&quot;${openam.keystore}&quot;" />
 		<guide-echo args="     keystorePass=&quot;tolven&quot;" />
 		<guide-echo args="     keyAlias=&quot;tolven&quot;/>" />
-		<replace token="Connector protocol=&quot;HTTP/1.1&quot; port=&quot;${jboss.web.http.port}&quot; address=&quot;${jboss.bind.address}&quot;" value="Connector address=&quot;${gatekeeper.domain}&quot; port=&quot;${gatekeeper.port}&quot; protocol=&quot;HTTP/1.1&quot; SSLEnabled=&quot;true&quot; maxThreads=&quot;150&quot; scheme=&quot;https&quot; secure=&quot;true&quot; clientAuth=&quot;false&quot; sslProtocol=&quot;TLS&quot; keystoreFile=&quot;${openam.keystore}&quot; keystorePass=&quot;${openam.keystore.password}&quot;" file="${jboss6.serverxml}" />
-		<replace token="redirectPort=&quot;${jboss.web.https.port}&quot;" value="" file="${jboss6.serverxml}" />
+		<replace file="${jboss6.serverxml}" value="&lt;Connector protocol=&quot;HTTP/1.1&quot; port=&quot;${jboss.web.http.port}&quot; address=&quot;${jboss.bind.address}&quot; /> &lt;Connector address=&quot;${gatekeeper.domain}&quot; port=&quot;${gatekeeper.port}&quot; protocol=&quot;HTTP/1.1&quot; SSLEnabled=&quot;true&quot; maxThreads=&quot;150&quot; scheme=&quot;https&quot; secure=&quot;true&quot; clientAuth=&quot;false&quot; sslProtocol=&quot;TLS&quot; keystoreFile=&quot;${openam.keystore}&quot; keystorePass=&quot;${openam.keystore.password}&quot; />">
+			<replacetoken><![CDATA[<Connector protocol="HTTP/1.1" port="${jboss.web.http.port}" address="${jboss.bind.address}" 
+         redirectPort="${jboss.web.https.port}" />]]></replacetoken>
+		</replace>
 		<guide-echo args="" />
 
 	</target>

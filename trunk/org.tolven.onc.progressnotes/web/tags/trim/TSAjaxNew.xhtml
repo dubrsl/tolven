@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>A point in time</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body> 
+    <ui:composition>
+   		<c:if test="#{readonly!='true'}">
+	    	<wiz:question id="ques#{id}" >
+	    			
+	    			<c:set var="p1" value="#{dateStyle}~#{timeStyle}" />
+	    			<c:if test="${timeStyle!=null}">
+	    				<c:set var="showTime" value="true" />
+	    			</c:if>
+	    			<c:if test="${timeStyle==null}">
+	    				<c:set var="showTime" value="false" />
+	    			</c:if>
+	    			
+				<h:inputText id="Field#{id}" value="#{value.value}" required="#{required}" style="#{style}">
+					<trim:convertTSValue timeStyle="#{timeStyle}" dateStyle="#{dateStyle}" type="#{type}" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
+					<c:if test="#{validate=='past'}">
+						<trim:validatePast/>
+					</c:if>
+					<c:if test="#{validate=='future'}">
+						<trim:validateFuture/>
+					</c:if>
+				</h:inputText>
+				<h:graphicImage id="Button#{id}" value="/images/cal-image.png" style="cursor:pointer; margin-left:5px" />
+
+<script type="text/javascript">
+// <![CDATA[
+Calendar.setup({
+inputField   : "Field#{id}",
+ifFormat     : "#{top.TSFormatList[p1].clientScriptPattern}",
+
+showsTime    : #{showTime},
+button       : "Button#{id}",
+electric	 : true,
+weekNumbers  : false,
+timeFormat   : "12"
+    });
+  // ]]>
+</script>
+
+    		</wiz:question>
+		</c:if>
+		<h:outputText value="#{value.value}" rendered="#{readonly=='true'}">
+			<trim:convertTSValue timeStyle="#{timeStyle}" dateStyle="#{dateStyle}" locale="#{top.locale}" type="#{type}" timeZone="#{top.timeZoneObject}" />
+		</h:outputText>
+	</ui:composition>
+</body>
+</html>

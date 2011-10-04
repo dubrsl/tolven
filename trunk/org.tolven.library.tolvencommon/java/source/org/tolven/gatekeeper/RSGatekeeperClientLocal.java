@@ -12,7 +12,6 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id: RSGatekeeperClientLocal.java 2365 2011-08-11 05:29:59Z joe.isaac $
  */
 package org.tolven.gatekeeper;
 
@@ -24,6 +23,6 @@ public interface RSGatekeeperClientLocal {
 
     public String login(String username, char[] password, String realm);
     
-    public boolean verifyUserPassword(String uid, String realm, char[] password);
+    public boolean verifyUserPassword(String uid, char[] password, String realm);
 
 }

@@ -3,9 +3,9 @@
 <xsl:param name="context"/>
 <xsl:variable name="ctx" select="document('context')"/>
 <xsl:variable name="pat" select="document($context)"/>
-<xsl:variable name="meds" select="document('$ctx:medications:active')"/>
-<xsl:variable name="allergies" select="document('$ctx:allergies:current')"/>
-<xsl:variable name="problems" select="document('$ctx:problems:active')"/>
+<xsl:variable name="meds"	select="document(concat($context,':medications:active'))" />
+<xsl:variable name="allergies"	select="document(concat($context,':allergies:current'))" />
+<xsl:variable name="problems" select="document(concat($context,':problems:active'))"/>
 <xsl:variable name="procedures" select="document('$ctx:procedures:active')"/>
 <xsl:variable name="labtests" select="document('$ctx:results:active')"/>
 
@@ -17,7 +17,7 @@
 	<templateId root="2.16.840.1.113883.10.20.3" assigningAuthorityName="HL7/CDT Header"/>
 	<templateId root="1.3.6.1.4.1.19376.1.5.3.1.1.1" assigningAuthorityName="IHE/PCC"/>
 	<templateId root="2.16.840.1.113883.3.88.11.32.1" assigningAuthorityName="HITSP/C32"/>
-	<id root="2.16.840.1.113883.3.72" extension="MU_Rev2_HITSP_C32C83_4Sections_MeaningfulEntryContent_NoErrors" assigningAuthorityName="NIST Healthcare Project"/>
+	<id root="2.16.840.1.113883.3.72" extension="MU_Rev2_HITSP_C32C83_4Sections_MeaningfulEntryContent_NoErrors" assigningAuthorityName="NIST Healthcare Project"/>	
 	<code code="34133-9" displayName="Summarization of episode note" codeSystem="2.16.840.1.113883.6.1" codeSystemName="LOINC"/>
 	<title/>
 	<effectiveTime>
@@ -27,7 +27,15 @@
 	<languageCode code="en-US"/>
 	<recordTarget>
 		<patientRole>
-			<id root="ProviderID" extension="PatientID" assigningAuthorityName="Provider Name"/>
+			<!-- <id root="ProviderID" extension="PatientID" assigningAuthorityName="Provider Name"/> -->
+			<id assigningAuthorityName="Provider Name">
+				<xsl:attribute name="root">
+	 				<xsl:value-of select="$ctx/context/accountIdRoot/@id" />
+				</xsl:attribute>			
+				<xsl:attribute name="extension">
+					<xsl:value-of select="$context" />
+				</xsl:attribute>
+			</id>			
 			<addr use="HP">
 				<!--HITSP/C83 recommends that a patient have at least one address element with a use attribute of HP, i.e. home primary-->
 None of the following address elements are specifically required by HITSP C32, so the address could be be just plain text at this location? Use of one or more of the following labeled address lines, with meaningful content, is recommended.
@@ -38,7 +46,7 @@ None of the following address elements are specifically required by HITSP C32, s
 				<postalCode><xsl:value-of select="$pat/results/rows/row/homeZip"/></postalCode>
 				<country><xsl:value-of select="$pat/results/rows/row/homeCountry"/></country>
 			</addr>
-			<telecom/>
+			<telecom><xsl:value-of select="$pat/results/rows/row/homeTelecom"/></telecom>
 			<patient>
 				<name>
 					<given><xsl:value-of select="$pat/results/rows/row/firstName"/></given>
@@ -47,21 +55,38 @@ None of the following address elements are specifically required by HITSP C32, s
 					<family><xsl:value-of select="$pat/results/rows/row/lastName"/></family>
 				</name>
 				<!--HITSP/C83 requires patient administrative gender, e.g. M, F, I (indeterminate)-->
-				<administrativeGenderCode code="F" displayName="Female" codeSystem="2.16.840.1.113883.5.1" codeSystemName="HL7 AdministrativeGender"/>
-				<birthTime value="19840704"/>
+				<!-- <administrativeGenderCode code="F" displayName="Female" codeSystem="2.16.840.1.113883.5.1" codeSystemName="HL7 AdministrativeGender"/> -->
+				<administrativeGenderCode codeSystem="2.16.840.1.113883.5.1" codeSystemName="HL7 AdministrativeGender">
+					<xsl:attribute name="displayName">
+		 				<xsl:value-of select="$pat/results/rows/row/gender" />
+					</xsl:attribute>
+					<xsl:attribute name="code">
+						<xsl:value-of select="substring($pat/results/rows/row/gender, 1, 1)" />
+					</xsl:attribute>
+				</administrativeGenderCode>
+				<!-- <birthTime value="19840704"/> -->
+				<birthTime>
+					<xsl:attribute name="value">
+		 				<xsl:value-of select="concat(substring($pat/results/rows/row/dob, 1,4), substring($pat/results/rows/row/dob, 6,2), substring($pat/results/rows/row/dob, 9,2))" />
+					</xsl:attribute>				
+				</birthTime>
 				<!--HITSP/C83 requires patient marital status - if known, e.g. S, M, D-->
-				<maritalStatusCode code="S" displayName="Single" codeSystem="2.16.840.1.113883.5.2" codeSystemName="HL7 Marital status"/>
+				<!-- <maritalStatusCode code="S" displayName="Single" codeSystem="2.16.840.1.113883.5.2" codeSystemName="HL7 Marital status"/> -->
 				<!--HITSP/C32 requires patient languages spoken - if known.-->
 				<languageCommunication>
 					<templateId root="2.16.840.1.113883.3.88.11.83.2" assigningAuthorityName="HITSP/C83"/>
 					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.2.1" assigningAuthorityName="IHE/PCC"/>
-					<languageCode code="en-US"/>
+					<languageCode code="en-US">
+						<xsl:value-of select="$pat/results/rows/row/language" />
+					</languageCode>
 				</languageCommunication>
 			</patient>
 		</patientRole>
 	</recordTarget>
 	<author>
-		<time value="20101026145730"/>
+		<time>
+			<xsl:attribute name="value"><xsl:value-of select="$ctx/context/@now" /></xsl:attribute>
+		</time>
 		<assignedAuthor>
 			<id/>
 			<addr/>
@@ -122,17 +147,8 @@ None of the following address elements are specifically required by HITSP C32, s
 								</tr>
 							</thead>
 							<tbody>
-								<!-- <xsl:apply-templates select="$allergies/results/rows"/>
-								<xsl:template match="/row/Allergy">
-									<tr ID="ALGSUMMARY_1"></tr>
-									<tr ID="ALGSUMMARY_1">
-										<td ID="ALGTYPE_1">Drug Allergy</td>
-										<td ID="ALGSUB_1"><xsl:value-of select="."/></td>
-										<td ID="ALGREACT_1">Hives</td>
-										<td ID="ALGSTATUS_1">Active</td>
-									</tr>
-								</xsl:template> -->
-								<tr ID="ALGSUMMARY_1">
+								<xsl:apply-templates select="$allergies/results/rows" mode="Allergy"/>
+								<!-- <tr ID="ALGSUMMARY_1">
 									<td ID="ALGTYPE_1">Drug Allergy</td>
 									<td ID="ALGSUB_1">Penicillin</td>
 									<td ID="ALGREACT_1">Hives</td>
@@ -149,17 +165,18 @@ None of the following address elements are specifically required by HITSP C32, s
 									<td ID="ALGSUB_3">Codeine</td>
 									<td ID="ALGREACT_3">Nausea</td>
 									<td ID="ALGSTATUS_3">Active</td>
-								</tr>
+								</tr> -->
 							</tbody>
 						</table>
 					</text>
-					<entry typeCode="DRIV">
+					<xsl:apply-templates select="$allergies/results/rows" mode="AllergyDetail" />
+					<!-- <entry typeCode="DRIV">
 						<act classCode="ACT" moodCode="EVN">
 							<templateId root="2.16.840.1.113883.3.88.11.83.6" assigningAuthorityName="HITSP C83"/>
 							<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.3" assigningAuthorityName="IHE PCC"/>
-							<!--Allergy act template -->
+							Allergy act template
 							<id root="36e3e930-7b14-11db-9fe1-0800200c9a66"/>
 							<code nullFlavor="NA"/>
 							<statusCode code="completed"/>
@@ -174,7 +191,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.6" assigningAuthorityName="IHE PCC"/>
 									<templateId root="2.16.840.1.113883.10.20.1.18"/>
-									<!--Allergy observation template. NOTE that the HITSP/C83 requirement for code (i.e. allergy type) differs from the IHE PCC recommendation for code.-->
+									Allergy observation template. NOTE that the HITSP/C83 requirement for code (i.e. allergy type) differs from the IHE PCC recommendation for code.
 									<id root="4adc1020-7b14-11db-9fe1-0800200c9a66" extension=""/>
 									<code code="416098002" codeSystem="2.16.840.1.113883.6.96" displayName="drug allergy" codeSystemName="SNOMED CT"/>
 									<text>
@@ -184,7 +201,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<effectiveTime>
 										<low nullFlavor="UNK"/>
 									</effectiveTime>
-									<!--Note that IHE/PCC and HITSP/C32 differ in how to represent the drug, substance, or food that one is allergic to. IHE/PCC expects to see that information in <value> and HITSP/C32 expects to see it in <participant>.-->
+									Note that IHE/PCC and HITSP/C32 differ in how to represent the drug, substance, or food that one is allergic to. IHE/PCC expects to see that information in <value> and HITSP/C32 expects to see it in <participant>.
 									<value xsi:type="CD" code="70618" codeSystem="2.16.840.1.113883.6.88" displayName="Penicillin" codeSystemName="RxNorm">
 										<originalText>
 											<reference value="#ALGSUB_1"/>
@@ -214,7 +231,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.3" assigningAuthorityName="IHE PCC"/>
-							<!--Allergy act template -->
+							Allergy act template
 							<id root="eb936010-7b17-11db-9fe1-0800200c9a66"/>
 							<code nullFlavor="NA"/>
 							<statusCode code="active"/>
@@ -227,7 +244,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.6" assigningAuthorityName="IHE PCC"/>
-									<!--Allergy observation template. NOTE that the HITSP/C83 requirement for code (i.e. allergy type) differs from the IHE PCC recommendation for code.-->
+									Allergy observation template. NOTE that the HITSP/C83 requirement for code (i.e. allergy type) differs from the IHE PCC recommendation for code.
 									<id root="eb936011-7b17-11db-9fe1-0800200c9a66"/>
 									<code displayName="propensity to adverse reactions to drug" code="419511003" codeSystemName="SNOMED CT" codeSystem="2.16.840.1.113883.6.96"/>
 									<text>
@@ -237,7 +254,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<effectiveTime>
 										<low nullFlavor="UNK"/>
 									</effectiveTime>
-									<!--Note that IHE/PCC and HITSP/C32 differ in how to represent the brug, substance, or food that one is allergic to. IHE/PCC expects to see that information in <value> and HITSP/C32 expects to see it in <participant>.-->
+									Note that IHE/PCC and HITSP/C32 differ in how to represent the brug, substance, or food that one is allergic to. IHE/PCC expects to see that information in <value> and HITSP/C32 expects to see it in <participant>.
 									<value xsi:type="CD" code="1191" codeSystem="2.16.840.1.113883.6.88" displayName="Aspirin" codeSystemName="RxNorm">
 										<originalText>
 											<reference value="#ALGSUB_2"/>
@@ -267,7 +284,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.3" assigningAuthorityName="IHE PCC"/>
-							<!--Allergy act template -->
+							Allergy act template
 							<id root="c3df3b61-7b18-11db-9fe1-0800200c9a66"/>
 							<code nullFlavor="NA"/>
 							<statusCode code="active"/>
@@ -280,7 +297,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.6" assigningAuthorityName="IHE PCC"/>
-									<!--Allergy observation template. NOTE that the HITSP/C83 requirement for code (i.e. allergy or adverse reaction type) differs from the IHE PCC recommendation for code.-->
+									Allergy observation template. NOTE that the HITSP/C83 requirement for code (i.e. allergy or adverse reaction type) differs from the IHE PCC recommendation for code.
 									<id root="c3df3b60-7b18-11db-9fe1-0800200c9a66"/>
 									<code code="59037007" codeSystem="2.16.840.1.113883.6.96" displayName="drug intolerance" codeSystemName="SNOMED CT"/>
 									<text>
@@ -291,7 +308,7 @@ None of the following address elements are specifically required by HITSP C32, s
 										<low value="200512"/>
 										<high value="200601"/>
 									</effectiveTime>
-									<!--Note that IHE/PCC and HITSP/C32 differ in how to represent the drug, substance, or food that one is allergic to. IHE/PCC expects to see that information in <value> and HITSP/C32 expects to see it in <participant>.-->
+									Note that IHE/PCC and HITSP/C32 differ in how to represent the drug, substance, or food that one is allergic to. IHE/PCC expects to see that information in <value> and HITSP/C32 expects to see it in <participant>.
 									<value xsi:type="CD" code="2670" codeSystem="2.16.840.1.113883.6.88" displayName="Codeine" codeSystemName="RxNorm">
 										<originalText>
 											<reference value="#ALGSUB_3"/>
@@ -314,7 +331,7 @@ None of the following address elements are specifically required by HITSP C32, s
 								</observation>
 							</entryRelationship>
 						</act>
-					</entry>
+					</entry> -->
 				</section>
 			</component>
 			<component>
@@ -336,7 +353,8 @@ None of the following address elements are specifically required by HITSP C32, s
 								</tr>
 							</thead>
 							<tbody>
-								<tr ID="PROBSUMMARY_1">
+								<xsl:apply-templates select="$problems/results/rows" mode="Problem"/>
+								<!-- <tr ID="PROBSUMMARY_1">
 									<td ID="PROBKIND_1">Asthma</td>
 									<td>1950</td>
 									<td ID="PROBSTATUS_1">Active</td>
@@ -360,17 +378,18 @@ None of the following address elements are specifically required by HITSP C32, s
 									<td ID="PROBKIND_5">Pregnancy</td>
 									<td>Oct 26, 2010</td>
 									<td ID="PROBSTATUS_5">NOT currently pregnant</td>
-								</tr>
+								</tr> -->
 							</tbody>
 						</table>
 					</text>
-					<entry typeCode="DRIV">
+					<xsl:apply-templates select="$problems/results/rows" mode="ProblemDetail" />
+					<!-- <entry typeCode="DRIV">
 						<act classCode="ACT" moodCode="EVN">
 							<templateId root="2.16.840.1.113883.3.88.11.83.7" assigningAuthorityName="HITSP C83"/>
 							<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" assigningAuthorityName="IHE PCC"/>
-							<!-- Problem act template -->
+							Problem act template
 							<id root="6a2fa88d-4174-4909-aece-db44b60a3abb"/>
 							<code nullFlavor="NA"/>
 							<statusCode code="completed"/>
@@ -382,7 +401,7 @@ None of the following address elements are specifically required by HITSP C32, s
 								<observation classCode="OBS" moodCode="EVN">
 									<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
-									<!--Problem observation template - NOT episode template-->
+									Problem observation template - NOT episode template
 									<id root="d11275e7-67ae-11db-bd13-0800200c9a66"/>
 									<code code="64572001" displayName="Condition" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED-CT"/>
 									<text>
@@ -403,7 +422,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" assigningAuthorityName="IHE PCC"/>
-							<!-- Problem act template -->
+							Problem act template
 							<id root="ec8a6ff8-ed4b-4f7e-82c3-e98e58b45de7"/>
 							<code nullFlavor="NA"/>
 							<statusCode code="active"/>
@@ -414,7 +433,7 @@ None of the following address elements are specifically required by HITSP C32, s
 								<observation classCode="OBS" moodCode="EVN">
 									<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
-									<!--Problem observation template -->
+									Problem observation template
 									<id root="ab1791b0-5c71-11db-b0de-0800200c9a66"/>
 									<code displayName="Condition" code="64572001" codeSystemName="SNOMED-CT" codeSystem="2.16.840.1.113883.6.96"/>
 									<text>
@@ -436,7 +455,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" assigningAuthorityName="IHE PCC"/>
-							<!-- Problem act template -->
+							Problem act template
 							<id root="d11275e9-67ae-11db-bd13-0800200c9a66"/>
 							<code nullFlavor="NA"/>
 							<statusCode code="active"/>
@@ -447,7 +466,7 @@ None of the following address elements are specifically required by HITSP C32, s
 								<observation classCode="OBS" moodCode="EVN">
 									<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
-									<!-- Problem observation template -->
+									Problem observation template
 									<id root="9d3d416d-45ab-4da1-912f-4583e0632000"/>
 									<code displayName="Condition" code="64572001" codeSystemName="SNOMED-CT" codeSystem="2.16.840.1.113883.6.96"/>
 									<text>
@@ -469,7 +488,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" assigningAuthorityName="IHE PCC"/>
-							<!-- Problem act template -->
+							Problem act template
 							<id root="5a2c903c-bd77-4bd1-ad9d-452383fbfefa"/>
 							<code nullFlavor="NA"/>
 							<statusCode code="active"/>
@@ -480,7 +499,7 @@ None of the following address elements are specifically required by HITSP C32, s
 								<observation classCode="OBS" moodCode="EVN">
 									<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="HL7 CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
-									<!-- Problem observation template -->
+									Problem observation template
 									<id/>
 									<code displayName="Condition" code="64572001" codeSystemName="SNOMED-CT" codeSystem="2.16.840.1.113883.6.96"/>
 									<text>
@@ -502,7 +521,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" assigningAuthorityName="IHE PCC"/>
-							<!-- Problem act template -->
+							Problem act template
 							<id root="5a2c903c-bd77-4bd1-ad9d-452383fbfefa"/>
 							<code nullFlavor="NA"/>
 							<statusCode code="active"/>
@@ -513,7 +532,7 @@ None of the following address elements are specifically required by HITSP C32, s
 								<observation classCode="OBS" moodCode="EVN" negationInd="true">
 									<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
-									<!--Problem observation template -->
+									Problem observation template
 									<id/>
 									<code displayName="Symptom" code="418799008" codeSystemName="SNOMED-CT" codeSystem="2.16.840.1.113883.6.96"/>
 									<text>
@@ -528,7 +547,7 @@ None of the following address elements are specifically required by HITSP C32, s
 								</observation>
 							</entryRelationship>
 						</act>
-					</entry>
+					</entry> -->
 				</section>
 			</component>
 			<component>
@@ -554,7 +573,8 @@ None of the following address elements are specifically required by HITSP C32, s
 								</tr>
 							</thead>
 							<tbody>
-								<tr ID="MEDSUMMARY_1">
+							<xsl:apply-templates select="$meds/results/rows" mode="Medication"/>
+								<!-- <tr ID="MEDSUMMARY_1">
 									<td ID="MEDNAME_1">Albuterol inhalant</td>
 									<td>2 puffs</td>
 									<td>inhaler</td>
@@ -598,17 +618,18 @@ None of the following address elements are specifically required by HITSP C32, s
 									<td ID="SIGTXT_5">500mg PO QID x 7 days (for bronchitis)</td>
 									<td>Mar-Apr 2000</td>
 									<td ID="MEDSTATUS_5">Completed</td>
-								</tr>
+								</tr> -->
 							</tbody>
 						</table>
 					</text>
-					<entry typeCode="DRIV">
+					<xsl:apply-templates select="$meds/results/rows" mode="MedicationDetail" />
+					<!-- <entry typeCode="DRIV">
 						<substanceAdministration classCode="SBADM" moodCode="EVN">
 							<templateId root="2.16.840.1.113883.3.88.11.83.8" assigningAuthorityName="HITSP C83"/>
 							<templateId root="2.16.840.1.113883.10.20.1.24" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.1" assigningAuthorityName="IHE PCC"/>
-							<!--Medication activity template -->
+							Medication activity template
 							<id root="cdbd33f0-6cde-11db-9fe1-0800200c9a66"/>
 							<text>
 								<reference value="#SIGTEXT_1"/>
@@ -621,7 +642,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<effectiveTime xsi:type="PIVL_TS">
 								<period value="6" unit="h"/>
 							</effectiveTime>
-							<!--The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route). -->
+							The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route).
 							<routeCode>
 								<originalText>inhallation</originalText>
 							</routeCode>
@@ -634,7 +655,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<templateId root="2.16.840.1.113883.3.88.11.83.8.2" assigningAuthorityName="HITSP C83"/>
 									<templateId root="2.16.840.1.113883.10.20.1.53" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2" assigningAuthorityName="IHE PCC"/>
-									<!-- Product template -->
+									Product template
 									<manufacturedMaterial>
 										<code code="307782" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution" codeSystemName="RxNorm">
 											<originalText>Albuterol inhalant<reference/>
@@ -651,7 +672,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.24" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.1" assigningAuthorityName="IHE PCC"/>
-							<!--Medication activity template -->
+							Medication activity template
 							<id root="cdbd5b05-6cde-11db-9fe1-0800200c9a66"/>
 							<text>
 								<reference value="#SIGTEXT_2"/>
@@ -664,7 +685,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<effectiveTime xsi:type="PIVL_TS" institutionSpecified="false" operator="A">
 								<period value="24" unit="h"/>
 							</effectiveTime>
-							<!--The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route). -->
+							The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route).
 							<routeCode>
 								<originalText>oral</originalText>
 							</routeCode>
@@ -677,7 +698,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<templateId root="2.16.840.1.113883.3.88.11.83.8.2" assigningAuthorityName="HITSP C83"/>
 									<templateId root="2.16.840.1.113883.10.20.1.53" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2" assigningAuthorityName="IHE PCC"/>
-									<!-- Product template -->
+									Product template
 									<manufacturedMaterial>
 										<code code="309362" codeSystem="2.16.840.1.113883.6.88" displayName="Clopidogrel 75 MG oral tablet" codeSystemName="RxNorm">
 											<originalText>Clopidogrel<reference/>
@@ -696,7 +717,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.24" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.1" assigningAuthorityName="IHE PCC"/>
-							<!--Medication activity template -->
+							Medication activity template
 							<id root="cdbd5b01-6cde-11db-9fe1-0800200c9a66"/>
 							<text>
 								<reference value="#SIGTEXT_3"/>
@@ -709,7 +730,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<effectiveTime xsi:type="PIVL_TS" institutionSpecified="false" operator="A">
 								<period value="12" unit="h"/>
 							</effectiveTime>
-							<!--The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route). -->
+							The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route).
 							<routeCode>
 								<originalText>oral</originalText>
 							</routeCode>
@@ -722,7 +743,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<templateId root="2.16.840.1.113883.3.88.11.83.8.2" assigningAuthorityName="HITSP C83"/>
 									<templateId root="2.16.840.1.113883.10.20.1.53" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2" assigningAuthorityName="IHE PCC"/>
-									<!-- Product template -->
+									Product template
 									<manufacturedMaterial>
 										<code code="430618" codeSystem="2.16.840.1.113883.6.88" displayName="Metoprolol 25 MG oral tablet">
 											<originalText>Metoprolol<reference value="Pntr to Section text"/>
@@ -740,7 +761,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.24" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.1" assigningAuthorityName="IHE PCC"/>
-							<!--Medication activity template -->
+							Medication activity template
 							<id root="cdbd5b03-6cde-11db-9fe1-0800200c9a66"/>
 							<text>
 								<reference value="#SIGTEXT_4"/>
@@ -753,7 +774,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<effectiveTime xsi:type="PIVL_TS" operator="A" institutionSpecified="false">
 								<period value="24" unit="h"/>
 							</effectiveTime>
-							<!--The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route). -->
+							The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route).
 							<routeCode>
 								<originalText>oral</originalText>
 							</routeCode>
@@ -766,7 +787,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<templateId root="2.16.840.1.113883.3.88.11.83.8.2" assigningAuthorityName="HITSP C83"/>
 									<templateId root="2.16.840.1.113883.10.20.1.53" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2" assigningAuthorityName="IHE PCC"/>
-									<!-- Product template -->
+									Product template
 									<manufacturedMaterial>
 										<code code="312615" codeSystem="2.16.840.1.113883.6.88" displayName="Prednisone 20 MG oral tablet">
 											<originalText>Prednisone<reference/>
@@ -785,7 +806,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<templateId root="2.16.840.1.113883.10.20.1.24" assigningAuthorityName="CCD"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7" assigningAuthorityName="IHE PCC"/>
 							<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.1" assigningAuthorityName="IHE PCC"/>
-							<!--Medication activity template -->
+							Medication activity template
 							<id root="cdbd5b07-6cde-11db-9fe1-0800200c9a66"/>
 							<text>
 								<reference value="#SIGTEXT_5"/>
@@ -798,7 +819,7 @@ None of the following address elements are specifically required by HITSP C32, s
 							<effectiveTime xsi:type="PIVL_TS" operator="A" institutionSpecified="false">
 								<period value="6" unit="h"/>
 							</effectiveTime>
-							<!--The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route). -->
+							The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route).
 							<routeCode>
 								<originalText>oral</originalText>
 							</routeCode>
@@ -811,7 +832,7 @@ None of the following address elements are specifically required by HITSP C32, s
 									<templateId root="2.16.840.1.113883.3.88.11.83.8.2" assigningAuthorityName="HITSP C83"/>
 									<templateId root="2.16.840.1.113883.10.20.1.53" assigningAuthorityName="CCD"/>
 									<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2" assigningAuthorityName="IHE PCC"/>
-									<!-- Product template -->
+									Product template
 									<manufacturedMaterial>
 										<code code="197454" codeSystem="2.16.840.1.113883.6.88" displayName="Cephalexin 500 MG oral tablet">
 											<originalText>Cephalexin<reference/>
@@ -823,7 +844,7 @@ None of the following address elements are specifically required by HITSP C32, s
 								</manufacturedProduct>
 							</consumable>
 						</substanceAdministration>
-					</entry>
+					</entry> -->
 				</section>
 			</component>
 			<component>
@@ -1069,4 +1090,258 @@ None of the following address elements are specifically required by HITSP C32, s
 	</component>
 </ClinicalDocument>
 </xsl:template>
+
+<xsl:template match="/results/rows/row" mode="Allergy">
+	<tr ID="ALGSUMMARY_1">
+		<td ID="ALGTYPE_1">
+			<xsl:value-of select="./DrugType" />..TODO:needs fixing
+		</td>
+		<td ID="ALGSUB_1">
+			<xsl:value-of select="./Allergy" />
+		</td>
+		<td ID="ALGREACT_1">
+			<xsl:value-of select="./reaction" />..TODO:needs fixing
+		</td>
+		<td ID="ALGSTATUS_1">
+			<xsl:value-of select="./Status" />
+		</td>
+	</tr>
+</xsl:template>
+
+
+				
+<xsl:template match="/results/rows/row" mode="Problem">
+	<tr ID="PROBSUMMARY_1">
+		<td ID="PROBKIND_1">
+			<xsl:value-of select="./Problem" />
+		</td>
+		<td>
+			<xsl:value-of select="substring-before(./Date, ' ')" />
+		</td>
+		<td ID="PROBSTATUS_1">
+			<xsl:value-of select="./Status" />
+		</td>		
+	</tr>
+</xsl:template>
+
+<xsl:template match="/results/rows/row" mode="Medication">
+	<tr ID="MEDSUMMARY_1">
+		<td ID="MEDNAME_1"><xsl:value-of select="./name" /></td>
+		<td><xsl:value-of select="./name" /></td>
+		<td><xsl:value-of select="./name" /></td>
+		<td><xsl:value-of select="./route" /></td>
+		<td ID="SIGTXT_1"><xsl:value-of select="./instructions" /></td>
+		<td><xsl:value-of select="./start" /></td>
+		<td ID="MEDSTATUS_1"><xsl:value-of select="./actStatus" /></td>
+	</tr>
+	
+</xsl:template>
+
+<xsl:template match="/results/rows/row" mode="AllergyDetail">
+	<entry typeCode="DRIV">
+		<act classCode="ACT" moodCode="EVN">
+			<templateId root="2.16.840.1.113883.3.88.11.83.6" assigningAuthorityName="HITSP C83"/>
+			<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
+			<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
+			<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.3" assigningAuthorityName="IHE PCC"/>
+			<!--Allergy act template -->
+			<id root="36e3e930-7b14-11db-9fe1-0800200c9a66"/>
+			<code nullFlavor="NA"/>
+			<statusCode code="completed"/>
+			<effectiveTime>
+				<low nullFlavor="UNK"/>
+				<high nullFlavor="UNK"/>
+			</effectiveTime>
+			<entryRelationship typeCode="SUBJ" inversionInd="false">
+				<observation classCode="OBS" moodCode="EVN">
+					<templateId root="2.16.840.1.113883.10.20.1.18" assigningAuthorityName="CCD"/>
+					<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="CCD"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.6" assigningAuthorityName="IHE PCC"/>
+					<templateId root="2.16.840.1.113883.10.20.1.18"/>
+					<!--Allergy observation template. NOTE that the HITSP/C83 requirement for code (i.e. allergy type) differs from the IHE PCC recommendation for code.-->
+					<!-- <id root="4adc1020-7b14-11db-9fe1-0800200c9a66" extension=""/> -->
+					<id>
+						<xsl:attribute name="root">
+			 				<xsl:value-of select="$ctx/context/accountIdRoot/@id" />
+						</xsl:attribute>			
+						<xsl:attribute name="extension">
+							<xsl:value-of select="./path" />
+						</xsl:attribute>
+					</id>								
+					
+					<code code="416098002" codeSystem="2.16.840.1.113883.6.96" displayName="drug allergy" codeSystemName="SNOMED CT"/>
+					<text>
+						<reference value="#ALGSUMMARY_1"/>
+					</text>
+					<statusCode>
+						<xsl:attribute name="code"><xsl:value-of select="./actStatus" /></xsl:attribute>
+					</statusCode>
+					<effectiveTime>
+						<low>
+							<xsl:attribute name="value">
+								<xsl:value-of select="translate(substring-before(./Date, ' '), '-', '')" />
+							</xsl:attribute>
+						</low>
+						<!-- <xsl:value-of select="./effectiveTime" />
+						<low nullFlavor="UNK"/> -->
+					</effectiveTime>
+					<!--Note that IHE/PCC and HITSP/C32 differ in how to represent the drug, substance, or food that one is allergic to. IHE/PCC expects to see that information in <value> and HITSP/C32 expects to see it in <participant>.-->
+					<value codeSystem="2.16.840.1.113883.6.88"  codeSystemName="RxNorm">
+						<xsl:attribute name="xsi:type">CD</xsl:attribute>
+						<xsl:attribute name="displayName"><xsl:value-of select="./Allergy" /></xsl:attribute>
+						<xsl:attribute name="code"><xsl:value-of select="./Code" /></xsl:attribute>
+						<originalText>
+							<reference value="#ALGSUB_1"/>
+						</originalText>
+					</value>
+					<participant typeCode="CSM">
+						<participantRole classCode="MANU">
+							<addr/>
+							<telecom/>
+							<playingEntity classCode="MMAT">
+								<code codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm">
+									<xsl:attribute name="xsi:type">CD</xsl:attribute>
+									<xsl:attribute name="displayName"><xsl:value-of select="./Allergy" /></xsl:attribute>
+									<xsl:attribute name="code"><xsl:value-of select="./Code" /></xsl:attribute>
+									<originalText>
+										<reference value="#ALGSUB_1"/>
+									</originalText>
+								</code>
+								<name><xsl:value-of select="./Allergy" /></name>
+							</playingEntity>
+						</participantRole>
+					</participant>
+				</observation>
+			</entryRelationship>
+		</act>
+	</entry>
+	</xsl:template>
+	<xsl:template match="/results/rows/row" mode="ProblemDetail">
+	<entry typeCode="DRIV">
+		<act classCode="ACT" moodCode="EVN">
+			<templateId root="2.16.840.1.113883.3.88.11.83.7" assigningAuthorityName="HITSP C83"/>
+			<templateId root="2.16.840.1.113883.10.20.1.27" assigningAuthorityName="CCD"/>
+			<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.1" assigningAuthorityName="IHE PCC"/>
+			<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5.2" assigningAuthorityName="IHE PCC"/>
+			<!-- Problem act template -->
+			<id root="6a2fa88d-4174-4909-aece-db44b60a3abb"/>
+			<code nullFlavor="NA"/>
+			<statusCode code="completed"/>
+			<effectiveTime>
+				<!-- <low value="1950"/> -->
+				<low>
+					<xsl:attribute name="value">
+						<xsl:value-of select="translate(substring-before(./Date, ' '), '-', '')" />
+					</xsl:attribute>
+				</low>
+				<high nullFlavor="UNK"/>
+			</effectiveTime>
+			<entryRelationship typeCode="SUBJ" inversionInd="false">
+				<observation classCode="OBS" moodCode="EVN">
+					<templateId root="2.16.840.1.113883.10.20.1.28" assigningAuthorityName="CCD"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.5" assigningAuthorityName="IHE PCC"/>
+					<!--Problem observation template - NOT episode template-->
+					<!-- <id root="d11275e7-67ae-11db-bd13-0800200c9a66"/> -->
+					<id>
+						<xsl:attribute name="root">
+			 				<xsl:value-of select="$ctx/context/accountIdRoot/@id" />
+						</xsl:attribute>			
+						<xsl:attribute name="extension">
+							<xsl:value-of select="./path" />
+						</xsl:attribute>
+					</id>	
+					<code code="64572001" displayName="Condition" codeSystem="2.16.840.1.113883.6.96" codeSystemName="SNOMED-CT"/>
+					<text>
+						<reference value="#PROBSUMMARY_1"/>
+					</text>
+					<statusCode>
+						<xsl:attribute name="code"><xsl:value-of select="./Status" /></xsl:attribute>
+					</statusCode>
+					<effectiveTime>
+						<!-- <low value="1950"/> -->
+						<low>
+							<xsl:attribute name="value">
+								<xsl:value-of select="translate(substring-before(./Date, ' '), '-', '')" />
+							</xsl:attribute>
+						</low>
+					</effectiveTime>
+					<!-- <value xsi:type="CD" displayName="Asthma" code="195967001" codeSystemName="SNOMED" codeSystem="2.16.840.1.113883.6.96"/> -->
+					<value codeSystemName="SNOMED" codeSystem="2.16.840.1.113883.6.96">
+						<xsl:attribute name="xsi:type">CD</xsl:attribute>
+						<xsl:attribute name="displayName"><xsl:value-of select="./Problem" /></xsl:attribute>
+						<xsl:attribute name="code"><xsl:value-of select="./Code" /></xsl:attribute>
+					</value>
+				</observation>
+			</entryRelationship>
+		</act>
+	</entry>
+</xsl:template>
+
+	<xsl:template match="/results/rows/row" mode="MedicationDetail">
+	<entry typeCode="DRIV">
+		<substanceAdministration classCode="SBADM" moodCode="EVN">
+			<templateId root="2.16.840.1.113883.3.88.11.83.8" assigningAuthorityName="HITSP C83"/>
+			<templateId root="2.16.840.1.113883.10.20.1.24" assigningAuthorityName="CCD"/>
+			<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7" assigningAuthorityName="IHE PCC"/>
+			<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.1" assigningAuthorityName="IHE PCC"/>
+			<!--Medication activity template -->
+			<id root="cdbd33f0-6cde-11db-9fe1-0800200c9a66"/>
+			<text>
+				<reference value="#SIGTEXT_1"/>
+			</text>
+			<statusCode>
+				<xsl:attribute name="code"><xsl:value-of select="./actStatus" /></xsl:attribute>
+			</statusCode>
+			<effectiveTime >
+				<xsl:attribute name="xsi:type">IVL_TS</xsl:attribute>
+				<!-- <low value="200507"/> -->
+				<low>
+					<xsl:attribute name="value">
+						<xsl:value-of select="translate(substring-before(./start, ' '), '-', '')" />
+					</xsl:attribute>
+				</low>
+				<high nullFlavor="UNK"/>
+			</effectiveTime>
+			<effectiveTime>
+				<xsl:attribute name="xsi:type">PIVL_TS</xsl:attribute>
+				<!-- <period value="6" unit="h"/> -->
+				<period>
+					<xsl:attribute name="value"><xsl:value-of select="substring(./frequency,1,1)" /></xsl:attribute>
+					<xsl:attribute name="unit"><xsl:value-of select="substring(./frequency,2,1)" /></xsl:attribute>
+				</period>
+			</effectiveTime>
+			<!--The following route, dose and administrationUnit elements are HITSP/C83 Sig Components that are optional elements in a HITSP/C83 document. The dose and administrationUnit information is often inferable from the code (e.g. RxNorm code) of the consumable/manufacturedProduct. The route is often inferable from the administrativeUnit (e.g tablet implies oral route). -->
+			<routeCode>
+				<originalText><xsl:value-of select="./route" /></originalText>
+			</routeCode>
+			<!-- <doseQuantity value="2" unit="puffs"/> -->
+			<doseQuantity>
+				<xsl:attribute name="value"><xsl:value-of select="substring-before(./route, '=')" /></xsl:attribute>
+				<xsl:attribute name="unit"><xsl:value-of select="substring-after(./route, '=')" /></xsl:attribute>
+			</doseQuantity>
+			<administrationUnitCode>
+				<originalText><xsl:value-of select="./instructions" /></originalText>
+			</administrationUnitCode>
+			<consumable>
+				<manufacturedProduct>
+					<templateId root="2.16.840.1.113883.3.88.11.83.8.2" assigningAuthorityName="HITSP C83"/>
+					<templateId root="2.16.840.1.113883.10.20.1.53" assigningAuthorityName="CCD"/>
+					<templateId root="1.3.6.1.4.1.19376.1.5.3.1.4.7.2" assigningAuthorityName="IHE PCC"/>
+					<!-- Product template -->
+					<manufacturedMaterial>
+						<!-- <code code="307782" codeSystem="2.16.840.1.113883.6.88" displayName="Albuterol 0.09 MG/ACTUAT inhalant solution" codeSystemName="RxNorm"> -->
+						<code codeSystem="2.16.840.1.113883.6.88" codeSystemName="RxNorm">
+							<xsl:attribute name="code"><xsl:value-of select="./code" /></xsl:attribute>
+							<xsl:attribute name="displayName"><xsl:value-of select="./name" /></xsl:attribute>
+							<originalText><xsl:value-of select="./name" /><reference/>
+							</originalText>
+						</code>
+					</manufacturedMaterial>
+				</manufacturedProduct>
+			</consumable>
+		</substanceAdministration>
+	</entry>	
+</xsl:template>						
+												
 </xsl:stylesheet>
