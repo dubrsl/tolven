@@ -32,6 +32,7 @@ public class TolvenWebSecurityManager extends DefaultWebSecurityManager {
 
     public TolvenWebSecurityManager() {
         setSessionMode(NATIVE_SESSION_MODE);
+        setRememberMeManager(null);
         setSessionManager(new TolvenWebSessionManager());
         updateRealms();
     }

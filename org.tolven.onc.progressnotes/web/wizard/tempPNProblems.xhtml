@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:wiz="http://www.tolven.org/jsf/wizard"
+	xmlns:trim="http://www.tolven.org/jsf/trim">
+	<head>
+		<title>Problems</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+
+	<body>
+		<ui:composition>
+			<h:inputHidden value="" id="currentWidget" />
+			
+			<c:set var="problems"
+				value="#{trim.trim.act.relationship['subjective'].act.relationship['problems']}" />
+			<table width="100%">
+				<thead>
+					<tr>
+						<th style="width: 3%;">
+							<b>Add to Problem List</b>
+						</th>
+						<th style="width: 15%;">
+							<b>Problems</b>
+						</th>
+						<th style="width: 4;">
+							<b>Date of Onset</b>
+						</th>
+						<th style="width: 10%;">
+							<b>Site of Problem</b>
+						</th>
+						<th style="width: 10%;">
+							<b>Severity</b>
+						</th>
+						<th style="width: 10%;">
+							<b>Course</b>
+						</th>
+						<th style="width: 10;">
+							<b>Outcome</b>
+						</th>
+						<th style="width: 10%;">
+							<b>Treatment</b>
+						</th>
+						<th style="width: 10%;">
+							<b>Comments</b>
+						</th>
+						<th style="width: 8%;"></th>
+					</tr>
+					</thead>
+					<tbody style="width: 100%;">
+					<c:forEach var="problem"
+						items="#{problems.act.relationshipsList['problem']}"
+						varStatus="widgetIndex">
+						<c:if test="#{problem!=null}">
+							<c:set var="class" value="odd" />
+							<c:if test="#{(widgetIndex.index%2)==1}">
+								<c:set var="class" value="even" />
+							</c:if>
+							<tr class="#{class}"
+								id="#{menu.elementLabel}:saveProblem#{widgetIndex.index}"
+								onmouseover="setBackground(this);"
+								onmouseout="resetBackground(this);">
+								<td style="width: 3%;" align="center">
+									<h:selectBooleanCheckbox 
+										id="addToList#{widgetIndex.index}"
+										value="#{problem.enableRelationship}"
+										onclick="wizUpdatePNProblem('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 1, this.checked);" />
+								</td>
+								<td style="width: 15%;">
+									<h:outputText  escape="false"
+										value="#{problem.act.observation.values[0].CE.displayName}" />
+								</td>
+								<td style="width: 4%;">
+									<trim:TSAjax id="osDate#{widgetIndex.index}"
+										value="#{problem.act.effectiveTime.TS}" dateStyle="short"
+										 readonly="true" />
+								</td>
+								<td style="width: 10%;">
+									<h:outputText 
+										value="#{problems.act.relationshipsList['siteofProblem'][widgetIndex.index].act.title.ST.value}" />
+								</td>
+								<td style="width: 10%;">
+									<h:outputText 
+										value="#{problem.act.relationship['severity'].act.observation.values[0].CE.displayName}"/>
+								</td>
+								<td style="width: 10%;">
+									<h:outputText  value="#{problem.act.relationship['course'].act.observation.values[0].CE.displayName}"/>
+								</td>
+								<td style="width: 10%;">
+									<h:outputText  value="#{problem.act.relationship['outcome'].act.observation.values[0].CE.displayName}"/>
+								</td>
+								<td style="width: 10%;">
+									<h:outputText 
+										value="#{problem.act.relationship['treatment'].act.text.ST.value}" />
+								</td>
+								<td style="width: 10%;">
+									<h:outputText 
+										value="#{problem.act.relationship['comments'].act.text.ST.value}" />
+								</td>
+								<td width="8%" nowrap="nowrap">
+									<span style="float: left;"> <img
+											onclick="editPNTemplateProblem('problem', #{widgetIndex.index}, 'echr:problems', 'wizSavePNProblem', '#{menu.elementLabel}', 0);return false;"
+											alt="Edit" src="../images/edit.jpg" style="cursor: pointer;"
+											title="Edit"></img> </span>
+									<span style="float: right;"> <img
+											onclick="wizRemoveTemplate('managePNProblems.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnProblemDiv', 'tempPNProblems.jsf');return false;"
+											alt="Remove" src="../images/delete.gif"
+											style="cursor: pointer;" title="Remove"></img> </span>
+								</td>
+							</tr>
+							<tr style="display: none;" class="editWidget"
+								id="#{menu.elementLabel}:editProblem#{widgetIndex.index}">
+								<h:inputHidden value="0" id="tempProblemActionType#{widgetIndex.index}" />
+								<td style="width: 3%;">
+									<h:selectBooleanCheckbox 
+										id="addList#{widgetIndex.index}"
+										value="#{problem.enableRelationship}"
+										onclick="wizUpdatePNProblem('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 1, this.checked);" />
+								</td>
+								<td style="width: 15%;">
+									<h:outputText escape="false"
+										value="#{problem.act.observation.values[0].CE.displayName}" />
+								</td>
+								<td style="width: 4%;" nowrap="nowrap">
+									<trim:TSAjax id="onsetDate#{widgetIndex.index}"
+										value="#{problem.act.effectiveTime.TS}" dateStyle="short"
+										style="width:70px;" />
+								</td>
+								<td style="width: 10%;">
+									<h:inputText style="width: 93px;"
+										id="siteofProblem#{widgetIndex.index}"
+										value="#{problems.act.relationshipsList['siteofProblem'][widgetIndex.index].act.title.ST.value}" />
+								</td>
+								<td style="width: 10%;">
+									<h:selectOneMenu style="width: 93px;"
+										id="severity_save#{widgetIndex.index}"
+										value="#{problem.act.relationship['severity'].act.observation.values[0].CE.displayName}">
+										<f:selectItems value="#{trim.valueSets['severity']}" />
+									</h:selectOneMenu>
+								</td>
+								<td style="width: 10%;">
+									<h:selectOneMenu style="width: 90px;"
+										id="course_save#{widgetIndex.index}"
+										value="#{problem.act.relationship['course'].act.observation.values[0].CE.displayName}">
+										<f:selectItems value="#{trim.valueSets['course']}" />
+									</h:selectOneMenu>
+								</td>
+								<td style="width: 10%;">
+									<h:selectOneMenu style="width: 91px;"
+										id="outcome_save#{widgetIndex.index}"
+										value="#{problem.act.relationship['outcome'].act.observation.values[0].CE.displayName}">
+										<f:selectItems value="#{trim.valueSets['outcome']}" />
+									</h:selectOneMenu>
+								</td>
+								<td style="width: 10%;">
+									<h:inputTextarea style="width: 97px;"
+										id="treatment_save#{widgetIndex.index}"
+										value="#{problem.act.relationship['treatment'].act.text.ST.value}" />
+								</td>
+								<td style="width: 10%;">
+									<h:inputTextarea style="width: 97px;"
+										id="comments_save#{widgetIndex.index}"
+										value="#{problem.act.relationship['comments'].act.text.ST.value}" />
+								</td>
+								<td style="width: 8%;"  nowrap="nowrap">
+									<span  style="float: left;"> <img
+											onclick="wizUpdatePNProblem('#{menu.element}','#{menu.elementLabel}','#{widgetIndex.index}', 0);return false;"
+											style="cursor: pointer;" alt="Save" src="../images/save.gif"
+											title="Save"></img> 
+									</span>
+			        				<span style="float: right;"> <img
+											onclick="wizCancelTemplateProblem('managePNProblems.pnotes', '#{menu.element}', #{widgetIndex.index}, 'pnProblemDiv', 'tempPNProblems.jsf');return false;"
+											alt="Cancel" src="../images/undo.gif"
+											style="cursor: pointer;" title="Remove"></img> </span>
+								</td>
+							</tr>
+							<c:if test="#{problem.act.title.ST.value!=''}">
+								<script>
+       							$('#{menu.elementLabel}:saveProblem#{widgetIndex.index}').hide();
+       							$('#{menu.elementLabel}:editProblem#{widgetIndex.index}').show();
+       						</script>
+							</c:if>
+						</c:if>
+					</c:forEach>
+					<tr class="widgetAction">
+						<td colspan="10">
+							<a style="width: 100%;" id="addPNProblemLink"
+								onclick="addPNTemplate('problem', 'echr:problems', 'wizSavePNProblem', '#{menu.elementLabel}', 0);return false;"
+								href="#"> Add problem </a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</ui:composition>
+	</body>
+</html>

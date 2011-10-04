@@ -30,7 +30,7 @@
 						<tr id="#{menu.elementLabel}savedOrder#{widgetIndex.index}" class="#{class}">
 							<td style="width: 12%;">#{rel.act.observation.value.CE.displayName}</td>
 							<td style="width: 8%;" nowrap="nowrap">
-								<trim:TS value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+								<trim:TS id="time#{widgetIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
 							</td>
 							<td style="width: 10%;">#{rel.act.relationship['severity'].act.observation.value.CE.displayName}</td>
 							<td style="width: 10%;">#{rel.act.relationship['course'].act.observation.value.CE.displayName}</td>
@@ -50,7 +50,7 @@
 								<h:inputHidden id="saveProblem#{widgetIndex.index}" value="#{rel.enableRelationship}"/>
 							</td>
 							<td style="width:8%;" nowrap="nowrap" >
-								<trim:TS value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="false"/>
+								<trim:TS id="edittime#{widgetIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="false"/>
 							</td>
 							<td style="width:10%;" >
 								<trim:valueSetMenu id="severity#{widgetIndex.index}"  slot="#{rel.act.relationship['severity'].act.observation.value}" />
@@ -86,7 +86,7 @@
 								<h:inputHidden id="saveProblem#{widgetIndex.index}" value="#{rel.enableRelationship}"/>
 							</td>
 							<td style="width:8%;" nowrap="nowrap" >								
-								<trim:TS value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="false"/>
+								<trim:TS id="savetime#{widgetIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="false"/>
 							</td>
 							<td style="width:10%;" >
 								<trim:valueSetMenu id="severity#{widgetIndex.index}"  slot="#{rel.act.relationship['severity'].act.observation.value}" />

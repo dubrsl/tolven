@@ -22,7 +22,11 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.naming.AuthenticationException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.web.util.WebUtils;
+import org.tolven.exeption.GatekeeperAuthenticationException;
 import org.tolven.gatekeeper.entity.SecurityQuestion;
 import org.tolven.session.TolvenSessionWrapperFactory;
 
@@ -96,7 +100,7 @@ public class ChangeLoginPasswordAction {
             if (sqa != null) {
                 sqap = sqa.toCharArray();
             }
-            getLoginPasswordBean().changePassword(getUid(), getRealm(), getOldUserPassword().toCharArray(), getNewUserPassword().toCharArray(), sq, sqap);
+            getLoginPasswordBean().changePassword(getUid(), getOldUserPassword().toCharArray(), getRealm(), getNewUserPassword().toCharArray(), sq, sqap);
         } catch (AuthenticationException ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("changepasswd", new FacesMessage(ex.getMessage()));
@@ -121,6 +125,10 @@ public class ChangeLoginPasswordAction {
 
     public String getConfirmSecurityQuestionAnswer() {
         return confirmSecurityQuestionAnswer;
+    }
+
+    public String getFormattedExpiration() {
+        return (String) TolvenSessionWrapperFactory.getInstance().getAttribute(GatekeeperAuthenticationException.PASSWORD_EXPIRING);
     }
 
     public LoginPasswordLocal getLoginPasswordBean() {
@@ -170,6 +178,27 @@ public class ChangeLoginPasswordAction {
 
     public boolean isRemoveSecurityQuestion() {
         return removeSecurityQuestion;
+    }
+
+    public String later() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        try {
+            WebUtils.redirectToSavedRequest(request, response, null);
+            TolvenSessionWrapperFactory.getInstance().removeAttribute(GatekeeperAuthenticationException.PASSWORD_EXPIRING);
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not redirect to page when choosing the later option for password expiring", ex);
+        }
+        return "success";
+    }
+
+    public String logout() {
+        TolvenSessionWrapperFactory.getInstance().logout();
+        return "loggedOut";
+    }
+
+    public String mustChangeLoginPassword() {
+        return changeLoginPassword();
     }
 
     public void setConfirmSecurityQuestionAnswer(String confirmSecurityQuestionAnswer) {

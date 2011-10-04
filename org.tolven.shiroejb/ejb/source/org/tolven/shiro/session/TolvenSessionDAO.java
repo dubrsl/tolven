@@ -2,7 +2,6 @@ package org.tolven.shiro.session;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -90,7 +89,6 @@ public class TolvenSessionDAO extends CachingSessionDAO {
     @Override
     protected Serializable doCreate(Session session) {
         TolvenSessionState ts = convertSession(session);
-        encryptAttributes(session, ts);
         if (logger.isDebugEnabled()) {
             logger.debug("Persisting session:" + session.getId());
         }
@@ -233,7 +231,7 @@ public class TolvenSessionDAO extends CachingSessionDAO {
                 logger.debug("Serialized attributes for session:" + session.getId());
             }
             return serializedBytes;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             throw new RuntimeException("Could not serialize attributes", ex);
         }
     }

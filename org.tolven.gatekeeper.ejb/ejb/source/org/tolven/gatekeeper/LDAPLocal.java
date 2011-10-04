@@ -15,8 +15,6 @@
  */
 package org.tolven.gatekeeper;
 
-import javax.naming.AuthenticationException;
-
 import org.tolven.naming.TolvenPerson;
 
 /**
@@ -25,18 +23,17 @@ import org.tolven.naming.TolvenPerson;
  * @author Joseph Isaac
  *
  */
-public interface LDAPLocal {
+public interface LdapLocal {
 
     /**
      * Change userPassword
      * 
      * @param uid
-     * @param realm
      * @param oldPassword
+     * @param realm
      * @param newPassword
-     * @throws AuthenticationException
      */
-    public void changeUserPassword(String uid, String realm, char[] oldPassword, char[] newPassword) throws AuthenticationException;
+    public void changeUserPassword(String uid, char[] oldPassword, String realm, char[] newPassword);
 
     /**
      * Create a TolvenPerson, supplying the uid, realm, userPassword and userPKCS12 explicitly, although
@@ -44,15 +41,26 @@ public interface LDAPLocal {
      * 
      * @param tolvenPerson
      * @param uid
-     * @param realm
      * @param uidPassword
+     * @param realm
      * @param base64UserPKCS12
      * @param admin
      * @param adminPassword
      * @return
-     * @throws AuthenticationException
      */
-    public TolvenPerson createTolvenPerson(TolvenPerson tolvenPerson, String uid, String realm, char[] uidPassword, String base64UserPKCS12, String admin, char[] adminPassword) throws AuthenticationException;
+    public char[] createTolvenPerson(TolvenPerson tolvenPerson, String uid, char[] uidPassword, String realm, String base64UserPKCS12, String admin, char[] adminPassword);
+
+    /**
+     * Create a TolvenPerson, supplying the uid and realm explicitly, although tolvenPerson may contain those, as well as other attributes
+     * The userPassword and credentials will be generated automatically
+     * @param tolvenPerson
+     * @param uid
+     * @param realm
+     * @param admin
+     * @param adminPassword
+     * @return
+     */
+    public char[] createTolvenPerson(TolvenPerson tolvenPerson, String uid, String realm, String admin, char[] adminPassword);
 
     /**
      * Find a TolvenPerson
@@ -60,30 +68,27 @@ public interface LDAPLocal {
      * @param uid
      * @param realm
      * @return
-     * @throws AuthenticationException
      */
-    public TolvenPerson findTolvenPerson(String uid, String realm) throws AuthenticationException;
-    
+    public TolvenPerson findTolvenPerson(String uid, String realm);
+
     /**
      * Reset userPassword
      * 
      * @param uid
      * @param realm
-     * @param newPassword
      * @param admin
      * @param adminPassword
      * @return
      */
-    public void resetUserPassword(String uid, String realm, char[] newPassword, String admin, char[] adminPassword) throws AuthenticationException;
+    public char[] resetUserPassword(String uid, String realm, String admin, char[] adminPassword);
 
     /**
      * Verify password.
-     * 
      * @param uid
-     * @param realm
      * @param password
+     * @param realm
      * @return
      */
-    public boolean verifyPassword(String uid, String realm, char[] password);
-    
+    public boolean verifyPassword(String uid, char[] password, String realm);
+
 }

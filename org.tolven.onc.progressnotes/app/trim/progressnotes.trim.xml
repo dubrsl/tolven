@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>obs/evn/progressnotes</name>
+	<description>Progress Notes</description>
+	<page>progressnotes.xhtml</page>
+	<drilldown>progressnotesDD.xhtml</drilldown>
+	<menu>global:progressnotesMenu</menu>
+	<application name="echr">
+		<instance>echr:patient:progressnote</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">		
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="nullifiedActive" from="active" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>		
+	</transitions>	
+	<act classCode="DOCCLIN" moodCode="EVN">
+	 	<bind application="echr" phase="create">
+            <placeholder bindAction="merge">
+                <path>echr:patient:progressnote</path>
+            </placeholder>
+        </bind>
+        <code>
+            <CD>
+                <code>C0017594</code>
+                <codeSystemName>UMLS</codeSystemName>
+                <codeSystemVersion>2007AA</codeSystemVersion>
+            </CD>
+        </code>
+		<statusCode>active</statusCode>		
+		<title>
+			<ST>Progress Notes</ST>
+		</title>
+		<effectiveTime>
+			<label>Date of Progress Note</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>		
+		<relationship name="type" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Progress Notes</ST>
+				</title>
+				<text>
+					<ST>progress notes</ST>					
+				</text>
+				<observation>
+					<value>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="problems" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Problems</ST>
+				</title>
+			</act>
+		</relationship>
+		<relationship name="site" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				
+				<observation>
+					<value>
+						<ST></ST>
+						
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="symptoms" direction="OUT" typeCode="PERT">
+			<act classCode="OBS" moodCode="EVN">
+				
+				<observation>
+					<value>
+						<ST></ST>
+						
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="COMP" direction="OUT" name="encounterAssociations">
+ 			<act classCode="OBS" moodCode="EVN">
+ 				<observation>
+		 			<value>
+		 				<label>Associate with Encounter</label>
+		 				<valueSet>encounter</valueSet>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.InsertAct</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="arName">
+		        <value xsi:type="xs:string">entry</value>
+			</property>
+			<property name="arDirection">
+				<value xsi:type="xs:string">OUT</value>
+			</property>
+			<property name="arTypeCode">
+		        <value xsi:type="xs:string">COMP</value>
+			</property>
+			<property name="template">
+		       <value xsi:type="xs:string"></value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">add</value>
+			</property>
+			<property name="position">
+		        <value xsi:type="xs:string">0</value>
+			</property>
+		</compute>
+		
+		
+	</act>
+	
+	
+	
+	<!-- TEMPLATE VALUESET START-->
+	<valueSet name="encounterTemplate">
+		<CE>
+			<displayName></displayName>
+            <code>C0389100</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- TEMPLATE VALUESET END -->
+	<valueSet name="encounter"></valueSet>
+	<field name="formType">	
+		<value xsi:type="xs:string">progressnotes</value>
+	</field>
+	<field name="pageName">	
+		<value xsi:type="xs:string">progressnote</value>
+	</field>
+	<!-- valueSet for Problem - START -->
+	<valueSet name="severity">
+		<CE>
+			<displayName>Mild</displayName>
+			<code>C0547040</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Mild to moderate</displayName>
+			<code>C1299392</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Moderate</displayName>
+			<code>C0205081</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Moderate to severe</displayName>
+			<code>C1299393</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Severe</displayName>
+			<code>C0205082</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fatal</displayName>
+			<code>C1302234</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="course">
+		<CE>
+			<displayName>Acute</displayName>
+			<code>C0205178</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Chronic</displayName>
+			<code>C0205191</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Recurrent</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="outcome">
+		<CE>
+			<displayName>Sequelae</displayName>
+			<code>C0543419</code>
+			<codeSystem>HL7V2.5	S</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Died</displayName>
+			<code>C1546956</code>
+			<codeSystem>HL7V2.5	D</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fully recovered</displayName>
+			<code>C1546957</code>
+			<codeSystem>HL7V2.5	F</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Not recovering/unchanged</displayName>
+			<code>C1546958</code>
+			<codeSystem>HL7V2.5	N</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Recovering</displayName>
+			<code>C1546959</code>
+			<codeSystem>HL7V2.5	R</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Worsening</displayName>
+			<code>C1546960</code>
+			<codeSystem>HL7V2.5	W</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown</displayName>
+			<code>C1556127</code>
+			<codeSystem>HL7V2.5	U</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- valueSet for Problem - END -->
+</trim>

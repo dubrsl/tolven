@@ -1,5 +1,6 @@
 <%@page contentType="text/html"%>
 <%@page pageEncoding="UTF-8"%>
+<% response.sendRedirect(request.getContextPath() + "/vestibule/selectAccount.jsf"); %>
 <%--
 The taglib directive below imports the JSTL library. If you uncomment it,
 you must also add the JSTL library to the project. The Add Library... action
@@ -15,10 +16,10 @@ on Libraries node in Projects view can be used to add the JSTL 1.1 library.
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="Cache-Control" content="no-cache" />
         <meta http-equiv="expires" content="0">
-        <meta http-equiv="refresh" content="0; url=./vestibule/selectAccount.jsf" />
     </head>
     <body>
-   
+    	This page only shows if redirects to /vestibule/selectAccount.jsf are not working correctly
     </body>
 </html>

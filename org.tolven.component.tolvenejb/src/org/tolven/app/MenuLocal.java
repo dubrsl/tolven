@@ -411,4 +411,5 @@ public interface MenuLocal {
 	 * @return MenuLocator for the given path
 	 */
 	public MenuLocator createOrUpdateMenuLocator( String path, List<MSColumn> columns);
+	public Map<String, String> findReferenceIds(String conditions);
 }

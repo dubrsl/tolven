@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.component.tolvenweb" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.component.tolvenweb" version="2.1.3" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.component.war" />
 		<import plugin-id="org.tolven.component.faces" />
@@ -288,6 +288,9 @@
 	<extension id="datastructures" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
 		<parameter id="includeFile" value="scriptInclude/datastructures.txt" />
 	</extension>
+	<extension id="timeline-api" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/timeline-api.txt" />
+	</extension>
 	<extension id="layercalendar" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
 		<parameter id="includeFile" value="scriptInclude/layercalendar.txt" />
 	</extension>
@@ -433,6 +436,83 @@
 		<parameter id="validator-class" value="org.tolven.web.faces.validate.AttributeValidator" />
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
 	</extension>
+	<extension id="listNameValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="listNameValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.ListNameValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="emptyStringValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="emptyStringValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.EmptyStringValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="phrNotificationValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="phrNotificationValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.PHRNotificationValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	
+	<extension id="numberAndDecimalValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="numberAndDecimalValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.NumberAndDecimalValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="nullRelationshipValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="nullRelationshipValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.NullRelationshipValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- Global Faces Validators -->
+    <extension id="emailValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="emailValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.EmailValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="noSpaceInBetweenValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="noSpaceInBetweenValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.NoSpaceInBetweenValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="addressLine1Validator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="addressLine1Validator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.AddressLine1Validator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="zipCodeValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="zipCodeValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.ZipCodeValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension> 
+	<extension id="telValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="telValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.TelValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="deaValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="deaValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.DeaValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="endTimeValidator" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagValidator">
+		<parameter id="tag-name" value="endTimeValidator" />
+        <parameter id="validator-id" value="endTimeValidator" />
+        <parameter id="validator-class" value="org.tolven.web.faces.validate.EndTimeValidator" />
+    </extension>
+    <extension id="validatePrevious" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagValidator">
+		<parameter id="tag-name" value="validatePrevious" />
+		<parameter id="validator-id" value="validatePrevious" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.ValidatePrevious" />
+	</extension>
+	<extension id="validateCurrentAndFuture" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagValidator">
+		<parameter id="tag-name" value="validateCurrentAndFuture" />
+		<parameter id="validator-id" value="validateCurrentAndFuture" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.ValidateCurrentAndFuture" />
+	</extension>
+	<extension id="validateDateCompare" plugin-id="org.tolven.component.tolvenweb.taglibs.trim" point-id="tagValidator">
+		<parameter id="tag-name" value="validateDateCompare" />
+		<parameter id="validator-id" value="validateDateCompare" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.ValidateDateCompare" />
+	</extension>
 	<!-- End Global Faces Validators -->
 
 	<!-- Global Faces Converters -->
@@ -505,11 +585,6 @@
 		<parameter id="converter-id" value="valueSetLookupConverter" />
 		<parameter id="converter-class" value="org.tolven.web.ValueSetLookupConverter" />
 	</extension>
-	<extension id="zipCodeValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
-		<parameter id="validator-id" value="zipCodeValidator" />
-		<parameter id="validator-class" value="org.tolven.web.faces.validate.ZipCodeValidator" />
-		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
-	</extension> 
 	<!-- End Trim Tags -->
 
 	<!-- Wizard Tags -->

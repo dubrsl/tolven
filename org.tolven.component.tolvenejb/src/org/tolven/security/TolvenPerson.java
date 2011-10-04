@@ -40,6 +40,7 @@ import org.tolven.security.hash.SSHA;
  * 
  * @author John Churin
  */
+@Deprecated
 public class TolvenPerson implements Serializable {
 
     private Attribute objectClassAttribute;

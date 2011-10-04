@@ -111,6 +111,7 @@
 				<include name="**/Resources_ru.properties" />
 			</fileset>
 		</jar>
+		<antcall target="create-installer" />
 		<!-- Add DevLib.jar to plugin zip -->
 		<zip destfile="${zipFileName}" update="true">
 			<zipfileset dir="${buildFolder}">
@@ -120,9 +121,10 @@
 				<include name="pluginLib/jpf.jar" />
 				<include name="pluginLib/tpf-boot.jar" />
 				<include name="pluginLib/commons-logging.jar" />
+				<include name="pluginLib/commons-logging.jar" />
 			</zipfileset>
+			<zipfileset dir="${buildFolder}/installer" />
 		</zip>
-		<antcall target="create-installer" />
 		<antcall target="populate-dev-lib-tpf" />
 	</target>
 	

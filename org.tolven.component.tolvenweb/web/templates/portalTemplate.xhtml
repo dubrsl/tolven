@@ -93,7 +93,7 @@
 				</h:panelGroup>
 			</td>
 			<td>
-				<h:panelGroup rendered="#{top.tp!=null}">
+				<h:panelGroup rendered="#{top.tp!=null and top.properties['surescripts.installed']  == 'true'}">
 					<h:commandLink action="surescripts" rendered="#{top.accountUserId!=0}">
 						<h:outputText value="Surescripts Message Center"/>
 					</h:commandLink>

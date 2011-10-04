@@ -12,7 +12,6 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id: RSGatekeeperClientBean.java 2365 2011-08-11 05:29:59Z joe.isaac $
  */
 package org.tolven.gatekeeper.bean;
 
@@ -162,7 +161,7 @@ public class RSGatekeeperClientBean implements RSGatekeeperClientLocal {
          */
         WebResource webResource = getWebResource(webContext.getRsLoginPath(), false);
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
-        formData.add("uid", username);
+        formData.add("username", username);
         formData.add("password", new String(password));
         formData.add("realm", realm);
         ClientResponse response = webResource.post(ClientResponse.class, formData);
@@ -173,7 +172,7 @@ public class RSGatekeeperClientBean implements RSGatekeeperClientLocal {
     }
 
     @Override
-    public boolean verifyUserPassword(String uid, String realm, char[] password) {
+    public boolean verifyUserPassword(String uid, char[] password, String realm) {
         String principal = (String) TolvenSessionWrapperFactory.getInstance().getPrincipal();
         WebResource webResource = getWebResource("user/" + principal + "/user/" + uid + "/verifyPassword");
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();

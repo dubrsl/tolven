@@ -68,7 +68,7 @@ public class VestibuleProcessor {
     private Logger logger = Logger.getLogger(VestibuleProcessor.class);
 
     /**
-     * On entering the vestibule, a TolvenUser must already be associated with the Principal.
+     * On entering the Vestibule, a TolvenUser must already be associated with the Principal.
      * The user is provided with a Vestibule pass and the user login time is updated.
      * The TolvenUser Id is added to the session and the TolvenUser is added as a request attribute.
      * If a default account exists, then an attempt is made to automatically log the user into it.
@@ -77,7 +77,7 @@ public class VestibuleProcessor {
      * @return
      */
     public String enterVestibule(HttpServletRequest request) {
-        logger.info("Vestibule entered: " + request.getUserPrincipal());
+        logger.info("VESTIBULE_ENTERED: " + request.getUserPrincipal());
         TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
         boolean inAccount = "account".equals((String) sessionWrapper.getAttribute(GeneralSecurityFilter.USER_CONTEXT));
         if (inAccount) {
@@ -133,12 +133,19 @@ public class VestibuleProcessor {
      * 
      * @param request
      */
-    public void refreshVestibule(HttpServletRequest request) {
+    public String refreshVestibule(HttpServletRequest request) {
         TolvenUser user = activationBean.findUser(request.getUserPrincipal().getName());
         if (user == null) {
             throw new RuntimeException("No TolvenUser found for: " + request.getUserPrincipal());
         }
+        boolean requestingVestibulePage = request.getRequestURI().startsWith(request.getContextPath() + "/vestibule/");
+        String vestibuleRedirect = null;
+        if(requestingVestibulePage) {
         request.setAttribute(GeneralSecurityFilter.TOLVENUSER, user);
+        } else {
+            vestibuleRedirect = enterVestibule(request);
+    }
+        return vestibuleRedirect;
     }
 
     /**
@@ -161,7 +168,7 @@ public class VestibuleProcessor {
      * 
      * @param request
      */
-    public void refreshAccount(HttpServletRequest request) {
+    public String refreshAccount(HttpServletRequest request) {
         TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
         boolean inAccount = "account".equals((String) sessionWrapper.getAttribute(GeneralSecurityFilter.USER_CONTEXT));
         if (!inAccount) {
@@ -182,10 +189,21 @@ public class VestibuleProcessor {
         if (accountUser.getUser().getId() != user.getId()) {
             throw new RuntimeException("Tolven User Id: " + user.getId() + " not authorized to use account: " + accountUser.getAccount().getId() + " for principal: " + request.getUserPrincipal());
         }
+        boolean requestingVestibulePage = request.getRequestURI().startsWith(request.getContextPath() + "/vestibule/");
+        String vestibuleRedirect = null;
+        if(requestingVestibulePage) {
+            String accountHome = (String) (String) sessionWrapper.getAttribute(GeneralSecurityFilter.ACCOUNT_HOME);
+            if (accountHome == null || accountHome.length() == 0) {
+                accountHome = DEFAULT_ACCOUNT_HOME;
+            }
+            vestibuleRedirect = accountHome;
+        } else {
         request.setAttribute(GeneralSecurityFilter.TOLVENUSER, user);
         request.setAttribute(GeneralSecurityFilter.ACCOUNTUSER, accountUser);
         //The accountUser Id is required only for legacy, since the accountUser is in the request
         request.setAttribute(GeneralSecurityFilter.ACCOUNTUSER_ID, accountUser.getId());
+    }
+        return vestibuleRedirect;
     }
 
     private Map<String, Object> getVestibuleResponse(HttpServletRequest request) {

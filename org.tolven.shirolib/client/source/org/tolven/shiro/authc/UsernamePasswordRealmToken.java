@@ -22,16 +22,16 @@ public class UsernamePasswordRealmToken extends UsernamePasswordToken implements
     private String realm;
 
     public UsernamePasswordRealmToken(final String username, final char[] password, final String realm) {
-        this(username, password, realm, false, null);
+        this(username, password, realm, null);
     }
 
-    public UsernamePasswordRealmToken(final String username, char[] password, final String realm, final boolean rememberMe, final String host) {
-        super(username, password, rememberMe, host);
+    public UsernamePasswordRealmToken(final String username, char[] password, final String realm, final String host) {
+        super(username, password, false, host);
         setRealm(realm);
     }
 
-    public UsernamePasswordRealmToken(final String username, final String password, final String realm, final boolean rememberMe, final String host) {
-        super(username, password, rememberMe, host);
+    public UsernamePasswordRealmToken(final String username, final String password, final String realm, final String host) {
+        super(username, password, false, host);
         setRealm(realm);
     }
 

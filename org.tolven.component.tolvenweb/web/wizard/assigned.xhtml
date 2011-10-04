@@ -13,12 +13,7 @@
 </head>
 <body>
     <ui:composition>
-    	<script>
-			// <![CDATA[
-			          	checkServiceLevel("#{menu.elementLabel}" , "#{trim.trim.act.relationship['prescriber'].act.observation.values[3].ST.value}");
-			// ]]>           	
-		</script>
- 		<input type="hidden" id="accountId" value="#{top.accountId}"/>
+    	<input type="hidden" id="accountId" value="#{top.accountId}"/>
 		<wiz:step title="#{msg.GettingStarted}" >
 				<img id="ajaxLoader"  alt="ajax" src="../images/ajax-loader23.gif" style="display:none; z-index: 50;position: absolute;margin-top: 40px;margin-left: 900px;"/>			 
 				<wiz:body>
@@ -340,7 +335,7 @@
 				<table width ="85%" cellpadding="5">
 					<tr>
 						<td width="10%">
-							#{trim.trim.act.relationship['prescriber'].act.observation.values[14].label.value}
+							#{trim.trim.act.relationship['prescriber'].act.observation.values[14].label.value}*
 						</td>
 						<td width="40%">
 							<h:inputText id="npi" maxlength="10" value="#{trim.trim.act.relationship['prescriber'].act.observation.values[14].ST.value}" size="20"
@@ -380,13 +375,13 @@
 						<td width="40%" evalFunc="validatePrescriberDateFields('#{menu.elementLabel}');">
 							<trim:TSNew id="activeEndTime" days="30" compareWith="#{trim.trim.act.relationship['prescriber'].act.observation.values[4].TS}" validate="endTimeValidator"
 							value="#{trim.trim.act.relationship['prescriber'].act.observation.values[5].TS}" dateStyle="short" timeStyle="short" required="true" />
-							<span id="prescMinDiff" style="display: none; color: red;">
+							<span id="#{menu.elementLabel}prescMinDiff" style="display: none; color: red;">
 									<h:outputText value="Minimum difference between Active Start Time and Active End Time must be 30 days."/>
 						    </span>
-						    <span id="prescGreater" style="display: none; color: red;">
+						    <span id="#{menu.elementLabel}prescGreater" style="display: none; color: red;">
 									<h:outputText value="Active Start Time should not be greater than the Active End Time."/>
 						    </span>
-						    <span id="prescSameTime" style="display: none; color: red;">
+						    <span id="#{menu.elementLabel}prescSameTime" style="display: none; color: red;">
 									<h:outputText value="Both Active Start Time and End Time are the same.The Difference between Active Start Time and Active End Time must be atleast 30 Days."/>
 						    </span>
 						</td>

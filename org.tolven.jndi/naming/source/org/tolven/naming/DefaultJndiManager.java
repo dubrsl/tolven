@@ -43,6 +43,7 @@ public class DefaultJndiManager implements JndiManager {
 
     public static final String[] REALM_SUFFIXES = new String[] {
             ".realm.class",
+            ".realm.ldap.env",
             ".realm.ldap.jndiName",
             ".realm.ldap.baseDN",
             ".realm.ldap.basePeopleName",
@@ -127,12 +128,16 @@ public class DefaultJndiManager implements JndiManager {
     private void addProperties(String prefix, String[] suffixes, Properties jndiProperties, Properties srcProperties) {
         for (String suffix : suffixes) {
             String nameKey = prefix + suffix;
-            String value = srcProperties.getProperty(nameKey);
-            if (value != null) {
-                if (value.contains("${")) {
-                    throw new RuntimeException(nameKey + " contains undefined properties: " + value);
+            for (String srcPropertyName : srcProperties.stringPropertyNames()) {
+                if (srcPropertyName.startsWith(nameKey)) {
+                    String value = srcProperties.getProperty(srcPropertyName);
+                    if (value != null) {
+                        if (value.contains("${")) {
+                            throw new RuntimeException(nameKey + " contains undefined properties: " + value);
+                        }
+                        jndiProperties.setProperty(srcPropertyName, value);
+                    }
                 }
-                jndiProperties.setProperty(nameKey, value);
             }
         }
     }

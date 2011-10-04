@@ -44,6 +44,15 @@
 					<trim:CE id="course" valueSet="course" value="#{trim.trim.act.relationships[2].act.observation.value}" readonly="true"/>
 					<h:outputText value="#{msg.Onset}: "/>
 					<trim:CE id="onset" valueSet="onset" value="#{trim.trim.act.relationships[3].act.observation.value}" readonly="true"/>
+					<h:outputText value="Receiver :" />
+					<wiz:selectWithOther id="receiverBy"  role="#{trim.trim.act.participation['receiver'].role}" list="#{trim.list['echr:admin:receivers:all']}" readonly="true" />
+				</h:panelGrid>
+				<h:panelGrid columns="1" >
+					<br></br>
+					<a href="#" onclick="$('#{menu.elementLabel}hl7msg').toggle();">Show/Hide HL7 Message</a>
+					<div id="#{menu.elementLabel}hl7msg" style="display:none">
+						<pre>#{menu.hl7Message}</pre>
+					</div>
 				</h:panelGrid>
 			</c:if>
 		</wiz:body>

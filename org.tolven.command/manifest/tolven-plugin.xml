@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.command" version="2.1.0" class="org.tolven.command.TolvenApplication" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.command" version="2.1.1" class="org.tolven.command.TolvenApplication" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<attributes>
 		<attribute id="adminPluginId" value="org.tolven.assembler.admin" />
 	</attributes>
 	<requires>
-		<import plugin-id="org.tolven.library.apache-ant" />
 		<import plugin-id="org.tolven.restfulclient" />
 		<import plugin-id="org.tolven.assembler.configwrapper" />
 	</requires>
@@ -13,9 +12,6 @@
 	</runtime>
 	<extension-point extension-multiplicity="none" id="devLib">
 		<parameter-def default-value="devLib.jar" id="jar" />
-	</extension-point>
-	<extension-point id="ant-nodeps" parent-plugin-id="org.tolven.library.apache-ant" parent-point-id="runtimeLib" extension-multiplicity="none">
-		<parameter-def id="ant-nodeps" multiplicity="none-or-one" />
 	</extension-point>
 	<extension-point id="tolvenCommon" parent-plugin-id="org.tolven.library.tolvencommon" parent-point-id="runtimeLib" extension-multiplicity="none">
 		<parameter-def id="tolvenCommon" multiplicity="none-or-one" />

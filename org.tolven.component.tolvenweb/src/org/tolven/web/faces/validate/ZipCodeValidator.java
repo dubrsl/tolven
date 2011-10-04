@@ -12,9 +12,10 @@ import javax.faces.validator.ValidatorException;
 
 /**
  * This class validates zip code(Zip+4 code, either 5 or 9 digits).
- * @author Unni
+
  * added on 07/19/2010
  */
+@SuppressWarnings("serial")
 public class ZipCodeValidator implements Validator, Serializable {
 
 	private static final String ZIP_EXPRESSION = "(^[0-9]{5}$)|(^[0-9]{9}$)";

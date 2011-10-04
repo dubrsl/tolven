@@ -20,7 +20,7 @@
 		<h:inputText id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" style="display: none;" />					
 		<h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />
       	<div id="popupGrids">
-  			<div id="#{top.accountType}:#{trim.fieldMap['formType']}" class="popupgrid"/>          
+  			<div id="#{menu.elementLabel}:#{top.accountType}:#{trim.fieldMap['formType']}" class="popupgrid"/>          
       	</div>
       	<!-- <script> //SriniK: Why do we need this?
 			// <![CDATA[
@@ -31,18 +31,14 @@
 	                 } 
 	  			// ]]>               
 		</script> -->
-		<wiz:step title="#{trim.trim.act.relationship['type'].act.title.ST.value}" >
+		<wiz:step title="#{trim.fieldMap['formType']}" >
 			<wiz:body>
 				<div id="problemDocclinDiv" class="widget" style="width: 100%; margin-left: 0px;">
 					<ui:include src="problemDocclinContent.xhtml"/> 
 				</div>
-					<div id="msgProblemDocclin" style="color: red;font-weight: bold;text-align: center;" ></div>
-					<c:if test="#{trim.trim.act.relationship['submitStatus'].act.observation.values[1].ST.value != 'Yes'}">
-						<div id="addNewOrderAnchor">
-							<a onclick="openTemplate('#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}','#{top.accountType}:#{trim.trim.act.relationship['type'].act.text.ST.value}', 'addTemplate', '#{menu.elementLabel}', 0)" href="#">Add Problems</a>
-						</div>						
-					</c:if>
-				
+				<div id="addNewOrderAnchor">
+					<a onclick="openTemplate('#{top.accountType}:#{trim.fieldMap['formType']}','#{menu.elementLabel}:#{top.accountType}:#{trim.fieldMap['formType']}', 'addTemplate', '#{menu.elementLabel}', 0)" href="#">Add Problems</a>
+				</div>						
 			</wiz:body>
 		</wiz:step>
 		<wiz:step title="#{trim.trim.act.relationship['encounter'].act.title.ST.value}" >

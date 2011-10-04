@@ -45,6 +45,7 @@
 	</plugin>
 	<plugin id="org.tolven.component.tolvenweb">
 		<root />
+		<property name="scriptsOrder" value="org.tolven.component.tolvenweb@prototype,org.tolven.component.tolvenweb@datastructures,org.tolven.component.tolvenweb@timeline-api,org.tolven.component.tolvenweb@tolven6,org.tolven.component.tolvenweb@tolvenwiz,org.tolven.component.tolvenweb@rico"/>
 	</plugin>
 	<plugin id="org.tolven.ws">
 		<root />
@@ -68,20 +69,8 @@
 	<property name="client.web.http.port" value="8080" />
 	<property name="client.web.https.port" value="8443" />
 	<property name="repositoryLibrary">
-		<property name="v0">
-			<property name="trunkMetadata" value="http://tolven.org/download/plugins.xml" />
-			<property name="snapshotMetadata" value="file:///#{globalProperty['installation.dir']}/repositorySnapshot/v0/plugins.xml" />
-			<property name="useSnapshot" value="false" />
-			<property name="overwriteSnapshot" value="false" />
-		</property>
-		<property name="v2">
-			<property name="trunkMetadata" value="http://tolven.org/download/v2/catalog/plugins.xml" />
-			<property name="snapshotMetadata" value="file:///#{globalProperty['installation.dir']}/repositorySnapshot/v2/plugins.xml" />
-			<property name="useSnapshot" value="false" />
-			<property name="overwriteSnapshot" value="false" />
-		</property>
-		<property name="V201">
-			<property name="trunkMetadata" value="http://tolven.org/download/V201/catalog/plugins.xml" />
+		<property name="v21">
+			<property name="trunkMetadata" value="http://tolven.org/download/v21/catalog/plugins.xml" />
 		</property>
 		<property name="repositoryLocal">
 			<property name="trunkMetadata" value="file:///#{globalProperty['config.dir']}/repositoryLocal/plugins.xml" />

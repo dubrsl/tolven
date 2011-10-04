@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Select a diagnoses</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<c:set var="diagnoses" value="#{trim.trim.act.relationship['diagnoses']}"/>
+		<h:selectOneMenu  id="orderAssociateDiagnoses#{param['widgetIndex']}" style="width: 140px;" onchange="selectAssociateItem('Diagnoses','orderAssociateDiagnoses#{param['widgetIndex']}','#{menu.elementLabel}','associateDiagnosesValue#{param['widgetIndex']}')">
+			<f:selectItem itemValue="#{null}" itemLabel="None" value="#{null}"/>
+			<c:forEach items="#{trim.list['echr:patient:diagnoses:current~Diagnosis:Status']}" var="diagnoses">
+			<c:set var="diagItems" value="${fn:split(diagnoses.label, ':')}"/>
+				<c:if test="#{diagItems[1]=='ACTIVE'}">
+					<f:selectItem itemValue="#{diagItems[0]}" itemLabel="#{diagItems[0]}"/>
+				</c:if>
+			</c:forEach>
+	    	<c:forEach var="diagnose" items="#{diagnoses.act.relationshipsList['diagnose']}" varStatus="widgetIndex">
+    			<f:selectItem itemValue="#{diagnose.act.observation.values[0].CE.displayName}" itemLabel="#{diagnose.act.observation.values[0].CE.displayName}"/>
+    		</c:forEach>
+		</h:selectOneMenu>
+		<br/>
+		<span>
+			<a onclick="callOpenTemplateFunc('#{menu.menuDataItem.parent01.path}:diagnoses:menu', '#{menu.menuDataItem.parent01.path}:diagnoses:menu', 'wizSaveOrderAssociateDiagnoses', '#{menu.elementLabel}', 0,'#{param['widgetIndex']}');return false;" href="#">
+				Add diagnoses
+			</a>
+	    </span>
+	</ui:composition>
+</body>
+</html>

@@ -14,13 +14,6 @@
 		<wip>echr:activity:all</wip>
 	</application>
 	<act classCode="REG" moodCode="EVN">
-		<code>
-			<CD>
-				<code>physician</code>
-				<codeSystemName>tolven</codeSystemName>
-				<codeSystemVersion>4.0</codeSystemVersion>
-			</CD>
-		</code>
 		<title>
 			<ST>Physician</ST>
 		</title>
@@ -42,6 +35,14 @@
 						<extension>#{assigned.path}</extension>
 					</II>
 				</id>
+				<code>
+					<CE>
+						<code>1835G0000X</code>
+						<codeSystem>2.16.840.1.113883.1.11.19465</codeSystem>
+						<codeSystemName>NUCCProviderCodes</codeSystemName>
+						<codeSystemVersion></codeSystemVersion>						
+					</CE>
+				</code>				
 				<statusCode>#{assigned.actStatus}</statusCode>
 				<player classCode="PSN" determinerCode="INSTANCE">
 					<name>
@@ -240,7 +241,7 @@
 			</act>
 		</relationship>
 		<compute>
-        	<type>org.tolven.process.MessageID</type>
+        	<type>org.tolven.process.ComputeMessageID</type>
         	<property name="enabled">
             	<value xsi:type="xs:boolean" >true</value>
         	</property>

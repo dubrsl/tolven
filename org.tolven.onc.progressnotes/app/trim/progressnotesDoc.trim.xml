@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientActEx</extends>
+	<name>docclin/evn/progressnotes</name>
+	<page>progressnotes.xhtml</page>
+	<drilldown>progressnotesDD.xhtml</drilldown>
+	<menu>global:progressnotesDocMenu</menu>
+	<application name="echr">
+		<instance>echr:patient:progressnote</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="suspendActive" from="active" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>		
+		<transition name="suspendCompleted" from="completed" to="suspended">
+			<label language="en">Inactive</label>
+		</transition>	
+		<transition name="nullifiedActive" from="active" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>
+		<transition name="nullifiedCompleted" from="completed" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>		
+		<transition name="completedActive" from="active" to="completed">
+			<label language="en">Resolved</label>
+		</transition>
+		<transition name="completedSuspend" from="suspended" to="completed">
+			<label language="en">Resolved</label>
+		</transition>
+	</transitions>
+	<act classCode="DOCCLIN" moodCode="EVN">
+	 	<bind application="echr" phase="create">
+            <placeholder bindAction="merge">
+                <path>echr:patient:progressnote</path>
+            </placeholder>
+        </bind>
+        <code>
+            <CD>
+                <code>C0017594</code>
+                <codeSystemName>UMLS</codeSystemName>
+                <codeSystemVersion>2007AA</codeSystemVersion>
+            </CD>
+        </code>
+		<statusCode>active</statusCode>		
+		<title>
+			<ST>Progress Notes</ST>
+		</title>
+		<effectiveTime>
+			<label>Date of Progress Note</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<!--  Subjective Data - START  -->
+		<relationship typeCode="PERT" direction="OUT" name="subjective">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Subjective</ST>
+				</title>
+				<relationship typeCode="PERT" direction="OUT" name="problems">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Problems</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="siteOfProblems">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST></ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="symptoms">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Symptoms</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship typeCode="COMP" direction="OUT" name="encounterAssociations">
+ 					<act classCode="OBS" moodCode="EVN">
+ 						<observation>
+		 					<value>
+		 						<label>Associate with Encounter</label>
+		 						<ST></ST>
+		 					</value>
+		 				</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="notes">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Notes</ST>
+						</title>
+						<observation>
+							<value>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+			</act>
+		</relationship>
+		<!--  Subjective Data - END  -->
+		
+		<!--  Objective Data - START  -->
+		<relationship typeCode="PERT" direction="OUT" name="objective">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Objective</ST>
+				</title>
+				<relationship typeCode="PERT" direction="OUT" name="temperature">
+					<act moodCode="EVN" classCode="OBS">	
+						<title>
+							<ST>Temperature</ST>
+						</title>
+						<observation>
+							<value>
+								<PQ>
+									<value></value>
+									<unit>C</unit>
+								</PQ>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="pulse">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Pulse</ST>
+						</title>	
+						<observation>
+							<value>
+								<PQ>
+									<value></value>
+									<unit>/min</unit>
+								</PQ>
+							</value>
+							<value>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="systolic">
+					<act moodCode="EVN" classCode="OBS">	
+						<title>
+							<ST>Systolic Blood Pressure</ST>
+						</title>	
+						<observation>
+							<value>
+								<PQ>
+									<value></value>
+									<unit>mmHG</unit>
+								</PQ>
+							</value>
+							<value>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="diastolic">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+								<ST>Diastolic Blood Pressure</ST>
+						</title>	
+						<observation>
+							<value>
+								<PQ>
+									<value></value>
+									<unit>mmHG</unit>
+								</PQ>
+							</value>
+							<value>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="respirationrate">
+					<act moodCode="EVN" classCode="OBS">	
+						<title>
+								<ST>Respiration Rate</ST>
+						</title>
+						<observation>
+							<value>
+								<PQ>
+									<value></value>
+									<unit>RPM</unit>
+								</PQ>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="painlevel">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+								<ST>Pain Level</ST>
+						</title>				
+						<observation>
+							<value>
+									<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="notes">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Notes</ST>
+						</title>
+						<observation>
+							<value>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+			</act>
+		</relationship>
+		<!--  Objective Data - END  -->	
+		
+		<!--  Assessment Data - START  -->
+		<relationship typeCode="PERT" direction="OUT" name="assessment">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Assessment</ST>
+				</title>
+				<relationship typeCode="PERT" direction="OUT" name="diagnoses">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Diagnosis</ST>
+						</title>
+						<observation>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="notes">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Notes</ST>
+						</title>
+						<observation>
+							<value>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+			</act>
+		</relationship>
+		<!--  Assessment Data - END  -->
+		
+		<!--  Planning Data  - START  -->
+		<relationship typeCode="PERT" direction="OUT" name="medications">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST></ST>
+				</title>
+			</act>
+		</relationship>
+		<relationship typeCode="PERT" direction="OUT" name="plan">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Problem</ST>
+				</title>
+				<relationship typeCode="PERT" direction="OUT" name="testOrders">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Orders</ST>
+						</title>
+						<observation>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="imageOrders">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Orders</ST>
+						</title>
+						<observation>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="followUp">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Follow-up</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="treatments">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Treatments</ST>
+						</title>
+						<observation>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="referrals">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Referrals</ST>
+						</title>
+						<observation>
+						</observation>
+					</act>
+				</relationship>
+				<relationship typeCode="PERT" direction="OUT" name="notes">
+					<act moodCode="EVN" classCode="OBS">
+						<title>
+							<ST>Notes</ST>
+						</title>
+						<observation>
+							<value>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+			</act>
+		</relationship>
+		<!--  Planning Data - START  -->
+		
+		<!--  for sharing data  -->
+		<relationship name="receiverInfo" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Receiver Information</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Account ID: </label>
+						<ST></ST>
+					</value>
+					<value>
+						<label>Account Name: </label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="COMP" direction="OUT" name="shareFields">
+ 			<act classCode="OBS" moodCode="EVN">
+ 				<observation>
+		 			<value>
+		 				<label>Share fields</label>
+		 				<ST></ST>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
+		
+		
+		<compute>
+			<type>org.tolven.process.InsertAct</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="arName">
+		        <value xsi:type="xs:string">entry1</value>
+			</property>
+			<property name="arDirection">
+				<value xsi:type="xs:string">OUT</value>
+			</property>
+			<property name="arTypeCode">
+		        <value xsi:type="xs:string">COMP</value>
+			</property>
+			<property name="template">
+		       <value xsi:type="xs:string"></value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">add</value>
+			</property>
+			<property name="position">
+		        <value xsi:type="xs:string">0</value>
+			</property>
+		</compute>
+		<compute>
+			<type>org.tolven.process.CCHITOrderCompute</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">true</value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">Progressnotes</value>
+			</property>
+		</compute>		
+	</act>
+	<!-- TEMPLATE VALUESET START-->
+	<valueSet name="encounterTemplate">
+		<CE>
+			<displayName></displayName>
+            <code>C0389100</code>
+            <codeSystem>2.16.840.1.113883.6.56</codeSystem>
+            <codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- TEMPLATE VALUESET END -->
+	<valueSet name="encounter"></valueSet>
+	
+	
+	<!-- valueSet for Medication - START -->
+	<valueSet name="route">
+		<CE>
+			<displayName>1=by mouth (PO)</displayName>
+			<code>C0547040</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2=Sublingual (SL)</displayName>
+			<code>C0547041</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3=Intramuscular (IM)</displayName>
+			<code>C0547042</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>4=Intravenous (IV)</displayName>
+			<code>C0547043</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>5=Subcutaneous (SQ)</displayName>
+			<code>C0547044</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>6=Rectal (R)</displayName>
+			<code>C0547045</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>7=Topical</displayName>
+			<code>C0547046</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>8=Inhalation</displayName>
+			<code>C0547047</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>9=Enteral Tube</displayName>
+			<code>C0547048</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>10=Other</displayName>
+			<code>C0547049</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="frequency">
+		<CE>
+			<displayName>PR=(PRN) as necessary</displayName>
+			<code>C0547040</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1H=(QH) every hour (includes every 12 hrs)</displayName>
+			<code>C0547041</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2H=(Q2H) every two hours</displayName>
+			<code>C0547042</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3H=(Q3H) every three hours</displayName>
+			<code>C0547043</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>4H=(Q4H) every four hours</displayName>
+			<code>C0547044</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>6H=(Q6H) every six hours</displayName>
+			<code>C0547045</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>8H=(Q8H) every eight hours</displayName>
+			<code>C0547046</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1D=(QD or HS) once daily</displayName>
+			<code>C0547047</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2D=(BID) two times daily</displayName>
+			<code>C0547048</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3D=(TID) three times daily</displayName>
+			<code>C0547049</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>4D=(QID) four times daily</displayName>
+			<code>C0547050</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>5D=five times daily</displayName>
+			<code>C0547051</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1W=(Q week) once each week</displayName>
+			<code>C0547052</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2W=two times every week</displayName>
+			<code>C0547053</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3W=three times every week</displayName>
+			<code>C0547054</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>QO=every other day</displayName>
+			<code>C0547055</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>4W=4 times each week</displayName>
+			<code>C0547056</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>5W=five times each week</displayName>
+			<code>C0547057</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>6W=six times each week</displayName>
+			<code>C0547058</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1M=(Q month) once every month</displayName>
+			<code>C05470590</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2M=twice every month</displayName>
+			<code>C0547060</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>C=continuous</displayName>
+			<code>C0547061</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>O=other</displayName>
+			<code>C0547062</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<!-- valueSet for Medication - END -->
+	<!-- valueSet for Problem - START -->
+	<valueSet name="severity">
+		<CE>
+			<displayName>Mild</displayName>
+			<code>C0547040</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Mild to moderate</displayName>
+			<code>C1299392</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Moderate</displayName>
+			<code>C0205081</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Moderate to severe</displayName>
+			<code>C1299393</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Severe</displayName>
+			<code>C0205082</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fatal</displayName>
+			<code>C1302234</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="course">
+		<CE>
+			<displayName>Acute</displayName>
+			<code>C0205178</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Chronic</displayName>
+			<code>C0205191</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Recurrent</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="outcome">
+		<CE>
+			<displayName>Sequelae</displayName>
+			<code>C0543419</code>
+			<codeSystem>HL7V2.5	S</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Died</displayName>
+			<code>C1546956</code>
+			<codeSystem>HL7V2.5	D</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fully recovered</displayName>
+			<code>C1546957</code>
+			<codeSystem>HL7V2.5	F</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Not recovering/unchanged</displayName>
+			<code>C1546958</code>
+			<codeSystem>HL7V2.5	N</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Recovering</displayName>
+			<code>C1546959</code>
+			<codeSystem>HL7V2.5	R</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Worsening</displayName>
+			<code>C1546960</code>
+			<codeSystem>HL7V2.5	W</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown</displayName>
+			<code>C1556127</code>
+			<codeSystem>HL7V2.5	U</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<field name="formType">	
+		<value xsi:type="xs:string">progressnotes</value>
+	</field>
+	<field name="pageName">	
+		<value xsi:type="xs:string">progressnote</value>
+	</field>
+	<!-- valueSet for Problem - END -->
+</trim>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.onc.component.web" version="2.1.0" vendor="Tolven">
+
+	<requires>
+	     <import plugin-id="org.tolven.component.tolvenejb" />
+	     <import plugin-id="org.tolven.component.tolvenweb" />
+		 <import plugin-id="org.tolven.component.war" />
+		 <import plugin-id="org.tolven.component.tolvenear" />
+		 <import plugin-id="org.tolven.component.faces" />
+		 <import plugin-id="org.tolven.component.tolvenweb.taglibs.trim" />
+		 <import plugin-id="org.tolven.onc.component.ejb" />
+	</requires>
+
+	<extension-point id="devLib" extension-multiplicity="none">
+		<parameter-def id="jar" default-value="devLib.jar" />
+	</extension-point>
+	
+	<extension id="ajaxDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="ajaxDirectory">
+	     <parameter id="sourceDirectory" value="web/ajax" />
+	</extension>
+	<extension id="drilldownDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="drilldownDirectory">
+	     <parameter id="sourceDirectory" value="web/drilldown" />
+	</extension>
+	<extension id="fiveDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="fiveDirectory">
+	     <parameter id="sourceDirectory" value="web/five" />
+	</extension>
+	<extension id="imagesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="imagesDirectory">
+	     <parameter id="sourceDirectory" value="web/images" />
+	</extension>
+	<extension id="invitationDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="invitationDirectory">
+	     <parameter id="sourceDirectory" value="web/invitation" />
+	</extension>
+	<extension id="manageDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="manageDirectory">
+	     <parameter id="sourceDirectory" value="web/manage" />
+	</extension>
+	<extension id="privateDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="privateDirectory">
+	     <parameter id="sourceDirectory" value="web/private" />
+	</extension>
+	<extension id="publicDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="publicDirectory">
+	     <parameter id="sourceDirectory" value="web/public" />
+	</extension>
+	<extension id="scriptsDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="scriptsDirectory">
+	     <parameter id="sourceDirectory" value="web/scripts" />
+	</extension>
+	<extension id="stylesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="stylesDirectory">
+	     <parameter id="sourceDirectory" value="web/styles" />
+	</extension>
+	<extension id="templatesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="templatesDirectory">
+	     <parameter id="sourceDirectory" value="web/templates" />
+	</extension>
+	<extension id="wizardDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="wizardDirectory">
+	     <parameter id="sourceDirectory" value="web/wizard" />
+	</extension>
+	<extension id="cchitJavaScript" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/cchitScripts.txt" />
+	</extension>
+	<extension id="cchitStyleJavaScript" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+		<parameter id="includeFile" value="scriptInclude/cchitStyle.txt" />
+	</extension>
+	<!-- Managed beans -->
+	<extension id="cchit-managed-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Used for cchit activities" />
+		<parameter id="managed-bean-name" value="cchitMenu" />
+		<parameter id="managed-bean-class" value="org.tolven.web.CCHITMenuAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="vital-signs-history-bean" plugin-id="org.tolven.component.faces" point-id="managed-bean">
+		<parameter id="description" value="Used for Vital Signs History" />
+		<parameter id="managed-bean-name" value="vitalsignsHistory" />
+		<parameter id="managed-bean-class" value="org.tolven.web.VitalSignsHistoryAction" />
+		<parameter id="managed-bean-scope" value="request" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- End Managed beans -->
+	<!-- Servlets -->
+	<extension id="CCHIT Servlet" plugin-id="org.tolven.component.war" point-id="servlet">
+		<parameter id="servlet-name" value="CCHITServlet" />
+		<parameter id="servlet-class" value="org.tolven.ajax.CCHITServlet" />
+		<parameter id="web-resource-name" value="Protected Area" />
+		<parameter id="transaction" value="true" />
+		<parameter id="load-on-startup" value="5" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="CCHIT Servlet-contribution" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+		<parameter id="servlet-name" value="CCHITServlet" />
+  		<parameter id="url-pattern" value="*.ajaxcchit" />
+  		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+ 	</extension>
+ 	<!-- End Servlets -->
+ 	
+ 	<extension id="reportLib" plugin-id="org.tolven.component.tolvenear" point-id="javaModuleProduct">
+     	<parameter id="dir" value="web/lib" />
+	</extension>
+	
+ 	<extension id="warclasses" plugin-id="org.tolven.component.war" point-id="classes">
+		<parameter id="dir" value="web/classes" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<!-- JSF validators -->
+	<extension id="patientListDuplicateValidator" plugin-id="org.tolven.component.faces" point-id="globalValidator">
+		<parameter id="validator-id" value="patientListDuplicateValidator" />
+		<parameter id="validator-class" value="org.tolven.web.faces.validate.PatientListDuplicateValidator" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	
+	
+	<!-- PDF Report -->
+	<extension id="PDFFilter" plugin-id="org.tolven.component.war" point-id="filter">
+		<parameter id="filter-name" value="PDFFilter" />
+		<parameter id="filter-class" value="org.tolven.web.RendererFilter" />
+		<parameter id="filter-sequence" value="10000" />
+		<parameter id="transaction" value="false" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+	<extension id="PDFFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
+		<parameter id="filter-name" value="PDFFilter" />
+		<parameter id="url-pattern" value="*.jsf" />
+		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+</plugin>

@@ -1,0 +1,12 @@
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/prototype.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+       src="#{facesContext.externalContext.request.contextPath}/scripts/scriptaculous.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+       src="#{facesContext.externalContext.request.contextPath}/scripts/slider.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+       src="#{facesContext.externalContext.request.contextPath}/scripts/assessments.js">
+</script>

@@ -32,6 +32,7 @@ import javax.naming.directory.Attribute;
  * @author Joseph Isaac
  *
  */
+@SuppressWarnings("serial")
 public class AttributeValidator implements Validator, Serializable {
 
     @Override

@@ -15,6 +15,10 @@
  */
 package org.tolven.naming;
 
+import java.util.Properties;
+
+import org.tolven.ldap.LdapManager;
+
 /**
  * This class allows the parameters to be configured externally via JNDI
  * 
@@ -37,6 +41,10 @@ public interface LdapRealmContext extends RealmContext {
 
     public String getJndiName();
 
+    public Properties getLdapEnv();
+
+    public LdapManager getLdapManager(String uid, char[] password);
+
     public String getPrincipalDNPrefix();
 
     public String getPrincipalName(String principal);
@@ -48,5 +56,5 @@ public interface LdapRealmContext extends RealmContext {
     public String getUserDnTemplate();
 
     public String getUserSubstitutionToken();
-
+    
 }

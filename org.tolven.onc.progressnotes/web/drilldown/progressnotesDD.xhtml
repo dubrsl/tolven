@@ -1,0 +1,513 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Progress Notes - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<script type="text/javascript">
+			//<![CDATA[
+				progressNoteEncounterValidations('#{menu.elementLabel}');
+			 // ]]>
+		</script>
+		<wiz:body>
+			<div id="progressNoteSummaryDiv">
+		      	<p style="padding: 0;margin: 0">
+					<c:if test="#{menu.menuDataItem.statusName=='NEW'}">
+				   		<h:selectBooleanCheckbox value="false" id="generateReport"/> 
+						<b>Print report after saving</b> 
+					</c:if>
+				</p>
+				<br/>
+		      	<table width="100%" cellpadding="7" cellspacing="0">
+		      		<!--  Subjective Data  - START  -->
+		      		<c:set var="subjective" value="#{trim.trim.act.relationship['subjective']}"/>
+		      		<tr>
+		      			<td colspan="2">
+		      				<b style="font-size: 13px;">Subjective (S)</b>
+		      			</td>
+			      	</tr>
+			      	<tr>
+		      			<td style="width: 20%;">#{trim.trim.act.effectiveTime.label.value}</td>
+		      			<td>
+							<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+						</td>
+					</tr>
+					<tr>
+						<td>#{subjective.act.relationship['encounterAssociations'].act.observation.value.label.value}</td>
+						<td>
+							<c:if test="#{subjective.act.relationship['encounterAssociations'].act.observation.values[0].ST.value!=null and subjective.act.relationship['encounterAssociations'].act.observation.values[0].ST.value!=''}">	
+					    		<c:forEach var="obj" items="#{trim.list['echr:patient:encounters:active~Date Location Attending']}">
+					    			<c:if test="#{obj.value==subjective.act.relationship['encounterAssociations'].act.observation.values[0].ST.value}">
+					    			#{obj.label}
+					    			</c:if>
+					    		</c:forEach>
+				    		</c:if>
+						</td>
+					</tr>
+					<tr>
+		      			<td>#{subjective.act.relationship['problems'].act.title.ST.value}</td>
+		      			<td>
+							<div class="widget" style="width: 80%;margin-left: 0px;">
+								<table width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th style="width: 20%;"><b>Problems</b></th>
+											<th style="width: 10;"><b>Date of Onset</b></th>
+											<th style="width: 10%;"><b>Site of Problem</b></th>
+											<th style="width: 10%;"><b>Severity</b></th>
+											<th style="width: 10%;"><b>Course</b></th>
+											<th style="width: 10;"><b>Outcome</b></th>
+											<th style="width: 15%;"><b>Treatment</b></th>
+											<th style="width: 15%;"><b>Comments</b></th>
+										</tr>
+										<c:set var="problems" value="#{subjective.act.relationship['problems']}"/>
+										<c:forEach var="problem" items="#{problems.act.relationshipsList['problem']}" varStatus="widgetIndex">
+						   					<c:if test="#{problem!=null}">
+						   						<c:set var="class" value="odd"/>
+						   						<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+						    					<tr class="#{class}"> 
+										 			<td style="width: 20%;">
+										 				<h:outputText escape="false" value="#{problem.act.observation.values[0].CE.displayName}"/>
+									 				</td>
+									 				<td style="width: 10%;">
+										 				<trim:TSAjax  value="#{problem.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+										 			</td>
+									 				<td style="width: 10%;">
+														<h:outputText value="#{problems.act.relationshipsList['siteofProblem'][widgetIndex.index].act.title.ST.value}"/>
+													</td>
+													<td style="width: 10%;">
+														<h:outputText value="#{problem.act.relationship['severity'].act.observation.values[0].CE.displayName}"/>
+													</td>
+													<td style="width: 10%;">
+														<h:outputText value="#{problem.act.relationship['course'].act.observation.values[0].CE.displayName}"/>
+													</td>
+													<td style="width: 10%;">
+														<h:outputText value="#{problem.act.relationship['outcome'].act.observation.values[0].CE.displayName}"/>
+													</td>
+													<td style="width: 15%;">
+														<h:outputText value="#{problem.act.relationship['treatment'].act.text.ST.value}" disabled="true"/>
+													</td>
+													<td style="width: 15%;">
+														<h:outputText  value="#{problem.act.relationship['comments'].act.text.ST.value}" disabled="true"/>
+													</td>
+						     					</tr>
+						   					</c:if>
+						   				</c:forEach>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td>#{subjective.act.relationship['symptoms'].act.title.ST.value}</td>
+		      			<td>
+		      				<div class="widget" style="width: 50%;margin-left: 0px;">
+								<table width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Symptoms</th>
+											<th width="15%">Date of Onset</th>
+										</tr>
+										<c:set var="symptoms" value="#{subjective.act.relationship['symptoms']}"/>
+										<c:forEach var="symptom" items="#{symptoms.act.relationshipsList['symptom']}" varStatus="widgetIndex">
+						   					<c:if test="#{symptom!=null}">
+						   						<c:set var="class" value="odd"/>
+						   						<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+						    					<tr class="#{class}"> 
+										 			<td>
+										 				<h:outputText escape="false" value="#{symptom.act.observation.values[0].CE.displayName}"/>
+									 				</td>
+									 				<td>
+										 				<trim:TSAjax id="osSymptomDate#{widgetIndex.index}" value="#{symptom.act.effectiveTime.TS}" dateStyle="short"  readonly="true"/>
+										 			</td>
+						     					</tr>
+						   					</c:if>
+						   				</c:forEach>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>#{subjective.act.relationship['notes'].act.title.ST.value}</td>
+						<td>
+							#{subjective.act.relationship['notes'].act.observation.values[0].ST.value}
+						</td>
+					</tr>
+			      	<!--  Subjective Data  - END  -->
+			      	
+			      	<!-- Objective Data START -->
+			      	<c:set var="objective" value="#{trim.trim.act.relationship['objective']}"/>
+		      		<tr>
+		      			<td colspan="2">
+		      				<b style="font-size: 13px;">Objective (O)</b>
+		      			</td>
+			      	</tr>
+			      	<tr>
+					 	<td>#{objective.act.relationship['temperature'].act.title.ST.value}</td>
+						<td>
+							<h:outputText>#{objective.act.relationship['temperature'].act.observation.value.PQ.value}</h:outputText>C
+						</td>	
+					</tr>
+					<tr>
+					 	<td>#{objective.act.relationship['pulse'].act.title.ST.value}</td>
+						<td>
+							<h:outputText>#{objective.act.relationship['pulse'].act.observation.values[1].ST.value}</h:outputText>/min
+						</td>	
+					</tr>
+					<tr>
+					 	<td>#{objective.act.relationship['systolic'].act.title.ST.value}</td>
+						<td>
+							<h:outputText>#{objective.act.relationship['systolic'].act.observation.values[1].ST.value}</h:outputText>mmHG
+						</td>	
+					</tr>
+					<tr>
+					 	<td>#{objective.act.relationship['diastolic'].act.title.ST.value}</td>
+						<td>
+							<h:outputText>#{objective.act.relationship['diastolic'].act.observation.values[1].ST.value}</h:outputText>mmHG
+						</td>	
+					</tr>
+					<tr>
+					 	<td>#{objective.act.relationship['respirationrate'].act.title.ST.value}</td>
+						<td>
+							<h:outputText>#{objective.act.relationship['respirationrate'].act.observation.value.PQ.value}</h:outputText>RPM
+						</td>	
+					</tr>
+					<tr>
+					 	<td>#{objective.act.relationship['painlevel'].act.title.ST.value}</td>
+						<td>
+							<h:outputText>#{objective.act.relationship['painlevel'].act.observation.value.ST.value}</h:outputText>
+						</td>	
+					</tr>
+					<tr>
+					 	<td>#{objective.act.relationship['notes'].act.title.ST.value}</td>
+						<td>
+							<h:outputText>#{objective.act.relationship['notes'].act.observation.value.ST.value}</h:outputText>
+						</td>	
+					</tr>
+			      	<!-- Objective Data END -->
+			      	
+			      	<!-- Assessment Data - START -->
+			      	<c:set var="assessment" value="#{trim.trim.act.relationship['assessment']}"/>
+			      	<tr>
+		      			<td colspan="2">
+		      				<b style="font-size: 13px;">Assessment (A)</b>
+		      			</td>
+			      	</tr>
+			      	<tr>
+		      			<td>#{assessment.act.relationship['diagnoses'].act.title.ST.value}</td>
+		      			<td>
+		      				<div class="widget" style="width: 50%;margin-left: 0px;">
+								<table width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>Diagnosis</th>
+										</tr>
+										<c:set var="diagnoses" value="#{assessment.act.relationship['diagnoses']}"/>
+										<c:forEach var="diagnosis" items="#{diagnoses.act.relationshipsList['diagnosis']}" varStatus="widgetIndex">
+						   					<c:if test="#{diagnosis!=null}">
+						   						<c:set var="class" value="odd"/>
+						   						<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+						    					<tr class="#{class}"> 
+						    						<td>
+						    							<trim:TSAjax value="#{diagnosis.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
+						    						</td>
+										 			<td>
+										 				<h:outputText escape="false" value="#{diagnosis.act.observation.value.CE.displayName}"/>
+									 				</td>
+						     					</tr>
+						   					</c:if>
+						   				</c:forEach>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td>#{subjective.act.relationship['problems'].act.title.ST.value}</td>
+		      			<td>
+							<div class="widget" style="width: 50%;margin-left: 0px;">
+								<table width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Problems</th>
+										</tr>
+										<c:set var="problems" value="#{subjective.act.relationship['problems']}"/>
+										<c:forEach var="problem" items="#{problems.act.relationshipsList['problem']}" varStatus="widgetIndex">
+						   					<c:if test="#{problem!=null}">
+						   						<c:set var="class" value="odd"/>
+						   						<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+						    					<tr class="#{class}"> 
+										 			<td>
+										 				<h:outputText escape="false" value="#{problem.act.observation.values[0].CE.displayName}"/>
+									 				</td>
+						     					</tr>
+						   					</c:if>
+						   				</c:forEach>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>#{assessment.act.relationship['notes'].act.title.ST.value}</td>
+						<td>
+							#{assessment.act.relationship['notes'].act.observation.values[0].ST.value}
+						</td>
+					</tr>
+					<!-- Assessment Data - END -->
+					
+					<!--  Planning Data  - START  -->
+		      		<c:set var="plan" value="#{trim.trim.act.relationship['plan']}"/>
+		      		<tr>
+		      			<td colspan="2">
+		      				<b style="font-size: 13px;">Plan (P)</b>
+		      			</td>
+		      		</tr>
+		      		<tr>
+		      			<td colspan="2">
+		      				<c:set var="medications" value="#{trim.trim.act.relationship['medications']}"/>
+				      		<div class="widget" style="width: 98%;margin-left: 0px;">
+								<table width="100%" id="#{menu.elementLabel}:newMedicationWidgetTBL" cellpadding="0" cellspacing="0">
+									<thead>
+										<tr >
+											<th width="20%" style="text-align: center;">Medications</th>
+											<th width="11%" style="text-align: center;">Class</th>
+											<th width="9%" style="text-align: center;">Strength</th>
+											<th width="10%" style="text-align: center;">Form</th>
+											<th width="10%" style="text-align: center;">Route</th>
+											<th width="5%" style="text-align: center;">Dose</th>
+											<th width="7%" style="text-align: center;">Frequency</th>
+											<th width="10%" style="text-align: center;">Start</th>
+											<th width="5%" style="text-align: center;">DC</th>
+											<th width="13%" style="text-align: center;">Instructions/Comments</th>
+										</tr>
+									</thead>
+									
+									<c:set var="priorMedications" value="#{trim.trim.act.relationship['priorMedications']}"/>
+									<c:set var="i" value="1"/>
+									<c:forEach var="med" items="#{priorMedications.act.relationshipsList['priorMedication']}" varStatus="widgetIndex">
+										<c:set var="class" value="odd"/>
+										<c:set var="i" value="0"/>
+										<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/><c:set var="i" value="1"/></c:if>
+										<tr class="#{class}">
+											<td>#{med.act.observation.values[0].ST.value}</td>
+											<td>#{med.act.observation.values[1].ST.value}</td>
+											<td>#{med.act.observation.values[2].ST.value}</td>
+											<td>#{med.act.observation.values[3].ST.value}</td>
+											<td>#{med.act.observation.values[4].ST.value}</td>
+											<td>#{med.act.observation.values[5].ST.value}</td>
+											<td>#{med.act.observation.values[6].ST.value}</td>
+											<td>#{med.act.observation.values[7].ST.value}</td>
+											<td>#{med.act.observation.values[8].ST.value}</td>
+											<td>#{med.act.observation.values[9].ST.value}</td>
+										</tr>
+									</c:forEach>
+									
+									<c:if test="#{medications.act.relationshipsList['medication']!=null}">
+										<c:forEach var="medication" items="#{medications.act.relationshipsList['medication']}" varStatus="widgetIndex">
+											<c:if test="#{medication!=null}">
+												<c:set var="class" value="odd"/>
+				   								<c:if test="#{(widgetIndex.index%2)==i}"><c:set var="class" value="even"/></c:if>
+												<tr class="#{class}" id="#{menu.elementLabel}:save#{widgetIndex.index}"> 
+													<td style="text-align: left;">#{medication.act.observation.values[0].ST.value}</td>
+													<td style="text-align: left;">#{medication.act.observation.values[1].ST.value}</td>
+													<td style="text-align: left;">#{medication.act.observation.values[2].ST.value}</td>
+													<td style="text-align: left;">#{medication.act.observation.values[3].ST.value}</td>
+							       					<td style="text-align: left;">#{medication.act.observation.values[4].CE}</td>
+							       					<td style="text-align: left;">#{medication.act.observation.values[5].ST.value}</td>
+							       					<td style="text-align: left;">#{medication.act.observation.values[6].CE}</td>
+							       					<td style="text-align: left;"><trim:TSAjax id="medDate" value="#{medication.act.observation.values[7].TS}" dateStyle="short" readonly="true"/></td>
+							       					<td style="text-align: left;">#{medication.act.observation.values[8].ST.value}</td>
+							       					<td style="text-align: left;">#{medication.act.observation.values[9].ST.value}</td>
+												</tr>
+											</c:if>
+										</c:forEach>
+									</c:if>
+								</table>
+							</div>
+		      			</td>
+			      	</tr>
+			      	<tr>
+		      			<td>#{plan.act.relationship['testOrders'].act.title.ST.value}</td>
+		      			<td>
+							<div class="widget" style="width: 50%;margin-left: 0px;">
+								<c:set var="testOrders" value="#{trim.trim.act.relationship['plan'].act.relationship['testOrders']}"/>
+								<table width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>Lab Orders</th>
+										</tr>
+									 	<c:forEach var="testOrder" items="#{testOrders.act.relationshipsList['testOrder']}" varStatus="widgetIndex">
+									 		<c:set var="class" value="odd"/>
+											<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+									 		<tr class="#{class}">
+									 			<td><trim:TSAjax value="#{testOrder.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+									 			<td><h:outputText escape="false" value="#{testOrder.act.code.CE.displayName}"/></td>
+									 		</tr>
+									 	</c:forEach>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+			      	<tr>
+		      			<td></td>
+		      			<td>
+							<div class="widget" style="width: 50%;margin-left: 0px;">
+								<c:set var="imageOrders" value="#{trim.trim.act.relationship['plan'].act.relationship['imageOrders']}"/>
+								<table width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>Imaging Orders</th>
+										</tr>
+									 	<c:forEach var="imageOrder" items="#{imageOrders.act.relationshipsList['imageOrder']}" varStatus="widgetIndex">
+									 		<c:set var="class" value="odd"/>
+											<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+									 		<tr class="#{class}">
+									 			<td><trim:TSAjax value="#{imageOrder.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+									 			<td><h:outputText escape="false" value="#{imageOrder.act.code.CE.displayName}"/></td>
+									 		</tr>
+									 	</c:forEach>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+			      	<tr>
+		      			<td>#{plan.act.relationship['followUp'].act.title.ST.value}</td>
+		      			<td>
+							<div class="widget" style="width: 50%;margin-left: 0px;">
+								<c:set var="followUp" value="#{trim.trim.act.relationship['plan'].act.relationship['followUp']}"/>
+								<table width="100%" id="#{menu.elementLabel}:newFollowUpWidgetTBL" cellspacing="0">
+									<thead>
+									<tr>
+										<th width="20%" style="padding-left: 5px;">Date</th>
+										<th width="40%" style="padding-left: 5px;">Staff Name</th>
+										<th width="40%" style="padding-left: 5px;">Location</th>
+									</tr>
+									<c:if test="#{followUp.act.relationshipsList['appointment']!=null}">
+										<c:forEach var="appointment" items="#{followUp.act.relationshipsList['appointment']}" varStatus="widgetIndex">
+						   					<c:if test="#{appointment!=null}">
+						   						<c:set var="class" value="odd"/>
+						   						<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+						    					<tr class="#{class}" id="#{menu.elementLabel}:saveFollowUp#{widgetIndex.index}" > 
+						       						<td><trim:TSAjax id="aDate" value="#{appointment.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+						       						<td>
+						       							<c:if test="#{appointment.act.observation.values[0].ST.value!=null and appointment.act.observation.values[0].ST.value!=''}">	
+						       								<c:if test="#{menu.item[appointment.act.observation.values[0].ST.value].string01!=''}">			
+												    		<h:outputText value="#{menu.item[appointment.act.observation.values[0].ST.value].string01}, #{menu.item[appointment.act.observation.values[0].ST.value].string02}"/>
+												    		</c:if>
+												    		<c:if test="#{menu.item[appointment.act.observation.values[0].ST.value].string01==''}">			
+												    		<h:outputText value="#{menu.item[appointment.act.observation.values[0].ST.value].string02}"/>
+												    		</c:if>
+												    			
+												    	</c:if>	
+						       						</td>
+						       						<td>
+						       							<c:if test="#{appointment.act.observation.values[1].ST.value!=null}">				
+												    		<h:outputText value="#{menu.item[appointment.act.observation.values[1].ST.value].string01}"/>		
+												    	</c:if>	
+						       						</td>
+						     					</tr>
+						     				</c:if>
+								 		</c:forEach>
+								 	</c:if>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td>#{plan.act.relationship['treatments'].act.title.ST.value}</td>
+		      			<td>
+							<div class="widget" style="width: 50%;margin-left: 0px;">
+								<c:set var="treatments" value="#{trim.trim.act.relationship['plan'].act.relationship['treatments']}"/>
+								<table width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th>Treatments</th>
+										</tr>
+									 	<c:forEach var="treatment" items="#{treatments.act.relationshipsList['treatment']}" varStatus="widgetIndex">
+									 		<c:set var="class" value="odd"/>
+											<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+									 		<tr class="#{class}">
+									 			<td><trim:TSAjax value="#{treatment.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+									 			<td><h:outputText escape="false" value="#{treatment.act.code.CE.displayName}"/></td>
+									 		</tr>
+									 	</c:forEach>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td>#{plan.act.relationship['referrals'].act.title.ST.value}</td>
+		      			<td>
+							<div class="widget" style="width: 50%;margin-left: 0px;">
+								<c:set var="referrals" value="#{trim.trim.act.relationship['plan'].act.relationship['referrals']}"/>
+								<table width="100%" cellspacing="0">
+									<thead>
+										<tr>
+											<th>Date</th>
+											<th >Referrals</th>
+										</tr>
+									 	<c:forEach var="referral" items="#{referrals.act.relationshipsList['referral']}" varStatus="widgetIndex">
+									 		<c:set var="class" value="odd"/>
+											<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+									 		<tr class="#{class}">
+									 			<td><trim:TSAjax value="#{referral.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+									 			<td><h:outputText escape="false" value="#{referral.act.code.CE.displayName}"/></td>
+									 		</tr>
+									 	</c:forEach>
+								 	</thead>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+		      			<td>#{plan.act.relationship['notes'].act.title.ST.value}</td>
+		      			<td>
+					      	#{plan.act.relationship['notes'].act.observation.values[0].ST.value}
+						</td>
+					</tr>
+					<!--  Planning Data  - END  -->
+				</table>
+	        	
+				<c:if test="#{menu.menuDataItem.statusName!='NEW'}">
+					<div style="padding:10px 0 0 10px;">
+						<a  href="javascript:wizGenerateProgressNoteReport('#{menu.element}');"><b>Generate Report</b></a>
+					</div>
+				</c:if>
+			</div>
+			<br/><br/>
+			<div style="display: none;" id="errorDetailDiv">
+			<p>This form is not ready for submission yet due to the following problem(s):</p>
+			<table border="1" width="40%" style="padding: 3px;margin-left: 10px;">
+				<tr id="errorheading">
+					<th style="padding-left: 15px;" width="75%">Messages</th>
+					<th width="25%" style="text-align: center;">Go To</th>
+				</tr>
+				<tr id="errorassociateEncountersRow">
+					<td style="padding-left: 15px;" width="75%"><span id="errorassociateEncounters"></span></td>
+					<td width="25%" style="text-align: center;"><a href="javascript:goto('#{menu.elementLabel}:associateEncounters');">The Problem</a></td>
+				</tr>
+			</table>
+		</div>
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

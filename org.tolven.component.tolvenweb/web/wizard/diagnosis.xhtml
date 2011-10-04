@@ -58,6 +58,16 @@
 				<p>TBD</p>
 			</wiz:help>
 		</wiz:step>
+		<wiz:step title="Public Health Surveillance" >
+			<wiz:body>
+				<wiz:group title="Select Receiving Facility  to Generate HL7 Message">				
+					<h:selectOneMenu id="receiverBy" value="#{trim.trim.act.participation['receiver'].role.id.for[top.accountUser.account].extension}">
+			        	<f:selectItems value="#{trim.list['echr:admin:receivers:all~Name']}"/>
+			        </h:selectOneMenu>
+			</wiz:group>
+			</wiz:body>
+		</wiz:step>
+		<ui:include src="selectEncounter.xhtml"/>
 	</ui:composition>
 </body>
 </html>

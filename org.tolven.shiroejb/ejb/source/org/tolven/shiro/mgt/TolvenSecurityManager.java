@@ -32,6 +32,7 @@ public class TolvenSecurityManager extends DefaultSecurityManager {
 
     public TolvenSecurityManager() {
         setSessionManager(new TolvenSessionManager());
+        setRememberMeManager(null);
         updateRealms();
     }
 

@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.Iterator;
 
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
+import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -58,6 +60,7 @@ import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuDataVersion;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuLocator;
 import org.tolven.ccr.ContinuityOfCareRecord;
 import org.tolven.core.entity.AccountExchange;
 import org.tolven.core.entity.AccountRole;
@@ -1261,5 +1264,44 @@ public class MenuAction extends TolvenAction {
 	public void setVisible(String visible) {
 		this.visible = visible;
 	}	
+
+	public String getHl7Message(){
+		String hl7Message ="";
+		try {
+				Object message = getMenuDataItem().getField("hl7Message");
+				if(message !=null){
+					hl7Message = message.toString();
+				}else{
+					hl7Message = "To be Generated";
+				}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return hl7Message;
+	}
+
+	public List<SelectItem> getMvx(){
+		List<SelectItem> mvxList= new ArrayList<SelectItem>();
+		String mvxPath = "global:manufacturerMenu";
+		MenuQueryControl ctrl = new MenuQueryControl();
+		MenuPath reqPath = new MenuPath(mvxPath);
+		ctrl.setAccountUser(getAccountUser());
+		ctrl.setMenuStructurePath(mvxPath);
+		ctrl.setRequestedPath(reqPath);
+		MenuLocator menuLocator = getMenuLocal().findMenuLocator(mvxPath);
+		ctrl.setMenuStructure( menuLocator.getMenuStructure());
+		ctrl.getMenuStructure().getAccountMenuStructure().setQuery(mvxPath);
+		List<MenuData>selectedMvxList = getMenuLocal().findMenuData(ctrl);
+		if(selectedMvxList.size() >0){
+			Iterator<MenuData> itrMvx = selectedMvxList.iterator();
+			while(itrMvx.hasNext()){
+				MenuData md = itrMvx.next();
+				Object manufacturerInfo = md.getString04()+"~"+md.getString03();
+				SelectItem option = new SelectItem(manufacturerInfo,md.getString04());
+				mvxList.add(option);
+			}
+		}
+		return mvxList;
+	}
 
 }

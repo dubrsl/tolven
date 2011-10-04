@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
 	<name>obs/evn/deathDetails</name>
-	<description>Death Details Document</description>
+	<description>Cause of Death</description>
 	<page>deathDetailsWiz.xhtml</page>
 	<drilldown>deathDetailsDD.xhtml</drilldown>
 	<menu>global:codMenu</menu>

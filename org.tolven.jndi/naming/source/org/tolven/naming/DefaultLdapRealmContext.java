@@ -17,6 +17,11 @@ package org.tolven.naming;
 
 import java.util.Properties;
 
+import javax.naming.Context;
+
+import org.tolven.ldap.LdapManager;
+import org.tolven.ldap.LdapManagerFactory;
+
 public class DefaultLdapRealmContext extends DefaultTolvenJndiContext implements LdapRealmContext {
 
     public static final String ANONYMOUSUSER_PASSWORD_SUFFIX = ".realm.ldap.anonymousUserPassword";
@@ -24,15 +29,15 @@ public class DefaultLdapRealmContext extends DefaultTolvenJndiContext implements
     public static final String BASE_DN_SUFFIX = ".realm.ldap.baseDN";
     public static final String BASE_PEOPLE_NAME_SUFFIX = ".realm.ldap.basePeopleName";
     public static final String BASE_ROLES_NAME_SUFFIX = ".realm.ldap.baseRolesName";
+    public static final String ENVIRONMENT_SUFFIX = ".realm.ldap.env";
     public static final String JNDI_NAME_SUFFIX = ".realm.ldap.jndiName";
     public static final String PRINCIPAL_DN_PREFIX_SUFFIX = ".realm.ldap.principalDNPrefix";
+    public static final String REALM_CLASS_SUFFIX = ".realm.class";
+    public static final String REALM_IDS = "realm.ids";
     public static final String ROLE_DN_PREFIX_SUFFIX = ".realm.ldap.roleDNPrefix";
     public static final String SESSION_ATTRIBUTES_SUFFIX = ".realm.ldap.sessionAttributes";
     public static final String USER_DN_TEMPLATE_SUFFIX = ".realm.ldap.userDnTemplate";
     public static final String USER_SUBSTITUTION_TOKEN_SUFFIX = ".realm.ldap.userSubstitutionToken";
-
-    public static final String REALM_CLASS_SUFFIX = ".realm.class";
-    public static final String REALM_IDS = "realm.ids";
 
     private Properties mapping;
 
@@ -72,6 +77,30 @@ public class DefaultLdapRealmContext extends DefaultTolvenJndiContext implements
     @Override
     public String getJndiName() {
         return getMapping().getProperty(getContextId() + JNDI_NAME_SUFFIX);
+    }
+
+    @Override
+    public Properties getLdapEnv() {
+        Properties ldapEnv = new Properties();
+        ldapEnv.setProperty("realm", getContextId());
+        String prefix = getContextId() + ENVIRONMENT_SUFFIX;
+        for (String propertyName : getMapping().stringPropertyNames()) {
+            if (propertyName.startsWith(prefix)) {
+                String key = propertyName.substring(prefix.length() + 1);
+                String value = getMapping().getProperty(propertyName);
+                ldapEnv.setProperty(key, value);
+            }
+        }
+        return ldapEnv;
+    }
+
+    @Override
+    public LdapManager getLdapManager(String uid, char[] password) {
+        String userDN = getDN(uid);
+        Properties props = getLdapEnv();
+        props.put(Context.SECURITY_PRINCIPAL, userDN);
+        props.put(Context.SECURITY_CREDENTIALS, new String(password));
+        return LdapManagerFactory.getInstance(props);
     }
 
     public Properties getMapping() {
@@ -124,7 +153,7 @@ public class DefaultLdapRealmContext extends DefaultTolvenJndiContext implements
     public String getUserSubstitutionToken() {
         return getMapping().getProperty(getContextId() + USER_SUBSTITUTION_TOKEN_SUFFIX);
     }
-
+    
     public void setMapping(Properties mapping) {
         this.mapping = mapping;
     }

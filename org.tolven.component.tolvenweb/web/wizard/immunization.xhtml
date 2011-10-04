@@ -20,12 +20,33 @@
 						$('#{menu.elementLabel}:productceslotField:0').checked=true;
 					</script>
 				</wiz:group>
+				<wiz:group title="Number of Refills">
+					<h:inputText id="refills" value="#{trim.trim.act.repeatNumber.INT.value}"/>
+				</wiz:group>
+				<wiz:group title="Dosage Quantity">
+					<h:inputText id="dosage" value="#{trim.trim.act.substanceAdministration.doseQuantity.PQ.value}"/>
+				</wiz:group>
+				<wiz:group title="Material">
+					<h:inputText id="material" value="#{trim.trim.act.participation['consumable'].role.player.quantity.PQ.value}"/>
+				</wiz:group>
 				<c:if test="#{top.accountType=='echr'}">
 					<ui:include src="author.xhtml"/>
 				</c:if>
 				<wiz:group title="#{trim.trim.act.relationship['LOTnumber'].act.title.ST.value}">
 					<h:inputText id="LOTnumber" value="#{trim.trim.act.relationship['LOTnumber'].act.observation.value.ST.value}"/>
 				</wiz:group>
+				<wiz:group title="ManufacturerName">
+					<h:selectOneMenu id="manufacturerName" value="#{trim.trim.act.relationship['manufacturer'].act.observation.values[0].ST.value}" >
+						<f:selectItems value="#{menu.mvx}"/>
+					</h:selectOneMenu>
+				</wiz:group>
+				<wiz:group title="Receiving Facility for HL7">
+					<c:if test="#{trim.trim.act.participation['receiver']!=null}">					
+						<h:selectOneMenu id="receiverBy" value="#{trim.trim.act.participation['receiver'].role.id.for[top.accountUser.account].extension}">
+							<f:selectItems value="#{trim.list['echr:admin:receivers:all~Name']}"/>
+						</h:selectOneMenu>
+					</c:if>
+			    </wiz:group>
 			</wiz:body>
 			<wiz:help>
 				<h1>Immunization</h1>

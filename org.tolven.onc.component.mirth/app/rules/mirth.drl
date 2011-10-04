@@ -1,0 +1,41 @@
+package mirth
+
+import java.util.*;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.logging.TolvenLogger;
+import org.tolven.app.MirthOperationsLocal;
+
+global org.tolven.app.AppEvalAdaptor app;
+
+rule "Initialize MirthOperationsBean"
+
+	salience 5
+	when
+		eval(true)
+	then
+		insert(app.lookupResource("java:global/tolven/tolvenEJB/MirthOperationsBean!org.tolven.app.MirthOperationsLocal"));
+	end
+
+rule "Send Lab orders to mirth"
+
+	when
+	    $trim: TrimEx(name == "labOrderDoc") 
+	    $mirthBean:MirthOperationsLocal()
+	then
+	    $mirthBean.sendMessage($trim);
+	end
+	
+rule "Place Lab result on Lab results list"
+	when
+		$msList: MenuStructure( path == "echr:patient:results:lab" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:result" )
+		$md: MenuData( menuStructure == $ms )
+		$trim: Trim(name == "labResultDoc")
+	then
+		$md.setString05(((ActEx)$trim.getAct()).getRelationship().get("result").getAct().getText().getST().getValue());
+		app.createReferenceMD( $md, $msList );
+		app.info("-------Placed Lab result on Lab results list");
+	end

@@ -17,21 +17,24 @@ package org.tolven.shiro.realm.ldap;
 
 import javax.naming.AuthenticationException;
 import javax.naming.Context;
+import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.log4j.Logger;
 import org.apache.shiro.realm.ldap.LdapContextFactory;
+import org.tolven.naming.LdapRealmContext;
+import org.tolven.naming.TolvenContext;
 
 public class TolvenJndiLdapContextFactory implements LdapContextFactory {
 
-    private String realmJndi;
-
+    private String ldapJndi;
     private Logger logger = Logger.getLogger(TolvenJndiLdapContextFactory.class);
+    private String realm;
 
-    public TolvenJndiLdapContextFactory(String realmJndi) {
-        setLdapJndi(realmJndi);
+    public TolvenJndiLdapContextFactory(String realm) {
+        setRealm(realm);
     }
 
     @Override
@@ -43,7 +46,7 @@ public class TolvenJndiLdapContextFactory implements LdapContextFactory {
             //AUTHENTICATE CREDENTIALS BY CREATING AN INITIAL LDAP CONTEXT
             new InitialLdapContext(ctx.getEnvironment(), null);
         } catch (AuthenticationException ex) {
-            throw new AuthenticationException("Access denied");
+            throw new AuthenticationException("Access denied: " + principal);
         }
         return ctx;
     }
@@ -54,15 +57,33 @@ public class TolvenJndiLdapContextFactory implements LdapContextFactory {
         return getLdapContext((Object) username, password);
     }
 
-    public String getRealmJndi() {
-        return realmJndi;
+    public String getLdapJndi() {
+        if (ldapJndi == null) {
+            LdapRealmContext ldapRealmContext = getLdapRealmContext();
+            ldapJndi = ldapRealmContext.getJndiName();
+        }
+        return ldapJndi;
+    }
+
+    protected LdapRealmContext getLdapRealmContext() {
+        try {
+            InitialContext ictx = new InitialContext();
+            TolvenContext tolvenContext = (TolvenContext) ictx.lookup("tolvenContext");
+            return (LdapRealmContext) tolvenContext.getRealmContext(getRealm());
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not get LdapRealmContext", ex);
+        }
+    }
+
+    public String getRealm() {
+        return realm;
     }
 
     @Override
     public LdapContext getSystemLdapContext() throws NamingException {
         try {
             InitialLdapContext ictx = new InitialLdapContext();
-            LdapContext ctx = (LdapContext) ictx.lookup(getRealmJndi());
+            LdapContext ctx = (LdapContext) ictx.lookup(getLdapJndi());
             /* Glassfish does not pass through these properties, even though it is aware of them?
              * Without com.sun.jndi.ldap.LdapCtxFactory, authentication is NOT carried out
              */
@@ -74,13 +95,12 @@ public class TolvenJndiLdapContextFactory implements LdapContextFactory {
             }
             return ctx;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("Failed to lookup " + getRealmJndi(), ex);
+            throw new RuntimeException("Failed to lookup " + getLdapJndi(), ex);
         }
     }
 
-    public void setLdapJndi(String ldapJndi) {
-        this.realmJndi = ldapJndi;
+    public void setRealm(String realm) {
+        this.realm = realm;
     }
 
 }

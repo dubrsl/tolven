@@ -62,7 +62,7 @@ public class BackupLoginPasswordAction {
             return "error";
         }
         try {
-            getLoginPasswordBean().backupPassword(getUid(), getRealm(), getOldUserPassword().toCharArray(), getSecurityQuestion(), getSecurityQuestionAnswer().toCharArray());
+            getLoginPasswordBean().backupPassword(getUid(), getOldUserPassword().toCharArray(), getRealm(), getSecurityQuestion(), getSecurityQuestionAnswer().toCharArray());
         } catch (AuthenticationException ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("backupForm", new FacesMessage(ex.getMessage()));

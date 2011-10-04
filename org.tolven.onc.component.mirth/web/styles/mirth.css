@@ -1,0 +1,7 @@
+.high{
+       background-image:url(/Tolven/scripts/simile/images/red-circle.png);
+       background-repeat: no-repeat;
+       background-position: top left;
+       padding-left:20px;
+       cursor:pointer;
+}

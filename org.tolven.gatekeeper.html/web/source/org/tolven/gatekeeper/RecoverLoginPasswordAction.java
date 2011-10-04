@@ -158,7 +158,7 @@ public class RecoverLoginPasswordAction {
             if (getSecurityQuestionAnswer() != null) {
                 sqa = getSecurityQuestionAnswer().toCharArray();
             }
-            getLoginPasswordBean().recoverPassword(getUid(), getRealm(), getNewUserPassword().toCharArray(), getActiveSecurityQuestion(), sqa);
+            getLoginPasswordBean().recoverPassword(getUid(), getNewUserPassword().toCharArray(), getRealm(), getActiveSecurityQuestion(), sqa);
         } catch (AuthenticationException ex) {
             ex.printStackTrace();
             FacesContext.getCurrentInstance().addMessage("recoverForm", new FacesMessage("Access denied"));

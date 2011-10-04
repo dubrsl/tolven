@@ -10,27 +10,18 @@
 <body>
 <ui:composition template="docclinContent.xhtml">
 	<ui:define name="content">
-		<wiz:group title="#{msg.Effective}">
-			<trim:TS id="effectiveTime#{rel.sequenceNumber}"
-				value="#{rel.act.effectiveTime.TS}" dateStyle="short"
-				timeStyle="short" />
+		<wiz:group title="#{msg.Effective}"> 
+			<trim:TS id="effectiveTime#{rel.sequenceNumber}"  value="#{rel.act.effectiveTime.TS}" dateStyle="short"	timeStyle="short" />
 		</wiz:group>
 
-		<wiz:group title="Product">
-			<trim:CE id="product" layout="pageDirection" valueSet="material"
-				value="#{rel.act.participation['consumable'].role.player.code}" />
-		</wiz:group>
 		<wiz:group title="#{msg.Quantity}">
-			<trim:PQ id="quantity#{rel.sequenceNumber}"
-				value="#{rel.act.participation['consumable'].role.player.quantity}" />
+			<trim:PQ id="quantity#{rel.sequenceNumber}" value="#{rel.act.participation['consumable'].role.player.quantity}" />
 		</wiz:group>
 		<wiz:group title="#{msg.Refills}">
-			<trim:INT id="refills#{rel.sequenceNumber}"
-				value="#{rel.act.repeatNumber}" />
+			<trim:INT id="refills#{rel.sequenceNumber}" value="#{rel.act.repeatNumber}" />
 		</wiz:group>
 		<wiz:group title="#{msg.DoseInstr}">
-			<trim:ED id="dose#{rel.sequenceNumber}" value="#{rel.act.text}"
-				readonly="false" />
+			<trim:ED id="dose#{rel.sequenceNumber}" value="#{rel.act.text}"	readonly="false" />
 		</wiz:group>
 	</ui:define>
 </ui:composition>

@@ -26,7 +26,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -41,15 +40,19 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
+import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.ldap.JndiLdapRealm;
 import org.apache.shiro.realm.ldap.LdapContextFactory;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
-import org.apache.shiro.subject.Subject;
+import org.tolven.exeption.GatekeeperAuthenticationException;
+import org.tolven.ldap.LdapManager;
+import org.tolven.ldap.PasswordExpiring;
 import org.tolven.naming.LdapRealmContext;
 import org.tolven.naming.TolvenContext;
+import org.tolven.shiro.authc.UsernamePasswordRealmToken;
 
 public class TolvenJndiLdapRealm extends JndiLdapRealm {
 
@@ -61,29 +64,20 @@ public class TolvenJndiLdapRealm extends JndiLdapRealm {
         setContextFactory(null);
     }
 
-    protected String getRealm() {
-        return getName();
-    }
-
-    @Override
-    protected AuthenticationInfo createAuthenticationInfo(AuthenticationToken token, Object ldapPrincipal, Object ldapCredentials, LdapContext ldapContext) throws NamingException {
-        AuthenticationInfo authInfo = super.createAuthenticationInfo(token, ldapPrincipal, ldapCredentials, ldapContext);
-        Subject subject = SecurityUtils.getSubject();
-        Session session = subject.getSession();
-        String principal = (String) token.getPrincipal();
-        char[] password = (char[]) token.getCredentials();
-        initializeSessionAttributes(session, principal, password, ldapContext);
-        return authInfo;
-    }
-
     @Override
     public LdapContextFactory getContextFactory() {
-        LdapRealmContext ldapRealmContext = getLdapRealmContext();
-        String ldapJndiName = ldapRealmContext.getJndiName();
-        if (ldapJndiName == null) {
-            throw new RuntimeException("The ldapJndiName in the LdapRealmContext is null");
+        return new TolvenJndiLdapContextFactory(getRealm());
+    }
+
+    protected LdapContext getLdapContext(String principal, char[] password, String realm) {
+        try {
+            LdapRealmContext ldapRealmContext = getLdapRealmContext(realm);
+            String principalDN = ldapRealmContext.getDN(principal);
+            TolvenJndiLdapContextFactory ldapContextFactory = new TolvenJndiLdapContextFactory(realm);
+            return ldapContextFactory.getLdapContext(principalDN, password);
+        } catch (NamingException ex) {
+            throw new RuntimeException("Could not get ldap context for: " + principal + " in realm: " + realm, ex);
         }
-        return new TolvenJndiLdapContextFactory(ldapJndiName);
     }
 
     protected LdapRealmContext getLdapRealmContext() {
@@ -94,6 +88,20 @@ public class TolvenJndiLdapRealm extends JndiLdapRealm {
         } catch (Exception ex) {
             throw new RuntimeException("Could not get LdapRealmContext", ex);
         }
+    }
+
+    protected LdapRealmContext getLdapRealmContext(String realm) {
+        try {
+            InitialContext ictx = new InitialContext();
+            TolvenContext tolvenContext = (TolvenContext) ictx.lookup("tolvenContext");
+            return (LdapRealmContext) tolvenContext.getRealmContext(realm);
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not get LdapRealmContext", ex);
+        }
+    }
+
+    protected String getRealm() {
+        return getName();
     }
 
     @Override
@@ -112,45 +120,7 @@ public class TolvenJndiLdapRealm extends JndiLdapRealm {
         return super.getUserDnSuffix();
     }
 
-    protected void initializeSessionAttributes(Session session, String principal, char[] password, LdapContext ldapContext) throws NamingException {
-        SearchControls ctls = new SearchControls();
-        ctls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        ctls.setCountLimit(1);
-        String sessionAttributes = getLdapRealmContext().getSessionAttributes();
-        if (sessionAttributes == null) {
-            sessionAttributes = "";
-        }
-        ctls.setReturningAttributes(sessionAttributes.split(","));
-        ctls.setCountLimit(1);
-        if (logger.isDebugEnabled()) {
-            String providerURL = (String) ldapContext.getEnvironment().get(Context.PROVIDER_URL);
-            logger.debug("Search LDAP: " + providerURL);
-            logger.debug("Search LDAP " + providerURL + " for: " + principal + " and attributes: " + sessionAttributes);
-        }
-        NamingEnumeration<SearchResult> namingEnum = null;
-        try {
-            LdapRealmContext ldapRealmContext = getLdapRealmContext();
-            String principalLdapName = ldapRealmContext.getPrincipalName(principal);
-            namingEnum = ldapContext.search(ldapRealmContext.getBasePeopleName(), principalLdapName, ctls);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("Could not search ldap for: " + principal);
-        }
-        if (!namingEnum.hasMoreElements()) {
-            throw new RuntimeException("Could not find ldap principal: " + principal);
-        }
-        SearchResult rslt = namingEnum.next();
-        String dn = rslt.getNameInNamespace();
-        if (logger.isDebugEnabled()) {
-            logger.debug("Found ldap principal=" + dn);
-        }
-        try {
-            session.setAttribute("dn", dn);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            throw new RuntimeException("Could not set dn attribute of session: " + session.getId(), ex);
-        }
-        Attributes attrs = rslt.getAttributes();
+    protected void injectSessionAttributes(Attributes attrs, Session session, String principal, char[] password) throws NamingException {
         NamingEnumeration<String> namingEnumIDs = attrs.getIDs();
         while (namingEnumIDs.hasMoreElements()) {
             String attrID = null;
@@ -172,10 +142,10 @@ public class TolvenJndiLdapRealm extends JndiLdapRealm {
                 session.setAttribute(attrID, attrs.get(attrID).get());
             }
         }
-        initialUserCredentials(session, principal, password);
+        injectUserCredentials(session, principal, password);
     }
 
-    protected void initialUserCredentials(Session session, Object principal, char[] password) throws AuthenticationException {
+    protected void injectUserCredentials(Session session, Object principal, char[] password) throws AuthenticationException {
         KeyStore keyStore = null;
         byte[] userPKCS12 = (byte[]) session.getAttribute("userPKCS12");
         if (userPKCS12 == null) {
@@ -250,7 +220,45 @@ public class TolvenJndiLdapRealm extends JndiLdapRealm {
 
     @Override
     protected AuthenticationInfo queryForAuthenticationInfo(AuthenticationToken token, LdapContextFactory ldapContextFactory) throws NamingException {
-        return super.queryForAuthenticationInfo(token, ldapContextFactory);
+        UsernamePasswordRealmToken uprToken = (UsernamePasswordRealmToken) token;
+        String uid = (String) uprToken.getPrincipal();
+        char[] password = uprToken.getPassword();
+        String realm = uprToken.getRealm();
+        LdapManager ldapManager = null;
+        try {
+            LdapRealmContext ldapRealmContext = getLdapRealmContext(realm);
+            ldapManager = ldapRealmContext.getLdapManager(uid, password);
+            ldapManager.checkPassword();
+            Session session = SecurityUtils.getSubject().getSession();
+            boolean passwordExpired = ldapManager.isPasswordExpired();
+            if (passwordExpired) {
+                session.setAttribute(GatekeeperAuthenticationException.PASSWORD_EXPIRED, passwordExpired);
+            } else {
+                session.removeAttribute(GatekeeperAuthenticationException.PASSWORD_EXPIRED);
+            }
+            String formattedExpiration = null;
+            PasswordExpiring passwordExpiring = ldapManager.getPasswordExpiring();
+            if (passwordExpiring != null) {
+                formattedExpiration = passwordExpiring.getFormattedExpiration();
+                session.setAttribute(GatekeeperAuthenticationException.PASSWORD_EXPIRING, formattedExpiration);
+            } else {
+                session.removeAttribute(GatekeeperAuthenticationException.PASSWORD_EXPIRING);
+            }
+            String sessionAttributes = ldapRealmContext.getSessionAttributes();
+            if (sessionAttributes == null) {
+                sessionAttributes = "";
+            }
+            String[] sessionAttributeIds = sessionAttributes.split(",");
+            if (!passwordExpired) {
+                Attributes attributes = ldapManager.getAttributes(sessionAttributeIds);
+                injectSessionAttributes(attributes, session, uid, password);
+            }
+            return new SimpleAuthenticationInfo(token.getPrincipal(), token.getCredentials(), getName());
+        } finally {
+            if (ldapManager != null) {
+                ldapManager.disconnect();
+            }
+        }
     }
 
     @Override
@@ -266,9 +274,9 @@ public class TolvenJndiLdapRealm extends JndiLdapRealm {
         Object[] filterArgs = { longPrincipalDN };
         /*
          * TODO This can't be the right place to do this, because getSystemLdapContext() does not authenticate this context for a search.
-         * The problem is that the ldapContextFactory, instead of the ldapContext is passed to this method, where the former ensures authentication upstream.
+         * The problem is that the ldapContextFactory, instead of the ldapContext is passed to this method, where the former ensures authentication upstream
+         * using the password which is not supplied here.
          * However, this method is for authorization and not authentication, which might explain it.
-         * So, perhaps session attribute gathering belongs elsewhere?
          */
         LdapContext ldapContext = ldapContextFactory.getSystemLdapContext();
         NamingEnumeration<SearchResult> namingEnum = ldapContext.search(ldapRealmContext.getBaseRolesName(), "(uniqueMember={0})", filterArgs, ctls);

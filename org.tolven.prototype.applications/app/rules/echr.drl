@@ -18,8 +18,6 @@ import org.tolven.doc.bean.TolvenMessage;
 import org.tolven.model.Patient;
 import org.tolven.trim.Observation;
 //import org.tolven.process.ScheduleOperations;
-import org.tolven.app.PatientListDesignerLocal;
-import org.tolven.app.AutomationLocal;
 //import org.tolven.app.ShareEncounterSummaryLocal;
 //import org.tolven.process.NullifyDuplicateMedications;
 
@@ -27,21 +25,6 @@ global org.tolven.app.AppEvalAdaptor app;
 global Date now;
 import function org.tolven.trim.contstants.PatientImportance.isVIP;
 
-rule "Initialize PatientListDesignerBean"
-	salience 5
-	when
-		eval(true)
-	then
-		insert(app.lookupResource( "java:global/tolven/tolvenEJB/PatientListDesignerBean!org.tolven.app.PatientListDesignerLocal" ));
-end
-
-rule "Initialize AutomationBean"
-salience 35
-when
-	eval(true)
-then
-	insert(app.lookupResource( "java:global/tolven/tolvenEJB/AutomationBean!org.tolven.app.AutomationLocal" ));
-end
 
 /*rule "Initialize ShareEncounterSummaryBean"
 salience 5
@@ -200,7 +183,7 @@ rule "Add staff to staff list"
 		$msList: MenuStructure( role == "list", path == "echr:admin:staff:all" )
 		$md: MenuData( menuStructure == $ms )
 //		For Ep
-		$trim:TrimEx(name != "reg/evn/assigned/md")
+//		$trim:TrimEx(name = "reg/evn/assigned/md")
 	then
 		MenuData mdStaffList = app.createReferenceMD( $md, $msList );
 		mdStaffList.addPhrase( $md.getString01(), "family", "en_US" );
@@ -951,25 +934,7 @@ end
 		}
 end */
 
-rule "Create Patient List"
-	when
-			$pldBean:PatientListDesignerLocal()
-			Mode( direction == "local" )
-			$trim: Trim( name == "patientListDesigner" )
-	then
-			app.info("**************** Create Patient List *************");
-			$pldBean.createPatientList($trim, app);	 
-end
 
-rule "Place Patient List Definition on Patient List Definition list"
-	when
-		$ms: MenuStructure( role == "placeholder", path == "echr:patientListDefinition" )
-		$msList: MenuStructure( role == "list", path == "echr:patients:patientListDefinition" )
-		$md: MenuData( menuStructure == $ms )
-	then
-		app.info( "Place Patient List Definition on Patient List Definition list");
-		app.createReferenceMD( $md, $msList );
-end
 
 /*rule "Create PHR"
 salience 30

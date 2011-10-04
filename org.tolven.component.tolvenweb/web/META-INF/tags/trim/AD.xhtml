@@ -24,7 +24,7 @@
     					<f:validator validatorId="zipCodeValidator" />
     				</h:inputText>
 					<h:selectOneMenu id="states" value="#{adxp.ST.value}" rendered="#{adxp.label.value=='State' and readonly!='true'}" style="width:125px;" onclick="setState(this,'#{menu.elementLabel}','#{menu.element}')">
-						<f:selectItems value="#{trim.valueSets['states']}"/>
+						  <f:selectItems value="#{demographicsAct.statesUsa}" />
 					</h:selectOneMenu>
 					<h:inputText value="#{adxp.ST.value}" rendered="#{adxp.label.value!='Zip'and adxp.label.value!='State' and readonly!='true'}"/>
 					<h:outputText value="#{adxp.ST.value}" rendered="#{readonly=='true'}"/>
