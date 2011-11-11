@@ -124,7 +124,7 @@ public abstract class AppEvalAdaptor implements MessageProcessorLocal {
 		Object rslt =  sessionContext.lookup(resourceName);
 		return rslt;
 	}
-	protected void assertPlaceholder( MenuData mdPlaceholder) {
+	public void assertPlaceholder( MenuData mdPlaceholder) {
 		logger.info( "Assert Placeholder: " + mdPlaceholder);
 		// Temporarily remove touches for this placeholder
 		suspendTouches(mdPlaceholder);

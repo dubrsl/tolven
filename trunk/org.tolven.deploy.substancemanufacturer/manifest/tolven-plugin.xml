@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.deploy.substancemanufacturer" version="2.1.0" vendor="Tolven" class="org.tolven.deploy.SubstanceManufacturers.LoaderSubstanceManufacturers">
+<requires>
+    <import plugin-id="org.tolven.library.application" />
+</requires>
+<runtime>
+	
+	<library id="classes" path="tpf/classes/" type="code">
+                <export prefix="*" />
+        </library>
+</runtime>
+
+<extension-point id="devLib" extension-multiplicity="none">
+	<parameter-def id="jar" default-value="devLib.jar" />
+</extension-point>
+
+</plugin>

@@ -33,18 +33,24 @@ public class DataField implements Serializable, Comparable<DataField> {
 	private String internal[];
 	private String external[];
 	private boolean enabled;
+	private String displayFunction;
 	
 	/**
 	 * Construct a new DataField. the field is initially enabled and assigned a presentationOrder of zero.
 	 * @param external
 	 * @param internal
 	 */
-	public DataField( String external, String internal, boolean enabled) {
+	public DataField( String external, String internal, boolean enabled, String displayFunction) {
 		this.internal = internal.split("\\.");
 		this.external = external.split("\\.");
 		this.enabled = enabled;
+		this.displayFunction = displayFunction;
 	}
 	
+	public String getDisplayFunction() {
+		return displayFunction;
+	}
+
 	public String[] getInternalSegments() {
 		return internal;
 	}

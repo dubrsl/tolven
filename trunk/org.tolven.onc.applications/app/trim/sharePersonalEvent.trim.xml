@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>share/personalEvent</name>
+	<description>Share A Personal Event</description>
+	<reference></reference>
+	<act classCode="ACT" moodCode="EVN">
+		<bind application="echr" phase="receive" >
+			<placeholder bindAction="merge">
+				<path>echr:patient:personalEvent</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="receive">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:personalEvent</path>
+			</placeholder>
+		</bind>
+		<id>
+			<II>
+				<root>#{computeIDRoot(account)}</root>
+				<extension>#{personalEvent.path}</extension>			
+			</II>
+		</id>
+		<code>
+			<CD>
+				<code>PersonalAppt</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3.0</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<text>
+			<label>Personal Event</label>
+			<ST>#{personalEvent.event}</ST>
+		</text>
+		<effectiveTime>
+			<IVL_TS>
+				<low>
+					<label>From Date</label>
+					<TS><value>#{TS(personalEvent.effectiveTimeLow)}</value></TS>
+				</low>
+				<high>
+					<label>To Date</label>
+					<TS><value>#{TS(personalEvent.effectiveTimeHigh)}</value></TS>
+				</high>
+			</IVL_TS>
+		</effectiveTime>
+	</act>
+</trim>

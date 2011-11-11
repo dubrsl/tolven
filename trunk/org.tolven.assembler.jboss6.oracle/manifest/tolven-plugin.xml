@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.assembler.jboss6.oracle" version="2.1.0" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.assembler.jboss6.oracle" version="2.1.1" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<requires>
 		<import plugin-id="org.tolven.assembler.jboss6" />
 		<import plugin-id="org.tolven.assembler.ejbmodule" />
-		<import plugin-id="org.tolven.oracle.indexes" />
+		<import plugin-id="org.tolven.oracle.db" />
 	</requires>
 	<extension id="databasePlugin" plugin-id="org.tolven.assembler.jboss6" point-id="databasePlugin" />
 	<extension id="orm" plugin-id="org.tolven.assembler.ejbmodule" point-id="orm">

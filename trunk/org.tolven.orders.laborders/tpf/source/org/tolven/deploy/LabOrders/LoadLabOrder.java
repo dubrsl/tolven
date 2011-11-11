@@ -19,9 +19,10 @@ import org.tolven.logging.TolvenLogger;
 
 public class LoadLabOrder extends LoadRESTfulClient {
 	String fileName;
-	public static final int CONVENIENCE_NAME = 4;
-	public static final int LOINC_CODE = 2;
-	public static final int LOINC_LONG_COMMON_NAME = 5;
+	public static final int CONVENIENCE_NAME = 5;
+	public static final int LOINC_VER = 2;
+	public static final int LOINC_CODE = 3;
+	public static final int LOINC_LONG_COMMON_NAME = 6;
 	public static final int BATCH_SIZE = 100;
 	List<String> trims = new ArrayList<String>(BATCH_SIZE);
 
@@ -66,7 +67,7 @@ public class LoadLabOrder extends LoadRESTfulClient {
 	public static void writeCode( String fields[], XMLStreamWriter writer ) throws XMLStreamException {
 		writer.writeStartElement("code");
 		{
-			writer.writeStartElement("CE");
+			writer.writeStartElement("CD");
 			{
 				writer.writeStartElement("displayName");
 				writer.writeCharacters(fields[CONVENIENCE_NAME]);
@@ -78,7 +79,7 @@ public class LoadLabOrder extends LoadRESTfulClient {
 				writer.writeCharacters("LOINC");
 				writer.writeEndElement();
 				writer.writeStartElement("codeSystemVersion");
-				writer.writeCharacters("CodeSystemVersion");
+				writer.writeCharacters(fields[LOINC_VER]);
 				writer.writeEndElement();
 			}
 			writer.writeEndElement();
@@ -127,6 +128,7 @@ public class LoadLabOrder extends LoadRESTfulClient {
 			writer.close();
 			bos.close();
 			/*String trimName = */generateName(fields);
+			//TolvenLogger.info("Lab Order Trim: " + bos.toString(), LoadLabOrder.class);
 			createTrimHeader(bos.toString());
 			/*
 			trims.add(bos.toString());

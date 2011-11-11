@@ -4,8 +4,10 @@ import org.tolven.app.el.TrimExpressionEvaluator;
 import org.tolven.trim.Act;
 import org.tolven.trim.ActParticipation;
 import org.tolven.trim.ActRelationship;
+import org.tolven.trim.Observation;
 import org.tolven.trim.Trim;
 import org.tolven.trim.ex.ActEx;
+import org.tolven.trim.ex.ObservationEx;
 import org.tolven.trim.ex.TrimEx;
 
 /**
@@ -54,6 +56,22 @@ public class ExtensionScanner extends Scanner {
 			ActRelationship targetAR = (ActRelationship) target;
 			if (targetAR.getAct()==null) targetAR.setAct(act);
 			
+		}
+	}
+
+	@Override
+	protected void preProcessObservation(Observation observation) {
+		super.preProcessObservation(observation);
+		Object target = ee.evaluate("#{" + getLocation(-1) + "}");
+		
+		if (target instanceof Act) {
+			Act targetAct = (Act) target;
+			if (targetAct.getObservation()==null) {
+				targetAct.setObservation(observation);
+			} else {
+				// Can't just insert the act, so blend instead.
+				((ObservationEx)targetAct.getObservation()).blend(observation);
+			}
 		}
 	}
 

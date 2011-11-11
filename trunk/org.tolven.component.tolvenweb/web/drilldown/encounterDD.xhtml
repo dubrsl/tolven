@@ -49,7 +49,7 @@
 			</c:if>
 	 		<c:if test="#{menu.xmlNS == 'urn:tolven-org:trim:4.0'}">		
 				<h2><h:outputText value="#{act.title.ST.value}"/></h2>
-		            <h:outputText value="#{menu.menuDataItem.status}"/>
+		   
 				<h:panelGrid columns="2" rendered="#{menu.menuDataItem.status=='NEW'}" >
 					<c:if test="#{trim.trim.act.effectiveTime.IVLTS!=null}">
 						<h:outputText value="#{trim.trim.act.effectiveTime.IVLTS.low.label.value}: "/>
@@ -63,16 +63,16 @@
 					</c:if>
 		            <c:if test="#{trim.trim.act.participation['admitter']!=null}">				
 						<h:outputText value="Admitting physician: "/>
-		            	<wiz:selectWithOther id="admitDD"  role="#{trim.trim.act.participation['admitter'].role}" list="#{trim.list['echr:admin:staff:all']}" readonly="true" />
+		            	<wiz:selectWithOther id="admitDD"  role="#{trim.trim.act.participation['admitter'].role}" readonly="true" />
 			    	</c:if>
 				
 				    <c:if test="#{trim.trim.act.participation['attender']!=null}">
 				    	<h:outputText value="Attending physician: "/>
-		            	<wiz:selectWithOther id="attendDD"  role="#{trim.trim.act.participation['attender'].role}" list="#{trim.list['echr:admin:staff:all']}" readonly="true" />
+		            	<wiz:selectWithOther id="attendDD"  role="#{trim.trim.act.participation['attender'].role}" readonly="true" />
 			    	</c:if>
 		            <c:if test="#{trim.trim.act.participation['location']!=null}">
 		            	<h:outputText value="Location: "/>
-		            	<wiz:selectWithOther id="locDD"  role="#{trim.trim.act.participation['location'].role}" list="#{trim.list['echr:admin:locations:all']}" readonly="true" />
+		            	<wiz:selectWithOther id="locDD"  role="#{trim.trim.act.participation['location'].role}" readonly="true" />
 		    		</c:if>
 	
 					<h:outputText value="Source: "/>
@@ -82,46 +82,29 @@
 				
 				<c:if test="#{trim.trim.act.effectiveTime.IVLTS!=null}">
 					<h:outputText value="#{msg.AdmitDate}: "/>
-		            <h:outputText value="#{menu.menuDataItem.effectiveTimeLow}">
-		            	<f:convertDateTime timeStyle="short" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
-		            </h:outputText>
+		          	<trim:TS id="effectiveTimeLow" value="#{trim.trim.act.effectiveTime.IVLTS.low.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
 					<h:outputText value="#{msg.DischargeDate}: "/>
-		            <h:outputText value="#{menu.menuDataItem.effectiveTimeHigh}">
-		            	<f:convertDateTime timeStyle="short" dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
-		            </h:outputText>
+		            <trim:TS id="effectiveTimeHigh" value="#{trim.trim.act.effectiveTime.IVLTS.high.TS}" dateStyle="short" timeStyle="short" readonly="true" />
 		         </c:if>
 				
 				<c:if test="#{trim.trim.act.effectiveTime.IVLTS==null}">
 					<h:outputText value="#{act.effectiveTime.label.value}: "/>
-					 <h:outputText value="#{menu.menuDataItem.effectiveTimeLow}">
-		            	<f:convertDateTime dateStyle="short" locale="#{top.locale}" timeZone="#{top.timeZoneObject}" />
-		            </h:outputText>
+					<trim:TS id="effectiveTime" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" readonly="true"/>
 				</c:if>
 	
-		            <c:if test="#{trim.trim.act.participation['admitter']!=null}">				
-						<h:outputText value="#{msg.AdmittingPhysician}: "/>
-		            	<h:outputText value="#{menu.menuDataItem.admitter.lastName}"/>
-			    	</c:if>
+				<c:if test="#{trim.trim.act.participation['admitter']!=null}">				
+					<h:outputText value="#{msg.AdmittingPhysician}: "/>
+					<wiz:selectWithOther id="admitt"  role="#{trim.trim.act.participation['admitter'].role}" readonly="true" />		
+				</c:if>
 				
-				    <c:if test="#{trim.trim.act.participation['attender']!=null}">				
-				    	<h:outputText value="#{msg.AttendingPhysician}: "/>
-		            	<c:if test="#{trim.trim.act.participation['attender'].role.id.for[top.accountUser.account].extension !=null}">
-			            	<h:outputText value="#{menu.menuDataItem.attender.firstName} #{menu.menuDataItem.attender.lastName}"/>
-		            	</c:if>	            	
-		            	<c:if test="#{trim.trim.act.participation['attender'].role.id.for[top.accountUser.account].extension ==null}">
-		            		<h:outputText value="#{menu.menuDataItem.otherAttender}"/>
-		            	</c:if>	            	
-			    	</c:if>
+				<c:if test="#{trim.trim.act.participation['attender']!=null}">				
+					<h:outputText value="#{msg.AttendingPhysician}: "/>
+					<wiz:selectWithOther id="attend"  role="#{trim.trim.act.participation['attender'].role}" readonly="true" />										         	
+				</c:if>
 		            <c:if test="#{trim.trim.act.participation['location']!=null}">
 		            	<h:outputText value="#{msg.Location}: "/>
-		            	<c:if test="#{trim.trim.act.participation['location'].role.id.for[top.accountUser.account].extension !=null}">
-		            		<h:outputText value="#{menu.menuDataItem.location.name}"/>
-		            	</c:if>	            	
-	
-		            	<c:if test="#{trim.trim.act.participation['location'].role.id.for[top.accountUser.account].extension ==null}">
-		            		<h:outputText value="#{menu.menuDataItem.otherLocation}"/>
-		            	</c:if>
-		    		</c:if>
+		            	<wiz:selectWithOther id="loc"  role="#{trim.trim.act.participation['location'].role}" readonly="true" />	            	
+		           </c:if>
 					<h:outputText value="#{msg.Source}: "/>
 					<h:outputText value="#{menu.menuDataItem.enteredBy}"/>
 				</h:panelGrid>

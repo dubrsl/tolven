@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<abstract>true</abstract>
+	<name>icd9procedure</name>
+	<author>Tolven</author>
+	<menu>global:icd9ProcedureMenu</menu>
+	<reference>http://www.wikihit.org/wiki/index.php/Procedure</reference>
+	<application name="ephr">
+		<instance>ephr:patient:px</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:px</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act moodCode="EVN" classCode="PROC">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:px</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:px</path>
+			</placeholder>
+		</bind>
+		<effectiveTime>
+			<label>Start time</label>
+			<new datatype="TS" function="now" />
+		</effectiveTime>
+		<relationship typeCode="COMP" direction="OUT" name="procedureInfo">
+			<act classCode="OBS" moodCode="EVN">
+				<observation>
+					<value>
+						<label>Additional Detail</label>
+						<ED></ED>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>	
+</trim>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>report</name>
+	<description>Reports</description>
+	<page>report.xhtml</page>
+	<drilldown>reportDD.xhtml</drilldown>
+	<menu>global:reportMenu</menu>
+ 	<tolvenId application="#{knownType}" path="#{patient.path}" id="#{patient.id}" accountId="#{account.id}"/>
+	<application name="echr" signatureRequired="true">
+		<instance>echr:reports</instance>
+		<wip></wip>
+	</application>
+	 <transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New Report</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise Report</label>
+		</transition>
+	</transitions>
+	<act classCode="REG" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<effectiveTime>
+			<IVL_TS>
+				<low>
+					<label>Start Date</label>
+					<TS><value>#{TS[now]}</value></TS>
+				</low>
+				<high>
+					<label>End Date</label>
+					<TS/>
+				</high>
+			</IVL_TS>
+		</effectiveTime>
+		<bind application="echr" >
+					<placeholder bindAction="merge">
+						<path>echr:reports</path>
+					</placeholder>
+		</bind>
+		<!-- <participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr" >
+					<placeholder bindAction="merge">
+						<path>echr:reports</path>
+					</placeholder>
+				</bind>
+				<id/> 
+				
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Patient Name</label>
+						<EN>
+							<label>Legal Name</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{patient.firstName}</ST>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{patient.middleName}</ST>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{patient.lastName}</ST>
+							</part>
+							<part>
+								<label>Suffix</label>
+								<type>SFX</type>
+								<ST/>
+							</part>
+						</EN>
+					</name>
+					<livingSubject>
+						<administrativeGenderCode>
+							<label>Gender</label>
+							<valueSet>genders</valueSet>
+						</administrativeGenderCode>
+						<birthTime>
+							<label>Date of Birth</label>
+							<TS/>
+						</birthTime>
+					</livingSubject>
+				</player> 
+			</role>
+		</participation>-->
+	</act>
+	<!-- 
+	<valueSet name="genders">
+		<CE>
+			<displayName>Male</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Female</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>  -->
+</trim>

@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Diagnosis</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    <wiz:step title="Public Health Surveillance" >
+			<wiz:body>
+				<wiz:group title="Select Receiving Facility  to Generate HL7 Message">                          
+					<h:selectOneMenu id="receiverBy" value="#{trim.trim.act.participation['receiver'].role.id.for[top.accountUser.account].extension}">
+					<f:selectItems value="#{trim.list['echr:admin:receivers:all~Name']}"/>
+					</h:selectOneMenu>
+				</wiz:group>
+			</wiz:body>
+		</wiz:step>
+
+	</ui:composition>
+</body>
+</html>

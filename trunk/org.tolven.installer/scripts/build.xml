@@ -59,6 +59,12 @@
 				<equals arg1="${include.appserver.upload}" arg2="true" />
 			</and>
 		</condition>
+		<condition property="INCLUDE.US-STATES.UPLOAD">
+			<and>
+				<istrue value="${INCLUDE.APPSERVER}" />
+				<equals arg1="${include.us-states.upload}" arg2="true" />
+			</and>
+		</condition>
 		<condition property="appserver.home" value="${glassfish.dir}" else="${jboss6.dir}">
 			<equals arg1="${tolven.appserver.code}" arg2="glassfish3" />
 		</condition>
@@ -180,6 +186,7 @@
 
 	<target name="config-tolven" depends="props" description="config-tolven">
 		<ant antfile="build-v2-kit.xml" target="assemble-tolven" />
+		<ant antfile="build-v2-kit.xml" target="pre-appserver-config-database" />
 		<antcall target="include-config-tolven-opends" />
 		<antcall target="include-config-openam" />
 		<antcall target="config-tolven-appserver" />
@@ -205,8 +212,9 @@
 
 	<target name="include-appserver-upload" if="INCLUDE.APPSERVER.UPLOAD">
 		<ant antfile="build-v2-kit.xml" target="update-authorization-urls" />
-		<ant antfile="build-v2-kit.xml" target="update-db-indexes" />
+		<ant antfile="build-v2-kit.xml" target="post-appserver-config-database" />
 		<ant antfile="build-v2-kit.xml" target="update-appserver-properties" />
+		<ant antfile="build-v2-kit.xml" target="update-us-states" />
 		<ant antfile="build-v2-kit.xml" target="create-system-queue-users" />
 		<ant antfile="build-v2-kit.xml" target="configPhase3" />
 	</target>

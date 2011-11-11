@@ -19,10 +19,12 @@ import com.sun.jersey.api.client.WebResource;
 
 public interface RSGatekeeperClientLocal {
 
+    public boolean existsTolvenPerson(String uid, String realm);
+
     public WebResource getWebResource(String path);
 
     public String login(String username, char[] password, String realm);
-    
+
     public boolean verifyUserPassword(String uid, char[] password, String realm);
 
 }

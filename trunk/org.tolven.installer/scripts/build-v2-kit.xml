@@ -125,8 +125,12 @@
 		</move>
 
 		<echo message="Installing ${tolven.kit.filename} with config directory: ${tolven.config.dir}..." />
+		<guide-echo args="" />
 		<guide-echo args="The selected template is: ${tolven.kit.pluginsxml.template}" />
+		<guide-echo args="" />
+		<echo message="" />
 		<echo message="The selected template is: ${tolven.kit.pluginsxml.template}" />
+		<echo message="" />
 		<guide-echo args="For linux ensure install.sh files in ${tolven.kit.dir}/bin is executable" />
 		<chmod dir="${tolven.kit.dir}/bin" perm="u+x" includes="install.sh" />
 		<guide-echo args="" />
@@ -233,7 +237,6 @@
 		<exec executable="${configPhase1}" dir="${tolven.kit.dir}/bin" failonerror="true" />
 		<guide-echo args="" />
 		<antcall target="assemble-tolven-openam" />
-		<antcall target="assemble-mqkeystore" />
 		<antcall target="assemble-gatekeeper-ear" />
 		<guide-echo args="Assemble Tolven EAR File" />
 		<tpf args="-plugin org.tolven.assembler.ear -earPlugin org.tolven.component.tolvenear -earFile tolven.ear" />
@@ -250,20 +253,25 @@
 		<tpf args="-plugin org.tolven.assembler.library -libPlugin org.tolven.openam" />
 	</target>
 
-	<target name="assemble-mqkeystore" unless="INCLUDE.SHIRO">
-		<guide-echo args="Assemble MQKeyStore" />
-		<tpf args="-plugin org.tolven.assembler.connectormodule -rarPlugin org.tolven.mqkeystore" />
-		<guide-echo args="" />
-	</target>
-
 	<target name="update-authorization-urls" depends="props" if="INCLUDE.SHIRO">
 		<guide-echo args="Update Authorization URLs" />
-		<tpf args="-plugin ${gatekeeper.authorization.plugin} -dbUrl ${db.url} -driverClass ${db.driver.class} -driverClasspath ${jdbc.driver} -user ${rootdb} -password ${rootdb.password}" />
+		<condition property="tablePrefix" value="${gatekeeper.authorization.tablePrefix.legacypostgresql}" else="${gatekeeper.authorization.tablePrefix.oracle}">
+			<istrue value="${INCLUDE.LEGACYPOSTGRESQL}" />
+		</condition>
+		<condition property="tablePrefixOption" value="" else="-tablePrefix ${tablePrefix}">
+			<equals arg1="${tablePrefix}" arg2="" />
+		</condition>
+		<tpf args="-plugin ${gatekeeper.authorization.plugin} ${tablePrefixOption} -dbUrl ${db.url} -driverClass ${db.driver.class} -driverClasspath ${jdbc.driver} -user ${rootdb} -password ${rootdb.password}" />
 	</target>
 
-	<target name="update-db-indexes" depends="props" if="INCLUDE.TOLVENEAR.DEPLOY">
+	<target name="pre-appserver-config-database" depends="props" if="INCLUDE.TOLVENEAR.DEPLOY">
+		<guide-echo args="Update DB Schemas" />
+		<tpf args="-plugin ${db.plugin} -schemas -dbUrl ${db.url} -driverClass ${db.driver.class} -driverClasspath ${jdbc.driver} -user ${rootdb} -password ${rootdb.password}" />
+	</target>
+
+	<target name="post-appserver-config-database" depends="props" if="INCLUDE.TOLVENEAR.DEPLOY">
 		<guide-echo args="Update DB Indexes" />
-		<tpf args="-plugin ${db.indexes.plugin} -dbUrl ${db.url} -driverClass ${db.driver.class} -driverClasspath ${jdbc.driver} -user ${rootdb} -password ${rootdb.password}" />
+		<tpf args="-plugin ${db.plugin} -indexes -dbUrl ${db.url} -driverClass ${db.driver.class} -driverClasspath ${jdbc.driver} -user ${rootdb} -password ${rootdb.password}" />
 	</target>
 
 	<target name="update-appserver-properties" depends="props" if="INCLUDE.APPSERVER.UPLOAD">
@@ -272,6 +280,11 @@
 		<guide-echo args="In a Tolven development environment, execute the following to disable the enforced use of user security certificates and keystores" />
 		<guide-echo args="In a Tolven production environment, we recommend that the certificates and keystores should not be optional, and thus all AccountPrivateKeys will be encrypted, as well as the documents they were involved in encrypting. Execute the following to return to using the security certificates and keystores" />
 		<tpf args="-plugin org.tolven.appserverproperties -set tolven.security.user.keysOptional ${tolven.security.user.keysOptional}" />
+	</target>
+
+	<target name="update-us-states" depends="props" if="INCLUDE.US-STATES.UPLOAD">
+		<guide-echo args="Update US States" />
+		<tpf args="-plugin org.tolven.us.states -ifRuntimeExists" />
 	</target>
 
 	<target name="create-system-queue-users" depends="props" if="INCLUDE.TOLVEN.OPENDS">

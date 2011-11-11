@@ -27,9 +27,6 @@
 		<antcall target="buildSection">
 			<param name="section" value="web"/>
 		</antcall>
-		<antcall target="buildSection">
-			<param name="section" value="tpf"/>
-		</antcall>
 		<!-- Add DevLib.jar to plugin zip -->
 		<zip destfile="${zipFileName}" update="true">
 			<zipfileset dir="${buildFolder}">

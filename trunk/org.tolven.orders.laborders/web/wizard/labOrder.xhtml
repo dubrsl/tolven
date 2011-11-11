@@ -19,15 +19,14 @@
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 				<thead>
 					<tr>
-						<th style="text-align:center; width:36%;"><b>Laboratory Order</b></th>
-						<th style="text-align:center; width:8%;" nowrap="nowrap"><b>Date Of Order*</b></th>
-						<th style="text-align:center; width:8%;"><b>Specimen Type</b></th>
-						<th style="text-align:center; width:8%;"><b>Container</b></th>
-						<th style="text-align:center; width:8%;"><b>Reason</b></th>
-						<th style="text-align:center; width:8%;"><b>Priority</b></th>
-						<th style="text-align:center; width:8%;"><b>Schedule</b></th>
-						<th style="text-align:center; width:8%;"><b>Frequency</b></th>
-						<th style="text-align:center; width:8%;"><b>Timing</b></th>
+						<th style="width:36%;"><b>Laboratory Order</b></th>
+						<th style="width:10%;" nowrap="nowrap"><b>Date Of Order*</b></th>
+						<th style="width:8%;"><b>Specimen Type</b></th>
+						<th style="width:8%;"><b>Container</b></th>
+						<th style="width:8%;"><b>Reason</b></th>
+						<th style="width:8%;"><b>Priority</b></th>
+						<th style="width:8%;"><b>Frequency</b></th>
+						<th style="width:8%;"><b>Timing</b></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -38,26 +37,26 @@
 						<c:set var="class" value="even"/>
 					</c:if>
 						<tr class="#{class}">
-								<td style="text-align:center; width:36%;">
-									#{labOrder.act.code.CE.displayName}
+								<td style="width:36%;">
+									#{labOrder.act.code.CD.displayName}
 									<h:inputHidden id="saveLabOrder#{widgetIndex.index}" value="#{labOrder.enableRelationship}"/>
 								</td>
-								<td style="text-align:center; width:8%;">
-									<trim:TSNew id="dateOfOrder#{widgetIndex.index}" value="#{labOrder.act.effectiveTime.TS}" dateStyle="short" style="width:68%;" readonly="false" validate="currentAndFuture"/>
+								<td style="width:8%;">
+									<trim:TSNew id="dateOfOrder#{widgetIndex.index}" value="#{labOrder.act.effectiveTime.TS}" dateStyle="short" style="width:68%;" readonly="false"/>
 								</td>
 								<td style="width:8%;" >
-		      						<h:selectOneMenu id="specimenType#{widgetIndex.index}" style="width:110px;" value="#{labOrder.act.observation.values[5].CE}">
+		      						<h:selectOneMenu id="specimenType#{widgetIndex.index}" style="width:110px;" value="#{labOrder.act.observation.values[4].CE}">
 										<f:selectItems value="#{trim.valueSets['specimenType']}"/>
 		           						<f:converter converterId="DataTypeConverter"/>
 		          					</h:selectOneMenu>
 		      					</td>
 								<td style="width:8%;" >
-		      						<h:selectOneMenu id="containerType#{widgetIndex.index}" style="width:110px;" value="#{labOrder.act.observation.values[6].CE}">
+		      						<h:selectOneMenu id="containerType#{widgetIndex.index}" style="width:110px;" value="#{labOrder.act.observation.values[5].CE}">
 										<f:selectItems value="#{trim.valueSets['containerType']}"/>
 		           						<f:converter converterId="DataTypeConverter"/>
 		          					</h:selectOneMenu>
 		      					</td>
-								<td style="text-align:center; width:8%;">
+								<td style="width:8%;">
 									<h:inputTextarea id="reason#{widgetIndex.index}" value="#{labOrder.act.observation.values[0].ST.value}"/>
 								</td>
 								<td style="width:8%;" >
@@ -66,14 +65,11 @@
 		           						<f:converter converterId="DataTypeConverter"/>
 		          					</h:selectOneMenu>
 		      					</td>
-								<td style="text-align:center; width:8%;">
-									<h:inputTextarea id="schedule#{widgetIndex.index}" value="#{labOrder.act.observation.values[2].ST.value}"/>
+								<td style="width:8%;">
+									<h:inputTextarea id="frequency#{widgetIndex.index}" value="#{labOrder.act.observation.values[2].ST.value}"/>
 								</td>
-								<td style="text-align:center; width:8%;">
-									<h:inputTextarea id="frequency#{widgetIndex.index}" value="#{labOrder.act.observation.values[3].ST.value}"/>
-								</td>
-								<td style="text-align:center; width:8%;">
-									<h:inputTextarea id="timing#{widgetIndex.index}" value="#{labOrder.act.observation.values[4].ST.value}"/>
+								<td style="width:8%;">
+									<h:inputTextarea id="timing#{widgetIndex.index}" value="#{labOrder.act.observation.values[3].ST.value}"/>
 								</td>								
 							</tr>		
 				</c:forEach>	
@@ -83,11 +79,11 @@
 		<c:if test="#{hasOrders == 'false'}">
 			<script language="JavaScript" type="text/javascript">
 				// <![CDATA[
-				openLabOrderTemplateWithToolTip('#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}','#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}', 'saveLabOrder', '#{menu.elementLabel}', 0);		
+				openLabOrderTemplateWithToolTip('#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}','#{menu.elementLabel}:#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}', 'saveLabOrder', '#{menu.elementLabel}', 0);		
 				// ]]>			
 			</script>
 			<div id="addNewOrderAnchor" class="widgetAction">
-				<a onclick="openLabOrderTemplateWithToolTip('#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}','#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}', 'saveLabOrder', '#{menu.elementLabel}', 0)" href="#">Select Laboratory Order</a>					
+				<a onclick="openLabOrderTemplateWithToolTip('#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}','#{menu.elementLabel}:#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}', 'saveLabOrder', '#{menu.elementLabel}', 0)" href="#">Select Laboratory Order</a>					
 			</div>
 		</c:if>
 		<div id="msgLabOrder" style="color:red; font-weight:bold; text-align:center;" ></div>

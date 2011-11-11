@@ -1,0 +1,719 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<extends path="echr">
+		<placeholder name="patient" sequence="40" title="Patient" eventInstance="echr:patients:wip" page="/five/patient.xhtml" heading="/five/chartLink.xhtml">
+			<field name="lastName" internal="string01">
+				<from>#{xpath['patient/name/family/text()']}</from>
+				<from>#{xpath['patient/name/text()']}</from>
+				<from>#{role.player.name.EN['L'].formattedParts['FAM']}</from>
+			</field>
+			<field name="firstName" internal="string02">
+				<from>#{xpath['patient/name/given/text()']}</from>
+				<from>#{role.player.name.EN['L'].formattedParts['GIV[0]']}</from>
+			</field>
+			<field name="middleName" internal="string03">
+				<from>#{xpath["patient/name/family[@qualifier='BR']/text()"]}</from>
+				<from>#{role.player.name.EN['L'].formattedParts['GIV[1]']}</from>
+			</field>
+			<field name="familyName" internal="string08">
+				<from>#{role.player.name.EN['L'].formattedParts['GIV[2]']}</from>
+			</field>
+			<field name="prefix" internal="_extended" type="string">
+				<from>#{role.player.name.EN['L'].formattedParts['PFX']}</from>
+			</field>
+			<field name="suffix" internal="_extended" type="string">
+				<from>#{role.player.name.EN['L'].formattedParts['SFX']}</from>
+			</field>
+			<field name="ssn" internal="_extended" type="string">
+				<from>#{role.player.id.for['SSN'].extension}</from>
+			</field>
+			<field name="dob" internal="date01">
+				<from>#{TStoDate(xpath['patient/birthTime/@value'])}</from>
+				<from>#{role.player.livingSubject.birthTime.TS.date}</from>
+			</field>
+			<field name="sex" internal="string04">
+				<from>#{xpath['patient/administrativeGenderCode/@code']}</from>
+				<from>#{role.player.livingSubject.administrativeGenderCode.CE.displayName}</from>
+			</field>
+			<field name="mrn" internal="string05">
+				<from>#{role.id.for['MRN'].extension}</from>
+			</field>
+			<field name="vip" internal="_extended">
+				<from>#{trim.act.participation['patient'].role.patient.veryImportantPersonCode.value}</from>
+			</field>
+			<field name="gender" internal="_extended">
+				<from>#{trim.act.participation['patient'].role.player.livingSubject.administrativeGenderCode.value}</from>
+			</field>
+			<field name="homeAddr1" internal="_extended" type="string">
+				<from>#{xpath["addr[@use='H']/streetName/text()"]}</from>
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.addr.AD['H'].part['SAL[0]'].ST.value}</from>
+			</field>
+			<field name="homeAddr2" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.addr.AD['H'].part['SAL[1]'].ST.value}</from>
+			</field>
+			<field name="homeCity" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.addr.AD['H'].part['CTY[0]'].ST.value}</from>
+			</field>
+			<field name="homeCounty" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.addr.AD['H'].part['CTY[1]'].ST.value}</from>
+			</field>
+			<field name="homeState" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.addr.AD['H'].part['STA'].ST.value}</from>
+			</field>
+			<field name="homeZip" internal="_extended" type="string">
+				<from>#{xpath["addr[@use='H']/postalCode"]}</from>
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.addr.AD['H'].part['ZIP'].ST.value}</from>
+			</field>
+			<field name="homeCountry" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.addr.AD['H'].part['CNT'].ST.value}</from>
+			</field>
+			<field name="emailId" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.addr.AD['H'].part['UNID'].ST.value}</from>
+			</field>
+			<field name="homeTelecom" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.telecom.TEL['H'].value}</from>
+			</field>
+			<field name="workTelecom" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.telecom.TEL['WP'].value}</from>
+			</field>
+			<field name="cellTelecom" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.telecom.TEL['MC'].value}</from>
+			</field>
+			<field name="eMail" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.telecom.TEL['DIR'].value}</from>
+			</field>
+			<field name="seMail" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.telecom.TEL['TMP'].value}</from>
+			</field>
+			<field name="ethnicity" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.ethnicGroupCode.value}</from>
+			</field>
+			<field name="race" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.person.raceCode.values}</from>
+			</field>
+			<!-- <field name="comments" internal="_extended" type="string"> <from>#{trim.isName['reg/evn/patient.*'].act.relationship['patientOtherInfo'].act.observation.values[0].ST.value}</from> </field> -->
+			<field name="language" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.languageCommunications[0].languageCode.value}</from>
+			</field>
+			<field name="languageCode" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/patient.*'].act.participation['patient'].role.player.languageCommunications[0].languageCode.CE.code}</from>
+			</field>
+			<field name="primaryName" internal="_computed">
+				<from>#{patient.primary.lastName}</from>
+				<from>#{patient.otherPrimary}</from>
+			</field>
+			<field name="primary" internal="parent03">
+				<from>#{internalId( account, trim.act.participation['patient'].role.participation['primaryCarePhysician'].act.participation['primaryMD'].role.id)}</from>
+			</field>
+			<field name="otherPrimary" internal="_extended">
+				<from>#{trim.act.participation['subject'].role.participation['subject'].act.participation['primary'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<field name="surgeonName" internal="_computed">
+				<from>#{patient.surgeon.lastName}</from>
+				<from>#{patient.otherSurgeon}</from>
+			</field>
+			<field name="surgeon" internal="parent04">
+				<from>#{internalId( account, trim.act.participation['patient'].role.participation['primarySurgeon'].act.participation['primarySurgeon'].role.id)}</from>
+			</field>
+			<field name="otherSurgeon" internal="_extended">
+				<from>#{trim.act.participation['subject'].role.participation['subject'].act.participation['surgeon'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<field name="allergyCount" internal="long01">
+			</field>
+
+			<!-- Notification Fields -->
+			<field name="notifyMethod" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyMethod'].act.code.CD.code}</from>
+			</field>
+			<field name="notifyAnnualPhysical" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyAnnualPhysical'].act.code.CD.code}</from>
+			</field>
+			<field name="notifyTetanus" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyTetanus'].act.code.CD.code}</from>
+			</field>
+			<field name="notifyFlu" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyFlu'].act.code.CD.code}</from>
+			</field>
+			<field name="notifyBMI" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyBMI'].act.code.CD.code}</from>
+			</field>
+			<field name="notifyColorectal" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyColorectal'].act.code.CD.code}</from>
+			</field>
+			<field name="notifyBreast" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyBreast'].act.code.CD.code}</from>
+			</field>
+			<field name="notifyA1C" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyA1C'].act.code.CD.code}</from>
+			</field>
+			<field name="notifyDrugAllergy" internal="_extended" type="string">
+				<from>#{trim.isName['reg/evn/notification.*'].act.relationship['notifyDrugAllergy'].act.code.CD.code}</from>
+			</field>
+		</placeholder>
+	</extends>
+
+	<extends path="echr:patient">
+		<menu name="summary" sequence="1" title="Overview" page="/five/bar2.xhtml">
+			<portal name="portal" title="Summary" page="/five/portletView.xhtml" visible="true" />
+			<timeline name="timeline" title="Timeline" page="/five/timelineView.xhtml" visible="true" />
+			<calendar name="calendar" title="Calendar" page="/five/calendarView.xhtml" visible="true" />
+		</menu>
+	</extends>
+
+	<extends path="echr:patient">
+		<placeholder name="contact" title="Contacts" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/treatmentLink.xhtml">
+			<field name="date" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="name">
+				<from>#{act.relationship["name"].act.observation.value.ST.value}</from>
+			</field>
+			<field name="phone">
+				<from>#{act.relationship["phone"].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, act.participation['author'].role.id)}</from>
+			</field>
+			<field name="enteredBy">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="busPhone">
+				<from>#{act.relationship['phone'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="city">
+				<from>#{act.relationship['address'].act.observation.values[2].ST.value}</from>
+			</field>
+			<field name="state">
+				<from>#{act.relationship['address'].act.observation.values[3].CE.displayName}</from>
+			</field>
+			<field name="zip">
+				<from>#{act.relationship['address'].act.observation.values[4].ST.value}</from>
+			</field>
+			<field name="addLine1">
+				<from>#{act.relationship['address'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="addLine2">
+				<from>#{act.relationship['address'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="relation">
+				<from>#{act.relationship['relation'].act.observation.values[0].CE.displayName}</from>
+			</field>
+			<field name="otherRelation">
+				<from>#{act.relationship['relation'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="email">
+				<from>#{act.relationship['email'].act.observation.value.ST.value}</from>
+			</field>
+		</placeholder>
+	</extends>
+
+	<!-- Patient's providers -->
+	<extends path="echr:patient">
+		<placeholder name="patprovider" title="Provider" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml">
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="provider" internal="parent02">
+				<from>#{internalId( account, act.participation['responsibleParty'].role.id)}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<!-- DEATHFACE -->
+	<extends path="echr:patient">
+		<placeholder name="cod" title="CauseOfDeath" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/deathDetailsLink.xhtml">
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="cause" internal="string01">
+				<from>#{trim.act.relationship['problem'].act.observation.value.ST.value}</from>
+			</field>
+			<field name="effectiveDate" internal="date01" type="date">
+				<from>#{trim.act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="author" internal="string02">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="availabilityTime" internal="updatetime"/>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient">
+		<menu name="personal" sequence="3" title="Personal" page="/five/bar2.xhtml" visible="true">
+			<list name="identity" title="Identity" page="/five/personal.xhtml" visible="true" drilldown="echr:patient" />
+			<!-- Not ready for primetime yet <list name="notification" title="Notification" page="/five/notification.xhtml" visible="true" drilldown="echr:patient"/> -->
+			<list name="deathdetails" title="RecordCauseofDeath" page="/five/list.xhtml" visible="true" drilldown=":cod">
+				<column name="cod" internal="string01" width="20.0" reference="true">
+					<from>#{cod.cause}</from>
+				</column>
+				<column name="dateofdeath" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{cod.effectiveDate}</from>
+				</column>
+				<column name="dateofdoc" internal="date02" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{cod.availabilityTime}</from>
+				</column>
+				<column name="author" width="15.0" internal="string02">
+					<from>#{cod.author}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:codMenu">
+					<column name="Cause of Death" internal="string01" instantiate="true" width="30.0" />
+				</action>
+			</list>
+			<list name="providers" title="Providers" page="/five/list.xhtml" visible="true" drilldown=":patprovider">
+				<column name="Provider" internal="string01" width="40.0">
+					<from>#{patprovider.provider.lastName}</from>
+				</column>
+			</list>
+			<list name="contacts" title="Contacts" page="/five/list.xhtml" visible="true" drilldown=":contact" sequence="2">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{contact.date}</from>
+				</column>
+				<column name="Name" internal="string01" width="20.0" reference="true">
+					<from>#{contact.name}</from>
+				</column>
+				<column name="Phone" width="10.0">
+					<from>#{contact.phone}</from>
+				</column>
+				<column name="Source" width="10.0">
+					<from>#{contact.author.lastName}</from>
+					<from>#{contact.enteredBy}</from>
+				</column>
+				<column name="BusPhone" visible="never">
+					<from>#{contact.busPhone}</from>
+				</column>
+				<column name="City" visible="never">
+					<from>#{contact.city}</from>
+				</column>
+				<column name="State" visible="never">
+					<from>#{contact.state}</from>
+				</column>
+				<column name="Zip" visible="never">
+					<from>#{contact.zip}</from>
+				</column>
+				<column name="AddLine1" visible="never">
+					<from>#{contact.addLine1}</from>
+				</column>
+				<column name="AddLine2" visible="never">
+					<from>#{contact.addLine2}</from>
+				</column>
+				<column name="Relation" visible="never">
+					<from>#{contact.relation}</from>
+				</column>
+				<column name="OtherRelation" visible="never">
+					<from>#{contact.otherRelation}</from>
+				</column>
+				<column name="Email" visible="never">
+					<from>#{contact.email}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:contactMenu">
+					<column name="Contacts" internal="string01" instantiate="true" width="30.0" />
+				</action>
+			</list>
+		</menu>
+	</extends>
+	<!-- Patient Docuemnts -->
+	<extends path="echr:patient">
+		<placeholder name="patDoc" title="Document" page="/wizard/wizard.xhtml" heading="/five/documentLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{trim.act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="title" internal="string01">
+				<from>#{trim.description}</from>
+				<from>#{xpath["/ClinicalDocument/code/@displayName"]}</from>
+			</field>
+			<field name="source" internal="string05">
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient">
+		<menu name="documents" sequence="21" title="Document" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All Documents" page="/five/list.xhtml" visible="true" drilldown=":patDoc">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{patDoc.effectiveTime}</from>
+				</column>
+				<column name="Name" internal="string01" width="25.0" reference="true">
+					<from>#{patDoc.title}</from>
+				</column>
+				<column name="Source" internal="string02" width="45.0">
+					<from>#{patDoc.source}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:documentMenu">
+					<column name="Document" internal="string01" instantiate="true" width="25.0" />
+				</action>
+			</list>
+		</menu>
+	</extends>
+
+	<!-- <extends path="echr:patient"> <menu name="tolvenreports" title="Tolven Reports" page="/five/bar2.xhtml" visible="true"> <list name="list" title="List" page="/five/tolvenReports.xhtml" visible="true" drilldown="echr:patient"/> </menu> </extends> -->
+	<extends path="echr:patient">
+		<instance name="wip" title="New Patient Event" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml" />
+	</extends>
+
+	<!-- Patient lists -->
+	<extends path="echr">
+		<menu name="patients" sequence="30" title="Patients" page="/five/patients.xhtml" visible="true">
+			<list name="all" title="My Patients" page="/five/patientList.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02,string03" format="%s, %s %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" format="d MMM yyyy" width="7.0">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+					<output>
+						<span style="color:#{ Sex=='Female'?'HotPink':'Blue'}" title="#{ageInYears(date01) lt 21?'child':'adult'}">#{Sex}</span>
+					</output>
+				</column>
+				<column name="Phone" width="10.0" internal="string06" visible="true">
+					<from>#{patient.homeTelecom}</from>
+					<output>
+						<a href="javascript:alert('Primary: #{patient.primary.firstName} #{patient.primary.lastName} #{patient.primary.workTelecom}');">#{Phone}</a>
+					</output>
+				</column>
+				<column name="MRN" width="10.0" internal="string05" visible="true">
+					<from>#{patient.mrn}</from>
+					<output>
+						<span title="Patient id: #{patient.id}">#{MRN}</span>
+					</output>
+				</column>
+				<column name="Race" width="10.0" visible="false">
+					<from>#{patient.race}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:patientMenu">
+					<column name="Action" internal="string01" instantiate="true" width="25.0" />
+				</action>
+			</list>
+			<list name="in" title="Inpatients" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Problem" internal="string03" visible="false" />
+				<column name="DOB" internal="date01" format="d MMM yyyy" width="7.0">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+				</column>
+				<column name="Location" internal="string05" width="10.0">
+					<from>#{encounter.location.name}</from>
+					<from>#{encounter.otherLocation}</from>
+				</column>
+				<column name="Attending" internal="string06" width="20.0">
+					<from>#{encounter.attender.lastName}, #{encounter.attender.firstName}</from>
+				</column>
+			</list>
+			<list name="dm" title="Diabetes Registry" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Problem" internal="string03" visible="false" />
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="Onset" internal="date02" format="yyyy" width="7.0" />
+			</list>
+			<list name="asthma" title="Asthma Registry" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Problem" internal="string03" visible="false" />
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="Onset" internal="date02" format="yyyy" width="7.0" />
+			</list>
+			<list name="htn" title="Hypertension Registry" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Problem" internal="string03" visible="false" />
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="Onset" internal="date02" format="yyyy" width="7.0" />
+			</list>
+			<list name="vip" title="VIP" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+			</list>
+			<list name="annualPhysicalRecommended" title="Annual Physical Recommended" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="ReminderSentOn" internal="date04" width="15.0" format="MM/dd/yyyy">
+					<from>#{patient.annPhysicalDate}</from>
+				</column>
+			</list>
+			<list name="recommendTetanusImmunization" title="Recommend Tetanus Immunization" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="ReminderSentOn" internal="date03" width="15.0" format="MM/dd/yyyy">
+					<from>#{patient.tetanusReminderDate}</from>
+				</column>
+			</list>
+			<list name="recommendBreastScreening" title="Recommend Breast Screening" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="ReminderSentOn" width="15.0" format="MM/dd/yyyy">
+					<from>#{patient.breastScreenDate}</from>
+				</column>
+			</list>
+			<list name="recommendCRScreening" title="Recommend CR Screening" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="ReminderSentOn" width="15.0" format="MM/dd/yyyy">
+					<from>#{patient.colorectalScreenDate}</from>
+				</column>
+			</list>
+			<list name="recommendFluShot" title="Recommend Flu Shot" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="ReminderSentOn" width="15.0" format="MM/dd/yyyy">
+					<from>#{patient.fluShotDate}</from>
+				</column>
+			</list>
+			<list name="recommendBMI" title="Recommend BMI" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="ReminderSentOn" width="15.0" format="MM/dd/yyyy">
+					<from>#{patient.bmiDate}</from>
+				</column>
+			</list>
+			<list name="recommendA1CTest" title="Recommend A1C Test" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="ReminderSentOn" width="15.0" format="MM/dd/yyyy">
+					<from>#{patient.a1cDate}</from>
+				</column>
+			</list>
+			<list name="mammo" title="Mammogram" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02" format="%s, %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Problem" internal="string03" visible="false" />
+				<column name="DOB" internal="date01" visible="false">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="LastMammo" internal="date02" format="MM-yyyy" width="7.0" />
+			</list>
+			<list name="terminated" title="Terminated" page="/five/patientList.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02,string03" format="%s, %s %s" reference="true" width="20.0" />
+				<column name="Last" internal="string01" visible="false">
+					<from>#{patient.lastName}</from>
+				</column>
+				<column name="First" internal="string02" visible="false">
+					<from>#{patient.firstName}</from>
+				</column>
+				<column name="Middle" internal="string03" visible="false">
+					<from>#{patient.middleName}</from>
+				</column>
+				<column name="DOB" internal="date01" format="d MMM yyyy" width="7.0">
+					<from>#{patient.dob}</from>
+				</column>
+				<column name="Age" internal="date01" format="age" width="4.5" />
+				<column name="Sex" internal="string04" width="6.0">
+					<from>#{patient.sex}</from>
+					<from>#{patient.gender}</from>
+				</column>
+				<column name="Phone" width="10.0" internal="string06" visible="true">
+					<from>#{patient.homeTelecom}</from>
+				</column>
+				<column name="MRN" width="10.0" internal="string05" visible="true">
+					<from>#{patient.mrn}</from>
+				</column>
+			</list>
+
+			<instance name="wip" title="WIP" page="/wizard/wizard.xhtml" heading="/five/chartLink.xhtml" />
+		</menu>
+	</extends>
+	<extends path="echr:provider">
+		<menu name="patients" title="Patients" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown="echr:patient">
+				<column name="Name" internal="string01,string02,string03" format="%s, %s %s" reference="true" width="20.0" />
+				<column name="DOB" internal="date01" format="d MMM yyyy" width="7.0" />
+				<column name="Sex" internal="string04" width="6.0" />
+				<column name="Status" internal="string05" width="6.0" />
+			</list>
+		</menu>
+	</extends>
+
+</application>

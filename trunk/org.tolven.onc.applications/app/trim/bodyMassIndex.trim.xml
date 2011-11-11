@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/bodyMassIndex</name>
+	<page>bodyMassIndex.xhtml</page>
+	<drilldown>bodyMassIndexDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Body_Mass_Index</reference>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="editActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="nullifiedActive" from="active" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>
+		<transition name="nullifiedCompleted" from="completed" to="nullified">
+			<label language="en">Nullified</label>
+		</transition>		
+	</transitions>
+	<act classCode="OBS" moodCode="EVN">
+		<label>Body Mass Index (BMI)</label>
+		<code>
+			<CD>
+				<displayName>Body mass index</displayName>
+				<code>60621009</code>
+				<codeSystem>2.16.840.1.113883.6.96</codeSystem>
+				<codeSystemName>SNOMED CT</codeSystemName>
+				<codeSystemVersion>2011_01_31</codeSystemVersion>
+			</CD>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Body Mass Index</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<label>Body Mass Index</label>
+				<PQ>
+					<value>0.0</value>
+					<unit>BMI</unit>
+				</PQ>
+			</value>
+		</observation>
+		<relationship name="weight" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<label>Body Weight</label>
+				<bind application="echr" phase="create">
+					<placeholder bindAction="merge">
+						<path>echr:patient:observation</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr" phase="create">
+					<placeholder bindAction="merge">
+						<path>ephr:patient:observation</path>
+					</placeholder>
+				</bind>
+				<code>
+					<CD>
+						<displayName>Body weight</displayName>
+						<code>27113001</code>
+						<codeSystem>2.16.840.1.113883.6.96</codeSystem>
+						<codeSystemName>SNOMED CT</codeSystemName>
+						<codeSystemVersion>2011_01_31</codeSystemVersion>
+					</CD>
+				</code>
+				<statusCode>active</statusCode>
+		        <title>
+		            <ST>Weight</ST>
+		        </title>
+				<effectiveTime>
+					<label>Time of observation</label>
+					<TS>
+						<value></value>
+					</TS>
+				</effectiveTime>
+				<observation>
+					<value>
+						<label>Body weight</label>
+						<PQ>
+							<value>0.0</value>
+							<unit>lb</unit>
+						</PQ>
+					</value>
+				</observation>
+				<participation name="dataEnterer" typeCode="ENT">
+				<role classCode="ROL">
+					<id>
+						<II>
+							<root>#{computeIDRoot(account)}</root>
+							<extension>#{user.ldapUID}</extension>
+						</II>
+					</id>
+				</role>
+				</participation>
+				<relationship name="comment" typeCode="PERT" direction="OUT" >
+					<act classCode="OBS" moodCode="EVN">
+						<observation>
+							<value>
+								<label>Comment</label>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+							 <compute>
+					<type>org.tolven.process.Copy</type>
+					<property name="destination">
+						<value xsi:type="xs:string">\#{trim.act.relationship['weight'].act.effectiveTime.TS.value}</value>
+					</property>
+					<property name="source">
+						<value xsi:type="xs:string">\#{trim.act.effectiveTime.TS.value}</value>
+					</property>
+				</compute> 
+			</act>
+		</relationship>
+		<relationship name="height" typeCode="COMP" direction="OUT">
+			<act classCode="OBS" moodCode="EVN">
+				<label>Body Height</label>
+				<bind application="echr" phase="create">
+					<placeholder bindAction="merge">
+						<path>echr:patient:observation</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr" phase="create">
+					<placeholder bindAction="merge">
+						<path>ephr:patient:observation</path>
+					</placeholder>
+				</bind>
+				<code>
+					<CD>
+						<code>C0436790</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<statusCode>active</statusCode>
+				<title>
+					<ST>Height</ST>
+				</title>
+				<effectiveTime>
+					<label>Time of observation</label>
+					<TS>
+						<value></value>
+					</TS>
+				</effectiveTime>
+				<observation>
+					<value>
+						<PQ>
+							<value></value>
+							<unit>feet-inches</unit>
+						</PQ>
+					</value>
+				</observation>
+				<participation name="dataEnterer" typeCode="ENT">
+					<role classCode="ROL">
+						<id>
+							<II>
+								<root>#{computeIDRoot(account)}</root>
+								<extension>#{user.ldapUID}</extension>
+							</II>
+						</id>
+					</role>
+				</participation>s
+				<relationship typeCode="COMP" direction="OUT" name="heightfeet">
+					<act classCode="OBS" moodCode="EVN">
+						<code>
+							<CD>
+								<code>C0436797</code>
+								<codeSystemName>UMLS</codeSystemName>
+								<codeSystemVersion>2006AC</codeSystemVersion>
+							</CD>
+						</code>
+						<title>
+							<ST>Height in feet-inches</ST>
+						</title>
+						<observation>
+							<value>
+								<label>Heightfeet </label>
+								<ST></ST>
+							</value>
+						</observation>
+						 <compute>
+							<type>org.tolven.process.ParseOriginalText</type>
+							<property name="slot">
+								<value xsi:type="xs:string">\#{act.observation.value}</value>
+							</property>
+						</compute> 
+					</act>
+				</relationship>
+				<relationship typeCode="COMP" direction="OUT" name="heightinches">
+					<act classCode="OBS" moodCode="EVN">
+					<code>
+							<CD>
+								<code>C0436798</code>
+								<codeSystemName>UMLS</codeSystemName>
+								<codeSystemVersion>2006AC</codeSystemVersion>
+							</CD>
+						</code>
+						<title>
+							<ST>Height in feet-inches</ST>
+						</title>
+						<observation>
+							<value>
+								<label>Heightinches </label>
+								<ST></ST>
+							</value>
+						</observation>
+						 <compute>
+							<type>org.tolven.process.ParseOriginalText</type>
+							<property name="slot">
+								<value xsi:type="xs:string">\#{act.observation.value}</value>
+							</property>
+						</compute> 
+					</act>
+				</relationship>
+				
+				<compute>
+					<type>org.tolven.process.Copy</type>
+					<property name="destination">
+						<value xsi:type="xs:string">\#{trim.act.relationship['height'].act.observation.value.ST.value}</value>
+					</property>
+					<property name="source">
+						<value xsi:type="xs:string">\#{trim.act.relationship['height'].act.relationship['heightfeet'].act.observation.value.ST.value}'\#{trim.act.relationship['height'].act.relationship['heightinches'].act.observation.value.ST.value}"</value>
+					</property>
+				</compute> 
+				  <compute>
+					<type>org.tolven.process.Copy</type>
+					<property name="destination">
+						<value xsi:type="xs:string">\#{trim.act.relationship['height'].act.effectiveTime.TS.value}</value>
+					</property>
+					<property name="source">
+						<value xsi:type="xs:string">\#{trim.act.effectiveTime.TS.value}</value>
+					</property>
+				</compute> 
+			</act>
+		</relationship>
+	</act>
+</trim>

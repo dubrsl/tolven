@@ -14,42 +14,28 @@
 <body>
   <ui:composition>
     <wiz:body>
-
-      <table style="width:80%">
+      <table style="width:100%;">
         <thead>
-          <th>#{trim.trim.act.relationship['type'].act.title.ST.value}</th>
+          <th>Medication</th>
           <th>#{msg.Date}</th>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.relationship['episodicity'] != null}">
-            <th>#{msg.Episodicity}</th>
-          </c:if>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.participation['consumable'] != null}">
-            <th>#{msg.Quantity}</th>
-          </c:if>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.repeatNumber != null}">
-            <th>#{msg.Refills}</th>
-          </c:if>
-          <c:if test="#{trim.trim.act.relationship['entry'].act.text != null}">
-            <th>#{msg.DoseInstr}</th>
-          </c:if>
-          
+          <th>#{msg.Route}</th>
+          <th>#{msg.Frequency}</th>
+           <th>#{msg.DoseInstr}</th>
+          <th/>
         </thead>
         <tbody>
-          <c:forEach items="#{trim.trim.act.relationshipsList['entry']}" var="rel" varStatus="entryIndex">
+          <c:forEach items="#{trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]}" var="rel" varStatus="entryIndex">
             <tr>
-              <td>#{rel.act.observation.value.CE.displayName}</td>
-              <td><trim:TS id="effectiveTime#{entryIndex.index}" value="#{rel.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
-              <c:if test="#{rel.act.relationship['episodicity'] != null}">
-                <td><trim:CE id="episodicity#{entryIndex.index}" valueSet="episodicity" value="#{rel.act.relationship['episodicity'].act.observation.value}" readonly="true"/></td>
-              </c:if>
-               <c:if test="#{rel.act.participation['consumable'] != null}">
-                <td><trim:PQ id="quantity#{rel.sequenceNumber}" value="#{rel.act.participation['consumable'].role.player.quantity}" readonly="true"/></td>
-              </c:if>
-              <c:if test="#{trim.trim.act.relationship['entry'].act.repeatNumber != null}">
-                <td><trim:INT id="refills#{rel.sequenceNumber}" value="#{rel.act.repeatNumber}" readonly='true'/></td>
-              </c:if>
-              <c:if test="#{trim.trim.act.relationship['entry'].act.text != null}">
-                <td><trim:ED id="dose#{rel.sequenceNumber}" value="#{rel.act.text}" readonly="true"/></td>
-              </c:if>
+              <td >#{rel.act.participation['consumable'].role.player.code}</td>
+              <td><trim:TS id="effectiveTime" value="#{rel.act.effectiveTime.TS}"  dateStyle="short"	timeStyle="short" readonly="true"/></td>
+              <td>#{rel.act.substanceAdministration.routeCode} </td>
+			  <td>#{rel.act.relationship['frequency'].act.observation.value}</td>
+               <td><trim:ED id="dose#{rel.sequenceNumber}" value="#{rel.act.text}" readonly="true"/></td>
+              <td style="width: 10%;">
+				<a href="javascript:displayMedLinePage('#{rel.act.observation.value.CE.code}','#{rel.act.observation.value.CE.displayName}','#{rel.act.observation.value.CE.codeSystem}');">
+					<h:outputText value="More Info"/>
+				</a>
+			  </td>
             </tr>
           </c:forEach>
         </tbody>

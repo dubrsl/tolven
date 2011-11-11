@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
@@ -34,12 +33,8 @@ import org.tolven.core.entity.AccountUserRole;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.util.ExceptionFormatter;
 import org.tolven.web.security.GeneralSecurityFilter;
-import org.tolven.web.security.VestibuleProcessor;
 
 public class AccountAction extends TolvenAction {
-
-    @Resource
-    private VestibuleProcessor vestibuleProcessor;
     
     private List<AccountUser> accountUsers = null;
 
@@ -143,17 +138,9 @@ public class AccountAction extends TolvenAction {
         try {
             setSessionProperty(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, accountUserIdString);
             if (isRememberDefault()) {
-                setSessionProperty(GeneralSecurityFilter.PROPOSED_DEFAULT_ACCOUNT, "true");
+                setSessionProperty(GeneralSecurityFilter.REMEMBER_DEFAULT_ACCOUNT, "true");
             }
-            long start = 0;
-            if (logger.isDebugEnabled()) {
-                start = System.currentTimeMillis();
-            }
-            String vestibuleRedirect = vestibuleProcessor.exitVesitbule(getRequest());
-            if (logger.isDebugEnabled()) {
-                logger.debug("TOLVEN_PERF: account login: " + (System.currentTimeMillis() - start));
-            }
-            return vestibuleRedirect;
+            return "success";
         } catch (Exception ex) {
             FacesContext.getCurrentInstance().addMessage("accountForm:accounts", new FacesMessage("Failed to log into account: " + accountUserIdString + " " + ExceptionFormatter.toSimpleStringMessage(ex, ",", true)));
             return "fail";

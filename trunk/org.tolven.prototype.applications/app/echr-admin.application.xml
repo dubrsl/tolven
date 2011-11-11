@@ -17,7 +17,7 @@
 		</list>
 	</extends>
 	<extends path="echr">
-        <list name="pxList" title="Procedures" page="/five/list.xhtml" visible="never" query="global:icd9ProcedureMenu">
+        <list name="pxList" title="Procedures" page="/five/list.xhtml" visible="never" query="global:pxMenu">
 			<column name="procedure" title="Procedure" instantiate="true" visible="true" internal="string01" width="40.0" />
 			<column name="heading" title="procName" visible="false" internal="string02" width="40.0" />
 		</list>

@@ -1,628 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="deployONCplugins" name="buildAllPlugins">
+<project basedir="." default="cleanBuildDeployPlugins" name="buildAllPlugins">
 	<!--
-	   To Build from scratch, clear out your devLib, repositoryLocal and repositoryRuntime dirs and run the following commands:
-	   ... if you have built anything before, run these:
-	   a. cleanBootstrap
-	   b. cleanAllPlugins-noBootstrap
-	   ....else start here
-	   1. buildBootstrap
-	   2. buildAllPlugins-noBootstrap
-	   3. deployBootstrapPlugins 
-	   4. deployAllPlugins -noBootstrap
-	   ....to populate your repository, you'll need to run configPhase1 (the manage_plugins ant task) from eclipse
-	   ....if you are doing things command line, you'll need to run repositoryInit, configPhase1, updateDevLib
+	   To Build from scratch, clear out your repositoryLocal dir and run the following commands:
+	******************
+	1. clean (includes devLib [from managePlugins] )
+	2. build
+	3. deploy (includes updateLocalMetaData [from managePlugins] )
+	4. clean-build-deploy (includes updateLocalMetaData [from managePlugins] )
+	5. build-deploy  (includes updateLocalMetaData [from managePlugins] )
+	6. build-deploy-configPhase1
+	7. clean-build-deploy-configPhase1
+	
+	***************************
+	build.files list is defined in pluginsToBuild.xml - this list contains ALL plugins (including ONC)
+
+	***************************
+	To configure a custom list of plugins to build, create a file such as buildCustom.xml (which looks like pluginsToBuild.xml)
+	 and add the property like the following to your build.properties file:
+	
+	pluginsToBuildloc=../plugin/buildCustom.xml
+	
 	-->
-	<target name="buildBootstrap">
-		<!-- Builds each of the bootstrap plugins and copies their required library devLibs to your tolven-config/devLib -->
-		<subant target="gen-build-plugin">
-			<fileset dir="../org.tolven.assembler.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.library.apache-commons" includes="build.xml" />
-			<fileset dir="../org.tolven.library.bouncy-castle" includes="build.xml" />
-			<fileset dir="../org.tolven.library.junit" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jasperreports" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jboss-rules" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jdbcdriver" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jfreechart" includes="build.xml" />
-			<fileset dir="../org.tolven.library.log4j" includes="build.xml" />
-			<fileset dir="../org.tolven.library.swinglayout" includes="build.xml" />
-		</subant>
-	</target>
-	<target name="buildAllPlugins-noBootstrap">
-		<!-- Builds each of the plugins and copies their devLibs to your tolven-config/devLib -->
-		<subant target="gen-build-plugin">
-			<fileset dir="../org.tolven.analysis.colorectal" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.influenza" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.mammography" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.obesity" includes="build.xml" />
-			<fileset dir="../org.tolven.api.schemas" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3.legacypostgresql" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3.oracle" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6.legacypostgresql" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6.oracle" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.component.ear" includes="build.xml" />
-			<fileset dir="../org.tolven.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenear" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenear.config" includes="build.xml" />
-			<fileset dir="../org.tolven.component.war" includes="build.xml" />
-			<fileset dir="../org.tolven.config.appserver" includes="build.xml" />
-			<fileset dir="../org.tolven.encryption" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.config" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfish.oracle.config" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfish.postgresql.config" includes="build.xml" />
-			<fileset dir="../org.tolven.installer" includes="build.xml" />
+	<import file="../plugin/buildCommon.xml"/>
 
-			<fileset dir="../org.tolven.library.application" includes="build.xml" />
-			<fileset dir="../org.tolven.library.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.library.javaee" includes="build.xml" />
-			<fileset dir="../org.tolven.library.serverconfig" includes="build.xml" />
-			<fileset dir="../org.tolven.library.tolvencommon" includes="build.xml" />
-			<fileset dir="../org.tolven.openam.config" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.shiro" includes="build.xml" />
-			<fileset dir="../org.tolven.wsclient.example" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.assessments" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale_en" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.configwrapper" includes="build.xml" />
-			<fileset dir="../org.tolven.command" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.admin" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler" includes="build.xml" />
-			<fileset dir="../org.tolven.component.application.database.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.plugincopy" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.pluginzip" includes="build.xml" />
-			<fileset dir="../org.tolven.library.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.library.pluginframework.gui" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.javamodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.library" includes="build.xml" />
-			<fileset dir="../org.tolven.developmentmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.library.graph" includes="build.xml" />
-			<fileset dir="../org.tolven.ldapmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.configwrapper" includes="build.xml" />
-			<fileset dir="../org.tolven.jndi" includes="build.xml" />
-			<fileset dir="../org.tolven.library.passwordstore.api" includes="build.xml" />
-			<fileset dir="../org.tolven.mqkeystore" includes="build.xml" />
-			<fileset dir="../org.tolven.openam" includes="build.xml" />
-			<fileset dir="../org.tolven.command" includes="build.xml" />
-			<fileset dir="../org.tolven.shirolib" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.passwordstore" includes="build.xml" />
-			<fileset dir="../org.tolven.restfulclient" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfishmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.admin" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.connectormodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.ear" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.ejbmodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.facesconfig" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.localemodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.tomcatserver" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.war" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.webxml" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.allergies" includes="build.xml" />
-			<!--<fileset dir="../org.tolven.deploy.applicationdata" includes="build.xml" />-->
-			<fileset dir="../org.tolven.deploy.breastproblems" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.diagnoses" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.glassfish" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.immunization" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.jboss6" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.problems" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.procedures" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.authorization" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.html" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.rs" includes="build.xml" />
-			<fileset dir="../org.tolven.jmetertests" includes="build.xml" />
-			<fileset dir="../org.tolven.legacypostgresql.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.opends.config" includes="build.xml" />
-			<fileset dir="../org.tolven.oracle.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.shiroejb" includes="build.xml" />
-			<fileset dir="../org.tolven.user" includes="build.xml" />
-			<fileset dir="../org.tolven.shiroweb" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.symptoms" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenejb" includes="build.xml" />
-			<fileset dir="../org.tolven.client.example" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.imageorders" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.laborders" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.cholesterol" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.diabetes" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.hypertension" includes="build.xml" />
-			<fileset dir="../org.tolven.api" includes="build.xml" />
-			<fileset dir="../org.tolven.appserverproperties" includes="build.xml" />
-			<fileset dir="../org.tolven.ccr" includes="build.xml" />
-			<fileset dir="../org.tolven.component.application" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.rxnorm" includes="build.xml" />
-			<fileset dir="../org.tolven.scheduler" includes="build.xml" />
-			<fileset dir="../org.tolven.web.vestibule" includes="build.xml" />
-			<fileset dir="../org.tolven.ws" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.smoking" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.ccd" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.mirth" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenweb" includes="build.xml" />
-			<fileset dir="../org.tolven.dataextract" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.web" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis" includes="build.xml" />
-			<fileset dir="../org.tolven.fdb" includes="build.xml" />
-			<fileset dir="../org.tolven.performance" includes="build.xml" />
-			<fileset dir="../org.tolven.growthchart" includes="build.xml" />
-			<fileset dir="../org.tolven.jaxrs" includes="build.xml" />
-			<fileset dir="../org.tolven.config.eprescription" includes="build.xml" />
-			<fileset dir="../org.tolven.component.database.init" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.surescripts" includes="build.xml" />
-			<fileset dir="../org.tolven.us.states" includes="build.xml" />
+	<property file="../plugin/build.properties"/>
 
-		</subant>
-	</target>
-	<target name="buildfails">
-		<!-- These plugins currently all fail to build, not sure if they are still needed -->
-		<subant target="gen-build-plugin">
-			<fileset dir="../org.tolven.onc.progressnotes" includes="build.xml" />
-			<fileset dir="../org.tolven.openamclient" includes="build.xml" />
-			<fileset dir="../org.tolven.passwordrecovery" includes="build.xml" />
-			<fileset dir="../org.tolven.jaas" includes="build.xml" />
-			<fileset dir="../org.tolven.cda" includes="build.xml" />
-			<fileset dir="../org.tolven.config.pathology" includes="build.xml" />
-			<!--<fileset dir="../org.tolven.onc.emergencyAccount" includes="build.xml" />no longer relevant-->
-		</subant>
-	</target>
-	<target name="cleanBootstrap">
-		<!-- Builds each of the bootstrap plugins and copies their required library devLibs to your tolven-config/devLib -->
-		<subant target="clean">
-			<fileset dir="../org.tolven.assembler.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.library.apache-commons" includes="build.xml" />
-			<fileset dir="../org.tolven.library.bouncy-castle" includes="build.xml" />
-			<fileset dir="../org.tolven.library.junit" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jasperreports" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jboss-rules" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jdbcdriver" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jfreechart" includes="build.xml" />
-			<fileset dir="../org.tolven.library.log4j" includes="build.xml" />
-			<fileset dir="../org.tolven.library.swinglayout" includes="build.xml" />
-		</subant>
+	<property name="pluginsToBuildloc" value="../plugin/pluginsToBuild.xml" />
+
+	<import file="${pluginsToBuildloc}" />
+
+	<target name="cleanPlugins">
+		<!-- Clears out all files from the devLib -->
+		<ant antfile="managePlugins.xml" target="cleanDevLib" />
+		<!-- Removes the build directory of all plugins related to build.files -->
+		<subant target="clean" failonerror="false" buildpathref="build.files" />
+		<delete file="plugin.log" />
 	</target>
 
-	<target name="cleanAllPlugins-noBootstrap">
-		<!-- Removes the build directory of all plugins (doesnt include bootstrap) -->
-		<subant target="clean" failonerror="false">
-			<fileset dir="../org.tolven.analysis.colorectal" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.influenza" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.mammography" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.obesity" includes="build.xml" />
-			<fileset dir="../org.tolven.api.schemas" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3.legacypostgresql" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3.oracle" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6.legacypostgresql" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6.oracle" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.component.ear" includes="build.xml" />
-			<fileset dir="../org.tolven.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenear" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenear.config" includes="build.xml" />
-			<fileset dir="../org.tolven.component.war" includes="build.xml" />
-			<fileset dir="../org.tolven.config.appserver" includes="build.xml" />
-			<fileset dir="../org.tolven.encryption" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.config" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfish.oracle.config" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfish.postgresql.config" includes="build.xml" />
-			<fileset dir="../org.tolven.installer" includes="build.xml" />
-			<fileset dir="../org.tolven.library.apache-commons" includes="build.xml" />
-			<fileset dir="../org.tolven.library.application" includes="build.xml" />
-			<fileset dir="../org.tolven.library.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.library.javaee" includes="build.xml" />
-			<fileset dir="../org.tolven.library.serverconfig" includes="build.xml" />
-			<fileset dir="../org.tolven.library.tolvencommon" includes="build.xml" />
-			<fileset dir="../org.tolven.openam.config" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.shiro" includes="build.xml" />
-			<fileset dir="../org.tolven.wsclient.example" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.assessments" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale_en" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.configwrapper" includes="build.xml" />
-			<fileset dir="../org.tolven.command" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.admin" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler" includes="build.xml" />
-			<fileset dir="../org.tolven.component.application.database.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.plugincopy" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.pluginzip" includes="build.xml" />
-			<fileset dir="../org.tolven.library.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.library.pluginframework.gui" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.javamodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.library" includes="build.xml" />
-			<fileset dir="../org.tolven.developmentmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.library.graph" includes="build.xml" />
-			<fileset dir="../org.tolven.ldapmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.configwrapper" includes="build.xml" />
-			<fileset dir="../org.tolven.jndi" includes="build.xml" />
-			<fileset dir="../org.tolven.library.passwordstore.api" includes="build.xml" />
-			<fileset dir="../org.tolven.mqkeystore" includes="build.xml" />
-			<fileset dir="../org.tolven.openam" includes="build.xml" />
-			<fileset dir="../org.tolven.command" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.passwordstore" includes="build.xml" />
-			<fileset dir="../org.tolven.restfulclient" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfishmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.shirolib" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.admin" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.connectormodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.ear" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.ejbmodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.facesconfig" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.localemodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.tomcatserver" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.war" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.webxml" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.allergies" includes="build.xml" />
-			<!--<fileset dir="../org.tolven.deploy.applicationdata" includes="build.xml" />-->
-			<fileset dir="../org.tolven.deploy.breastproblems" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.diagnoses" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.glassfish" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.immunization" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.jboss6" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.problems" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.procedures" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.authorization" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.html" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.rs" includes="build.xml" />
-			<fileset dir="../org.tolven.jmetertests" includes="build.xml" />
-			<fileset dir="../org.tolven.legacypostgresql.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.opends.config" includes="build.xml" />
-			<fileset dir="../org.tolven.oracle.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.shiroejb" includes="build.xml" />
-			<fileset dir="../org.tolven.user" includes="build.xml" />
-			<fileset dir="../org.tolven.shiroweb" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.symptoms" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenejb" includes="build.xml" />
-			<fileset dir="../org.tolven.client.example" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.imageorders" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.laborders" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.cholesterol" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.diabetes" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.hypertension" includes="build.xml" />
-			<fileset dir="../org.tolven.api" includes="build.xml" />
-			<fileset dir="../org.tolven.appserverproperties" includes="build.xml" />
-			<fileset dir="../org.tolven.ccr" includes="build.xml" />
-			<fileset dir="../org.tolven.component.application" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.rxnorm" includes="build.xml" />
-			<fileset dir="../org.tolven.scheduler" includes="build.xml" />
-			<fileset dir="../org.tolven.web.vestibule" includes="build.xml" />
-			<fileset dir="../org.tolven.ws" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.smoking" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.ccd" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.mirth" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenweb" includes="build.xml" />
-			<fileset dir="../org.tolven.dataextract" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.web" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis" includes="build.xml" />
-			<fileset dir="../org.tolven.fdb" includes="build.xml" />
-			<fileset dir="../org.tolven.performance" includes="build.xml" />
-			<fileset dir="../org.tolven.growthchart" includes="build.xml" />
-			<fileset dir="../org.tolven.jaxrs" includes="build.xml" />
-			<fileset dir="../org.tolven.config.eprescription" includes="build.xml" />
-			<fileset dir="../org.tolven.component.database.init" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.surescripts" includes="build.xml" />
-			<fileset dir="../org.tolven.us.states" includes="build.xml" />
-		</subant>
+	<target name="buildPlugins">
+		<!-- Builds each of the plugins related to build.files and copies their devLibs to your tolven-config/devLib -->
+		<subant target="gen-build-plugin" buildpathref="build.files" />
 	</target>
 
-	<target name="deployBootstrapPlugins">
-		<!-- depends="buildBootstrap"-->
-		<!-- Copies the zip files to repositoryLocal/plugins. Runs the deploy-to-local-repository command -->
-		<subant target="gen-deploy-to-local-repository">
-			<fileset dir="../org.tolven.assembler.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.library.apache-commons" includes="build.xml" />
-			<fileset dir="../org.tolven.library.bouncy-castle" includes="build.xml" />
-			<fileset dir="../org.tolven.library.junit" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jasperreports" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jdbcdriver" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jboss-rules" includes="build.xml" />
-			<fileset dir="../org.tolven.library.jfreechart" includes="build.xml" />
-			<fileset dir="../org.tolven.library.log4j" includes="build.xml" />
-			<fileset dir="../org.tolven.library.swinglayout" includes="build.xml" />
-		</subant>
+	<target name="deployPlugins">
+		<!--Copy built plugins to local repository -->
+		<subant target="copy-plugin-to-local-repository" buildpathref="build.files" />
+		<!-- Update the local metadata -->
+		<ant antfile="managePlugins.xml" target="updateLocalMetaData" />
 	</target>
 
-	<target name="deployAllPlugins-noBootstrap">
-		<!-- depends="buildAllPlugins"-->
-		<!-- Copies the zip files to repositoryLocal/plugins. Runs the deploy-to-local-repository command -->
-		<subant target="gen-deploy-to-local-repository">
-			<fileset dir="../org.tolven.analysis.colorectal" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.influenza" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.mammography" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.obesity" includes="build.xml" />
-			<fileset dir="../org.tolven.api.schemas" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3.legacypostgresql" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3.oracle" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6.legacypostgresql" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6.oracle" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.component.ear" includes="build.xml" />
-			<fileset dir="../org.tolven.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenear" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenear.config" includes="build.xml" />
-			<fileset dir="../org.tolven.component.war" includes="build.xml" />
-			<fileset dir="../org.tolven.config.appserver" includes="build.xml" />
-			<fileset dir="../org.tolven.encryption" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.config" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfish.oracle.config" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfish.postgresql.config" includes="build.xml" />
-			<fileset dir="../org.tolven.installer" includes="build.xml" />
-
-			<fileset dir="../org.tolven.library.application" includes="build.xml" />
-			<fileset dir="../org.tolven.library.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.library.javaee" includes="build.xml" />
-			<fileset dir="../org.tolven.library.serverconfig" includes="build.xml" />
-			<fileset dir="../org.tolven.library.tolvencommon" includes="build.xml" />
-			<fileset dir="../org.tolven.openam.config" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.shiro" includes="build.xml" />
-			<fileset dir="../org.tolven.wsclient.example" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.assessments" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale_en" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.configwrapper" includes="build.xml" />
-			<fileset dir="../org.tolven.command" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.admin" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler" includes="build.xml" />
-			<fileset dir="../org.tolven.component.application.database.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.plugincopy" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.pluginzip" includes="build.xml" />
-			<fileset dir="../org.tolven.library.pluginframework" includes="build.xml" />
-			<fileset dir="../org.tolven.library.pluginframework.gui" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.javamodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.library" includes="build.xml" />
-			<fileset dir="../org.tolven.developmentmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.library.graph" includes="build.xml" />
-			<fileset dir="../org.tolven.ldapmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.configwrapper" includes="build.xml" />
-			<fileset dir="../org.tolven.jndi" includes="build.xml" />
-			<fileset dir="../org.tolven.library.passwordstore.api" includes="build.xml" />
-			<fileset dir="../org.tolven.mqkeystore" includes="build.xml" />
-			<fileset dir="../org.tolven.openam" includes="build.xml" />
-			<fileset dir="../org.tolven.command" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.passwordstore" includes="build.xml" />
-			<fileset dir="../org.tolven.restfulclient" includes="build.xml" />
-			<fileset dir="../org.tolven.glassfishmgr" includes="build.xml" />
-			<fileset dir="../org.tolven.shirolib" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.admin" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.connectormodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.ear" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.ejbmodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.facesconfig" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.jboss6" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.localemodule" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.tomcatserver" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.war" includes="build.xml" />
-			<fileset dir="../org.tolven.assembler.webxml" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.allergies" includes="build.xml" />
-			<!--<fileset dir="../org.tolven.deploy.applicationdata" includes="build.xml" />-->
-			<fileset dir="../org.tolven.deploy.breastproblems" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.diagnoses" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.glassfish" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.glassfish3" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.immunization" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.jboss6" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.problems" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.procedures" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.authorization" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.html" includes="build.xml" />
-			<fileset dir="../org.tolven.gatekeeper.rs" includes="build.xml" />
-			<fileset dir="../org.tolven.jmetertests" includes="build.xml" />
-			<fileset dir="../org.tolven.legacypostgresql.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.opends.config" includes="build.xml" />
-			<fileset dir="../org.tolven.oracle.indexes" includes="build.xml" />
-			<fileset dir="../org.tolven.shiroejb" includes="build.xml" />
-			<fileset dir="../org.tolven.user" includes="build.xml" />
-			<fileset dir="../org.tolven.shiroweb" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.symptoms" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenejb" includes="build.xml" />
-			<fileset dir="../org.tolven.client.example" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.imageorders" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.laborders" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.cholesterol" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.diabetes" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.hypertension" includes="build.xml" />
-			<fileset dir="../org.tolven.api" includes="build.xml" />
-			<fileset dir="../org.tolven.appserverproperties" includes="build.xml" />
-			<fileset dir="../org.tolven.ccr" includes="build.xml" />
-			<fileset dir="../org.tolven.component.application" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.rxnorm" includes="build.xml" />
-			<fileset dir="../org.tolven.scheduler" includes="build.xml" />
-			<fileset dir="../org.tolven.web.vestibule" includes="build.xml" />
-			<fileset dir="../org.tolven.ws" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.smoking" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.ccd" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.mirth" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenweb" includes="build.xml" />
-			<fileset dir="../org.tolven.dataextract" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.web" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis" includes="build.xml" />
-			<fileset dir="../org.tolven.fdb" includes="build.xml" />
-			<fileset dir="../org.tolven.performance" includes="build.xml" />
-			<fileset dir="../org.tolven.growthchart" includes="build.xml" />
-			<fileset dir="../org.tolven.jaxrs" includes="build.xml" />
-			<fileset dir="../org.tolven.config.eprescription" includes="build.xml" />
-			<fileset dir="../org.tolven.component.database.init" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.surescripts" includes="build.xml" />
-			<fileset dir="../org.tolven.us.states" includes="build.xml" />
-		</subant>
+	<target name="configPhase1">
+		<!--Runs repositoryInit (getPlugins), configPhase1, etc)-->
+		<ant antfile="managePlugins.xml" target="configPhase1" />
 	</target>
 
-	<target name="cleanBuildDeployONC">
-		<subant target="clean">
-			<fileset dir="../org.tolven.component.ear" includes="build.xml" />
-			<fileset dir="../org.tolven.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenear" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.assessments" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale_en" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.symptoms" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenejb" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.imageorders" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.laborders" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.smoking" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.ccd" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.mirth" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenweb" includes="build.xml" />
-			<fileset dir="../org.tolven.dataextract" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.web" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis" includes="build.xml" />
-			<fileset dir="../org.tolven.fdb" includes="build.xml" />
-			<fileset dir="../org.tolven.performance" includes="build.xml" />
-			<fileset dir="../org.tolven.growthchart" includes="build.xml" />
-			<fileset dir="../org.tolven.jaxrs" includes="build.xml" />
-			<fileset dir="../org.tolven.config.eprescription" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.surescripts" includes="build.xml" />
-		</subant>
-		<subant target="gen-deploy-to-local-repository">
-			<fileset dir="../org.tolven.component.ear" includes="build.xml" />
-			<fileset dir="../org.tolven.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenear" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.assessments" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale_en" includes="build.xml" />
-			<fileset dir="../org.tolven.deploy.symptoms" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenejb" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.imageorders" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.laborders" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.smoking" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.ccd" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.mirth" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenweb" includes="build.xml" />
-			<fileset dir="../org.tolven.dataextract" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.web" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis" includes="build.xml" />
-			<fileset dir="../org.tolven.fdb" includes="build.xml" />
-			<fileset dir="../org.tolven.performance" includes="build.xml" />
-			<fileset dir="../org.tolven.growthchart" includes="build.xml" />
-			<fileset dir="../org.tolven.jaxrs" includes="build.xml" />
-			<fileset dir="../org.tolven.config.eprescription" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.surescripts" includes="build.xml" />
-		</subant>
+	<target name="cleanBuildDeployPlugins" depends="cleanPlugins,buildPlugins,deployPlugins"/>
+
+	<target name="buildDeployPlugins" depends="buildPlugins,deployPlugins"/>
+
+	<target name="buildDeployConfigPhase1Plugins" depends="buildPlugins,deployPlugins,configPhase1"/>
+
+	<target name="cleanBuildDeployConfigPhase1Plugins" depends="cleanPlugins,buildPlugins,deployPlugins,configPhase1"/>
+
+
+	<!-- The following property and target are for use (temporarily) if you are not linking to the catalog in your plugins.xml
+	See Tolven internal site: https://tolven.jira.com/wiki/display/TOLVENCORE/Building+your+V2.1+environment+with+no+connection+to+the+catalog
+	-->
+
+	<property name="respositoryLocalStand.location" value="${tolvenConfig.location}/repositoryLocalStand"/>
+	<target name="updateLocalMetaDataStand" description="Update plugins metadata in repositoryLocalStand">
+		<java fork="true" failonerror="true" classname="org.tolven.plugin.boot.TPFBoot" classpathref="project.classpath">
+			<env key="TOLVEN_REALM" value="${admin.realm}"/>
+			<env key="TOLVEN_USER" value="${admin.user}"/>
+			<env key="TOLVEN_PASSWORD" value="${admin.password}"/>
+			<env key="TOLVEN_CONFIG_DIR" value="${tolvenConfig.location}"/>
+			<arg line="-genMetadata -plugins ${respositoryLocalStand.location}/plugins -liburl file:///${respositoryLocalStand.location} -outdir ${respositoryLocalStand.location}" />
+		</java>
 	</target>
 
-	<!--The following build commands are for the ONC plugins-->
-	<target name="cleanONCplugins">
-		<subant target="clean">
-			<fileset dir="../org.tolven.component.tolvenejb" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenweb" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale_en" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.web" includes="build.xml" />
-			<fileset dir="../org.tolven.performance" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.smoking" includes="build.xml" />
-			<fileset dir="../org.tolven.growthchart" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.imageorders" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.laborders" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.assessments" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.mirth" includes="build.xml" />
-			<fileset dir="../org.tolven.fdb" includes="build.xml" />
-			<fileset dir="../org.tolven.ccd" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.config.eprescription" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.dataextract" includes="build.xml" />
-			<fileset dir="../org.tolven.surescripts" includes="build.xml" />
-			<fileset dir="../org.tolven.jaxrs" includes="build.xml" />
-		</subant>
-	</target>
-
-	<target name="buildONCplugins">
-		<subant target="gen-build-plugin">
-			<fileset dir="../org.tolven.component.tolvenejb" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenweb" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale_en" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.web" includes="build.xml" />
-			<fileset dir="../org.tolven.performance" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.smoking" includes="build.xml" />
-			<fileset dir="../org.tolven.growthchart" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.imageorders" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.laborders" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.assessments" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.mirth" includes="build.xml" />
-			<fileset dir="../org.tolven.fdb" includes="build.xml" />
-			<fileset dir="../org.tolven.ccd" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.config.eprescription" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.dataextract" includes="build.xml" />
-			<fileset dir="../org.tolven.surescripts" includes="build.xml" />
-			<fileset dir="../org.tolven.jaxrs" includes="build.xml" />
-		</subant>
-	</target>
-
-	<target name="deployONCplugins" depends="buildONCplugins">
-		<subant target="gen-deploy-to-local-repository">
-			<fileset dir="../org.tolven.component.tolvenejb" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.prototype.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenweb" includes="build.xml" />
-			<fileset dir="../org.tolven.component.tolvenlocale_en" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.web" includes="build.xml" />
-			<fileset dir="../org.tolven.performance" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis" includes="build.xml" />
-			<fileset dir="../org.tolven.analysis.smoking" includes="build.xml" />
-			<fileset dir="../org.tolven.growthchart" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.imageorders" includes="build.xml" />
-			<fileset dir="../org.tolven.orders.laborders" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.assessments" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.mirth" includes="build.xml" />
-			<fileset dir="../org.tolven.fdb" includes="build.xml" />
-			<fileset dir="../org.tolven.ccd" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.component.ejb" includes="build.xml" />
-			<fileset dir="../org.tolven.config.eprescription" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.application.trim" includes="build.xml" />
-			<fileset dir="../org.tolven.onc.applications" includes="build.xml" />
-			<fileset dir="../org.tolven.dataextract" includes="build.xml" />
-			<fileset dir="../org.tolven.surescripts" includes="build.xml" />
-			<fileset dir="../org.tolven.jaxrs" includes="build.xml" />
-		</subant>
-		<subant target="configPhase1">
-			<fileset dir="../plugin" includes="managePlugins.xml" />
-		</subant>
+	<!-- This target will create three files in the plugin manager directory: plugins-local.log, plugins-published.log, plugins-unpublished.log -->
+	<!-- The catalog.url must be set in the build.properties file -->
+	<!-- The latest snapshot.pluginsxml.url must be set in the build.properties file -->
+	<target name="check-plugin-versions">
+		<fail unless="catalog.url" message="catalog.url must be defined in your build.properties file" />
+		<fail unless="snapshot.pluginsxml.url" message="snapshot.pluginsxml.url must be defined in your build.properties file" />
+		<property name="plugins-published.log" value="${basedir}/plugins-published.log" />
+		<property name="plugins-local.log" value="${java.io.tmpdir}/plugins-local.log" />
+		<property name="plugins-unpublished.log" value="${java.io.tmpdir}/plugins-unpublished.log" />
+		<property name="snapshot.pluginsxml" value="${java.io.tmpdir}/snapshot.pluginsxml" />
+		<delete file="${plugins-local.log}" />
+		<delete file="${plugins-published.log}" />
+		<delete file="${plugins-unpublished.log}" />
+		<get src="${snapshot.pluginsxml.url}" dest="${snapshot.pluginsxml}" />
+		<copy file="${snapshot.pluginsxml}" tofile="${plugins-published.log}">
+			<filterchain>
+				<linecontains>
+					<contains value="&lt;uri>" />
+				</linecontains>
+				<tokenfilter>
+					<replaceregex pattern="&lt;uri>${catalog.url}/plugins/" replace="" flags="gi" />
+					<replaceregex pattern=".zip&lt;/uri>" replace="" flags="gi" />
+					<replaceregex pattern="\ " replace="" flags="gi" />
+				</tokenfilter>
+			</filterchain>
+		</copy>
+		<delete file="${snapshot.pluginsxml}" />
+		<delete file="${plugins-local.log}" />
+		<delete file="${plugins-unpublished.log}" />
+		<subant target="log-plugin-local-version" buildpathref="build.files" inheritall="true" inheritrefs="true" />
+		<copy file="${plugins-local.log}" tofile="plugins-local.log">
+			<filterchain><sortfilter /></filterchain>
+		</copy>
+		<copy file="${plugins-unpublished.log}" tofile="plugins-unpublished.log">
+			<filterchain><sortfilter /></filterchain>
+		</copy>
+		<delete file="${plugins-local.log}" />
+		<delete file="${plugins-unpublished.log}" />
 	</target>
 
 </project>

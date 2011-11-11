@@ -18,7 +18,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.log4j.Logger;
 import org.tolven.admin.ActivateInvitation;
+import org.tolven.core.ActivationLocal;
 import org.tolven.core.InvitationLocal;
 import org.tolven.core.TolvenPropertiesLocal;
 import org.tolven.core.bean.InvitationException;
@@ -28,7 +30,6 @@ import org.tolven.core.entity.Status;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.doc.entity.Invitation;
 import org.tolven.el.ExpressionEvaluator;
-import org.tolven.logging.TolvenLogger;
 import org.tolven.security.CertificateHelper;
 import org.tolven.security.LDAPLocal;
 import org.tolven.security.LoginLocal;
@@ -39,13 +40,26 @@ import org.tolven.session.TolvenSessionWrapperFactory;
 @Local(LoginLocal.class)
 @Remote(LoginRemote.class)
 public class LoginBean implements LoginLocal, LoginRemote {
-	@PersistenceContext private EntityManager em;
-	
-	@Resource EJBContext ejbContext;
-	
-    @EJB private InvitationLocal invitationBean;
-    @EJB private LDAPLocal ldapBean;
-    @EJB private TolvenPropertiesLocal propertiesBean;
+    
+    @PersistenceContext
+    private EntityManager em;
+
+    @Resource
+    private EJBContext ejbContext;
+
+    @EJB
+    private InvitationLocal invitationBean;
+    
+    @EJB
+    private LDAPLocal ldapBean;
+    
+    @EJB
+    private TolvenPropertiesLocal propertiesBean;
+    
+    @EJB
+    private ActivationLocal activationBean;
+    
+    private Logger logger = Logger.getLogger(LoginBean.class);
     
     public LDAPLocal getLdapBean() {
     	if (ldapBean==null) throw new IllegalStateException( "LDAPBean must not be null" );
@@ -116,7 +130,7 @@ public class LoginBean implements LoginLocal, LoginRemote {
         		invitation.setExpiration( new Date( now.getTime()+ (Long.parseLong(expiration)*1000) ) );
         	}
         }
-        TolvenLogger.info( "Queueing invitation to " + invitation.getTargetEmail(), LoginBean.class);
+        logger.info( "Queueing invitation to " + invitation.getTargetEmail());
         invitationBean.followup(invitation);
         // Once sent, the invitation state will be updated to reflect completion. Workflow, man. Workflow.
         invitationBean.queueInvitation( invitation );
@@ -198,7 +212,7 @@ public class LoginBean implements LoginLocal, LoginRemote {
         		invitation.setExpiration( new Date( now.getTime()+ (Long.parseLong(expiration)*1000) ) );
         	}
         }
-        TolvenLogger.info( "Queueing invitation to " + invitation.getTargetEmail(), LoginBean.class);
+        logger.info( "Queueing invitation to " + invitation.getTargetEmail());
         // Once sent, the invitation state will be updated to reflect completion. Workflow, man. Workflow.
         invitationBean.queueInvitation( invitation );
         // Make the LDAP entry
@@ -373,15 +387,7 @@ public class LoginBean implements LoginLocal, LoginRemote {
      * @return new TolvenUser object properly initialized and persisted
      */
     public TolvenUser createTolvenUser( String principal, Date now ) {
-        TolvenLogger.info("createTolvenUser: " + principal, LoginBean.class);
-        TolvenUser user = new TolvenUser();
-        user.setLdapUID( principal );
- 		String activeStatus = Status.ACTIVE.value();
-        user.setStatus( activeStatus);
-        user.setLastLogin( null );    // Last login is null, never logged in before this
-        user.setCreation( now ); 
-        em.persist( user );
-        return user;
+        return activationBean.createTolvenUser(principal, now);
     }
 
     public void persistModifiedTolvenUser(TolvenUser user) {

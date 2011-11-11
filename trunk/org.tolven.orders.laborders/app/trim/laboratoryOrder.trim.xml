@@ -27,10 +27,6 @@
 				<CE/>
 			</value>
  			<value>
- 				<label>Schedule</label>
- 				<ST></ST>
- 			</value>
- 			<value>
  				<label>Frequency</label>
  				<ST></ST>
  			</value>
@@ -44,7 +40,7 @@
 				<CE/>
 			</value>
 			<value>
-				<label>Ccontainer Type</label>
+				<label>Container Type</label>
 				<valueSet>containerType</valueSet>
 				<CE/>
 			</value>

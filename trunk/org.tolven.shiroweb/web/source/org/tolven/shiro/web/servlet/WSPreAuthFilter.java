@@ -26,8 +26,7 @@ import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.apache.shiro.web.util.WebUtils;
 
 /**
- * This filter requires the user to have already been authenticated before passing through it, unless authentication is optionally not required,
- * AuthenticationMode = [Required | NotRequired]
+ * This filter requires the user to have already been authenticated before passing through it
  * 
  * @author Joseph Isaac
  *

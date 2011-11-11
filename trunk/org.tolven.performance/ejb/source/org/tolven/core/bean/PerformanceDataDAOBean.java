@@ -161,7 +161,7 @@ public class PerformanceDataDAOBean implements PerformanceDataDAO, Serializable 
 			if (type == 0)
 				queryString = "SELECT count(p) from PerformanceData p where p.accountUserID >0 ";
 			else
-				queryString = "SELECT p from PerformanceData p where p.accountUserID >0 AND length(p.method)>7 ";
+				queryString = "SELECT p from PerformanceData p where p.accountUserID >0 ";
 			if (!(map.get("accountUserID")!=null && map.get("accountUserID").toString().equals("")))
 				queryString += " AND p.accountUserID = :accountUserID ";
 			if (map.get("accountID")!=null)

@@ -5,7 +5,7 @@
 				<from>#{act.effectiveTime.TS.date}</from>
 			</field>				
 			<field name="serviceName" internal="string01">
-				<from>#{act.code.CE.displayName}</from>
+				<from>#{act.code.CD.displayName}</from>
 			</field>
 			<field name="status" internal="string02">
 				<from>#{trim.act.statusCode}</from>

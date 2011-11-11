@@ -7,7 +7,7 @@
       xmlns:wiz="http://www.tolven.org/jsf/wizard"
       xmlns:trim="http://www.tolven.org/jsf/trim">
 <head>
-    <title>Patient Weight</title>
+    <title>Body Mass Index</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 
@@ -37,11 +37,11 @@
 		          			<td width="15%" style="text-align: left;">#{trim.trim.act.relationship['height'].act.title.ST.value}</td>
 		          			<td width="1%"></td>
 		          			<td width="24%" style="text-align: left;">
-		          				<h:inputText id="heightfeet" size="4" value="#{trim.trim.act.relationship['height'].act.observation.values[0].ST.value}" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','heightfeet','heightfeetErrorMsg')">
+		          				<h:inputText id="heightfeet" size="4" value="#{trim.trim.act.relationship['height'].act.relationship['heightfeet'].act.observation.value.ST.value}" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','heightfeet','heightfeetErrorMsg')">
 		          					<f:validator validatorId="numberAndDecimalValidator" />
                                     <f:attribute name="attributeFactor" value="number"/> 
 		          				</h:inputText> feet
-		          				<h:inputText style="margin-left:5px" id="heightinch" size="4" value="#{trim.trim.act.relationship['height'].act.observation.values[1].ST.value}" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','heightinch','heightinchErrorMsg')">
+		          				<h:inputText style="margin-left:5px" id="heightinch" size="4" value="#{trim.trim.act.relationship['height'].act.relationship['heightinches'].act.observation.value.ST.value}" onkeyup="validateOnlyNumbers('#{menu.elementLabel}','heightinch','heightinchErrorMsg')">
 		          					<f:validator validatorId="numberAndDecimalValidator" />
                                     <f:attribute name="attributeFactor" value="number"/>
 		          				</h:inputText> inches
@@ -67,10 +67,10 @@
 		          			<td width="15%" style="text-align: left;">#{trim.trim.act.relationship['weight'].act.observation.value.label.value}</td>
 		          			<td width="1%"></td>
 		          			<td width="24%" style="text-align: left;">
-		          				<h:inputText id="weightlbs" value="#{trim.trim.act.relationship['weight'].act.observation.value.ST.value}" onkeyup="validateNumbers('#{menu.elementLabel}', 'weightlbs', 'weightlbsErrorMsg');">
+		          				<h:inputText id="weightlbs" value="#{trim.trim.act.relationship['weight'].act.observation.value.PQ.value}" onkeyup="validateNumbers('#{menu.elementLabel}', 'weightlbs', 'weightlbsErrorMsg');">
 		          					<f:validator validatorId="numberAndDecimalValidator" />
                                     <f:attribute name="attributeFactor" value="numberAndDecimal"/>
-		          				</h:inputText>
+		          				</h:inputText> pounds
 		          				<br/>
 		          				<span id="weightlbsErrorMsg" style="color: red;"></span>
 		          			</td>

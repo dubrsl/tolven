@@ -1,0 +1,109 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+
+	<!-- Patient immunizations -->
+	<extends path="echr:patient">
+		<placeholder name="immunization" eventInstance="echr:patient:wip" heading="/five/medicationLink.xhtml" page="/wizard/wizard.xhtml" title="Immunization">
+			            <field internal="string01" name="title">
+                <from>#{act.title.ST.value}</from>
+                <from>#{trim.description}</from>
+            </field>
+            <field internal="date01" name="effectiveTimeLow">
+                <from>#{act.effectiveTime.TS.date}</from>
+                <from>#{act.effectiveTime.IVLTS.low.date}</from>
+            </field>
+            <field internal="date02" name="effectiveTimeHigh">
+                <from>#{act.effectiveTime.IVLTS.high.date}</from>
+            </field>
+            <field internal="parent01" name="patient">
+                <from>#{patient}</from>
+            </field>
+            <field internal="parent02" name="author">
+                <from>#{internalId( account, act.participation['author'].role.id)}</from>
+            </field>
+            <field internal="parent03" name="encounter">
+                <from>#{internalId( account, act.relationship['encounter'].act.id)}</from>
+            </field>
+			<field name="refillNumber" internal="long01">
+				<from>#{trim.act.repeatNumber.INT.value}</from>
+			</field>
+			<field name="dosageQuantity" internal="pqValue01">
+				<from>#{trim.act.substanceAdministration.doseQuantity.PQ.value}</from>
+			</field>
+			<field name="consumableMaterial" internal="pqValue02"> 
+				<from>#{trim.act.participation['consumable'].role.player.quantity.PQ.value}</from>
+			</field>
+			<field name="dosagequantityUnit" internal="pqUnits01">
+				<from>#{trim.act.substanceAdministration.doseQuantity.PQ.unit}</from>
+			</field>
+			<field name="consumableMaterialUnit" internal="pqUnits02"> 
+				<from>#{trim.act.participation['consumable'].role.player.quantity.PQ.unit}</from>
+			</field>                
+			<field name="lotNumber" internal="string02"> 
+				<from>#{trim.act.relationship['LOTnumber'].act.observation.value.ST.value}</from>
+			</field>
+            <field internal="string05" name="enteredBy">
+                <from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+            </field>
+            <field name="code" internal="string06">
+				<from>#{act.participation['consumable'].role.player.code.CE.code}</from>
+	        </field>
+	        <field name="manufacturerName" internal="string03"> 
+				<from>#{trim.act.relationship['manufacturer'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="receiver" internal="string07">
+				<from>#{immunization.receiverBy.name}</from>
+				<from>#{immunization.receiverFormat}</from>
+			</field>
+			<field name="receiverBy" internal="parent04">
+				<from>#{internalId( account, act.participation['receiver'].role.id)}</from>
+			</field>
+			<field name="receiverFormat" internal="_extended">
+				<from>#{act.participation['receiver'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<field name="receiverExtension" internal="_extended">
+				<from>#{act.participation['receiver'].role.id.IIS[0].extension}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient">
+		<menu visible="true" sequence="5" page="/five/bar2.xhtml" title="Immun/Vaccin" name="immu">
+			<list drilldown=":immunization" visible="true" page="/five/list.xhtml" title="Current" name="current">
+				<column width="15.0" format="MMM-dd-yyyy hh:mm" internal="date01" name="Date">
+					<from>#{immunization.effectiveTimeLow}</from>
+				</column>
+				<column width="40.0" reference="true" internal="string01" name="Immunization">
+					<from>#{immunization.title}</from>
+				</column>
+				<column width="15.0" internal="string03" name="Status" />
+				<column width="25.0" internal="string02" name="Source">
+					<from>#{immunization.author.lastName}</from>
+					<from>#{immunization.enteredBy}</from>
+				</column>
+				<column name="Code" internal="string06" visible="never">
+					<from>#{immunization.code}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:immunizationMenu">
+					<column name="Immunization" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+		</menu>
+	</extends>
+	<!-- Added Portlet for immunization -->
+	<extends path="echr:patient:summary">
+		<list name="immusum" visible="never">
+			<column name="effectiveTime" internal="date01" format="MM/dd/yyyy">
+				<from>#{immunization.effectiveTimeLow}</from>
+			</column>
+			<column name="title" internal="string01">
+				<from>#{immunization.title}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="immusum" portalColumn="1" sequence="1" title="Immunizations" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:immusum" visible="true" drilldown=":immu">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:immunizationMenu">
+				<column name="Immunization" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+</application>

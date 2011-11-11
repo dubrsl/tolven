@@ -1,10 +1,16 @@
 package org.tolven.trim.ex;
 
+import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.apache.commons.codec.binary.Base64;
 import org.tolven.trim.AD;
@@ -659,4 +665,85 @@ public class TrimFactory extends ObjectFactory {
 	public static PartyEx createParty(String[] args){
 		return new PartyEx(args);
 	}	
+	
+	public String toXML(SETCESlot slot) throws Exception {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		XMLOutputFactory factory = XMLOutputFactory.newInstance();
+		XMLStreamWriter writer = factory.createXMLStreamWriter(baos, "UTF-8");
+		writer.writeStartElement("SET_CESlot");
+		for (CE ce : slot.getCES()) {
+			writer.writeStartElement("CE");
+			if (ce.getDisplayName() != null){
+				writer.writeStartElement("displayName");
+				writer.writeCharacters(ce.getDisplayName());
+				writer.writeEndElement();
+			}
+			if (ce.getCode() != null){
+				writer.writeStartElement("code");
+				writer.writeCharacters(ce.getCode());
+				writer.writeEndElement();
+			}				
+			if (ce.getCodeSystem() != null){
+				writer.writeStartElement("codeSystem");
+				writer.writeCharacters(ce.getCodeSystem());
+				writer.writeEndElement();
+			}
+			if (ce.getCodeSystemName() != null){
+				writer.writeStartElement("codeSystemName");
+				writer.writeCharacters(ce.getCodeSystemName());
+				writer.writeEndElement();
+			}
+			
+			if (ce.getCodeSystemVersion() != null){
+				writer.writeStartElement("codeSystemVersion");
+				writer.writeCharacters(ce.getCodeSystemVersion());
+				writer.writeEndElement();
+			}				
+			if (ce.getOriginalText() != null){
+				writer.writeStartElement("originalText");
+				writer.writeCharacters(ce.getOriginalText());
+				writer.writeEndElement();
+			}				
+			writer.writeEndElement();
+		}
+		writer.writeEndElement();// </SET_CESlot>
+		return baos.toString();
+	}
+
+	public SETCESlot fromXML(String xml) throws Exception {
+		SETCESlot slot = createSETCESlot();
+		XMLInputFactory factory = XMLInputFactory.newInstance();
+		XMLStreamReader reader = factory.createXMLStreamReader(new StringReader(xml));
+		String value = null;
+		CE ce = null;
+		while(reader.hasNext()){
+			reader.next();
+			if (reader.getEventType()==XMLStreamReader.CHARACTERS){
+				value = reader.getText();
+			}
+			if (reader.getEventType()==XMLStreamReader.START_ELEMENT) {
+				if(reader.getName().getLocalPart().equalsIgnoreCase("CE")){
+					ce = createCE();
+				}
+			}else if (reader.getEventType()==XMLStreamReader.END_ELEMENT) {
+				if(reader.getName().getLocalPart().equalsIgnoreCase("displayName")){
+					ce.setDisplayName(value);
+				}else if(reader.getName().getLocalPart().equalsIgnoreCase("code")){
+					ce.setCode(value);
+				}else if(reader.getName().getLocalPart().equalsIgnoreCase("codeSystem")){
+					ce.setCodeSystem(value);
+				}else if(reader.getName().getLocalPart().equalsIgnoreCase("codeSystemName")){
+					ce.setCodeSystem(value);
+				}else if(reader.getName().getLocalPart().equalsIgnoreCase("codeSystemVersion")){
+					ce.setCodeSystemVersion(value);
+				}else if(reader.getName().getLocalPart().equalsIgnoreCase("originalText")){
+					ce.setOriginalText(value);
+				}else if(reader.getName().getLocalPart().equalsIgnoreCase("CE")){
+					slot.getCES().add(ce);
+				}
+			}			
+		}
+		return slot;
+	}
+	
 }

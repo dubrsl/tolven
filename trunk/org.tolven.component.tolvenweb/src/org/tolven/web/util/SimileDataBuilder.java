@@ -32,26 +32,27 @@ import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuDataVersion;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.locale.ResourceBundleHelper;
-import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.util.DateExtent;
-import org.tolven.web.security.GeneralSecurityFilter;
 /**
  * Util class to create JSON data for Simile Timeline
  * 
  * @author Srini Kandula
  */
 public class SimileDataBuilder {
-	private AccountUser activeAccountUser = null;
 	private String path = null;
 	private MenuLocal menuBean = null;
 	private Map<String,String> iconImages = new HashMap<String, String>();
 	private Map<String,String> barColors = new HashMap<String, String>();
-	private Date now = null;
 	private HttpServletRequest req;
+	
+	public AccountUser getAccountUser() {
+	    return TolvenRequest.getInstance().getAccountUser();
+	}
 	
 	public HttpServletRequest getReq() {
 		return req;
@@ -63,9 +64,7 @@ public class SimileDataBuilder {
 
 	public SimileDataBuilder(MenuLocal menuBean, HttpServletRequest req) {
 		path = req.getParameter("element");
-		activeAccountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
 		this.menuBean = menuBean;
-		now = (Date) req.getAttribute("tolvenNow");
 		this.req = req;
 	}
 	
@@ -93,8 +92,8 @@ public class SimileDataBuilder {
 	}
 	
 	public void buildJSONData(Writer writer) {
-		MenuStructure timelineMS = menuBean.findMenuStructure(activeAccountUser, new MenuPath(path).getPath());
-		List<MenuStructure> bands = menuBean.findSortedChildren(activeAccountUser, timelineMS.getAccountMenuStructure());
+		MenuStructure timelineMS = menuBean.findMenuStructure(getAccountUser(), new MenuPath(path).getPath());
+		List<MenuStructure> bands = menuBean.findSortedChildren(getAccountUser(), timelineMS.getAccountMenuStructure());
 		MenuPath targetMenuPath = new MenuPath(path);
 		int bandCount = 0;
 		DateExtent dateExtent = new DateExtent();
@@ -106,15 +105,15 @@ public class SimileDataBuilder {
 				  continue;
 				}
 				MenuQueryControl ctrl = new MenuQueryControl();
-				ctrl.setAccountUser(activeAccountUser);
+				ctrl.setAccountUser(getAccountUser());
 				ctrl.setMenuStructure(band.getAccountMenuStructure());
-				ctrl.setNow((now) );
+				ctrl.setNow((TolvenRequest.getInstance().getNow()) );
 				ctrl.setOffset(0);
 				ctrl.setOriginalTargetPath(targetMenuPath);
 				ctrl.setRequestedPath(targetMenuPath);
 				int interval = intervalCodeFromString(band.getInterval());
 				long _thisChildCount = menuBean.countMenuData(ctrl); 
-				MenuDataVersion mdv = menuBean.findMenuDataVersion(activeAccountUser.getAccount().getId(),path+":"+band.getNode());
+				MenuDataVersion mdv = menuBean.findMenuDataVersion(getAccountUser().getAccount().getId(),path+":"+band.getNode());
 				
 				if(mdv!=null) {
 					if (firstTime) {
@@ -124,7 +123,7 @@ public class SimileDataBuilder {
 					}
 				writer.write(String.format(Locale.US, "{barPath:'%s',barColor:'%s'",path+":"+band.getNode(),getBarColor(band)));
 				writer.write(String.format(Locale.US, ",repeating:'%s',dataVersion:'%s'",band.getRepeating(),((mdv== null)?0:mdv.getVersion())));
-				TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+				TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
 				writer.write(String.format(Locale.US, ",interval:'%s',barName:'%s'", interval,ResourceBundleHelper.getString(tolvenResourceBundle, band.getRepeating().replaceAll(":","."))));
 				if(_thisChildCount > 0 && mdv != null) {// check dates only if the band has data
 					dateExtent.applyDate(mdv.getMinDate());
@@ -138,9 +137,9 @@ public class SimileDataBuilder {
 					MenuPath menuPath = new MenuPath(action.getPath(), new MenuPath(
 							path));
 					String menuPathStr = menuPath.getPathString();
-					AccountMenuStructure actionMS = menuBean.findAccountMenuStructure(activeAccountUser.getAccount().getId(), menuPath.getPath() );
+					AccountMenuStructure actionMS = menuBean.findAccountMenuStructure(getAccountUser().getAccount().getId(), menuPath.getPath() );
 					MenuQueryControl actionCtrl = new MenuQueryControl();
-					ctrl.setAccountUser(activeAccountUser);
+					ctrl.setAccountUser(getAccountUser());
 					actionCtrl.setMenuStructure( actionMS);
 					actionCtrl.setNow( new Date() );
 					actionCtrl.setOriginalTargetPath( menuPath );
@@ -174,7 +173,7 @@ public class SimileDataBuilder {
 	  try{	
 	    String ppath = dataitem.getReferencePath();
 		MenuStructure refms = dataitem.getMenuStructure();
-		if( activeAccountUser.getAccount().isEnableBackButton() == true && refms.getDefaultPathSuffix() != null ){
+		if( getAccountUser().getAccount().isEnableBackButton() == true && refms.getDefaultPathSuffix() != null ){
 			ppath += refms.getDefaultPathSuffix();
 		}		
 		String image_icon = "../scripts/simile/images/" + getIcon(nodeName);
@@ -228,18 +227,18 @@ public class SimileDataBuilder {
 	}
 	public void buildTimlePreferences(Writer writer){
 		
-		MenuStructure ms = menuBean.findMenuStructure(activeAccountUser, new MenuPath(path).getPath());
+		MenuStructure ms = menuBean.findMenuStructure(getAccountUser(), new MenuPath(path).getPath());
 		List<MenuStructure> menus = menuBean.findSortedChildren(
-		        activeAccountUser, ms.getAccountMenuStructure());
+		        getAccountUser(), ms.getAccountMenuStructure());
 		MenuPath targetMenuPath = new MenuPath(path);
 		int bandCount = 0;
 		try{
 		writer.write("{settings:[");	
 		for (MenuStructure band : menus) {
 			MenuQueryControl ctrl = new MenuQueryControl();
-			ctrl.setAccountUser(activeAccountUser);
+			ctrl.setAccountUser(getAccountUser());
 			ctrl.setMenuStructure(band.getAccountMenuStructure());
-			ctrl.setNow((now) );
+			ctrl.setNow((TolvenRequest.getInstance().getNow()) );
 			ctrl.setOffset(0);
 			ctrl.setOriginalTargetPath(targetMenuPath);
 			ctrl.setRequestedPath(targetMenuPath);
@@ -248,7 +247,7 @@ public class SimileDataBuilder {
 			int interval = intervalCodeFromString(band.getInterval());
 			if(bandCount > 0)
 				writer.write(",");
-			TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+			TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
 			writer.write(String.format(Locale.US, "{barName:'%s',barPath:'%s',",ResourceBundleHelper.getString(tolvenResourceBundle, band.getRepeating().replaceAll(":",".")),band.getNode()));
 			writer.write(String.format(Locale.US, "barColor:'%s',visible:'%s',interval:'%s'}",getBarColor(band),band.getVisible(),interval));
 			bandCount++;
@@ -260,11 +259,11 @@ public class SimileDataBuilder {
 	}
 	public void getBandEvents(Writer writer) {
 		MenuPath targetMenuPath = new MenuPath(path);
-		MenuStructure bandMS = menuBean.findMenuStructure(activeAccountUser, targetMenuPath.getPath());
+		MenuStructure bandMS = menuBean.findMenuStructure(getAccountUser(), targetMenuPath.getPath());
 		DateExtent originalExtent = new DateExtent();
 		DateExtent currentExtent = new DateExtent();
 		try {
-			MenuDataVersion bandMDV = menuBean.findMenuDataVersion(activeAccountUser.getAccount().getId(),path);
+			MenuDataVersion bandMDV = menuBean.findMenuDataVersion(getAccountUser().getAccount().getId(),path);
 			
 			SimpleDateFormat smf = new SimpleDateFormat("MM/dd/yyyy");
 			//get the dates for the band on the browser
@@ -292,16 +291,16 @@ public class SimileDataBuilder {
 				} else {
 					writer.write(String.format(Locale.US, "{dateTimeFormat:'iso8601',barPath:'%s',barColor:'%s'",path+":"+bandMS.getNode(),getBarColor(bandMS)));
 					writer.write(String.format(Locale.US, ",repeating:'%s'",bandMS.getRepeating()));
-					TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+					TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
 					writer.write(String.format(Locale.US, ",barName:'%s'", ResourceBundleHelper.getString(tolvenResourceBundle, bandMS.getRepeating())));
 					writer.write(String.format(Locale.US, ",minDate:'%s',maxDate:'%s'",
 						smf.format(currentExtent.getMinDate()),
 						smf.format(currentExtent.getMaxDate()) ));
 					writer.write(",events:[");				
 				   	MenuQueryControl ctrl = new MenuQueryControl();
-					ctrl.setAccountUser(activeAccountUser);
+					ctrl.setAccountUser(getAccountUser());
 					ctrl.setMenuStructure(bandMS.getAccountMenuStructure());
-					ctrl.setNow((now) );
+					ctrl.setNow((TolvenRequest.getInstance().getNow()) );
 					ctrl.setOffset(0);
 					ctrl.setOriginalTargetPath(targetMenuPath);
 					ctrl.setRequestedPath(targetMenuPath);

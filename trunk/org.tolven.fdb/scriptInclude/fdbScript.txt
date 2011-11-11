@@ -1,0 +1,6 @@
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/fdb.js">
+</script>
+<script language="JavaScript" type="text/javascript"
+	src="#{facesContext.externalContext.request.contextPath}/scripts/drugAllergy.js">
+</script>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>study/ca/CALGB150007</name>
+	<page>CALGB150007.xhtml</page>
+	<drilldown>CALGB150007DD.xhtml</drilldown>
+	<application name="echr" signatureRequired="true">
+		<instance>echr:patient:observation</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>CALGB: 150007 ON-STUDY FORM</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+	</act>
+</trim>

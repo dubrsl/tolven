@@ -27,8 +27,8 @@
           		 	<h:outputText value="#{trim.trim.act.relationship['height'].act.title.ST.value}"/>
           		 </td>
           		<td width="5%" style="text-align: left;">
-          			#{trim.trim.act.relationship['height'].act.observation.values[0].ST.value} feet
-          			#{trim.trim.act.relationship['height'].act.observation.values[1].ST.value} inches
+          			#{trim.trim.act.relationship['height'].act.relationship['heightfeet'].act.observation.value.ST.value} feet
+          			#{trim.trim.act.relationship['height'].act.relationship['heightinches'].act.observation.value.ST.value} inches
           		</td>
           		<td width="25%" style="text-align: left;"></td>
           	</tr>
@@ -37,7 +37,7 @@
           			<h:outputText value="#{trim.trim.act.relationship['weight'].act.observation.value.label.value}"/>
           		</td>
           		<td width="5%" style="text-align: left;">
-          		    <h:outputText value="#{trim.trim.act.relationship['weight'].act.observation.value.ST.value}"></h:outputText> lbs         		   
+          		    <h:outputText value="#{trim.trim.act.relationship['weight'].act.observation.value.PQ.value}"></h:outputText> lbs         		   
           		</td >
           		<td width="25%" style="text-align: left;"></td>
           	</tr>

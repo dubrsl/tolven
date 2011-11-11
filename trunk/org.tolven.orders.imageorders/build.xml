@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="clean-deploy-to-local-repository" name="org.tolven.orders.imageorders">
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.orders.imageorders">
 	<!-- 
 	Build file for org.tolven.cchit.labOrders 
 	-->

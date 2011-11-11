@@ -17,7 +17,7 @@
 					<tr>
 						<td width="10%"><h:outputLabel value="#{trim.trim.act.effectiveTime.label.value}"></h:outputLabel>
 						</td>
-						<td width="10%"><trim:TS id="dateOfDeath" value="#{trim.trim.act.effectiveTime.TS}" validate="past" dateStyle="short" required="true"/>
+						<td width="10%"><trim:TS id="dateOfDeath" value="#{trim.trim.act.effectiveTime.TS}" validate="past" dateStyle="short" timeStyle="short" required="true"/>
 						</td>
 					</tr>
 					<tr>
@@ -34,7 +34,7 @@
 						
 						<td width="10%">
 							<h:inputHidden id="problemName" value="#{trim.trim.act.relationship['problem'].act.observation.value.ST.value}" required="true" requiredMessage="Cause of death is required"/>
-							<a href="javascript:instantiateAction('#{trim.trim.act.participation['patient'].role.id.for[top.accountUser.account].extension}:problems')">Add Problems</a>
+							<a href="javascript:instantiateAction('#{trim.trim.act.participation['subject'].role.id.for[top.accountUser.account].extension}:problems')">Add Problems</a>
 						</td>
 						
 					</tr>

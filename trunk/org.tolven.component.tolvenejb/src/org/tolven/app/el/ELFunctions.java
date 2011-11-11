@@ -17,13 +17,15 @@ import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.provider.ProviderLocal;
 import org.tolven.provider.entity.Provider;
-import org.tolven.security.LDAPLocal;
-import org.tolven.security.TolvenPerson;
+
+import org.tolven.trim.ActRelationship;
 import org.tolven.trim.ActStatus;
 import org.tolven.trim.CE;
 import org.tolven.trim.DataType;
 import org.tolven.trim.II;
 import org.tolven.trim.SETIISlot;
+import org.tolven.trim.IVLPQ;
+import org.tolven.trim.ex.HL7DateFormatUtility;
 import org.tolven.trim.ex.TrimFactory;
 
 public class ELFunctions {
@@ -51,17 +53,7 @@ public class ELFunctions {
 		return providerBean;
 	}
 	
-	public static LDAPLocal getLDAPBean() throws NamingException {
-		InitialContext ctx = null;
-		LDAPLocal ldapBean = null;
-		if (ctx==null) {
-			ctx =  new InitialContext();
-		}
-		if (ldapBean==null) {
-			ldapBean = (LDAPLocal) ctx.lookup("java:global/tolven/tolvenEJB/LDAPBean!org.tolven.security.LDAPLocal");
-		}
-		return ldapBean;
-	}
+	
 
 	public static MenuLocal getMenuBean() throws NamingException {
 		InitialContext ctx = null;
@@ -108,6 +100,175 @@ public class ELFunctions {
 			}
 		}
 		return null;
+	}
+
+    /**
+     * given a passed in interpretation code, pass back an appropriate CSS style class
+     */
+    public static String interpCodeClass(String interpCode)
+    {
+	if (interpCode == "L")
+	    {
+		return "low";
+	    }
+	else if (interpCode == "H")
+	    {
+		return "high";
+	    }
+	else if (interpCode == "N")
+	    {
+		return "low";
+	    }
+	else
+	    {
+		return "unknown";
+	    }
+    }
+
+    /**
+     * pass relationships, traverse, and find reference values given matching gender code.
+     */
+    public static String genderRefValues(List<ActRelationship> relationships,String genderCode)
+    {
+
+	ActRelationship selectedRelationship = null;
+	String returnedRange = new String();
+
+	// Traverse the relationships, looking for preconditions, if there are
+	// and one matches, select it.
+	for (ActRelationship lRel : relationships)
+	    {
+		if (lRel.getName().equals("referenceRange"))
+		    {
+			if (lRel.getAct().getRelationships().size() > 0)
+			    {
+				for (ActRelationship pRel : lRel.getAct().getRelationships())
+				    {
+					if (pRel.getName().equals("precondition"))
+					    {
+						if (null != pRel.getAct())
+						    {
+							if (pRel.getAct().getObservation().getValues().get(0).getCE().getDisplayName().equals(genderCode))
+							    {
+								selectedRelationship = lRel;
+							    }
+						    }
+					    }
+				    }
+			    }
+		    }
+	    }
+	
+	// if selectedRelationship is still null, there were no precons
+	// and we need to just select the first referenceRange.
+	if (null == selectedRelationship)
+	    {
+		selectedRelationship = relationships.get(0);
+	    }
+	
+	// Found relationship, extract data.
+	if (null != selectedRelationship)
+	    {
+		IVLPQ selectedIVLPQ = selectedRelationship.getAct().getObservation().getValues().get(0).getIVLPQ();
+		boolean hasLowValue = (null != selectedIVLPQ.getLow().getPQ().getValue());
+		boolean hasHighValue = (null != selectedIVLPQ.getHigh().getPQ().getValue());
+		
+		if (hasLowValue && hasHighValue)
+		    {
+			// both low and high values
+			String lowValue = Double.toString(selectedIVLPQ.getLow().getPQ().getValue());
+			String highValue = Double.toString(selectedIVLPQ.getHigh().getPQ().getValue());
+			String lowUnit = selectedIVLPQ.getHigh().getPQ().getUnit();
+			String highUnit = selectedIVLPQ.getHigh().getPQ().getUnit();
+			returnedRange = lowValue + " " + lowUnit + " - " + highValue + " " + highUnit;
+		    }
+		else if (hasLowValue && !hasHighValue)
+		    {
+			// only low value
+			String lowValue = Double.toString(selectedIVLPQ.getLow().getPQ().getValue());
+			String lowUnit = selectedIVLPQ.getLow().getPQ().getUnit();
+			returnedRange = lowValue + " " + lowUnit;
+		    }
+		else if (!hasLowValue && hasHighValue)
+		    {
+			// only high value
+			String highValue = Double.toString(selectedIVLPQ.getHigh().getPQ().getValue());
+			String highUnit = selectedIVLPQ.getHigh().getPQ().getUnit();
+			returnedRange = highValue + " " + highUnit;
+		    }
+		else 
+		    {
+			// somehow we fell through, should not happen.
+			returnedRange = "No Range.";
+		    }
+	    }	
+	return returnedRange;
+    }
+
+	/*
+	 * pass relationships and traverse them to grab the values and put into a return string
+	 */
+	public static String reactionSeverity(List<ActRelationship> relationships) {
+		List<String> rawReactions = new ArrayList<String>();
+		List<String> rawSeverities = new ArrayList<String>();
+		String element = null;
+		String response = "";
+		
+		if (null != relationships) {
+			for (int i = 0; i < relationships.size(); i++) {
+				ActRelationship aRelation = relationships.get(i);
+				List<ActRelationship> reactions = aRelation.getAct().getRelationships();
+				for (int x = 0; x < reactions.size(); x++) {
+					ActRelationship aReaction = reactions.get(x);
+					if ("reaction".equals(aReaction.getName())) {
+						element = reactions.get(x).getAct().getObservation().getValues().get(0).getCE().getDisplayName();
+						rawReactions.add(element);
+					}
+					else if ("severity".equals(aReaction.getName())) {
+						element = reactions.get(x).getAct().getObservation().getValues().get(0).getCE().getDisplayName();
+						rawSeverities.add(element);
+					}
+					
+				}
+			}
+			for (int i = 0; i < rawReactions.size(); i++) {
+				response += "(" + rawReactions.get(i) + " / " + rawSeverities.get(i) + ") ";
+			}
+		}
+		
+		return response;
+	}
+
+	 /*
+	  * pass relationships and traverse them to grab the reactions in a comma separated list
+	  */
+	public static String reactions(List<ActRelationship> relationships) {
+		List<String> rawReactions = new ArrayList<String>();
+		String element = null;
+		String response = "";
+
+		if (null != relationships) {
+			for (int i = 0; i < relationships.size(); i++) {
+				ActRelationship aRelation = relationships.get(i);
+				List<ActRelationship> reactions = aRelation.getAct()
+						.getRelationships();
+				for (int x = 0; x < reactions.size(); x++) {
+					ActRelationship aReaction = reactions.get(x);
+					if ("reaction".equals(aReaction.getName())) {
+						element = reactions.get(x).getAct().getObservation()
+								.getValues().get(0).getCE().getDisplayName();
+						rawReactions.add(element);
+					}
+
+				}
+			}
+			for (int i = 0; i < rawReactions.size() - 1; i++) {
+				response += rawReactions.get(i) + ",";
+			}
+			response += rawReactions.get(rawReactions.size() - 1);
+		}
+
+		return response;
 	}
 	
 	/**
@@ -206,8 +367,7 @@ public class ELFunctions {
 	 */
 	public static String TS( Date date ) {
 		if (date==null) return null;
-		SimpleDateFormat HL7TSformat = new SimpleDateFormat("yyyyMMddHHmmssZZ"); 
-		return HL7TSformat.format(date);
+		return HL7DateFormatUtility.formatHL7TSFormatL16Date(date);
 	}
 
 	public static Provider findProvider( Long id ) throws NamingException {
@@ -283,9 +443,6 @@ public class ELFunctions {
 		if(transition == null)
 			return null;
 		return transition.toLowerCase();
-	}
-	public static TolvenPerson tp( String principal ) throws NamingException {
-		return getLDAPBean().createTolvenPerson(principal);
 	}
 	
 }

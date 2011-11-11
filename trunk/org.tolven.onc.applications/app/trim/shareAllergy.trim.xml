@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>share/allergy</name>
+	<description>Share an allergy</description>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="receive">
+			<placeholder bindAction="merge">
+				<path>echr:patient:allergy</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="receive">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:allergy</path>
+			</placeholder>
+		</bind>
+		<id>
+			<II>
+				<root>#{computeIDRoot(account)}</root>
+				<extension>#{allergy.path}</extension>			
+			</II>
+		</id>
+		<code>
+			<CD>
+				<code>OINT</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3</codeSystemVersion>
+			</CD>
+		</code>
+		<text>
+			<label>Allergy</label>
+			<ST>#{allergy.title}</ST>
+		</text>
+		<effectiveTime>
+			<label>Onset of Symptoms</label>
+			<TS><value>#{TS(allergy.effectiveTime)}</value></TS>
+		</effectiveTime>
+	</act>
+</trim>

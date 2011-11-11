@@ -37,16 +37,16 @@
 				</wiz:group>
 				<wiz:group title="ManufacturerName">
 					<h:selectOneMenu id="manufacturerName" value="#{trim.trim.act.relationship['manufacturer'].act.observation.values[0].ST.value}" >
-						<f:selectItems value="#{menu.mvx}"/>
+					<f:selectItems value="#{trim.list['echr:manufacturer~name']}"/>
 					</h:selectOneMenu>
 				</wiz:group>
 				<wiz:group title="Receiving Facility for HL7">
-					<c:if test="#{trim.trim.act.participation['receiver']!=null}">					
+					<c:if test="#{trim.trim.act.participation['receiver']!=null}">                                  
 						<h:selectOneMenu id="receiverBy" value="#{trim.trim.act.participation['receiver'].role.id.for[top.accountUser.account].extension}">
-							<f:selectItems value="#{trim.list['echr:admin:receivers:all~Name']}"/>
+						<f:selectItems value="#{trim.list['echr:admin:receivers:all~Name']}"/>
 						</h:selectOneMenu>
 					</c:if>
-			    </wiz:group>
+				</wiz:group>
 			</wiz:body>
 			<wiz:help>
 				<h1>Immunization</h1>

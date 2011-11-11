@@ -63,7 +63,7 @@ import org.tolven.security.hash.TolvenMessageDigest;
 public class TolvenApplication extends ApplicationPlugin implements Application {
 
     public static final String CMD_PLUGIN_OPTION = "plugin";
-    public static final String CMD_RUNTIME_PLUGIN_EXISTS_OPTION = "runtimePluginExists";
+    public static final String CMD_IF_RUNTIME_EXISTS_OPTION = "ifRuntimeExists";
     public static final String CMD_NOOP_OPTION = "noop";
     public static final String CMD_FORMAT_OPTION = "formatPluginsFile";
 
@@ -90,13 +90,7 @@ public class TolvenApplication extends ApplicationPlugin implements Application 
         /*
          * The initArgs are used to determine which plugins to execute, while pluginArgs are passed to those plugins
          */
-        if (commandLine.hasOption(CMD_RUNTIME_PLUGIN_EXISTS_OPTION)) {
-            String pluginId = commandLine.getOptionValue(CMD_RUNTIME_PLUGIN_EXISTS_OPTION);
-            boolean exists = getManager().getRegistry().isPluginDescriptorAvailable(pluginId);
-            String output = pluginId + ":exists=" + exists;
-            System.out.println(output);
-            logger.info(output);
-        } else if (commandLine.hasOption(CMD_NOOP_OPTION)) {
+        if (commandLine.hasOption(CMD_NOOP_OPTION)) {
             //Which is the current default anyway i.e. do nothing
         } else if (commandLine.hasOption(CMD_FORMAT_OPTION)) {
             String[] optionValues = commandLine.getOptionValues(CMD_FORMAT_OPTION);
@@ -124,20 +118,30 @@ public class TolvenApplication extends ApplicationPlugin implements Application 
             if (pluginsString.length() == 0) {
                 throw new RuntimeException("No plugins were supplied at the command line");
             }
-            loadLibraries(pluginsString);
             List<String> plugins = getPlugins(pluginsString);
-            String adminPluginId = getDescriptor().getAttribute("adminPluginId").getValue();
-            execute(adminPluginId, getManager(), pluginArgs);
-            plugins.remove(adminPluginId);
-            startPlugins(plugins);
-            String[] pluginIdsWithoutAdminId = new String[plugins.size()];
-            for (int i = 0; i < plugins.size(); i++) {
-                pluginIdsWithoutAdminId[i] = plugins.get(i);
+            boolean skip = false;
+            if (commandLine.hasOption(CMD_IF_RUNTIME_EXISTS_OPTION)) {
+                String pluginId = plugins.get(0);
+                boolean exists = getManager().getRegistry().isPluginDescriptorAvailable(pluginId);
+                skip = !exists;
             }
-            for (String pluginId : plugins) {
-                execute(pluginId, getManager(), pluginArgs);
+            if (skip) {
+                logger.info("Runtime plugin does not exist so skipped: " + pluginsString);
+            } else {
+                loadLibraries(pluginsString);
+                String adminPluginId = getDescriptor().getAttribute("adminPluginId").getValue();
+                execute(adminPluginId, getManager(), pluginArgs);
+                plugins.remove(adminPluginId);
+                startPlugins(plugins);
+                String[] pluginIdsWithoutAdminId = new String[plugins.size()];
+                for (int i = 0; i < plugins.size(); i++) {
+                    pluginIdsWithoutAdminId[i] = plugins.get(i);
+                }
+                for (String pluginId : plugins) {
+                    execute(pluginId, getManager(), pluginArgs);
+                }
+                logger.info("Execution of: " + pluginsString + " completed");
             }
-            logger.info("Execution of: " + pluginsString + " completed");
         }
     }
 
@@ -147,7 +151,7 @@ public class TolvenApplication extends ApplicationPlugin implements Application 
         pluginOption.setRequired(true);
         cmdLineOptions.addOption(pluginOption);
         OptionGroup optionGroup = new OptionGroup();
-        Option runtimePluginExistsOption = new Option(CMD_RUNTIME_PLUGIN_EXISTS_OPTION, CMD_RUNTIME_PLUGIN_EXISTS_OPTION, true, "\"runtimePluginExists\"");
+        Option runtimePluginExistsOption = new Option(CMD_IF_RUNTIME_EXISTS_OPTION, CMD_IF_RUNTIME_EXISTS_OPTION, false, "\"execute if runtime plugin exists\"");
         optionGroup.addOption(runtimePluginExistsOption);
         Option noopOption = new Option(CMD_NOOP_OPTION, CMD_NOOP_OPTION, false, "no op plugin starts the plugin framework as a test, but does nothing");
         optionGroup.addOption(noopOption);

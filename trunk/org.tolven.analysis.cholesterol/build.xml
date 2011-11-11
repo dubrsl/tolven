@@ -56,4 +56,11 @@
 			</zipfileset>
 		</zip>
 	</target>
+	<target name="javadoc" description="Generate Javadoc">
+		<javadoc access="public" author="true" destdir="${respositoryLocal.location}/javadoc/${plugin(id)}-${plugin(version)}" doctitle="Tolven Analysis Cholesterol"
+			packagenames="*"
+			classpathref="project.classpath" 
+			source="1.6" sourcepath="ejb/source" splitindex="true" use="true" version="true"
+		    encoding="UTF-8"  docencoding="UTF-8"/>
+	</target>
 </project>

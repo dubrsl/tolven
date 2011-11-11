@@ -24,7 +24,7 @@
 		<antcall target="buildSection">
 			<param name="section" value="web" />
 			<param name="lib" value="lib/shiro-core-1.1.0.jar;lib/shiro-web-1.1.0.jar" />
-			<param name="sectionZipExcludes" value="**/*" />
+			<param name="sectionZipExcludes" value="**/" />
 		</antcall>
 		<jar destfile="${buildFolder}/shiroWEB.jar">
 			<manifest>

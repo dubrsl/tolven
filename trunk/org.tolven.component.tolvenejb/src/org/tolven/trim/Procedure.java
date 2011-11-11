@@ -20,7 +20,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="methodCode" type="{urn:tolven-org:trim:4.0}SET_CESlot" minOccurs="0"/>
  *         &lt;element name="approachSiteCode" type="{urn:tolven-org:trim:4.0}SET_CDSlot" minOccurs="0"/>
  *         &lt;element name="targetSiteCode" type="{urn:tolven-org:trim:4.0}SET_CDSlot" minOccurs="0"/>
- *         &lt;element name="substanceAdministration" type="{urn:tolven-org:trim:4.0}SubstanceAdministration" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -33,8 +32,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "Procedure", propOrder = {
     "methodCode",
     "approachSiteCode",
-    "targetSiteCode",
-    "substanceAdministration"
+    "targetSiteCode"
 })
 public class Procedure
     implements Serializable
@@ -43,7 +41,6 @@ public class Procedure
     protected SETCESlot methodCode;
     protected SETCDSlot approachSiteCode;
     protected SETCDSlot targetSiteCode;
-    protected SubstanceAdministration substanceAdministration;
 
     /**
      * Gets the value of the methodCode property.
@@ -115,30 +112,6 @@ public class Procedure
      */
     public void setTargetSiteCode(SETCDSlot value) {
         this.targetSiteCode = value;
-    }
-
-    /**
-     * Gets the value of the substanceAdministration property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link SubstanceAdministration }
-     *     
-     */
-    public SubstanceAdministration getSubstanceAdministration() {
-        return substanceAdministration;
-    }
-
-    /**
-     * Sets the value of the substanceAdministration property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link SubstanceAdministration }
-     *     
-     */
-    public void setSubstanceAdministration(SubstanceAdministration value) {
-        this.substanceAdministration = value;
     }
 
 }

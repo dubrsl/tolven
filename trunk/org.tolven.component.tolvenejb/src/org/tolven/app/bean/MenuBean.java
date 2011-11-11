@@ -2096,7 +2096,7 @@ public class MenuBean implements MenuLocal, MenuRemote {
                 if (column.isComputed()) continue;
                     // If no internal field is specified in a list, then we'll grab the data later, when we query the data.
                 // But placeholders are populated anyway.
-                if (msAccount.getRole().equals(MenuStructure.LIST) && column.isExtended() ) continue;
+            //    if (msAccount.getRole().equals(MenuStructure.LIST) && column.isExtended() ) continue;
 //          logger.debug( "[populateMenuData] column=" + column.getHeading() + ", from=" + column.getFrom());
                 String froms[] = column.getFrom().split("\\|");
                 Object result = null;

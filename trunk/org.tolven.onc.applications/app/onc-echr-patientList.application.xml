@@ -1,0 +1,209 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<!-- Added placeholder for patient list definition in component L -->
+	<extends path="echr">
+		<placeholder name="patientListDefinition" sequence="40" title="PatientListDefinition" eventInstance="echr:patients:wip" page="/five/patient.xhtml" heading="/five/chartLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{trim.act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="listName" internal="string01">
+				<from>#{trim.act.relationship['generalDetail'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="diagnosisIncludeCode" internal="string02">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisInclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="diagnosisExcludeCode" internal="string03">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisExclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="problemIncludeCode" internal="string04">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['problemInclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="problemExcludeCode" internal="string05">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['problemExclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="medicationsIncludeCode" internal="string06">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['medicationsInclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="medicationsExcludeCode" internal="string07">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['medicationsExclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="medicationsExclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['medicationsExclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="allergiesIncludeCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['allergiesInclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="allergiesInclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['allergiesInclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="allergiesExcludeCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['allergiesExclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="allergiesExclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['allergiesExclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="diagnosisInclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisInclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="diagnosisExclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['diagnosisExclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="problemInclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['problemInclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="problemExclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['problemExclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="labtestsIncludeCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['labtestsInclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="labtestsExcludeCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['labtestsExclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="labtestsInclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['labtestsInclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="labtestsExclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['labtestsExclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="medicationsInclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['medicationsInclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="proceduresIncludeCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['proceduresInclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="proceduresInclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['proceduresInclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="proceduresExcludeCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['proceduresExclude'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="proceduresExclude" internal="_extended" type="string">
+				<from>#{trim.act.relationship['diagnosticCodes'].act.relationship['proceduresExclude'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="nameOrder" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="ageOrder" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="raceOrder" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="genderOrder" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="zipOrder" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="nameColumn" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['patientName'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="ageColumn" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['patientAge'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="raceColumn" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['patientRace'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="genderColumn" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['patientGender'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="zipColumn" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['zipCode'].act.observation.values[1].ST.value}</from>
+			</field>
+			<field name="diagnosisSummary" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['diagnosis'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="problemSummary" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['problem'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="medicationsSummary" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['medications'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="allergiesSummary" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['allergies'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="proceduresSummary" internal="_extended" type="string">
+				<from>#{trim.act.relationship['listDisplay'].act.relationship['procedures'].enableRelationship?'Yes':'No'}</from>
+			</field>
+			<field name="privateListDisplayName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['generalDetail'].act.observation.values[1].CE.displayName}</from>
+			</field>
+			<field name="privateListCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['generalDetail'].act.observation.values[1].CE.code}</from>
+			</field>
+			<field name="privateListCodeSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['generalDetail'].act.observation.values[1].CE.codeSystem}</from>
+			</field>
+			<field name="privateListCodeSystemVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['generalDetail'].act.observation.values[1].CE.codeSystemVersion}</from>
+			</field>
+			<field name="age" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientAge'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="ageDisplayName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientAge'].act.observation.values[1].CE.displayName}</from>
+			</field>
+			<field name="ageCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientAge'].act.observation.values[1].CE.code}</from>
+			</field>
+			<field name="ageCodeSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientAge'].act.observation.values[1].CE.codeSystem}</from>
+			</field>
+			<field name="ageCodeSystemVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientAge'].act.observation.values[1].CE.codeSystemVersion}</from>
+			</field>
+			<field name="genderDisplayName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[0].CE.displayName}</from>
+			</field>
+			<field name="genderCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[0].CE.code}</from>
+			</field>
+			<field name="genderCodeSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[0].CE.codeSystem}</from>
+			</field>
+			<field name="genderCodeSystemVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[0].CE.codeSystemVersion}</from>
+			</field>
+			<field name="genderRelationalDisplayName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[1].CE.displayName}</from>
+			</field>
+			<field name="genderRelationalCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[1].CE.code}</from>
+			</field>
+			<field name="genderRelationalCodeSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[1].CE.codeSystem}</from>
+			</field>
+			<field name="genderRelationalCodeSystemVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['patientGender'].act.observation.values[1].CE.codeSystemVersion}</from>
+			</field>
+			<field name="zip" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['zipCode'].act.observation.values[0].ST.value}</from>
+			</field>
+			<field name="zipRelationalDisplayName" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['zipCode'].act.observation.values[1].CE.displayName}</from>
+			</field>
+			<field name="zipRelationalCode" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['zipCode'].act.observation.values[1].CE.code}</from>
+			</field>
+			<field name="zipRelationalCodeSystem" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['zipCode'].act.observation.values[1].CE.codeSystem}</from>
+			</field>
+			<field name="zipRelationalCodeSystemVersion" internal="_extended" type="string">
+				<from>#{trim.act.relationship['patientAttributes'].act.relationship['zipCode'].act.observation.values[1].CE.codeSystemVersion}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patients">
+		<!-- Added PatientListDefinition list for component L -->
+		<list name="patientListDefinition" title="PatientListDefinition" page="/five/patientListDesigner.xhtml" visible="false" drilldown="echr:patientListDefinition">
+			<column name="Date" internal="date01" format="MM/dd/yyyy" width="10.0">
+				<from>#{patientListDefinition.effectiveTime}</from>
+			</column>
+			<column name="Title" internal="string01" reference="true" width="40.0">
+				<from>#{patientListDefinition.listName}</from>
+			</column>
+		</list>
+	</extends>
+</application>

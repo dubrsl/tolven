@@ -301,8 +301,6 @@
 		<copy file="${jdbc.driver}" todir="${glassfish.lib.dir}" verbose="true" />
 		<guide-echo args="" />
 
-		<antcall target="prepare-tolven-glassfish-mqkeystore" />
-
 		<guide-echo args="Deploy Tolven Libraries" />
 		<tpf args="-plugin org.tolven.deploy.glassfish3 -config" />
 
@@ -311,20 +309,11 @@
 		<guide-echo args="" />
 	</target>
 
-	<target name="prepare-tolven-glassfish-mqkeystore" unless="INCLUDE.SHIRO">
-		<guide-echo args="Install MQKeyStore" />
-		<guide-echo args="Copy ${mdbuser.keystore} to ${glassfish.config.dir}" />
-		<copy file="${mdbuser.keystore}" todir="${glassfish.config.dir}" verbose="true" />
-		<guide-echo args="" />
-	</target>
-
 	<target name="config-tolven-glassfish" depends="props">
 		<guide-echo args="Configure Tolven Glassfish" />
 		<guide-echo args="" />
 
 		<antcall target="include-config-policyagent" />
-
-		<antcall target="config-tolven-glassfish-deploy-mqkeystore" />
 
 		<guide-echo args="Execute the following asadmin commands:" />
 		<asadmin args="delete-jdbc-connection-pool --cascade DerbyPool" />
@@ -423,43 +412,9 @@
 		<asadmin args="create-jms-resource --restype javax.jms.Queue --property Name=invitation queue/invitation" />
 		<asadmin args="create-jms-resource --restype javax.jms.Queue --property Name=rule queue/rule" />
 
-		<antcall target="config-tolven-glassfish-connect-mqkeystore" />
-
 		<asadmin args="set server.thread-pools.thread-pool.http-thread-pool.max-thread-pool-size=100" />
 		<guide-echo args="" />
 		<echo message="Done" />
-	</target>
-
-	<target name="config-tolven-glassfish-deploy-mqkeystore" unless="INCLUDE.SHIRO">
-		<guide-echo args="Create Resource Adaptor Configuration" />
-		<asadmin args="create-resource-adapter-config --property keyStoreURL=file\:///${com.sun.aas.instanceRoot}/config/${mdbuser.keystore.filename}:keyStoreType=${mdbuser.keystore.type}:keyStorePassword=${mdbuser.password}:defaultAlias=${mdbuser.defaultAlias} --threadpoolid thread-pool-1 mqKeyStore" />
-		<guide-echo args="" />
-
-		<guide-echo args="Deploy the mqKeyStore.rar" />
-		<tpf args="-plugin org.tolven.deploy.glassfish3 -rarPlugins org.tolven.mqkeystore" />
-
-		<guide-echo args="Check that mqKeyStore.rar is deployed i.e. the following file exists: ${glassfish.dir}/glassfish/domains/tolven/autodeploy/mqKeyStore.rar_deployed" />
-		<echo message="Waiting for mqKeyStore.rar to deploy..." />
-		<waitfor maxwait="60" maxwaitunit="second">
-			<available file="${glassfish.dir}/glassfish/domains/tolven/autodeploy/mqKeyStore.rar_deployed" />
-		</waitfor>
-		<guide-echo args="" />
-		<fail message="mqKeyStore.rar failed to deploy">
-			<condition>
-				<not>
-					<available file="${glassfish.dir}/glassfish/domains/tolven/autodeploy/mqKeyStore.rar_deployed" />
-				</not>
-			</condition>
-		</fail>
-		<echo message="Done" />
-
-	</target>
-
-	<target name="config-tolven-glassfish-connect-mqkeystore" unless="INCLUDE.SHIRO">
-		<asadmin args="create-connector-connection-pool --raname mqKeyStore --connectiondefinition org.tolven.connectors.mqkeystore.api.MQKeyStoreConnectionFactory mqKeyStore" />
-		<asadmin args="list-connector-connection-pools" />
-		<asadmin args="create-connector-resource --poolname mqKeyStore mqKeyStore" />
-		<asadmin args="list-jndi-entries" />
 	</target>
 
 	<target name="config-gatekeeper" depends="props" if="INCLUDE.SHIRO">

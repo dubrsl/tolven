@@ -1,0 +1,12 @@
+<dataConnections>
+	<frameworkDataConnection>
+		<driver>org.postgresql.Driver</driver>
+		<url>jdbc:postgresql://localhost:5432/fdb</url>
+		<username>postgres</username>
+		<password>postgres</password>
+		<showDebugInfo>false</showDebugInfo>
+		<usePooling>true</usePooling>
+	    	<poolSize>8</poolSize>
+	    	<loadLimit>8</loadLimit>
+	</frameworkDataConnection>
+</dataConnections>

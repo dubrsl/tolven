@@ -20,8 +20,8 @@
 		 	<h:inputHidden id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" />					
 		 	<h:inputHidden id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" />	
 		 	<h:inputHidden id="computeListPath" value="#{trim.trim.act.computes[0].property['listPath']}" />	
-			<div id="popupGrids">
-				<div id="#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}" class="popupgrid"/>          
+			<div id="#{menu.elementLabel}:popupGrids">
+				<div id="#{menu.elementLabel}:#{top.accountType}:#{trim.trim.act.computes[0].property['listPath']}" class="popupgrid"/>          
 			</div>
 			<wiz:step title="#{trim.trim.act.computes[0].property['arType']}" >
 				<wiz:body>

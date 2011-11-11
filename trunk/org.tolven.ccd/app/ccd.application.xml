@@ -1,3 +1,6 @@
-<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure" >
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">	
+	<property accountType="echr" name="tolven.xslt/2.16.840.1.113883.3.27.1776" file="xslt/WebViewLayout_CDA.xsl"/>
+	<property accountType="echr" name="tolven.xslt/urn:hl7-org:v3" file="xslt/WebViewLayout_CDA.xsl"/>
 	<property accountType="echr" name="org.tolven.xslt.ccd" file="xslt/ccd.xsl"/>
 </application>

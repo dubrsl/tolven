@@ -54,8 +54,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.tolven.api.facade.accountuser.XFacadeAccountUserFactory;
-import org.tolven.api.facade.accountuser.XFacadeAccountUsers;
 import org.tolven.core.ActivationLocal;
 import org.tolven.core.TolvenPropertiesLocal;
 import org.tolven.core.entity.AccountUser;
@@ -350,7 +348,7 @@ public class UserResources {
         }
         return Response.created(uri).type(MediaType.TEXT_PLAIN).entity("User " + tp + " created").build();
     }
-
+/*
     @Path("accountUsers")
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -388,7 +386,7 @@ public class UserResources {
         XFacadeAccountUsers uas = XFacadeAccountUserFactory.createXFacadeAccountUsers(accountUsers, user, (Date) request.getAttribute("tolvenNow"));
         return Response.ok(uas).build();
     }
-    
+*/
     protected ActivationLocal getActivationBean() {
         if (activationBean == null) {
             String jndiName = "java:app/tolvenEJB/ActivationBean!org.tolven.core.ActivationLocal";

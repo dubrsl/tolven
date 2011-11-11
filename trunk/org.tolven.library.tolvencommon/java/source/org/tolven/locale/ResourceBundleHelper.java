@@ -45,24 +45,6 @@ public class ResourceBundleHelper {
     }
 
     /**
-     * Logic which determines the user locale/account locale in effect at any given time
-     * @param userLocale
-     * @param accountLocale
-     * @return
-     */
-    public static Locale getLocale(String userLocale, String accountLocale) {
-        if (userLocale == null) {
-            if (accountLocale == null) {
-                return Locale.getDefault();
-            } else {
-                return getLocale(accountLocale);
-            }
-        } else {
-            return getLocale(userLocale);
-        }
-    }
-
-    /**
      * A wrapper of the getString method on ResourceBundle, which provides for a easily identifiable missing key e.g. ???MissingKey???
      * This method also makes it easier to determine which parts of the code are using message bundles
      * @param messagesBundle

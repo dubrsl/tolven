@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>observation</extends>
+	<name>obs/evn/gcs</name>
+	<page>gcs.xhtml</page>
+	<drilldown>gcsDD.xhtml</drilldown>
+	<reference>http://www.wikihit.org/wiki/index.php/Glasgow_Coma_Scale</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2006AC</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Glasgow Coma Scale</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<INT>
+					<value>0</value>
+				</INT>
+			</value>
+		</observation>
+		<relationship name="eye" direction="OUT" typeCode="COMP">
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C0017594</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<title>
+					<ST>Best eye response (E)</ST>
+				</title>
+				<observation>
+					<value>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="verbal" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C0017594</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<title>
+					<ST>Best verbal response (V)</ST>
+				</title>
+				<observation>
+					<value>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="motor" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C0017594</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2006AC</codeSystemVersion>
+					</CD>
+				</code>
+				<title>
+					<ST>Best motor response (M)</ST>
+				</title>
+				<observation>
+					<value>
+						<INT>
+							<value>0</value>
+						</INT>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.Copy</type>
+			<property name="destination">
+   				<value xsi:type="xs:string">\#{trim.act.observation.value.INT.value}</value>
+			</property>
+			<property name="source">
+				<value xsi:type="xs:string">\#{trim.act.relationship['eye'].act.observation.value.INT.value+trim.act.relationship['verbal'].act.observation.value.INT.value+trim.act.relationship['motor'].act.observation.value.INT.value}</value>
+            </property>
+		</compute>
+	</act>
+</trim>

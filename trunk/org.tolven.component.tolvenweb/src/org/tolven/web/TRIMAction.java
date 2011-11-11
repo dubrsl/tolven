@@ -34,6 +34,7 @@ import org.tolven.app.entity.MDQueryResults;
 import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.Status;
 import org.tolven.doc.entity.DocBase;
@@ -115,7 +116,7 @@ public class TRIMAction extends MenuAction {
 			throw new RuntimeException( "[getTrim] XML Document is not TRIM MD.id=" + md.getId());
 		}
 		// Get the object graph
-		return (TrimEx) getXMLProtectedBean().unmarshal((DocXML)doc, getTop().getAccountUser(), getUserPrivateKey() );
+		return (TrimEx) getXMLProtectedBean().unmarshal((DocXML)doc, TolvenRequest.getInstance().getAccountUser(), getUserPrivateKey() );
 	}
 	
 	/**
@@ -199,7 +200,7 @@ public class TRIMAction extends MenuAction {
 			}
 			ctrl.setMenuStructure( ms );
 			ctrl.setNow( getNow());
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setOriginalTargetPath( new MenuPath(ms.instancePathFromContext ( nodeValues, true )));
 			ctrl.setRequestedPath( ctrl.getOriginalTargetPath() );
 			MDQueryResults results = menuLocal.findMenuDataByColumns( ctrl );
@@ -290,7 +291,7 @@ public class TRIMAction extends MenuAction {
 			nodeValues.putAll(new MenuPath( contextPath ).getNodeValues());
 			ctrl.setMenuStructure( ms );
 			ctrl.setNow( getNow());
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setOriginalTargetPath( new MenuPath(ms.instancePathFromContext ( nodeValues, true )));
 			ctrl.setRequestedPath( ctrl.getOriginalTargetPath() );
 			MDQueryResults results = menuLocal.findMenuDataByColumns( ctrl );
@@ -317,7 +318,7 @@ public class TRIMAction extends MenuAction {
 				if (itemPath==null) {
 					itemPath = row.get("path");
 				}
-				String args[]={itemPath.toString(),String.valueOf(getTop().getAccountUser().getAccount().getId()),"0"}; //TODO: getProviderID
+				String args[]={itemPath.toString(),String.valueOf(TolvenRequest.getInstance().getAccountUser().getAccount().getId()),"0"}; //TODO: getProviderID
 				PartyEx p = TrimFactory.createParty(args);
 				SelectItem e = new SelectItem(p, sb.toString() );
 				list.add(e);
@@ -360,7 +361,7 @@ public class TRIMAction extends MenuAction {
 			
 			MenuQueryControl ctrl = new MenuQueryControl();
 			ctrl.setMenuStructure( encounterMS.getAccountMenuStructure() );
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setNow( getNow());
 			ctrl.setRequestedPath( new MenuPath( getTargetMenuPath().getSubPathWithIds("patient")) );
 //			TolvenLogger.info( "ActiveEncounter query control: " + ctrl, TRIMAction.class );
@@ -393,7 +394,7 @@ public class TRIMAction extends MenuAction {
 			MenuStructure patientMS =  getMenuLocal().findMenuStructure( getAccountId(), patientPath );
 			MenuQueryControl ctrl = new MenuQueryControl();
 			ctrl.setMenuStructure( patientMS.getAccountMenuStructure() );
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setNow( getNow());
 			ctrl.setRequestedPath( new MenuPath( getTargetMenuPath().getSubPathWithIds("patient")) );
 			MenuData patientMD =  getMenuLocal().findMenuDataItem( ctrl );
@@ -417,7 +418,7 @@ public class TRIMAction extends MenuAction {
 			MenuStructure patientMS =  getMenuLocal().findMenuStructure( getAccountId(), patientPath );
 			MenuQueryControl ctrl = new MenuQueryControl();
 			ctrl.setMenuStructure( patientMS.getAccountMenuStructure() );
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setNow( getNow());
 			ctrl.setRequestedPath( new MenuPath( getTargetMenuPath().getSubPathWithIds("patient")) );
 			MenuData patientMD =  getMenuLocal().findMenuDataItem( ctrl );
@@ -480,7 +481,7 @@ public class TRIMAction extends MenuAction {
 	 * @throws Exception
 	 */
 	public List<CopyToEx> getRouting( )  throws Exception{
-		String knownType = getTop().getAccountUser().getAccount().getAccountType().getKnownType();
+		String knownType = TolvenRequest.getInstance().getAccountUser().getAccount().getAccountType().getKnownType();
 		if ("echr".equals(knownType)) return getInboundRouting();
 		if ("ephr".equals(knownType)) return getOutboundRouting();
 		return null;
@@ -517,9 +518,9 @@ public class TRIMAction extends MenuAction {
 	
 	public List<MenuData> getDupeList() throws Exception {
 		MenuStructure ms;
-		if ("echr".equals(getTop().getAccountType())) {
+		if ("echr".equals(TolvenRequest.getInstance().getAccountUser().getAccount().getAccountType())) {
 			ms = getMenuLocal().findMenuStructure(getAccountId(), "echr:patients:all");
-		} else if ("ephr".equals(getTop().getAccountType())) {
+		} else if ("ephr".equals(TolvenRequest.getInstance().getAccountUser().getAccount().getAccountType())) {
 			ms = getMenuLocal().findMenuStructure(getAccountId(), "ephr:patients:all");
 		} else return null;
 		// Populate criteria (this is the same logic as in the rules that populate the MenuData item for real.
@@ -611,7 +612,7 @@ public class TRIMAction extends MenuAction {
         if (doc == null) {
             throw new RuntimeException("Document id invalid in MD " + md.getId());
         }
-        return getDocProtectionBean().getDocumentSignaturesString(doc, getTop().getAccountUser(), getUserPrivateKey());
+        return getDocProtectionBean().getDocumentSignaturesString(doc, TolvenRequest.getInstance().getAccountUser(), getUserPrivateKey());
     }
 	
 	public void setRouting( List<CopyToEx> routing) {
@@ -700,7 +701,7 @@ public class TRIMAction extends MenuAction {
 	 * @throws Exception 
 	 */
 	public List<Compute> getActiveComputes() throws Exception {
-		String knownType = getTop().getAccountUser().getAccount().getAccountType().getKnownType();
+		String knownType = TolvenRequest.getInstance().getAccountUser().getAccount().getAccountType().getKnownType();
 		List<Compute> computes = new ArrayList<Compute>();
 		for (Compute compute : getTrim().getAct().getComputes()) {
 			if (compute.getForTrimName()!=null && !(compute.getForTrimName().equals(getTrim().getName()) )) continue;
@@ -743,16 +744,16 @@ public class TRIMAction extends MenuAction {
 			contextList.add(contextPath);
 			DocumentType documentType = doc.getDocumentType();
 			documentType.setAtachments(getDocumentLocal().findAttachments(doc));
-			List<String> computeMsgs = getCreatorBean().computeScanWithResults(trim, getTop().getAccountUser(), contextPath, getNow(), documentType);
+			List<String> computeMsgs = getCreatorBean().computeScanWithResults(trim, TolvenRequest.getInstance().getAccountUser(), contextPath, getNow(), documentType);
 			// Convert Scan Results into FacetMessages.
 			for (String msg : computeMsgs)
 			{
 				FacesContext.getCurrentInstance().addMessage("", new FacesMessage(msg));
 			}
 
-//			getCreatorBean().computeScan( trim, getTop().getAccountUser(), contextPath, getNow());
+//			getCreatorBean().computeScan( trim, TolvenRequest.getInstance().getAccountUser(), contextPath, getNow());
 			// Re-check creations
-			getCreatorBean().placeholderBindScan(getTop().getAccountUser(), trim, null, null, getNow(), BindPhase.CREATE, this.getDrilldownItemDoc());
+			getCreatorBean().placeholderBindScan(TolvenRequest.getInstance().getAccountUser(), trim, null, null, getNow(), BindPhase.CREATE, this.getDrilldownItemDoc());
 			// Save the trim in the output
 			ByteArrayOutputStream trimXML = new ByteArrayOutputStream() ;
 			getXmlLocal().marshalTRIM(trim, trimXML);

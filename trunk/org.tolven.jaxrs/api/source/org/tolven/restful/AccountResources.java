@@ -43,11 +43,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.tolven.api.APIXMLUtil;
-import org.tolven.api.accountuser.XAccountUser;
-import org.tolven.api.accountuser.XAccountUserFactory;
-import org.tolven.api.facade.accountuser.XFacadeAccountUserFactory;
-import org.tolven.api.facade.accountuser.XFacadeAccountUsers;
 import org.tolven.api.security.GeneralSecurityFilter;
 import org.tolven.app.MenuLocal;
 import org.tolven.core.AccountDAOLocal;
@@ -274,6 +269,7 @@ public class AccountResources {
      * Refresh account information.
      * @return
      */
+    /*
     @Path("refresh")
     @GET
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
@@ -295,7 +291,7 @@ public class AccountResources {
         mvMap.putSingle(GeneralSecurityFilter.ACCOUNTUSERS, xFacadeAccountUsersXML);
         return Response.ok(mvMap).build();
     }
-    
+    */
     /**
      * Get an Account Property
      * @param pname

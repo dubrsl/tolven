@@ -1161,15 +1161,16 @@
 				<from>#{act.text.ST.value}</from>
 				<from>#{trim.description}</from>
 			</field>
-			<field name="code" internal="string06" >
-				<from>#{act.observation.value.CE.code}</from>
+ 			<field name="reactionseverity" internal="string03">
+				<from>#{reactionSeverity(act.relationshipsList['allergyDetailsStore'])}</from>
 			</field>
-			<field name="dateType" internal="dateType" >
-				<from>#{allergy.dateType}</from>
-			</field>												
 			<field name="effectiveTime" internal="date01">
 				<from>#{act.effectiveTime.TS.date}</from>
 				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="activityTime" internal="date02">
+				<from>#{act.activityTime.TS.date}</from>
+				<from>#{act.activityTime.IVLTS.low.date}</from>
 			</field>
 			<field name="patient" internal="parent01">
 				<from>#{patient}</from>
@@ -1187,7 +1188,7 @@
 	</extends>
 	<extends path="echr:patient:summary">
 		<list name="allergysum" visible="never">
-			<column name="date" internal="date01" format="yyyy">
+			<column name="date" internal="date01" format="MM/dd/yyyy">
 				<from>#{allergy.effectiveTime}</from>
 			</column>
 			<column name="title" internal="string01">
@@ -1212,67 +1213,70 @@
 	<extends path="echr:patient">
 		<menu name="allergies"  sequence="3" title="Allergies" page="/five/bar2.xhtml" visible="true">
 			<list name="current" title="All" page="/five/list.xhtml" visible="true" drilldown=":allergy">
-				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="11.0">
-					<from>#{allergy.effectiveTime}</from>
-				</column>
-				<column name="DateType" internal="dateType" width="10.0">
-					<from>#{allergy.dateType}</from>
-				</column>					
-				<column name="Allergy" internal="string01" reference="true" width="40.0">
+				<column name="Allergy" internal="string01" reference="true" width="30.0">
 					<from>#{allergy.title}</from>
 				</column>
-				<column name="Code" internal="string06" reference="true" width="15.0" visible="false">
-					<from>#{allergy.code}</from>
+ 				<column name="ReactionSeverity" internal="string03" width="25.0">
+					<from>#{allergy.reactionseverity}</from>
 				</column>
-				<column name="Source" internal="string02" width="10.0">
+ 				<column name="Occurred" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.effectiveTime}</from>
+				</column>
+				<column name="Status" internal="actStatus" width="5.0">
+					<from>#{allergy.actStatus}</from>
+				</column>
+				<column name="UserName" internal="string02" width="10.0">
 					<from>#{allergy.author.lastName}</from>
 					<from>#{allergy.enteredBy}</from>
 				</column>
-				<column name="Encounter" internal="string04" width="10.0">
-					<from>#{allergy.encounter.effectiveTimeLow}</from>
-				</column>
-				<column name="Status" internal="actStatus" width="10.0">
-					<from>#{allergy.actStatus}</from>
+ 				<column name="Entered" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.activityTime}</from>
 				</column>
 				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:allergyDocMenu">
 					<column name="Allergy" internal="string01" instantiate="true" width="40.0"/>
 				</action>
 			</list>
 			<list name="active" title="Active" page="/five/list.xhtml" visible="true" drilldown=":allergy">
-				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="11.0">
-					<from>#{allergy.effectiveTime}</from>
-				</column>
-				<column name="DateType" internal="dateType" width="10.0">
-					<from>#{allergy.dateType}</from>
-				</column>					
-				<column name="Allergy" internal="string01" reference="true" width="40.0">
+				<column name="Allergy" internal="string01" reference="true" width="30.0">
 					<from>#{allergy.title}</from>
 				</column>
-				<column name="Source" internal="string02" width="10.0">
+ 				<column name="ReactionSeverity" internal="string03" width="25.0">
+					<from>#{allergy.reactionseverity}</from>
+				</column>
+ 				<column name="Occurred" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.effectiveTime}</from>
+				</column>
+				<column name="Status" internal="actStatus" width="5.0">
+					<from>#{allergy.actStatus}</from>
+				</column>
+				<column name="UserName" internal="string02" width="10.0">
 					<from>#{allergy.author.lastName}</from>
 					<from>#{allergy.enteredBy}</from>
 				</column>
-				<column name="Encounter" internal="string04" width="10.0">
-					<from>#{allergy.encounter.effectiveTimeLow}</from>
-				</column>	
+ 				<column name="Entered" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.activityTime}</from>
+				</column>
 			</list>
 			<list name="inactive" title="Inactive" page="/five/list.xhtml" visible="true" drilldown=":allergy">
-				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="11.0">
-					<from>#{allergy.effectiveTime}</from>
-				</column>
-				<column name="DateType" internal="dateType" width="10.0">
-					<from>#{allergy.dateType}</from>
-				</column>					
-				<column name="Allergy" internal="string01" reference="true" width="40.0">
+				<column name="Allergy" internal="string01" reference="true" width="30.0">
 					<from>#{allergy.title}</from>
 				</column>
-				<column name="Source" internal="string02" width="10.0">
+ 				<column name="ReactionSeverity" internal="string03" width="25.0">
+					<from>#{allergy.reactionseverity}</from>
+				</column>
+ 				<column name="Occurred" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.effectiveTime}</from>
+				</column>
+				<column name="Status" internal="actStatus" width="5.0">
+					<from>#{allergy.actStatus}</from>
+				</column>
+				<column name="UserName" internal="string02" width="10.0">
 					<from>#{allergy.author.lastName}</from>
 					<from>#{allergy.enteredBy}</from>
 				</column>
-				<column name="Encounter" internal="string04" width="10.0">
-					<from>#{allergy.encounter.effectiveTimeLow}</from>
-				</column>	
+ 				<column name="Entered" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.activityTime}</from>
+				</column>
 			</list>
 		</menu>
 	</extends>
@@ -2532,12 +2536,10 @@
 	</extends>
 	<extends path="echr:patient:summary:portal">
 		<portlet name="procsum" portalColumn="3" sequence="3" title="Procedures" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:procsum" visible="true" drilldown=":procedures">  
-			<action title="New" name="menu1" query="global:pxDocMenu" visible="true" page="/five/list.xhtml" >
+			<action title="New" name="menu1" query="global:pxMenu" visible="true" page="/five/list.xhtml" >
 				<column width="40.0" instantiate="true" internal="string01" name="Procedure"/>
 			</action>
-			<action title="New" name="menu" query="global:pxDocMenu" visible="true" page="/five/list.xhtml" >
-				<column width="40.0" instantiate="true" internal="string01" name="Procedure"/>
-			</action>                
+			              
 		</portlet>
 	</extends>
 	<extends path="echr:patient:summary:timeline">
@@ -2569,7 +2571,7 @@
                     <from>#{px.author.lastName}</from>
                     <from>#{px.enteredBy}</from>
                 </column>
-                <action title="New" name="menu" query="global:pxDocMenu" visible="true" page="/five/list.xhtml" >
+                <action title="New" name="menu" query="global:pxMenu" visible="true" page="/five/list.xhtml" >
                     <column width="40.0" instantiate="true" internal="string01" name="Procedure"/>
                 </action>                
             </list>

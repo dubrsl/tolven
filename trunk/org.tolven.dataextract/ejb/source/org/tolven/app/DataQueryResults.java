@@ -77,6 +77,7 @@ public class DataQueryResults {
 //			Set<String> columnNames = new HashSet<String>();
 //			// Get the raw column names needed for this column
 //			col.extractColumnNames(columnNames);
+			String displayFunction = col.getDisplayFunction();
 			if (col.getDisplayFunctionArguments()!=null) continue;
 			boolean enabled = internalPrefix.length()==0;
 			String external = externalPrefix + col.getHeading();
@@ -85,11 +86,11 @@ public class DataQueryResults {
 				// Prepare for future expansion
 //				MenuStructure msPlaceholder = col.getPlaceholder();
 //				populateFieldSet( msPlaceholder, msPlaceholder.getNode()+".", col.getInternal(), dataFieldSet);
-				dataFieldSet.add(new DataField( external+".id", internal+".id", enabled));
+				dataFieldSet.add(new DataField( external+".id", internal+".id", enabled, displayFunction));
 			} else if (col.getInternal()!=null && col.getInternal().matches("code\\d\\d")) {
 				String internal = internalPrefix + col.getInternal();
-				dataFieldSet.add(new DataField( external+".code", internal+"Code", enabled));
-				dataFieldSet.add(new DataField( external+".codeSystem", internal+"CodeSystem", enabled));
+				dataFieldSet.add(new DataField( external+".code", internal+"Code", enabled, displayFunction));
+				dataFieldSet.add(new DataField( external+".codeSystem", internal+"CodeSystem", enabled, displayFunction));
 			} else {
 				if (!col.isComputed() && !col.isReference()) {
 					String internal;
@@ -97,11 +98,11 @@ public class DataQueryResults {
 						internal = internalPrefix + col.getInternal();
 					else
 						internal = internalPrefix + "_extended";
-					dataFieldSet.add(new DataField( external, internal, enabled));
-				}
+					dataFieldSet.add(new DataField( external, internal, enabled, displayFunction));
+				}				
 				if (col.isReference()) {
-					String internal = internalPrefix + col.getDisplayFunction();
-					dataFieldSet.add(new DataField( external, internal, enabled));
+					String internal = internalPrefix + displayFunction;
+					dataFieldSet.add(new DataField( external, internal, enabled, displayFunction));
 				}
 			}
 		}
@@ -112,15 +113,18 @@ public class DataQueryResults {
 		}
 		// If we refer to a drilldown placeholder, get it, too. Note: Placeholders never have a drilldown, thought they may have parents.
 		if (!MenuStructure.PLACEHOLDER.equals(ms.getRole()) && ms.getRepeating()!=null) {
-			dataFieldSet.add(new DataField( externalPrefix+"drilldown", internalPrefix+"referencePath", true));
+			dataFieldSet.add(new DataField( externalPrefix+"drilldown", internalPrefix+"referencePath", true, null));
 		}
-		dataFieldSet.add(new DataField( externalPrefix+"path", internalPrefix+"path", true));
+		dataFieldSet.add(new DataField( externalPrefix+"path", internalPrefix+"path", true, null));
 		// Get the id (primaryKey) for this item
 		if (externalPrefix.length()==0) {
-			dataFieldSet.add(new DataField( externalPrefix + "id", internalPrefix + "id", true));
+			dataFieldSet.add(new DataField( externalPrefix + "id", internalPrefix + "id", true, null));
+		}		
+		if(externalPrefix.equalsIgnoreCase("")) {
+			dataFieldSet.add(new DataField("placeholderIds", "placeholderIds", true, null));  //ignore this in md query
 		}
-		dataFieldSet.add(new DataField( externalPrefix + "documentId", internalPrefix + "documentId", true));
-		dataFieldSet.add(new DataField( externalPrefix + "actStatus", internalPrefix + "actStatus", true));
+		dataFieldSet.add(new DataField( externalPrefix + "documentId", internalPrefix + "documentId", true, null));
+		dataFieldSet.add(new DataField( externalPrefix + "actStatus", internalPrefix + "actStatus", true, null));
 		// Get owners
 		AccountMenuStructure msParent = ms.getParent();
 		StringBuffer sbInternal = new StringBuffer();
@@ -149,7 +153,7 @@ public class DataQueryResults {
 	public String getSelectString () {
 		StringBuffer sb = new StringBuffer();
 		for (DataField df : getFields()) {
-			if (df.isEnabled() && !Arrays.asList(df.getInternalSegments()).contains("_extended") ) {
+			if (df.isEnabled() && !Arrays.asList(df.getInternalSegments()).contains("_extended") && !Arrays.asList(df.getInternalSegments()).contains("placeholderIds")) {
 				if (sb.length()!=0) {
 					sb.append(", ");
 				}

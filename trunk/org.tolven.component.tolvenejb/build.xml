@@ -18,7 +18,6 @@
 				<include name="devLib.jar"/>
 			</zipfileset>
 		</zip>
-		<antcall target="jar"/>
 		<copy toDir="${buildFolder}/ejb/classes" preservelastmodified="true">
 			<fileset dir="${buildFolder}/bin" includes="**/*.class" excludes="test/org/**,test/rules/**" />
 			<fileset dir="src" includes="**/*.properties" excludes="test/org/**,test/rules/**" />

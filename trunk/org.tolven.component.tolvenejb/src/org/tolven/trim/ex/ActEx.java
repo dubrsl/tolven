@@ -150,8 +150,8 @@ public class ActEx extends Act implements Serializable {
 	public void blend( Act actInclude ) {
 		ActEx actIncludeEx = (ActEx) actInclude;
 		// Add the included act into this act.
-		this.setActivityTime(actInclude.getActivityTime());
-		this.setAvailabilityTime(actInclude.getAvailabilityTime());
+		//this.setActivityTime(actInclude.getActivityTime());
+		//this.setAvailabilityTime(actInclude.getAvailabilityTime());
 		if (this.getBinds().size()==0) {
 			for (BindTo bindTo : actInclude.getBinds()) {
 				if (bindTo.getPlaceholder()!=null) {
@@ -169,6 +169,8 @@ public class ActEx extends Act implements Serializable {
 		if (this.getDerivationExpr()==null) this.setDerivationExpr(actInclude.getDerivationExpr());
 		if (this.getDrilldown()==null) this.setDrilldown(actInclude.getDrilldown());
 		if (this.getEffectiveTime()==null) this.setEffectiveTime(actInclude.getEffectiveTime());
+		if (this.getActivityTime()==null) this.setActivityTime(actInclude.getActivityTime());
+		if (this.getAvailabilityTime()==null) this.setAvailabilityTime(actInclude.getAvailabilityTime());
 		if (this.getId()==null) this.setId(actInclude.getId());
 		if (this.getIndependentInd()==null) this.setIndependentInd(actInclude.getIndependentInd());
 		if (this.getInternalId()==null) this.setInternalId(actInclude.getInternalId());

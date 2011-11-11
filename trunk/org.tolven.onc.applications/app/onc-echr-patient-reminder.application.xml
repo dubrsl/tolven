@@ -1,0 +1,53 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<!-- Patient reminders -->
+	<extends path="echr:patient">
+		<placeholder name="reminder" title="Reminder" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/reminderLink.xhtml">
+			<field name="type" internal="string01">
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="text" internal="string02">
+				<from>#{act.text.ST.value}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="remindersum" visible="never" />
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="remindersum" portalColumn="2" sequence="3" title="Reminders" page="/five/reminderSummary.xhtml" query="echr:patient:summary:remindersum" visible="false" drilldown=":reminders">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:reminderMenu">
+				<column name="Reminder" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+	<extends path="echr:patient:summary:calendar">
+		<entry name="reminder" sequence="4" title="Reminder" query="echr:patient:summary:remindersum" visible="true" drilldown=":reminders" />
+	</extends>
+	<extends path="echr:patient">
+		<menu name="reminders" sequence="13" title="Reminders" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="Current" page="/five/list.xhtml" visible="true" drilldown=":reminder">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0" />
+				<column name="Reminder" internal="string01" reference="true" width="40.0" />
+				<column name="Source" internal="string02" width="25.0">
+					<from>#{reminder.author.lastName}</from>
+					<from>#{reminder.enteredBy}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:reminderMenu">
+					<column name="Reminder" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+		</menu>
+	</extends>
+	</application>

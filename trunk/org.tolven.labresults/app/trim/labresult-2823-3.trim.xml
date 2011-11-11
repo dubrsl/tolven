@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"	 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://tolven.org/xsd/trim4">
+	<extends>obs/evn/labresult</extends>
+	<name>obs/evn/labresult-2823-3</name>    
+	<description>Potassium</description>
+    <act classCode="OBS" moodCode="EVN">       
+    	<code> 
+    		<CD>
+    			<code>2823-3</code>
+    			<codeSystem>1.3.6.1.4.1.12009.10.2.3</codeSystem>
+    			<codeSystemName>LOINC</codeSystemName>    			
+    		</CD>
+    	</code>
+    	<title><ST>Potassium</ST></title>
+    	<observation>
+    		<value>
+    			<PQ>
+    				<label></label>
+    				<value>0.0</value>
+    				<unit>meq/l</unit>    				
+    			</PQ>
+    		</value>
+    	</observation>
+    	 <relationship direction="OUT" name="referenceRange" typeCode="REFV">
+        	<act classCode="OBS" moodCode="EVN.CRT">
+        		<observation>
+        			<value>
+        				<IVLPQ>
+        					<low>
+        						<PQ>
+        							<value>3.5</value>
+        							<unit>meq/l</unit>
+        						</PQ>
+        					</low>
+        					<high>
+        						<PQ>
+        							<value>5.3</value>
+        							<unit>meq/l</unit>
+        						</PQ>
+        					</high>
+        				</IVLPQ>
+        			</value>
+        		</observation>
+        	</act>
+        </relationship>
+    </act>   
+</trim>

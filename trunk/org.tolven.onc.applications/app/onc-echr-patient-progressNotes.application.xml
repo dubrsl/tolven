@@ -1,0 +1,110 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<extends path="echr:patient">
+	<placeholder name="progressnote" title="ProgressNote" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/progressnotesLink.xhtml">
+		<field name="effectiveTimeLow" internal="date01">
+			<from>#{act.effectiveTime.TS.date}</from>
+			<from>#{act.effectiveTime.IVLTS.low.date}</from>
+		</field>
+		<field name="title" internal="string01">
+			<from>#{act.observation.value.CE.displayName}</from>
+			<from>#{act.title.ST.value}</from>
+			<from>#{trim.description}</from>
+		</field>
+		<field name="status" internal="string02">
+			<from>#{trim.act.statusCode}</from>
+		</field>
+		<field name="receiverId" internal="string03">
+			<from>#{trim.act.relationship['receiverInfo'].act.observation.values[0].ST.value}</from>
+		</field>
+		<field name="receiverName" internal="string04">
+			<from>#{trim.act.relationship['receiverInfo'].act.observation.values[1].ST.value}</from>
+		</field>
+	</placeholder>
+</extends>
+	<extends path="echr:patient:summary">
+		<list name="progressnotessum" visible="never">
+			<column name="effectiveTime" internal="date01" format="MM/dd/yyyy">
+				<from>#{progressnote.effectiveTimeLow}</from>
+			</column>
+			<column name="title" internal="string01">
+				<from>#{progressnote.title}</from>
+			</column>
+			<column name="status" internal="string02">
+				<from>#{progressnote.status}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="progressnotessum" portalColumn="1" sequence="1" title="ProgressNotes" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:progressnotessum" visible="true" drilldown=":progressnotes">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:progressnotesDocMenu">
+				<column name="ProgressNote" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+
+	<!-- Progress Notes -->
+	<extends path="echr:patient">
+		<menu name="progressnotes" sequence="2" title="ProgressNotes" page="/five/bar2.xhtml" visible="true">
+			<list name="active" title="Active" page="/five/list.xhtml" visible="true" drilldown=":progressnote">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{progressnote.effectiveTimeLow}</from>
+				</column>
+				<column name="ProgressNote" internal="string01" reference="true" width="45.0">
+					<from>#{progressnote.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="10.0">
+					<from>#{progressnote.status}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:progressnotesDocMenu">
+					<column name="ProgressNote" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+			<list name="suspended" title="Suspended" page="/five/list.xhtml" visible="true" drilldown=":progressnote">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{progressnote.effectiveTimeLow}</from>
+				</column>
+				<column name="ProgressNote" internal="string01" reference="true" width="45.0">
+					<from>#{progressnote.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="10.0">
+					<from>#{progressnote.status}</from>
+				</column>
+			</list>
+			<list name="nullified" title="Nullified" page="/five/list.xhtml" visible="true" drilldown=":progressnote">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{progressnote.effectiveTimeLow}</from>
+				</column>
+				<column name="ProgressNote" internal="string01" reference="true" width="45.0">
+					<from>#{progressnote.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="10.0">
+					<from>#{progressnote.status}</from>
+				</column>
+			</list>
+			<list name="completed" title="Completed" page="/five/list.xhtml" visible="true" drilldown=":progressnote">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{progressnote.effectiveTimeLow}</from>
+				</column>
+				<column name="ProgressNote" internal="string01" reference="true" width="45.0">
+					<from>#{progressnote.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="10.0">
+					<from>#{progressnote.status}</from>
+				</column>
+			</list>
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown=":progressnote">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{progressnote.effectiveTimeLow}</from>
+				</column>
+				<column name="ProgressNote" internal="string01" reference="true" width="45.0">
+					<from>#{progressnote.title}</from>
+				</column>
+				<column name="Status" internal="string02" width="10.0">
+					<from>#{progressnote.status}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+</application>

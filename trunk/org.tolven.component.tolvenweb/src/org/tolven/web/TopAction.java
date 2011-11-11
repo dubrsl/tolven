@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletRequest;
@@ -38,7 +37,6 @@ import org.tolven.locale.ResourceBundleHelper;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.security.TolvenPerson;
 import org.tolven.util.ExceptionFormatter;
-import org.tolven.web.security.GeneralSecurityFilter;
 import org.tolven.web.util.TSDateFormat;
 
 /**
@@ -213,16 +211,6 @@ public class TopAction extends TolvenAction implements GlobalLocaleText {
 		this.dummyCount = dummyCount;
 	}
 
-    public long getAccountUserId() {
-        String idString = getSessionProperty(GeneralSecurityFilter.ACCOUNTUSER_ID);
-        if (idString == null || idString.length() == 0) {
-            //Not sure why this isn't an exception as per the superclass?
-            return 0;
-        } else {
-            return Long.parseLong(idString);
-        }
-    }
-
 	/**
 	 * Only used for initial setup, impractical for anything else.
 	 * @return
@@ -268,46 +256,6 @@ public class TopAction extends TolvenAction implements GlobalLocaleText {
 			return false;
 		} else {
 			return getAccountUser().isAccountPermission();
-		}
-	}
-
-	/**
-	 * Get the default timezone for this user, the first non-null value is selected:
-	 * <ol>
-	 * <li>The user's timezone if not null</li>
-	 * <li>The account's timezone if not null</li>
-	 * <li>From tolven.properties: tolven.timezone</li>
-	 * <li>From Java TimeZone.getDefault()</li>
-	 * </ol>
-	 * @return
-	 */
-	public String getTimeZone() {
-		if (null!=getAccountUser()) return getAccountUser().getTimeZone();
-		String timeZone = null;
-		TolvenUser user = getActivationBean().findTolvenUser(getSessionTolvenUserId());
-		if (timeZone==null && user!=null) timeZone = user.getTimeZone();
-		if (timeZone==null) timeZone = getTolvenPropertiesBean().getProperty("tolven.timezone");
-		if (timeZone==null) timeZone = java.util.TimeZone.getDefault().getID();
-		return timeZone;
-	}
-
-	public TimeZone getTimeZoneObject() {
-		return TimeZone.getTimeZone(getTimeZone());
-	}
-
-	public String getAccountTimeZone() {
-		if(getAccountUser() == null) {
-			return null;
-		} else {
-			return getAccountUser().getAccount().getTimeZone();
-		}
-	}
-
-	public String getAccountLocale() {
-		if(getAccountUser() == null) {
-			return null;
-		} else {
-			return getAccountUser().getAccount().getLocale();
 		}
 	}
 

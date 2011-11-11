@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Patient Lab Result - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+		<wiz:body>
+		  <c:if test="#{menu.menuDataItem.statusName == 'NEW'}">
+		    <h2><h:outputText value="#{act.title.ST.value}"/></h2>
+		    <h:panelGrid columns="2" >
+		      <h:outputText value="#{msg.DateOfObservation}: "/>
+		      <trim:TS id="effectiveTime" value="#{act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"/>
+		      <h:outputText value="#{msg.Value}: "/>
+		      <h:panelGroup>
+			<h:outputText value="#{trim.trim.act.observation.value.PQ.value}" />
+			<h:outputText value="#{trim.trim.act.observation.value.PQ.unit}" />
+		      </h:panelGroup>
+		    </h:panelGrid>		    
+   		  </c:if>
+		  <c:if test="#{menu.menuDataItem.statusName != 'NEW'}">
+		    <h2><h:outputText value="#{act.title.ST.value}"/></h2>
+		    <h:panelGrid columns="2" >
+		        <h:outputText value="Effective Time:" />
+			<h:outputText value="#{menu.drilldownItem.effectiveTime}" />
+			<h:outputText value="Title:" />
+			<h:outputText value="#{menu.drilldownItem.title}" />
+			<h:outputText value="Status:" />
+			<h:outputText value="#{menu.drilldownItem.status}" />
+			<h:outputText value="Entered By:" />
+			<h:outputText value="#{menu.drilldownItem.enteredBy}" />
+			<h:outputText value="LOINC Code:" />
+			<h:outputText value="#{menu.drilldownItem.code.code}" />
+			<h:outputText value="Lab Result Value/Units:" />
+			<h:panelGroup>
+			  <h:outputText value="#{menu.drilldownItem.value}" />
+			  <h:outputText value="#{menu.drilldownItem.units}" />
+			</h:panelGroup>
+			<h:outputText value="Interpretation Code:" />
+			<h:outputText value="#{menu.drilldownItem.interpretationCode.code}" />
+			<h:outputText value="Reference Value Ranges:" />
+			<h:panelGroup>
+			  <h:outputText value="#{menu.drilldownItem.lowvalue}" />
+			  <h:outputText value="#{menu.drilldownItem.lowunits}" />
+			  <h:outputText value="#{menu.drilldownItem.highvalue}" />
+			  <h:outputText value="#{menu.drilldownItem.highunits}" />
+			</h:panelGroup>
+		    </h:panelGrid>		    
+   		  </c:if>
+		</wiz:body>
+	</ui:composition> 
+</body>
+</html>

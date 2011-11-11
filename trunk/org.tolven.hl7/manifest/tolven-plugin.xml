@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.hl7" version="2.1.1" vendor="Tolven" 
+	class="HelloWorld">
+
+<requires>
+     <import plugin-id="org.tolven.component.tolvenejb" />
+     <import plugin-id="org.tolven.component.tolvenweb" />
+	 <import plugin-id="org.tolven.component.application" />
+	 <import plugin-id="org.tolven.component.war" />
+	 <import plugin-id="org.tolven.component.tolvenlocale_en" />
+	 <import plugin-id="org.tolven.component.tolvenlocale" />
+	 <import plugin-id="org.tolven.component.faces" />	
+	 <import plugin-id="org.tolven.component.tolvenear" />
+</requires>
+
+<extension-point id="devLib" extension-multiplicity="none">
+	<parameter-def id="jar" default-value="devLib.jar" />
+</extension-point>
+
+  
+<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+	<parameter id="dir" value="app" />
+</extension>
+
+<extension id="trims" plugin-id="org.tolven.component.application" point-id="trims">
+	<parameter id="dir" value="app/trim" />
+</extension>
+
+<extension id="drilldownDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="drilldownDirectory">
+     <parameter id="sourceDirectory" value="web/drilldown" />
+</extension>
+ 
+<extension id="scriptsDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="scriptsDirectory">
+     <parameter id="sourceDirectory" value="web/scripts" />
+</extension>
+
+<extension id="wizardDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="wizardDirectory">
+     <parameter id="sourceDirectory" value="web/wizard" />
+</extension>
+
+<extension id="application-locale-echr" plugin-id="org.tolven.component.tolvenlocale" point-id="application-locale">
+        <parameter id="application-name" value="echr"></parameter>
+		<parameter value="hl7Locale.properties" id="properties-file" />
+</extension>
+ 
+<extension id="hl7JavaScript" plugin-id="org.tolven.component.tolvenweb" point-id="portalScriptInclude">
+	<parameter id="includeFile" value="scriptInclude/hl7Scripts.txt" />
+</extension>	
+
+<extension id="warclasses" plugin-id="org.tolven.component.war" point-id="classes">
+	<parameter id="dir" value="web/classes" />
+	<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+</extension>
+<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+     <parameter id="dir" value="ejb/classes" />
+</extension>	
+<extension id="hl7Jars" plugin-id="org.tolven.component.tolvenear" point-id="javaModuleProduct">
+	<parameter id="dir" value="ejb/lib" />
+</extension> 
+
+<extension id="HL7AjaxServlet" plugin-id="org.tolven.component.war" point-id="servlet">
+	<parameter id="servlet-name" value="HL7AjaxServlet" />
+	<parameter id="servlet-class" value="org.tolven.ajax.HL7Servlet" />
+	<parameter id="web-resource-name" value="Protected Area" />
+	<parameter id="transaction" value="true" />
+	<parameter id="load-on-startup" value="5" />
+	<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+</extension>
+<extension id="HL7AjaxServletMapping" plugin-id="org.tolven.component.war" point-id="servlet-mapping-contribution">
+	<parameter id="servlet-name" value="HL7AjaxServlet" />
+ 		<parameter id="url-pattern" value="*.ajaxhl7" />
+ 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
+	</extension>
+</plugin>

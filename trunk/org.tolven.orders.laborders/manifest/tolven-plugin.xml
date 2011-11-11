@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
-	id="org.tolven.orders.laborders" version="2.1.0" 
+	id="org.tolven.orders.laborders" version="2.1.2" 
 	class="org.tolven.deploy.LabOrders.LoaderLabOrders" 
 	vendor="Tolven">
 	
@@ -9,9 +9,6 @@
 	     <import plugin-id="org.tolven.component.tolvenweb" />
 		 <import plugin-id="org.tolven.component.application" />
 		 <import plugin-id="org.tolven.component.tolvenlocale_en" />
-		 <!--  org.tolven.library.application added for vocabulary data-->
-		 <import plugin-id="org.tolven.library.application" />
-		 <import plugin-id="org.tolven.cchit.component.ejb" />
 	</requires>
 	
 	<runtime>

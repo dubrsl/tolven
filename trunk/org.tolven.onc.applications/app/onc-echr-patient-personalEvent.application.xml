@@ -1,0 +1,65 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<!-- Patient Personal Events -->
+	<extends path="echr:patient">
+		<placeholder name="personalEvent" title="Personal Event" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/personalEventLink.xhtml">
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="event" internal="string01">
+				<from>#{act.text.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="pevnsum" visible="never">
+			<column name="dateFrom" internal="date01" format="MM/dd/yy">
+				<from>#{personalEvent.effectiveTimeLow}</from>
+			</column>
+			<column name="dateTo" internal="date02" format="MM/dd/yy">
+				<from>#{personalEvent.effectiveTimeHigh}</from>
+			</column>
+			<column name="event" internal="string01">
+				<from>#{personalEvent.event}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="pevnsum" portalColumn="3" sequence="4" title="Personal Events" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:pevnsum" visible="true" drilldown=":personalEvents">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu">
+				<column name="Appointment" internal="string01" instantiate="true" width="30.0" />
+			</action>
+		</portlet>
+	</extends>
+	<extends path="echr:patient:summary:calendar">
+		<entry name="pevnsum" sequence="6" title="Personal Event" query="echr:patient:summary:pevnsum" visible="true" drilldown=":personalEvents" />
+	</extends>
+	<extends path="echr:patient">
+		<menu name="personalEvents" sequence="19" title="Personal Events" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown=":personalEvent">
+				<column name="From" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{personalEvent.effectiveTimeLow}</from>
+				</column>
+				<column name="To" internal="date02" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{personalEvent.effectiveTimeHigh}</from>
+				</column>
+				<column name="Event" internal="string01" reference="true" width="40.0">
+					<from>#{personalEvent.event}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu">
+					<column name="Event" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+		</menu>
+	</extends>
+</application>

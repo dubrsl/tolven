@@ -1,0 +1,137 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+
+	<!-- Patient appointments -->
+	<!-- Customized appointment placeholder: 1. Modified author and enteredBy field -->
+	<extends path="echr:patient">
+		<placeholder name="appointment" title="Appointment" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/appointmentLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+				<from>#{act.relationship['plan'].act.relationship['followUp'].act.relationship['appointment'].act.effectiveTime.TS.date}</from>
+			</field>
+			<field name="title" internal="string01">
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="notes" internal="string02">
+				<from>#{act.text.ST.value}</from>
+			</field>
+			<field name="actStatus" internal="string04">
+				<from>#{act.statusCode}</from>
+			</field>
+			<field name="otherAttender" internal="string03">
+			</field>
+			<field name="otherLocation" internal="string06">
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="attender" internal="parent02">
+				<from>#{internalId( account, act.participation['attender'].role.id)}</from>
+				<from>#{(act.observation.values[0].ST.value)}</from>
+				<from>#{internalId( account, trim.act.participation['attender'].role.id)}</from>
+			</field>
+			<field name="location" internal="parent03">
+				<from>#{internalId( account, act.participation['location'].role.id)}</from>
+				<from>#{(act.observation.values[1].ST.value)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="apptsum" visible="never">
+			<column name="date" internal="date01" format="MM/dd/yy">
+				<from>#{appointment.effectiveTime}</from>
+			</column>
+			<column name="purpose" internal="string01">
+				<from>#{appointment.title} #{appointment.attender.lastName}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="apptsum" portalColumn="2" sequence="2" title="Appointments" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:apptsum" visible="true" drilldown=":appointments">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu">
+				<column name="Appointment" internal="string01" instantiate="true" width="30.0" />
+			</action>
+		</portlet>
+	</extends>
+	<extends path="echr:patient:summary:timeline">
+		<band name="apptsum" sequence="10" title="Appointments" query="echr:patient:summary:apptsum" visible="true" interval="month" style="D4FFD4" drilldown=":appointments" />
+	</extends>
+	<extends path="echr:patient:summary:calendar">
+		<entry name="appointment" sequence="3" title="Appointment" query="echr:patient:summary:apptsum" visible="true" drilldown=":appointments">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu">
+				<column name="Appointment" internal="string01" instantiate="true" width="30.0" />
+			</action>
+		</entry>
+	</extends>
+	<extends path="echr:patient">
+		<menu name="appointments" sequence="7" title="Appointments" page="/five/bar2.xhtml" visible="true">
+			<list name="future" title="Upcoming" page="/five/list.xhtml" visible="true" drilldown=":appointment">
+				<column name="Date" internal="date01" format="MM/dd/yy hh:mm" width="10.0">
+					<from>#{appointment.effectiveTime}</from>
+				</column>
+				<column name="Purpose" internal="string01" reference="true" width="25.0">
+					<from>#{appointment.title}</from>
+				</column>
+				<column name="With" internal="string03" width="20.0">
+					<from>#{appointment.attender.lastName}</from>
+					<from>#{appointment.otherAttender}</from>
+				</column>
+				<column name="At" internal="string05" width="20.0">
+					<from>#{appointment.location.name}</from>
+					<from>#{appointment.otherLocation}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{appointment.enteredBy}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:appointmentMenu">
+					<column name="Appointment" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+			<list name="past" title="Past" page="/five/list.xhtml" visible="true" drilldown=":appointment">
+				<column name="Date" internal="date01" format="MM/dd/yy hh:mm" width="10.0">
+					<from>#{appointment.effectiveTime}</from>
+				</column>
+				<column name="Purpose" internal="string01" reference="true" width="25.0">
+					<from>#{appointment.title}</from>
+				</column>
+				<column name="With" internal="string03" width="20.0">
+					<from>#{appointment.attender.lastName}</from>
+					<from>#{appointment.otherAttender}</from>
+				</column>
+				<column name="At" internal="string05" width="20.0">
+					<from>#{appointment.location.name}</from>
+					<from>#{appointment.otherLocation}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{appointment.enteredBy}</from>
+				</column>
+				<column name="Status" internal="string04" width="15.0">
+					<from>#{appointment.actStatus}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+
+	<!-- Staff Appointments with patients -->
+	<extends path="echr:assigned">
+		<menu name="appointments" sequence="9" title="Appointments" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown="echr:patient:appointment">
+				<column name="Date" internal="date01" width="10.0">
+					<from>#{appointment.effectiveTime}</from>
+				</column>
+				<column name="Patient" internal="string01" reference="true" width="20.0">
+					<from>#{appointment.patient.lastName}, #{appointment.patient.firstName} - #{appointment.patient.sex} </from>
+				</column>
+				<column name="Purpose" internal="string02" width="30.0">
+					<from>#{appointment.title}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+
+</application>

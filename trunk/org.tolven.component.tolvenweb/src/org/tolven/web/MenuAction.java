@@ -26,13 +26,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
-import java.util.Iterator;
 
 import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
 import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
-import javax.faces.model.SelectItem;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -60,8 +58,8 @@ import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuDataVersion;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
-import org.tolven.app.entity.MenuLocator;
 import org.tolven.ccr.ContinuityOfCareRecord;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountExchange;
 import org.tolven.core.entity.AccountRole;
 import org.tolven.core.entity.AccountUser;
@@ -126,7 +124,7 @@ public class MenuAction extends TolvenAction {
 //		TolvenLogger.info( "******** [MenuAction] Fetch MenuStructure for account: " + getAccountId() + " path: " + getTargetMenuPath().getPath() + " element: " + getElement(), MenuAction.class);
 //		MenuData md = getMenuLocal().findMenuDataItem(getAccountId(), getElement());
 
-		if (ms==null) ms =  getMenuLocal().findMenuStructure( getTop().getAccountUser(), getTargetMenuPath().getPath() );
+		if (ms==null) ms =  getMenuLocal().findMenuStructure( TolvenRequest.getInstance().getAccountUser(), getTargetMenuPath().getPath() );
 		return ms;
 	}
 	
@@ -136,7 +134,7 @@ public class MenuAction extends TolvenAction {
 	public List<MenuStructure> getPreferredSortedChildren() {
 //		TolvenLogger.info(" getPreferredSortedChildren " + getTargetMenuPath().getPath(), MenuAction.class);
 		MenuStructure ms = getThisMenu();
-		if( null == prefChildren ) prefChildren = getMenuLocal().findSortedChildren( getTop().getAccountUser(), ms.getAccountMenuStructure()); //new ArrayList<MenuStructure>( amsList.size() );
+		if( null == prefChildren ) prefChildren = getMenuLocal().findSortedChildren( TolvenRequest.getInstance().getAccountUser(), ms.getAccountMenuStructure()); //new ArrayList<MenuStructure>( amsList.size() );
 		return prefChildren;
 	}
 	
@@ -178,7 +176,7 @@ public class MenuAction extends TolvenAction {
 		if (childPaths==null ) {
 			childPaths = new ArrayList<String>( 10 );
 			MenuStructure msParent = getThisMenu();
-			List<MenuStructure> children = getMenuLocal().findSortedChildren(getTop().getAccountUser(), msParent.getAccountMenuStructure() );
+			List<MenuStructure> children = getMenuLocal().findSortedChildren(TolvenRequest.getInstance().getAccountUser(), msParent.getAccountMenuStructure() );
 			for ( MenuStructure msChild : children) {
 				if ("true".equals(msChild.getVisible())) {
 					MenuPath msPath = new MenuPath(msChild.getPath(), getTargetMenuPath() );
@@ -258,7 +256,7 @@ public class MenuAction extends TolvenAction {
 	 */
 	public MenuStructure getThisParentMenu( ) {
 //		return getMenuLocal().findMenuStructure( getAccountId(), getTargetMenuPath().getParentPath() ); //commented by Arun
-		return getMenuLocal().findMenuStructure(getTop().getAccountUser(), getTargetMenuPath().getParentPath() );
+		return getMenuLocal().findMenuStructure(TolvenRequest.getInstance().getAccountUser(), getTargetMenuPath().getParentPath() );
 	}
 
 	public MenuPath getTargetMenuPath( ) {
@@ -306,7 +304,7 @@ public class MenuAction extends TolvenAction {
 	 * Action to update the menus for this account to that specified in the accountType.
 	 */
 	public String refreshMetaData() {
-		getMenuLocal().updateMenuStructure(getTop().getAccountUser().getAccount());
+		getMenuLocal().updateMenuStructure(TolvenRequest.getInstance().getAccountUser().getAccount());
 		return "success";
 	}
 	
@@ -457,7 +455,7 @@ public class MenuAction extends TolvenAction {
 		MenuQueryControl ctrl = new MenuQueryControl();
 		ctrl.setLimit( 50000 );	// TODO: This is a hard coded hard query limit that should be in a property or something
 		ctrl.setMenuStructure( getThisMenu().getAccountMenuStructure() );
-		ctrl.setAccountUser(getTop().getAccountUser());
+		ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 		ctrl.setNow( getNow());
 		ctrl.setOffset( 0 );
 		ctrl.setOriginalTargetPath( getTargetMenuPath() );
@@ -495,7 +493,7 @@ public class MenuAction extends TolvenAction {
 		MenuQueryControl ctrl = new MenuQueryControl();
 		ctrl.setLimit( getThisMenu().getNumSummaryItems() ); 
 		ctrl.setMenuStructure( ms );
-		ctrl.setAccountUser(getTop().getAccountUser());
+		ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 		ctrl.setNow( getNow());
 		ctrl.setOffset( 0 );
 		ctrl.setFilter(ms.getFilter());
@@ -535,11 +533,11 @@ public class MenuAction extends TolvenAction {
 		List<MenuData> mdList = getSummaryMenuData( );
 		MenuStructure ms = getThisMenu().getAccountMenuStructure().getReferenced();
 		List<MSColumn> cols = ms.getSortedColumns();
-		TimeZone timeZone = TimeZone.getTimeZone(getTop().getTimeZone());
+		TimeZone timeZone = TimeZone.getTimeZone(TolvenRequest.getInstance().getTimeZone());
 	    MSColumn.MDFieldGetter fieldGetter = new MSColumn.MDFieldGetter( );
 	    fieldGetter.setNow(  getNow() );
 	    fieldGetter.setTimeZone( timeZone );
-	    fieldGetter.setLocale( getTop().getLocale() );
+	    fieldGetter.setLocale( TolvenRequest.getInstance().getLocale() );
 		for (MenuData md : mdList ) {
 		    fieldGetter.setMenuData(md);
 			sb.append("<tr>");
@@ -559,7 +557,7 @@ public class MenuAction extends TolvenAction {
 		if (menuDataCount==null) {
 			MenuQueryControl ctrl = new MenuQueryControl();
 			ctrl.setLimit( 0 );
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setMenuStructure( getThisMenu().getAccountMenuStructure() );
 			ctrl.setNow( getNow());
 			ctrl.setOffset( 0 );
@@ -579,7 +577,7 @@ public class MenuAction extends TolvenAction {
 	public MenuData getMenuDataItem( ) throws Exception {
 		if (menuDataItem==null) { 
 			MenuQueryControl ctrl = new MenuQueryControl();
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setMenuStructure( getThisMenu().getAccountMenuStructure() );
 			ctrl.setNow( getNow());
 			ctrl.setOriginalTargetPath( getTargetMenuPath() );
@@ -603,7 +601,7 @@ public class MenuAction extends TolvenAction {
 			} else {
 				ctrl.setRequestedPath( getTargetMenuPath() );
 			}
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setOriginalTargetPath( getTargetMenuPath() );
 			ctrl.setMenuStructure( getThisMenu().getAccountMenuStructure() );
 			ctrl.setNow( getNow());
@@ -623,6 +621,19 @@ public class MenuAction extends TolvenAction {
 		if (md==null) return null;
 		DocBase doc = getDocumentLocal().findDocument(md.getDocumentId());
 		return doc;
+	}
+	
+	/**
+	 * Created to get at the first attachment to a document
+	 * @return
+	 * @throws Exception
+	 */
+	public DocBase getFirstAttachedDocument()  throws Exception {
+		List<DocAttachment> attachments = getDrilldownAttachments();
+		if(attachments.size() > 0) {
+			return attachments.get(0).getAttachedDocument();
+		} 
+		return null;
 	}
 	
 	/**
@@ -653,7 +664,7 @@ public class MenuAction extends TolvenAction {
 			// Setup a query control
 			MenuQueryControl ctrl = new MenuQueryControl();
 			ctrl.setLimit( 0 );
-			ctrl.setAccountUser(getTop().getAccountUser());
+			ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 			ctrl.setMenuStructure( getThisMenu().getAccountMenuStructure() );
 			ctrl.setNow( getNow());
 			ctrl.setOffset( 0 );
@@ -700,10 +711,10 @@ public class MenuAction extends TolvenAction {
 		}
 		return (DocCCR) doc;
 	}
-	
+		
 	public ContinuityOfCareRecord getCcr( ) throws Exception {
 		if (ccr==null && getDocCCR()!=null) {
-			ccr = (ContinuityOfCareRecord) getXMLProtectedBean().unmarshal(getDocCCR(), getTop().getAccountUser(), getUserPrivateKey());
+			ccr = (ContinuityOfCareRecord) getXMLProtectedBean().unmarshal(getDocCCR(), TolvenRequest.getInstance().getAccountUser(), getUserPrivateKey());
 		}
 		return ccr;
 	}
@@ -762,7 +773,7 @@ public class MenuAction extends TolvenAction {
 		MenuQueryControl ctrl = new MenuQueryControl();
 		ctrl.setLimit( 5000 );	// TODO: This is a hard coded hard query limit that should be in a property or something
 		ctrl.setMenuStructure( msLab );
-		ctrl.setAccountUser(getTop().getAccountUser());
+		ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 		ctrl.setNow( getNow());
 		ctrl.setOffset( 0 );
 		ctrl.setOriginalTargetPath( mdPath );
@@ -838,7 +849,7 @@ public class MenuAction extends TolvenAction {
 		MenuQueryControl ctrl = new MenuQueryControl();
 		ctrl.setLimit( 5000 );	// TODO: This is a hard coded hard query limit that should be in a property or something
 		ctrl.setMenuStructure( msLab );
-		ctrl.setAccountUser(getTop().getAccountUser());
+		ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 		ctrl.setNow( getNow());
 		ctrl.setOffset( 0 );
 		ctrl.setOriginalTargetPath( mdPath );
@@ -901,7 +912,7 @@ public class MenuAction extends TolvenAction {
 		MenuQueryControl ctrl = new MenuQueryControl();
 		ctrl.setLimit( 5000 );	// TODO: This is a hard coded hard query limit that should be in a property or something
 		ctrl.setMenuStructure( msLab );
-		ctrl.setAccountUser(getTop().getAccountUser());
+		ctrl.setAccountUser(TolvenRequest.getInstance().getAccountUser());
 		ctrl.setNow( getNow());
 		ctrl.setOffset( 0 );
 		ctrl.setOriginalTargetPath( mdPath );
@@ -984,7 +995,7 @@ public class MenuAction extends TolvenAction {
 
 	public List<AccountExchange> getAccountExchangeSend() {
 		if (providers==null) {
-			providers = getAccountBean().findActiveEndPoints(getTop().getAccountUser().getAccount(), AccountExchange.Direction.SEND, false);
+			providers = getAccountBean().findActiveEndPoints(TolvenRequest.getInstance().getAccountUser().getAccount(), AccountExchange.Direction.SEND, false);
         }
 		return providers;
 	}
@@ -1027,7 +1038,7 @@ public class MenuAction extends TolvenAction {
 	public String deleteAttachment() {
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 		long attId = Long.parseLong(params.get("attId"));
-        getDocumentLocal().deleteAttachment( attId, getTop().getAccountUser());
+        getDocumentLocal().deleteAttachment( attId, TolvenRequest.getInstance().getAccountUser());
 		return "success";
 	}
 	/**
@@ -1043,7 +1054,7 @@ public class MenuAction extends TolvenAction {
         TolvenLogger.info( "Upload, contentType: " + contentType, MenuAction.class );
         boolean isInMemory = upfile.isInMemory();
         int sizeInBytes = (int)upfile.getSize();
-    	DocBase doc = getDocumentLocal().createNewDocument(contentType, getAttachmentType(), getTop().getAccountUser());
+    	DocBase doc = getDocumentLocal().createNewDocument(contentType, getAttachmentType(), TolvenRequest.getInstance().getAccountUser());
     	doc.setSchemaURI(getAttachmentType());
 		byte[] b;
         if (isInMemory) {
@@ -1058,7 +1069,7 @@ public class MenuAction extends TolvenAction {
         int kbeKeyLength = Integer.parseInt(getTolvenPropertiesBean().getProperty(DocumentSecretKey.DOC_KBE_KEY_LENGTH));
         doc.setAsEncryptedContent(b, kbeKeyAlgorithm, kbeKeyLength);
         getDocBean().createFinalDocument(doc );
-        getDocumentLocal().createAttachment( getDrilldownItemDoc(), doc, getAttachmentDescription(), getTop().getAccountUser(), getNow());
+        getDocumentLocal().createAttachment( getDrilldownItemDoc(), doc, getAttachmentDescription(), TolvenRequest.getInstance().getAccountUser(), getNow());
         
         setAttachmentDescription(null);
         return "success";
@@ -1108,7 +1119,7 @@ public class MenuAction extends TolvenAction {
 		if(null == menuToEdit){
 			String path = getPath();
 			if(path != null){
-				menuToEdit = getMenuLocal().findAccountMenuStructure(getTop().getAccountId(), path);
+				menuToEdit = getMenuLocal().findAccountMenuStructure(TolvenRequest.getInstance().getAccountUser().getAccount().getId(), path);
 				List<MSColumn> allCols = (List<MSColumn>) menuToEdit.getSortedColumns();
 				menuToEditColumns = new ArrayList<MSColumn>();
 				for(MSColumn col : allCols){
@@ -1256,7 +1267,6 @@ public class MenuAction extends TolvenAction {
 	public void setAttachmentType(String attachmentType) {
 		this.attachmentType = attachmentType;
 	}
-
 	public String getVisible() {
 		return visible;
 	}
@@ -1264,44 +1274,5 @@ public class MenuAction extends TolvenAction {
 	public void setVisible(String visible) {
 		this.visible = visible;
 	}	
-
-	public String getHl7Message(){
-		String hl7Message ="";
-		try {
-				Object message = getMenuDataItem().getField("hl7Message");
-				if(message !=null){
-					hl7Message = message.toString();
-				}else{
-					hl7Message = "To be Generated";
-				}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return hl7Message;
-	}
-
-	public List<SelectItem> getMvx(){
-		List<SelectItem> mvxList= new ArrayList<SelectItem>();
-		String mvxPath = "global:manufacturerMenu";
-		MenuQueryControl ctrl = new MenuQueryControl();
-		MenuPath reqPath = new MenuPath(mvxPath);
-		ctrl.setAccountUser(getAccountUser());
-		ctrl.setMenuStructurePath(mvxPath);
-		ctrl.setRequestedPath(reqPath);
-		MenuLocator menuLocator = getMenuLocal().findMenuLocator(mvxPath);
-		ctrl.setMenuStructure( menuLocator.getMenuStructure());
-		ctrl.getMenuStructure().getAccountMenuStructure().setQuery(mvxPath);
-		List<MenuData>selectedMvxList = getMenuLocal().findMenuData(ctrl);
-		if(selectedMvxList.size() >0){
-			Iterator<MenuData> itrMvx = selectedMvxList.iterator();
-			while(itrMvx.hasNext()){
-				MenuData md = itrMvx.next();
-				Object manufacturerInfo = md.getString04()+"~"+md.getString03();
-				SelectItem option = new SelectItem(manufacturerInfo,md.getString04());
-				mvxList.add(option);
-			}
-		}
-		return mvxList;
-	}
 
 }

@@ -1,0 +1,112 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+
+	<extends path="echr:patient">
+		<menu name="hospitalMedicationOrders" sequence="4" title="Medications" page="/five/bar2.xhtml" visible="true">
+			<list name="active" title="Active" page="/five/list.xhtml" visible="true">
+				<column name="start" internal="date01" format="MMM-dd-yyyy" width="10.0">
+					<from>#{medication.start}</from>
+				</column>
+				<column name="name" internal="string01" reference="true" width="25.0">
+					<from>#{medication.title}</from>
+				</column>
+				<column name="route" internal="string04" width="10.0">
+					<from>#{medication.route}</from>
+				</column>
+				<column name="frequency" internal="string05" width="10.0">
+					<from>#{medication.frequency}</from>
+				</column>
+				<column name="instructions" internal="string06" width="10.0">
+					<from>#{medication.instructions}</from>
+				</column>
+				<column name="enteredBy" internal="string07" width="10.0">
+					<from>#{medication.enteredBy}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:hospitalMedicationOrdersMenu">
+					<column name="Medication" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+			<list name="inactive" title="Inactive" page="/five/list.xhtml" visible="true">
+				<column name="start" internal="date01" format="MMM-dd-yyyy" width="10.0">
+					<from>#{medication.start}</from>
+				</column>
+				<column name="name" internal="string01" reference="true" width="25.0">
+					<from>#{medication.title}</from>
+				</column>
+				<column name="route" internal="string04" width="10.0">
+					<from>#{medication.route}</from>
+				</column>
+				<column name="frequency" internal="string05" width="10.0">
+					<from>#{medication.frequency}</from>
+				</column>
+				<column name="instructions" internal="string06" width="10.0">
+					<from>#{medication.instructions}</from>
+				</column>
+				<column name="enteredBy" internal="string07" width="10.0">
+					<from>#{medication.enteredBy}</from>
+				</column>
+			</list>
+			<list name="all" title="All" page="/five/list.xhtml" visible="true">
+				<column name="name" internal="string01" reference="true" width="25.0">
+					<from>#{medication.title}</from>
+				</column>
+				<column name="start" internal="date01" format="MMM-dd-yyyy" width="10.0">
+					<from>#{medication.start}</from>
+				</column>
+				<column name="status" internal="string02" width="10.0">
+					<from>#{transDisplString(medication.status)}</from>
+				</column>
+				<column name="route" internal="string04" width="10.0">
+					<from>#{medication.route}</from>
+				</column>
+				<column name="frequency" internal="string05" width="10.0">
+					<from>#{medication.frequency}</from>
+				</column>
+				<column name="instructions" internal="string06" width="10.0">
+					<from>#{medication.instructions}</from>
+				</column>
+				<column name="enteredBy" internal="string07" width="10.0">
+					<from>#{medication.enteredBy}</from>
+				</column>			
+			</list>
+			<list name="nullified" title="Nullified" page="/five/list.xhtml" visible="true">
+				<column name="start" internal="date01" format="MMM-dd-yyyy" width="10.0">
+					<from>#{medication.start}</from>
+				</column>
+				<column name="name" internal="string01" reference="true" width="25.0">
+					<from>#{medication.title}</from>
+				</column>
+				<column name="route" internal="string04" width="10.0">
+					<from>#{medication.route}</from>
+				</column>
+				<column name="frequency" internal="string05" width="10.0">
+					<from>#{medication.frequency}</from>
+				</column>
+				<column name="instructions" internal="string06" width="10.0">
+					<from>#{medication.instructions}</from>
+				</column>
+				<column name="enteredBy" internal="string07" width="10.0">
+					<from>#{medication.enteredBy}</from>
+				</column>
+			</list>			
+		</menu>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="hospitalMedicationOrders" visible="never">
+			<column name="date" internal="date01" format="MM/dd/yy">
+				<from>#{medication.start}</from>
+			</column>
+			<column name="title" internal="string01">
+				<from>#{medication.title}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="hospitalMedicationOrders" portalColumn="2" sequence="1" title="Hospital Medication Orders" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:hospitalMedicationOrders" visible="true">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:hospitalMedicationOrdersMenu">
+				<column name="Medication" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+
+
+</application>

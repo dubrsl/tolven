@@ -31,6 +31,7 @@ import org.tolven.exeption.GatekeeperAuthenticationException;
 import org.tolven.naming.TolvenContext;
 import org.tolven.naming.WebContext;
 import org.tolven.shiro.authc.UsernamePasswordRealmToken;
+import org.tolven.util.ExceptionFormatter;
 
 /**
  * This filter allows separate INI configuration for a FormAuthenticationFilter
@@ -68,7 +69,8 @@ public class TolvenFormAuthenticationFilter extends FormAuthenticationFilter {
 
     @Override
     protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e, ServletRequest request, ServletResponse response) {
-        logger.info("LOGIN_FAILED: " + token.getPrincipal() + " in realm: " + ((UsernamePasswordRealmToken) token).getRealm());
+        String realm = ((UsernamePasswordRealmToken) token).getRealm();
+        logger.info("LOGIN_FAILED: " + token.getPrincipal() + " in realm: " + realm + ": " + ExceptionFormatter.toSimpleString(e, ","));
         super.onLoginFailure(token, e, request, response);
         try {
             WebUtils.issueRedirect(request, response, "/public/loginFailed.jsp");
@@ -96,6 +98,23 @@ public class TolvenFormAuthenticationFilter extends FormAuthenticationFilter {
             return false;
         } else {
             return super.onLoginSuccess(token, subject, request, response);
+        }
+    }
+
+    @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        Subject subject = getSubject(request, response);
+        boolean authenticated = subject.isAuthenticated();
+        if (authenticated && isLoginRequest(request, response)) {
+            //Already authenticated so do not return the login page and redirect to the context path
+            try {
+                WebUtils.issueRedirect(request, response, "/");
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not issue redirect to: " + request.getServletContext().getContextPath(), ex);
+            }
+            return false;
+        } else {
+            return authenticated;
         }
     }
 

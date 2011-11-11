@@ -850,8 +850,9 @@ Event.observe(window, 'load', function() {
 		cvIdle += 1;
 		if (cvCountdown==0) return;
 		if (cvIdle > cvBlank ) {
-  	 		eval($('hform:logout').onclick)();
-// 			confirmIdle();
+		    //eval($('hform:logout').onclick)();
+		    findme=0;
+ 			confirmIdle();
 			return;
 		}
 		cvCountdown -= 1;
@@ -1905,7 +1906,7 @@ function showActionOptions(placeholderid,dropDownID,context){
 				 '&serialNo='+serialNo +
 				 '&accountUserId='+accountUserId,
 		onSuccess: function(req){gotActionOptions(req,placeholderid,dropDownID);},
-		onFailure: function(req) {displayError(req,menuActionId);}
+		onFailure: function(req) {displayError(req,menuActionActionPath);}
 	});
 }
 function gotActionOptions(req,placeholderid,dropDownID){

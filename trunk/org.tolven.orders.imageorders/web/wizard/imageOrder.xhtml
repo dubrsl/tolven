@@ -19,11 +19,10 @@
 			<table width="100%" cellpadding="0" cellspacing="0" border="0">
 				<thead>
 					<tr>
-						<th style="text-align:center; width:40%;"><b>Image Order</b></th>
+						<th style="text-align:center; width:50%;"><b>Image Order</b></th>
 						<th style="text-align:center; width:10%;" nowrap="nowrap"><b>Date Of Order*</b></th>
 						<th style="text-align:center; width:10%;"><b>Reason</b></th>
 						<th style="text-align:center; width:10%;"><b>Priority</b></th>
-						<th style="text-align:center; width:10%;"><b>Schedule</b></th>
 						<th style="text-align:center; width:10%;"><b>Frequency</b></th>
 						<th style="text-align:center; width:10%;"><b>Timing</b></th>
 					</tr>
@@ -36,30 +35,27 @@
 						<c:set var="class" value="even"/>
 					</c:if>
 						<tr class="#{class}">
-								<td style="text-align:center; width:40%;">
-									#{imgOrder.act.code.CE.displayName}
+								<td style="text-align:center; width:50%;">
+									#{imgOrder.act.code.CD.displayName}
 									<h:inputHidden id="saveImageOrder#{widgetIndex.index}" value="#{imgOrder.enableRelationship}"/>
 								</td>
 								<td style="text-align:center; width:10%;">
-									<trim:TSNew id="dateOfOrder#{widgetIndex.index}" value="#{imgOrder.act.effectiveTime.TS}" dateStyle="short" style="width:68%;" readonly="false" required="true" validate="currentAndFuture"/>
+									<trim:TSNew id="dateOfOrder#{widgetIndex.index}" value="#{imgOrder.act.effectiveTime.TS}" dateStyle="short" style="width:68%;" readonly="false" required="true"/>
 								</td>
 								<td style="text-align:center; width:10%;">
 									<h:inputTextarea id="reason#{widgetIndex.index}" value="#{imgOrder.act.observation.values[0].ST.value}"/>
 								</td>
-								<td style="width:8%;" >
+								<td style="width:10%;" >
 		      						<h:selectOneMenu id="imagePriority#{widgetIndex.index}" style="width:110px;" value="#{imgOrder.act.observation.values[1].CE}">
 										<f:selectItems value="#{trim.valueSets['priority']}"/>
 		           						<f:converter converterId="DataTypeConverter"/>
 		          					</h:selectOneMenu>
 		      					</td>
 								<td style="text-align:center; width:10%;">
-									<h:inputTextarea id="schedule#{widgetIndex.index}" value="#{imgOrder.act.observation.values[2].ST.value}"/>
+									<h:inputTextarea id="frequency#{widgetIndex.index}" value="#{imgOrder.act.observation.values[2].ST.value}"/>
 								</td>
 								<td style="text-align:center; width:10%;">
-									<h:inputTextarea id="frequency#{widgetIndex.index}" value="#{imgOrder.act.observation.values[3].ST.value}"/>
-								</td>
-								<td style="text-align:center; width:10%;">
-									<h:inputTextarea id="timing#{widgetIndex.index}" value="#{imgOrder.act.observation.values[4].ST.value}"/>
+									<h:inputTextarea id="timing#{widgetIndex.index}" value="#{imgOrder.act.observation.values[3].ST.value}"/>
 								</td>								
 							</tr>		
 				</c:forEach>	

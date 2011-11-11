@@ -3,20 +3,10 @@ package org.tolven.process;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.EJB;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.xml.bind.JAXBException;
-
 import org.apache.commons.lang.StringUtils;
-import org.tolven.app.el.TrimExpressionEvaluator;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.trim.ActRelationship;
-import org.tolven.trim.ActStatus;
-import org.tolven.trim.CE;
 import org.tolven.trim.Compute.Property;
-import org.tolven.trim.Entity;
-import org.tolven.trim.ex.ActRelationshipEx;
 
 public class EditLabOrderAct extends InsertAct {
 
@@ -47,7 +37,7 @@ public class EditLabOrderAct extends InsertAct {
 		        }
 		        this.getAct().getRelationships().removeAll(lActToRemove);
 			}
-			if (getAction().equals("removeUnsaved")){ //remove unsaved drugs
+			if (getAction().equals("removeUnsaved")){
 				List<ActRelationship> lActToRemove = new ArrayList<ActRelationship>();
 		        for (ActRelationship lRel : this.getAct().getRelationships()) {
 		        	if(!lRel.getName().equals(getArName())) 

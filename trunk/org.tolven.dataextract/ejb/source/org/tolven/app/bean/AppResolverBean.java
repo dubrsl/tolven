@@ -56,10 +56,14 @@ class AppResolverBean implements URIResolver,AppResolverLocal {
 				DataQueryResults dataQueryResults = dataExtractBean.setupQuery(href, accountUser); //.substring(appSchema.length()
 		        dataQueryResults.setNow(now);
 		        dataQueryResults.enableAllFields();
-		        dataQueryResults.setReturnTotalCount(false);
+		        dataQueryResults.setReturnTotalCount(true);
 		        dataQueryResults.setReturnFilterCount(false);
-		        dataQueryResults.setLimit(1);
-		        dataQueryResults.setItemQuery(true);
+		        dataQueryResults.setLimit(10);
+		        boolean isItemQuery = true;  //works for Patient data and info
+		        if(href.split(":").length > 3) {
+		        	isItemQuery = false;  //works for lists like Allergies and problems
+		        }
+		        dataQueryResults.setItemQuery(isItemQuery);
 		        StringWriter buffer = new StringWriter();
 				dataExtractBean.streamResultsXML(buffer, dataQueryResults);
 				Reader reader = new StringReader(buffer.toString());
@@ -119,6 +123,15 @@ class AppResolverBean implements URIResolver,AppResolverLocal {
         xmlStreamWriter.writeEndElement();
 	}
 	
+	protected void sendAccountIdRoot(XMLStreamWriter xmlStreamWriter, AccountUser accountUser) throws XMLStreamException {
+		String accountIdRoot = System.getProperty("tolven.repository.oid")+ ".1." + accountUser.getAccount().getId();
+        xmlStreamWriter.writeStartElement("accountIdRoot");
+        xmlStreamWriter.writeAttribute("id", accountIdRoot);
+        xmlStreamWriter.writeEndElement();
+	}
+	
+	
+	
 	protected Source createContext() {
         StringWriter buffer = new StringWriter();
     	try {
@@ -136,6 +149,7 @@ class AppResolverBean implements URIResolver,AppResolverLocal {
 				sendUser(xmlStreamWriter, accountUser.getUser());
 				sendAccount(xmlStreamWriter, accountUser.getAccount());
 				sendAccountUser(xmlStreamWriter, accountUser);
+				sendAccountIdRoot(xmlStreamWriter, accountUser);
                 xmlStreamWriter.writeEndElement();
                 xmlStreamWriter.writeEndDocument();
             } finally {

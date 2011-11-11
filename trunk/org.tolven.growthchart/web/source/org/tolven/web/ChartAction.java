@@ -24,9 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.faces.context.FacesContext;
+import javax.ejb.EJB;
 import javax.naming.NamingException;
-import javax.servlet.http.HttpSession;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -40,14 +39,13 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.RectangleInsets;
 import org.tolven.app.CCHITLocal;
 import org.tolven.app.entity.MenuData;
+import org.tolven.core.TolvenRequest;
 import org.tolven.growthchart.GrowthChartLocal;
 import org.tolven.growthchart.entity.Lenageinf;
 import org.tolven.growthchart.entity.Statage;
 import org.tolven.growthchart.entity.Wtage;
 import org.tolven.growthchart.entity.Wtageinf;
 import org.tolven.logging.TolvenLogger;
-
-import javax.ejb.EJB;
 
 /**
  * To manage Growth Chart
@@ -96,8 +94,8 @@ public class ChartAction extends TolvenAction {
 	 */
 	public String getGrowthChartHeight()  throws IOException {
 		JFreeChart chart = createChart(1);
-        String filename = ServletUtilities.saveChartAsPNG(chart, 1000, 700, (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false));
-        graphURL = "my.graph?filename=" + URLEncoder.encode(filename, "UTF-8");
+		String filename = ServletUtilities.saveChartAsPNG(chart, 1000, 700, null);
+		graphURL = "my.graph?filename=" + URLEncoder.encode(filename, "UTF-8");
         TolvenLogger.info("Graph URL: " + graphURL, MenuAction.class);
 		return graphURL;
 	}
@@ -112,7 +110,7 @@ public class ChartAction extends TolvenAction {
 	 */
 	public String getGrowthChartWeight()  throws IOException {
 		JFreeChart chart = createChart(2);
-        String filename = ServletUtilities.saveChartAsPNG(chart, 1000, 700, (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false));
+		String filename = ServletUtilities.saveChartAsPNG(chart, 1000, 700, null);
         graphURL = "my.graph?filename=" + URLEncoder.encode(filename, "UTF-8");
         TolvenLogger.info("Graph URL: " + graphURL, MenuAction.class);
 		return graphURL;
@@ -142,7 +140,7 @@ public class ChartAction extends TolvenAction {
 					 		"echr:patient:observations:active", 
 					 		getRequestParameter("element").toString(), 
 					 		"TestFilter=Height", 
-					 		getTop().getAccountUser());
+					 		TolvenRequest.getInstance().getAccountUser());
 				if(htList != null){
 					XYSeries htSeries = new XYSeries("Patient Height");
 					Map<String, Object> totheight = new HashMap<String, Object>();
@@ -187,7 +185,7 @@ public class ChartAction extends TolvenAction {
 				 		"echr:patient:observations:active", 
 				 		getRequestParameter("element").toString(), 
 				 		"TestFilter=Weight", 
-				 		getTop().getAccountUser());
+				 		TolvenRequest.getInstance().getAccountUser());
 				if(wtList != null){
 					XYSeries htSeries = new XYSeries("Patient Weight");
 					Map<String, Object> totweight = new HashMap<String, Object>();
@@ -391,8 +389,8 @@ public class ChartAction extends TolvenAction {
         renderer.setSeriesShapesVisible(0, true);
         plot.setRenderer(renderer);
         
-		plot.setDomainAxis(new NumberAxis("Age(In months)"));
-		plot.setRangeAxis(new NumberAxis((type==1 ? "Height" : "Weight")));
+		plot.setDomainAxis(new NumberAxis("Age (Months)"));
+		plot.setRangeAxis(new NumberAxis((type==1 ? "Height (Centimeters)" : "Weight (Kilograms)")));
 		return chart;
 	}
 	

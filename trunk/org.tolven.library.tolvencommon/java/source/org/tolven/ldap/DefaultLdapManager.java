@@ -135,7 +135,7 @@ public class DefaultLdapManager implements LdapManager {
                 getLdapContext().modifyAttributes(userDN, DirContext.REPLACE_ATTRIBUTE, attrs);
             }
             setUserPassword(newPassword);
-            logger.debug(getUserDN() + " changed for " + userDN);
+            logger.debug(getUserDN() + " changed password for " + userDN + " in realm: " + getRealm());
         } catch (GatekeeperAuthorizationException ex) {
             throw ex;
         } catch (AuthenticationException ex) {
@@ -170,7 +170,7 @@ public class DefaultLdapManager implements LdapManager {
             LdapContext ctx = getLdapContext();
             //The controls are saved and apply to the authenticated user
             setResponseControls(ctx.getResponseControls());
-            logger.debug(getUserDN() + " successful password check for " + userDN);
+            logger.debug(getUserDN() + " obtained successful password check for " + userDN + " in realm: " + getRealm());
         } catch (AuthenticationException ex) {
             throw new GatekeeperAuthenticationException("Check password for:" + userDN, getUserDN(), getRealm(), ex);
         } catch (NoPermissionException ex) {
@@ -222,7 +222,7 @@ public class DefaultLdapManager implements LdapManager {
      */
     public char[] createUser(String userDN, char[] userPassword, Attributes userAttributes) {
         try {
-            logger.debug(getUserDN() + " creating user: " + userDN + " at " + getProviderURL());
+            logger.debug(getUserDN() + " creating user: " + userDN + " in realm: " + getRealm() + " at " + getProviderURL());
             Attributes attrs = new BasicAttributes(false);
             NamingEnumeration<String> namingEnum = userAttributes.getIDs();
             String attrID = null;
@@ -239,28 +239,28 @@ public class DefaultLdapManager implements LdapManager {
             getLdapContext().createSubcontext(userDN, userAttributes);
             PasswordChangeRequest req = new PasswordChangeRequest(userDN, userPassword);
             getLdapContext().extendedOperation(req);
+            char[] generatedPassword = null;
             if (userPassword == null) {
-                char[] generatedPassword = req.getNewPassword();
-                if (userAttributes.get("userPKCS12") == null) {
-                    /*
-                     * TODO gatekeeper needs access to a bean like TolvenProperties, rather than use System.getProperty() directly
-                     */
-                    String userKeysOptional = System.getProperty("tolven.security.user.keysOptional");
-                    if (Boolean.parseBoolean(userKeysOptional)) {
-                        logger.info("tolven.security.user.keysOptional=true, so no user credentials will be generated for " + userDN);
-                    } else {
-                        Attributes certAttrs = generateNewUserPKCS12Attributes(userDN, generatedPassword);
-                        getLdapContext().modifyAttributes(userDN, DirContext.REPLACE_ATTRIBUTE, certAttrs);
-                        logger.info(getUserDN() + " generated user credentials for " + userDN);
-                    }
-                }
-                logger.debug(getUserDN() + " successfully created user: " + userDN + " with a generated password");
-                return generatedPassword;
-            } else {
-                logger.debug(getUserDN() + " successfully created user: " + userDN);
-                //userPassword was supplied as part of userAttributes, so no need to return it
-                return null;
+                generatedPassword = req.getNewPassword();
+                userPassword = generatedPassword;
+                logger.debug(getUserDN() + " successfully generated password for user: " + userDN + " in realm: " + getRealm());
             }
+            if (userAttributes.get("userPKCS12") == null) {
+                /*
+                 * TODO gatekeeper needs access to a bean like TolvenProperties, rather than use System.getProperty() directly
+                 */
+                String userKeysOptional = System.getProperty("tolven.security.user.keysOptional");
+                if (Boolean.parseBoolean(userKeysOptional)) {
+                    logger.info("tolven.security.user.keysOptional=true, so no user credentials will be generated for " + userDN);
+                } else {
+                    Attributes certAttrs = generateNewUserPKCS12Attributes(userDN, userPassword);
+                    getLdapContext().modifyAttributes(userDN, DirContext.REPLACE_ATTRIBUTE, certAttrs);
+                    logger.info(getUserDN() + " generated userPKCS12 for " + userDN + " in realm: " + getRealm());
+                }
+            }
+            logger.debug(getUserDN() + " successfully created user: " + userDN + " in realm: " + getRealm());
+            //Only return generated passwords
+            return generatedPassword;
         } catch (AuthenticationException ex) {
             throw new GatekeeperAuthenticationException("Create user:" + userDN, getUserDN(), getRealm(), ex);
         } catch (NoPermissionException ex) {
@@ -397,8 +397,12 @@ public class DefaultLdapManager implements LdapManager {
                  * The creation of the InitialLdapContext triggers an LDAP authentication
                  */
                 ldapContext = new InitialLdapContext(getEnvironment(), null);
+            } catch (AuthenticationException ex) {
+                throw new GatekeeperAuthenticationException("Authentication failed", getUserDN(), getRealm(), ex);
+            } catch (NoPermissionException ex) {
+                throw new GatekeeperAuthorizationException("Authorization failed", getUserDN(), getRealm(), ex);
             } catch (Exception ex) {
-                throw new RuntimeException("Could not get InitialLdapContext", ex);
+                throw new RuntimeException("Could not get InitialLdapContext for: " + getUserDN(), ex);
             }
         }
         return ldapContext;
@@ -520,11 +524,11 @@ public class DefaultLdapManager implements LdapManager {
              */
             String userKeysOptional = System.getProperty("tolven.security.user.keysOptional");
             if (Boolean.parseBoolean(userKeysOptional)) {
-                logger.info(getUserDN() + " has tolven.security.user.keysOptional=true, so no user credentials generated for " + userDN);
+                logger.info(getUserDN() + " has tolven.security.user.keysOptional=true, so no user credentials generated for " + userDN + " in realm: " + getRealm());
             } else {
                 Attributes certAttrs = generateNewUserPKCS12Attributes(userDN, generatedPassword);
                 getLdapContext().modifyAttributes(userDN, DirContext.REPLACE_ATTRIBUTE, certAttrs);
-                logger.info(getUserDN() + " generated user credentials for " + userDN);
+                logger.info(getUserDN() + " generated userPKCS12 for " + userDN + " in realm: " + getRealm());
             }
         } catch (AuthenticationException ex) {
             throw new GatekeeperAuthenticationException("Reset password for user:" + userDN, getUserDN(), getRealm(), ex);

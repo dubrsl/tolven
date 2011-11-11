@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>reg/evn/patient</name>
+	<description>New Person</description>
+	<page>newPatient.xhtml</page>
+	<drilldown>patientDD.xhtml</drilldown>
+	<menu>global:patientMenu</menu>
+ 	<tolvenId application="#{knownType}" accountId="#{account.id}"/>
+ 	<application name="ephr">
+		<instance>ephr:patients:wip</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patients:wip</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.participation['patient'].role.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New Patient</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="reviseTerminated" from="terminated" to="terminated">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="terminateActive" from="active" to="terminated">
+			<label language="en">Terminate</label>
+		</transition>
+		<transition name="reactivate" from="terminated" to="active">
+			<label language="en">Reactivate</label>
+		</transition>
+	</transitions>
+	<act classCode="REG" moodCode="EVN">
+		<title>
+			<ST>Patient Registration</ST>
+		</title>
+		<effectiveTime>
+			<label>Effective time</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<participation name="patient" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr" phase="create">
+					<placeholder bindAction="merge">
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr" phase="create">
+					<placeholder bindAction="merge">
+						<path>ephr:patient</path>
+					</placeholder>
+				</bind>
+				<id>
+					<II>
+						<label>Medical Record Number</label>
+						<root>MRN</root>
+						<extension>#{patient.placeholderID['MRN'].extension}</extension>
+					</II>
+					<II>
+						<label>Internal ID (do not change)</label>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{patient.path}</extension>
+						<displayable>false</displayable>
+					</II>
+				</id>
+				<statusCode>#{patient.actStatus}</statusCode>
+				<patient>
+					<veryImportantPersonCode>
+						<label>VIP</label>
+						<new><encoded>#{encode(knownType=='echr'?patient.vip: null)}</encoded></new>
+						<valueSet>patientImportance</valueSet>
+					</veryImportantPersonCode>
+				</patient>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label>Patient Name</label>
+						<EN>
+							<label>Legal Name</label>
+							<use>L</use>
+							<part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{from(source.firstName,patient.firstName)}</ST>
+							</part>
+							<part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{from(source.middleName,patient.middleName)}</ST>
+							</part>
+							<part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{from(source.lastName,patient.lastName)}</ST>
+							</part>
+						</EN>
+					</name>
+					<telecom>
+						<label>Telecom</label>
+						<TEL>
+							<label>Home Phone</label>
+							<use>H</use>
+							<value>#{from(source.homeTelecom,patient.homeTelecom)}</value>
+						</TEL>
+					</telecom>
+					<livingSubject>
+						<administrativeGenderCode>
+							<label>Gender</label>
+							<valueSet>genders</valueSet>
+							<CE>#{fromCE(source.gender,patient.gender)}</CE>
+						</administrativeGenderCode>
+						<birthTime>
+							<label>Date of Birth</label>
+							<TS><value>#{TS(from(source.dob,patient.dob))}</value></TS>
+						</birthTime>
+					</livingSubject>
+					<person>
+						<addr>
+							<label>Address</label>
+							<AD>
+								<label>Home Address</label>
+								<use>H</use>
+								<part>
+									<label>Address Line 1</label>
+									<type>SAL</type>
+									<ST>#{from(source.homeAddr1,patient.homeAddr1)}</ST>
+								</part>
+								<part>
+									<label>Address Line 2</label>
+									<type>SAL</type>
+									<ST>#{from(source.homeAddr2,patient.homeAddr2)}</ST>
+								</part>
+								<part>
+									<label>City</label>
+									<type>CTY</type>
+									<ST>#{from(source.homeCity,patient.homeCity)}</ST>
+								</part>
+								<part>
+									<label>State</label>
+									<type>STA</type>
+									<ST>#{from(source.homeState,patient.homeState)}</ST>
+								</part>
+								<part>
+									<label>Zip</label>
+									<type>ZIP</type>
+									<ST>#{from(source.homeZip,patient.homeZip)}</ST>
+								</part>
+								<part>
+									<label>Country</label>
+									<type>CNT</type>
+									<ST>#{from(source.homeCountry,patient.homeCountry)}</ST>
+								</part>
+							</AD>
+						</addr>
+						<raceCode>
+							<label>Race</label>
+							<valueSet>race</valueSet>
+							<CE>#{fromCE(source.race,patient.race)}</CE>
+						</raceCode>
+						<ethnicGroupCode>
+							<label>Ethnicity</label>
+							<valueSet>ethnicity</valueSet>
+							<CE>#{fromCE(source.ethnicity,patient.ethnicity)}</CE>
+						</ethnicGroupCode>
+					</person>
+					<languageCommunication>
+						<languageCode>
+							<label>Preferred Language</label>
+							<valueSet>language</valueSet>
+							<CE>#{fromCE(source.language,patient.language)}</CE>
+						</languageCode>
+					</languageCommunication>
+				</player>
+				<participation name="primaryCarePhysician" typeCode="SBJ">
+					<act moodCode="EVN" classCode="PCPR">
+						<participation name="primaryMD" typeCode="PPRF">
+							<role classCode="ASSIGNED">
+								<bind application="echr" phase="request">
+									<list cardinality="multiple">
+										<path>echr:admin:staff:all</path>
+									</list>
+								</bind>
+								<bind application="ephr" phase="request">
+									<list cardinality="multiple">
+										<path>ephr:admin:staff:all</path>
+									</list>
+								</bind>
+								<id>
+									<II>
+										<label>Internal ID (do not change)</label>
+										<root>#{computeIDRoot(account)}</root>
+										<extension>#{patient.primary}</extension>
+									</II>
+								</id>
+								<player classCode="PSN" determinerCode="INSTANCE">
+									<name>
+										<label/>
+										<EN>
+											<label/>
+											<use>L</use>
+											<part>
+												<label>Primary MD</label>
+												<ST/>
+											</part>
+										</EN>
+									</name>
+								</player>				
+							</role>
+						</participation>
+					</act>
+				</participation>
+				<participation name="primarySurgeon" typeCode="SBJ">
+					<act moodCode="EVN" classCode="PCPR">
+						<participation name="primarySurgeon" typeCode="PPRF">
+							<role classCode="ASSIGNED">
+								<bind application="echr" phase="request">
+									<list cardinality="multiple">
+										<path>echr:admin:staff:all</path>
+									</list>
+								</bind>
+								<bind application="ephr" phase="request">
+									<list cardinality="multiple">
+										<path>ephr:admin:staff:all</path>
+									</list>
+								</bind>
+								<id>
+									<II>
+										<label>Internal ID (do not change)</label>
+										<root>#{computeIDRoot(account)}</root>
+										<extension>#{patient.surgeon}</extension>
+									</II>
+								</id>
+								<player classCode="PSN" determinerCode="INSTANCE">
+									<name>
+										<label/>
+										<EN>
+											<label/>
+											<use>L</use>
+											<part>
+												<label>Surgeon</label>
+												<ST/>
+											</part>
+										</EN>
+									</name>
+								</player>
+							</role>
+						</participation>
+					</act>
+				</participation>
+				<compute>
+					<type>org.tolven.process.DupeCheck</type>
+					<property name="root">
+				        <value xsi:type="xs:string">MRN</value>
+					</property>
+				</compute>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+	</act>
+	<valueSet name="patientImportance">
+		<null type="NI">
+			<label>Normal</label>
+		</null>
+		<CE>
+			<displayName>Board Member</displayName>
+			<code>BM</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Physician Family Member</displayName>
+			<code>DFM</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Staff Physician</displayName>
+			<code>DR</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Financial Donor</displayName>
+			<code>FD</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Foreign Dignitary</displayName>
+			<code>FOR</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Government Dignitary</displayName>
+			<code>GOVT</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Staff Family Member</displayName>
+			<code>SFM</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Staff Member</displayName>
+			<code>STF</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+		<CE>
+			<displayName>Very Important Person</displayName>
+			<code>VIP</code>
+			<codeSystem>2.16.840.1.113883.5.1075</codeSystem>
+			<codeSystemName>HL7</codeSystemName>
+		</CE>
+	</valueSet>
+	<valueSet name="genders">
+		<CE>
+			<displayName>Male</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Female</displayName>
+			<code>C0015780</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="race">
+        <CE>
+            <displayName>American Indian or Alaska Native</displayName>
+            <code>2561140</code>
+               <codeSystem>2.16.840.1.113883.3.26.2</codeSystem>
+               <codeSystemName>caDSR</codeSystemName>
+               <codeSystemVersion>2.1</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Asian</displayName>
+            <code>2567338</code>
+               <codeSystem>2.16.840.1.113883.3.26.2</codeSystem>
+               <codeSystemName>caDSR</codeSystemName>
+               <codeSystemVersion>2.1</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Black or African American</displayName>
+            <code>2561248</code>
+               <codeSystem>2.16.840.1.113883.3.26.2</codeSystem>
+               <codeSystemName>caDSR</codeSystemName>
+               <codeSystemVersion>2.1</codeSystemVersion>
+        </CE>
+        <CE>
+            <displayName>Native Hawaiian or Other Pacific Islander</displayName>
+            <code>20140003 | Hawaiians |</code>
+            <codeSystem>2.16.840.1.113883.6.5</codeSystem>
+            <codeSystemName>SNOMED CT</codeSystemName>
+            <codeSystemVersion>January 2009</codeSystemVersion>
+            <translation>
+                <code>2567339</code>
+                <codeSystem>2.16.840.1.113883.3.26.2</codeSystem>
+                <codeSystemName>caDSR</codeSystemName>
+                <codeSystemVersion>2.1</codeSystemVersion>
+            </translation>
+        </CE>
+        <CE>
+            <displayName>White</displayName>
+            <code>2567335</code>
+               <codeSystem>2.16.840.1.113883.3.26.2</codeSystem>
+               <codeSystemName>CADSR</codeSystemName>
+               <codeSystemVersion>2.1</codeSystemVersion>
+        </CE>
+    </valueSet>
+    <valueSet name="ethnicity">
+        <CE>
+            <displayName>Hispanic or Latino</displayName>
+            <code>414408004</code>
+            <codeSystem>2.16.840.1.113883.6.5</codeSystem>
+            <codeSystemName>SNOMED CT</codeSystemName>
+            <codeSystemVersion>January 2009</codeSystemVersion>
+            <translation>
+                <code>2581176</code>
+                <codeSystem>2.16.840.1.113883.3.26.2</codeSystem>
+                <codeSystemName>caDSR</codeSystemName>
+                <codeSystemVersion>2.1</codeSystemVersion>
+            </translation>
+        </CE>
+        <CE>
+            <displayName>Not Hispanic or Latino</displayName>
+            <code>TBD</code>
+            <codeSystem>2.16.840.1.113883.6.5</codeSystem>
+            <codeSystemName>SNOMED CT</codeSystemName>
+            <codeSystemVersion>January 2009</codeSystemVersion>
+            <translation>
+                <code>2567110</code>
+                <codeSystem>2.16.840.1.113883.3.26.2</codeSystem>
+                <codeSystemName>caDSR</codeSystemName>
+                <codeSystemVersion>2.1</codeSystemVersion>
+            </translation>
+        </CE>
+    </valueSet>
+    <valueSet name="language">
+		<CE>
+			<displayName>Select</displayName>
+			<code>C0024550</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>English</displayName>
+			<code>C0024551</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Spanish</displayName>
+			<code>C0024552</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Chinese</displayName>
+			<code>C0024553</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>French</displayName>
+			<code>C0024554</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>German</displayName>
+			<code>C0024555</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tagalog</displayName>
+			<code>C0024556</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Vietnamese</displayName>
+			<code>C0024557</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Italian</displayName>
+			<code>C0024558</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Korean</displayName>
+			<code>C0024559</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Russian</displayName>
+			<code>C0024560</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Polish</displayName>
+			<code>C0024561</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Arabic</displayName>
+			<code>C0024562</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Portuguese</displayName>
+			<code>C0024563</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Japanese</displayName>
+			<code>C0024564</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>French Creole</displayName>
+			<code>C0024565</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Greek</displayName>
+			<code>C0024566</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Hindi</displayName>
+			<code>C0024567</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Persian</displayName>
+			<code>C0024568</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Urdu</displayName>
+			<code>C0024569</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Gujarati</displayName>
+			<code>C0024570</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Armenian</displayName>
+			<code>C0024571</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Other</displayName>
+			<code>C0024572</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="states">
+		<CE>
+			<originalText></originalText>
+			<displayName>Select</displayName>
+			<code>C0024550</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>AL</originalText>
+			<displayName>Alabama</displayName>
+			<code>C0001895</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>AK</originalText>
+			<displayName>Alaska</displayName>
+			<code>C0001905</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>AZ</originalText>
+			<displayName>Arizona</displayName>
+			<code>C0003787</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>AR</originalText>
+			<displayName>Arkansas</displayName>
+			<code>C0003790</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>CA</originalText>
+			<displayName>California</displayName>
+			<code>C0006754</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>CO</originalText>
+			<displayName>Colorado</displayName>
+			<code>C0009399</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>CT</originalText>
+			<displayName>Connecticut</displayName>
+			<code>C0009778</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>DE</originalText>
+			<displayName>Delaware</displayName>
+			<code>C0011198</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>FL</originalText>
+			<displayName>Florida</displayName>
+			<code>C0016253</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>GA</originalText>
+			<displayName>Georgia</displayName>
+			<code>C0017452</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>HI</originalText>
+			<displayName>Hawaii</displayName>
+			<code>C0018619</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>ID</originalText>
+			<displayName>Idaho</displayName>
+			<code>C0020787</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>IL</originalText>
+			<displayName>Illinois</displayName>
+			<code>C0020898</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>IN</originalText>
+			<displayName>Indiana</displayName>
+			<code>C0021206</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>IA</originalText>
+			<displayName>Iowa</displayName>
+			<code>C0022037</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>KS</originalText>
+			<displayName>Kansas</displayName>
+			<code>C0022497</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>KY</originalText>
+			<displayName>Kentucky</displayName>
+			<code>C0022557</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>LA</originalText>
+			<displayName>Louisiana</displayName>
+			<code>C0024024</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>ME</originalText>
+			<displayName>Maine</displayName>
+			<code>C0024497</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>MD</originalText>
+			<displayName>Maryland</displayName>
+			<code>C0024858</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>MA</originalText>
+			<displayName>Massachusetts</displayName>
+			<code>C0024874</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>MI</originalText>
+			<displayName>Michigan</displayName>
+			<code>C0025939</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>MN</originalText>
+			<displayName>Minnesota</displayName>
+			<code>C0026183</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>MS</originalText>
+			<displayName>Mississippi</displayName>
+			<code>C0026221</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>MO</originalText>
+			<displayName>Missouri</displayName>
+			<code>C0026222</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>MT</originalText>
+			<displayName>Montana</displayName>
+			<code>C0026506</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>NE</originalText>
+			<displayName>Nebraska</displayName>
+			<code>C0027523</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>NV</originalText>
+			<displayName>Nevada</displayName>
+			<code>C0027951</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>NH</originalText>
+			<displayName>New Hampshire</displayName>
+			<code>C0027969</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>NJ</originalText>
+			<displayName>New Jersey</displayName>
+			<code>C0027971</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>NM</originalText>
+			<displayName>New Mexico</displayName>
+			<code>C0027972</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>NY</originalText>
+			<displayName>New York</displayName>
+			<code>C0027976</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>NC</originalText>
+			<displayName>North Carolina</displayName>
+			<code>C0028407</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>ND</originalText>
+			<displayName>North Dakota</displayName>
+			<code>C0028408</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>OH</originalText>
+			<displayName>Ohio</displayName>
+			<code>C0028905</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>OK</originalText>
+			<displayName>Oklahoma</displayName>
+			<code>C0028914</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>OR</originalText>
+			<displayName>Oregon</displayName>
+			<code>C0029195</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>PA</originalText>
+			<displayName>Pennsylvania</displayName>
+			<code>C0030853</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>RI</originalText>
+			<displayName>Rhode Island</displayName>
+			<code>C0035487</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>SC</originalText>
+			<displayName>South Carolina</displayName>
+			<code>C0037716</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>SD</originalText>
+			<displayName>South Dakota</displayName>
+			<code>C0037717</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>TN</originalText>
+			<displayName>Tennessee</displayName>
+			<code>C0039514</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>TX</originalText>
+			<displayName>Texas</displayName>
+			<code>C0039711</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>UT</originalText>
+			<displayName>Utah</displayName>
+			<code>C0042124</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>VT</originalText>
+			<displayName>Vermont</displayName>
+			<code>C0042537</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>VA</originalText>
+			<displayName>Virginia</displayName>
+			<code>C0042753</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>WA</originalText>
+			<displayName>Washington</displayName>
+			<code>C0043038</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>WV</originalText>
+			<displayName>West Virginia</displayName>
+			<code>C0043127</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>WI</originalText>
+			<displayName>Wisconsin</displayName>
+			<code>C0043193</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<originalText>WY</originalText>
+			<displayName>Wyoming</displayName>
+			<code>C0043287</code>
+			<codeSystem>UMLS</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+    <field name="race">
+        <value xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+        	xsi:type="xs:string">#{from(source.race,patient.race)}</value>
+    </field>
+</trim>

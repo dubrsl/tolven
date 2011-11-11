@@ -1,0 +1,316 @@
+package sharing
+ /* Tolven */
+import org.tolven.app.bean.Mode;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.trim.*;
+import org.tolven.trim.ex.*;
+import org.tolven.trim.process.ProcessTrim;
+
+global org.tolven.app.AppEvalAdaptor app;
+
+/**
+ * ****** SHARING ******
+ * Phase one: An outShare, by patient - created in sending account
+ * phase two: An inShare, not by patient - a holding place until receiver agrees to accept 
+ * Phase three: An inShare by patient - only if user has accepted the share
+ */
+
+ 
+/**
+ * Send an outbound share on its way
+ */
+rule "Send outbound share"
+	when
+		$trim: Trim(name=="docclin/evn/sharePatient", $message : message )
+		Mode( direction == "local" )
+		$tp: ProcessTrim( )
+	then
+		// Prepare for sending this trim
+		$tp.outboundScan( $trim );
+		// Send it
+		$tp.send( $message ); 
+end
+
+/**
+ * Create placeholders from inbound patient share components
+ */
+rule "Create inbound share placeholders"
+	when
+		Mode( direction == "local" )
+		$trim: TrimEx( $msg : message !=null, name=="docclin/evn/sharePatientIn", message.receiver.status == "accept" )
+		$tp: ProcessTrim( )
+	then
+		$tp.createPlaceholders( $trim, BindPhase.RECEIVE );
+		$tp.insertPlaceholders($trim, BindPhase.RECEIVE);
+end
+
+rule "Display components from inbound patient share"
+	when
+		$trim: Trim( name matches "docclin/evn/sharePatientIn" )
+		$act: Act( ) from $trim.act 
+		$rel: ActRelationship( typeCode==ActRelationshipType.COMP ) from $act.relationships
+		$comp: Act() from $rel.act
+	then
+		app.info( "ShareComponent: " + $rel.getName());
+end
+
+rule "Process inbound patient share reject"
+	when
+		Mode( direction == "local" )
+		$trim: Trim( $msg : message !=null, name=="docclin/evn/sharePatientIn", message.receiver.status != "accept", $act : act !=null )
+	then
+		app.info( "Patient share rejected");
+end
+
+rule "Place echr OutShare on sent items list"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:outShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "echr:patient:share:outShares" )
+	then
+		app.info( "Place outShare on outShare list"); 
+		MenuData mdOutShares = app.createReferenceMD( $md, $list );
+        mdOutShares.setReferencePath( ($md.getString08()==null)?mdOutShares.getReferencePath():$md.getString08());		
+end
+
+/**
+ * When sharing, we remember this provider on the providerShare list
+ * This list indicates to only creates unique entries by provider id so it is really a set not a list.
+rule "Place echr OutShare on providerShare"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:outShare", long02!=null )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "echr:patient:share:providerShares" )
+	then
+		app.info( "Place outShare on providerShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+ */
+
+/**
+ * When sharing, we remember this account on the accountShare list
+ * This list indicates to only creates unique entries by account id so it is really a set not a list.
+ 
+rule "Place echr OutShare on accountShare"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:outShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "echr:patient:share:accountShares" )
+	then
+		app.info( "Place outShare on accountShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+*/
+
+/**
+ * Add inbound document to the to do list. 
+ * This transaction is not, yet, associated with a patient
+ * and the document is mutable at this point.
+ */
+rule "Add echr Inbound share to activity"
+	when
+		Mode( direction == "inbound" )
+		$list: MenuStructure( path == "echr:activity:all" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:newInShare" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		app.info( "Add inbound share to new activity");
+		MenuData mdToDoList = app.createReferenceMD( $md, $list );
+end
+
+/**
+ * Process a patient share document, based on user's decisions. In this case, the user accepted.
+ */
+rule "Process echr inbound patient share accept"
+	when
+		Mode( direction == "local" )
+		$trim: Trim( name=="docclin/evn/sharePatientIn", message.receiver.status == "accept", $act : act !=null )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:inShare" )
+	then
+		app.info( "Patient share accepted");
+		MenuData mdPatientInShare = app.createPlaceholder( $ms );
+		insert( mdPatientInShare );
+end
+
+/**
+ * When receiving a share, remember this account on the accountShare list
+ * This list indicates to only creates unique entries by account id so it is really a set not a list.
+ */
+rule "Place echr InShare on accountShare"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:inShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "echr:patient:share:accountShares" )
+	then
+		app.info( "Place inShare on accountShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+
+/**
+ * When receiving a share, remember this account on the providerShare list
+ * The account structure indicates to only creates unique entries so it is really a set.
+rule "Place echr InShare on providerShare"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:inShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "echr:patient:share:providerShares" )
+	then
+		app.info( "Place inShare on providerShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+ */
+
+rule "Place echr InShare on patient receivedShare list"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:inShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "echr:patient:share:inShares" )
+	then
+		app.info( "Place inShare on inShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+
+rule "Place ephr OutShare on sent items list"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:outShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "ephr:patient:share:outShares" )
+	then
+		app.info( "Place outShare on outShare list"); 
+		app.createReferenceMD( $md, $list );
+end
+
+/* disabled
+rule "Place ephr OutShare on provider patient list"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:outShare" )
+		$md: MenuData( menuStructure == $ms, $provider: parent02!=null )
+		$list: MenuStructure( role == "list", path == "ephr:provider:patients:all" )
+	then
+		app.info( "Place outShare on provider list"); 
+		app.createReferenceMD( $md, $list, $provider );
+end
+
+rule "Place echr OutShare on provider patient list"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:outShare" )
+		$md: MenuData( menuStructure == $ms, $provider: parent02!=null )
+		$list: MenuStructure( role == "list", path == "echr:provider:patients:all" )
+	then
+		app.info( "Place outShare on provider list"); 
+		app.createReferenceMD( $md, $list, $provider );
+end
+*/
+
+/**
+ * When sharing, we remember this account on the accountShare list
+ * This list indicates to only creates unique entries by account id so it is really a set not a list.
+ */
+rule "Place ephr OutShare on accountShare"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:outShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "ephr:patient:share:accountShares" )
+	then
+		app.info( "Place outShare on accountShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+
+/**
+ * When sharing, we remember this account on the providerShare list
+ * This list indicates to only creates unique entries by provider id so it is really a set not a list.
+rule "Place ephr OutShare on providerShare"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:outShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "ephr:patient:share:providerShares" )
+	then
+		app.info( "Place outShare on providerShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+ */
+
+/**
+ * Add inbound document to the to do list. 
+ * This transaction is not, yet, associated with a patient
+ * and the document is mutable at this point.
+ */
+rule "Add ephr Inbound share to activity"
+	when
+		Mode( direction == "inbound" )
+		$list: MenuStructure( path == "ephr:activity:all" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:newInShare" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		app.info( "Add inbound share to new activity");
+		MenuData mdToDoList = app.createReferenceMD( $md, $list );
+end
+
+/**
+ * Process a patient share document, based on user's decisions. In this case, the user accepted.
+ */
+rule "Process ephr inbound patient share accept"
+	when
+		Mode( direction == "local" )
+		$trim: Trim( name=="docclin/evn/sharePatientIn", message.receiver.status == "accept", $act : act !=null )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:inShare" )
+	then
+		app.info( "Patient share accepted");
+		MenuData mdPatientInShare = app.createPlaceholder( $ms );
+		insert( mdPatientInShare );
+end
+
+/**
+ * When receiving a share, remember this account on the accountShare list
+ * This list indicates to only creates unique entries by account id so it is really a set not a list.
+ */
+rule "Place ephr InShare on accountShare"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:inShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "ephr:patient:share:accountShares" )
+	then
+		app.info( "Place inShare on accountShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+
+/**
+ * When receiving a share, remember this account on the providerShare list
+ * This list indicates to only creates unique entries by provider id so it is really a set not a list.
+rule "Place ephr InShare on providerShare"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:inShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "ephr:patient:share:providerShares" )
+	then
+		app.info( "Place inShare on providerShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+ */
+
+rule "Place ephr inShare on patient's receivedShare list"
+	when
+		Mode( direction == "local" )
+		$ms: MenuStructure( role == "placeholder", path == "ephr:patient:inShare" )
+		$md: MenuData( menuStructure == $ms )
+		$list: MenuStructure( role == "list", path == "ephr:patient:share:inShares" )
+	then
+		app.info( "Place inShare on inShares list"); 
+		app.createReferenceMD( $md, $list );
+end
+
+

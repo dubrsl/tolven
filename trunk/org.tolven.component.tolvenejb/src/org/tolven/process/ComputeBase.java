@@ -33,7 +33,7 @@ import org.tolven.trim.ex.TrimFactory;
 public abstract class ComputeBase {
     private InitialContext ctx;
 	private TrimLocal trimBean;
-	private MenuLocal menuBean;
+	public MenuLocal menuBean;
 	private DocumentLocal documentBean;
 	private DocProtectionLocal docProtectionBean;
 	private TolvenPropertiesLocal propertyBean;	

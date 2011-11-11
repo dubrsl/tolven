@@ -43,8 +43,10 @@ import org.tolven.app.entity.AccountMenuStructure;
 import org.tolven.app.entity.MenuStructure;
 import org.tolven.core.AccountDAOLocal;
 import org.tolven.core.AccountDAORemote;
+import org.tolven.core.ActivationLocal;
 import org.tolven.core.SponsoredUser;
 import org.tolven.core.TolvenPropertiesLocal;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountExchange;
 import org.tolven.core.entity.AccountProperty;
@@ -87,6 +89,9 @@ public class AccountDAOBean implements AccountDAOLocal,AccountDAORemote {
     
     @EJB
     private UserKeyLocal userKeyBean;
+
+    @EJB
+    private ActivationLocal activationBean;
     
     private Logger logger = Logger.getLogger(AccountDAOBean.class);
 
@@ -350,6 +355,30 @@ public class AccountDAOBean implements AccountDAOLocal,AccountDAORemote {
     }
 
     /**
+     * Invite to account, a user with invitedUserId. If invitedUserId does not exist, the associated TolvenUser will be created,
+     * although the TolvenPerson (e.g. in LDAP) is not created at this time.
+     * 
+     * @param account
+     * @param accountUser
+     * @param invitedUserId
+     * @param invitedUserRealm
+     * @param anInviterPrivateKey
+     * @param now
+     * @param accountPermission
+     * @param isReinvite
+     * @return
+     */
+    public AccountUser inviteAccountUser(Account account, AccountUser accountUser, String invitedUserId, String invitedUserRealm, PrivateKey anInviterPrivateKey, Date now, boolean accountPermission, boolean isReinvite) {
+        TolvenUser invitedUser = activationBean.findUser(invitedUserId);
+        if(invitedUser == null) {
+            String principal = (String) TolvenSessionWrapperFactory.getInstance().getPrincipal();
+            logger.info("Invited user: " + invitedUserId + " to account: " + account.getId() + " by: " + principal + " does not exist and will be created");
+            invitedUser = activationBean.createTolvenUser(invitedUserId, now);
+        }
+        return inviteAccountUser(account, accountUser, invitedUser, invitedUserRealm, anInviterPrivateKey, now, accountPermission, isReinvite);
+    }
+    
+    /**
     * Update the AccountUser with AccountPrivateKey encrypted with the provided invitedUserPublicKey (required when 
     * a user obtains a new user public key). The invited user must exist on the Account, and already have an AccountPrivateKey.
     * The invited user's public key (certificate) must also be supplied
@@ -363,7 +392,9 @@ public class AccountDAOBean implements AccountDAOLocal,AccountDAORemote {
     */
     @Override
     public AccountUser inviteAccountUser(Account account, AccountUser inviterAccountUser, TolvenUser invitedUser, String invitedUserRealm, PrivateKey anInviterUserPrivateKey, Date now, boolean accountPermission, boolean isReinvite) {
-        if (invitedUser==null) throw new NullPointerException("Missing TolvenUser object");
+        if (invitedUser == null) {
+            throw new NullPointerException("Missing TolvenUser object");
+        }
         if (inviterAccountUser==null) throw new NullPointerException("Missing AccountUser object");
         if (account==null) throw new NullPointerException("Missing Account object");
         AccountUser invitedAccountUser = findAccountUser(invitedUser.getLdapUID(), account.getId());
@@ -498,7 +529,7 @@ public class AccountDAOBean implements AccountDAOLocal,AccountDAORemote {
             properties.setProperty(key, value);
         }
         if (accountUser != null) {
-            Locale locale = ResourceBundleHelper.getLocale(accountUser.getUser().getLocale(), accountUser.getLocale());
+            Locale locale = TolvenRequest.getInstance().getLocale();
             ResourceBundle globalBundle = ResourceBundle.getBundle(ResourceBundleHelper.GLOBALBUNDLENAME, locale);
             for (String key : globalBundle.keySet()) {
                 String value = globalBundle.getString(key);

@@ -5,7 +5,6 @@
 	This adds targets.
 	-->
 <project name="pluginImport">
-
 	<import file="../plugin/buildCommon.xml" />
 
 	<!--
@@ -23,7 +22,7 @@
 		<delete dir="build" />
 	</target>
 
-	<target name="init">
+	<target name="init" depends="clean">
 		<mkdir dir="build" />
 	</target>
 
@@ -54,15 +53,37 @@
 		</copy>
 	</target>
 
+	<!-- This target is executed via the buildAll check-plugin-versions target, which supplies the necessary properties -->
+	<target name="log-plugin-local-version">
+		<fail unless="plugins-local.log" />
+		<fail unless="plugins-published.log" />
+		<fail unless="plugins-unpublished.log" />
+		<fail message="Could not find: ${plugins-published.log}">
+			<condition>
+				<not><available file="${plugins-published.log}" /></not>
+			</condition>
+		</fail>
+		<property name="pluginVersion" value="${plugin(id)}-${plugin(version)}" />
+		<echo message="${pluginVersion}${line.separator}" file="${plugins-local.log}" append="true" />
+		<condition property="plugin-unpublished">
+			<and>
+				<available file="${plugins-published.log}" />
+				<not><resourcecontains resource="${plugins-published.log}" substring="${pluginVersion}" /></not>
+			</and>
+		</condition>
+		<antcall target="log-plugin-unpublished-version" />
+	</target>
+
+	<target name="log-plugin-unpublished-version" if="plugin-unpublished">
+		<echo message="${pluginVersion}${line.separator}" file="${plugins-unpublished.log}" append="true" />
+	</target>
+
 	<target name="gen-build-plugin">
+		<echo message="${ant.project.name}" />
 		<antcall target="build-plugin" />
 		<!-- Copy devLib to tolven-config/devLib -->
 		<antcall target="populate-dev-lib" />
 		<antcall target="populate-dev-lib-library" />
-	</target>
-
-	<target name="clean-deploy-to-local-repository" depends="clean" description="Clean, Build And Deploy To Local Repository">
-		<antcall target="deploy-to-local-repository" />
 	</target>
 
 	<!--
@@ -81,7 +102,7 @@
 		</java>
 	</target>
 
-	<target name="gen-deploy-to-local-repository" depends="gen-build-plugin" description="Update Local Repository">
+	<target name="gen-deploy-to-local-repository" description="Update Local Repository">
 		<copy toDir="${respositoryLocal.location}/plugins" flatten="true" preservelastmodified="true">
 			<fileset dir=".">
 				<include name="${zipFileName}" />
@@ -93,14 +114,22 @@
 		</java>
 	</target>
 
+	<target name="copy-plugin-to-local-repository" description="Copy to repositoryLocal requires a separate genMetadata afterward">
+		<copy toDir="${respositoryLocal.location}/plugins" flatten="true" preservelastmodified="true">
+			<fileset dir=".">
+				<include name="${zipFileName}" />
+			</fileset>
+		</copy>
+	</target>
+
 	<!-- Compile sources (from src folder) if needed -->
 	<target name="compileSection" depends="compileSectionCheck" if="compileSection${section}">
 		<mkdir dir="${buildFolder}/${section}/classes" />
 		<javac destdir="${buildFolder}/${section}/classes" debug="true" encoding="UTF-8">
 			<src path="${section}/source" />
 			<classpath>
-				<fileset dir="${section}/lib">
-					<include name="**/*.jar" />
+				<fileset dir="${section}">
+					<include name="lib/**/*.jar" />
 				</fileset>
 				<pathelement path="${lib}" />
 			</classpath>
@@ -121,8 +150,6 @@
 
 	<!-- Build one section, also add source/classes to the devLib -->
 	<target name="buildSection">
-		<!-- If a lib folder already exists, this does nothing -->
-		<mkdir dir="${section}/lib" />
 		<!-- As soon as erroronmissingdir in zipfileset is supported, the following line can be removed-->
 		<mkdir dir="${buildFolder}/${section}/classes" />
 		<!-- Compile -->
@@ -130,19 +157,42 @@
 			<param name="section" value="${section}" />
 		</antcall>
 		<!-- Zip the section (except source) -->
-		<zip destfile="${zipFileName}" whenempty="create" update="true">
-			<zipfileset dir="${section}" prefix="${section}">
-				<include name="**/*" unless="sectionZipIncludes" />
-				<include name="${sectionZipIncludes}" if="sectionZipIncludes" />
-				<exclude name="**/source/" unless="sectionZipExcludes" />
-				<exclude name="${sectionZipExcludes}" if="sectionZipExcludes" />
-			</zipfileset>
-			<zipfileset dir="${buildFolder}/${section}/classes" prefix="${section}/classes">
-				<include name="**/*" unless="sectionZipIncludes" />
-				<include name="${sectionZipIncludes}" if="sectionZipIncludes" />
-				<exclude name="${sectionZipExcludes}" if="sectionZipExcludes" />
-			</zipfileset>
-		</zip>
+		<condition property="sectionZipIncludesFALSEsectionZipExcludesFALSE">
+			<and>
+				<not>
+					<isset property="sectionZipIncludes" />
+				</not>
+				<not>
+					<isset property="sectionZipExcludes" />
+				</not>
+			</and>
+		</condition>
+		<condition property="sectionZipIncludesTRUEsectionZipExcludesFALSE">
+			<and>
+				<isset property="sectionZipIncludes" />
+				<not>
+					<isset property="sectionZipExcludes" />
+				</not>
+			</and>
+		</condition>
+		<condition property="sectionZipIncludesFALSEsectionZipExcludesTRUE">
+			<and>
+				<not>
+					<isset property="sectionZipIncludes" />
+				</not>
+				<isset property="sectionZipExcludes" />
+			</and>
+		</condition>
+		<condition property="sectionZipIncludesTRUEsectionZipExcludesTRUE">
+			<and>
+				<isset property="sectionZipIncludes" />
+				<isset property="sectionZipExcludes" />
+			</and>
+		</condition>
+		<antcall target="sectionZipIncludesFALSEsectionZipExcludesFALSE" />
+		<antcall target="sectionZipIncludesTRUEsectionZipExcludesFALSE" />
+		<antcall target="sectionZipIncludesFALSEsectionZipExcludesTRUE" />
+		<antcall target="sectionZipIncludesTRUEsectionZipExcludesTRUE" />
 		<!-- Zip devLib content -->
 		<zip destfile="${buildFolder}/devLib.jar" update="true">
 			<zipfileset dir="${buildFolder}/${section}/classes" />
@@ -157,6 +207,40 @@
 		<antcall target="zipSourceSection">
 			<!--	<param name="section" value="${section}"/> -->
 		</antcall>
+	</target>
+
+	<!-- Original configuration prior to introduction of sectionZipIncludes and sectionZipExcludes -->
+	<target name="sectionZipIncludesFALSEsectionZipExcludesFALSE" if="sectionZipIncludesFALSEsectionZipExcludesFALSE">
+		<zip destfile="${zipFileName}" whenempty="create" update="true">
+			<zipfileset dir="${section}" prefix="${section}">
+				<include name="**/*" />
+				<exclude name="**/source/" />
+			</zipfileset>
+			<zipfileset dir="${buildFolder}/${section}/classes" prefix="${section}/classes">
+				<include name="**/*" />
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="sectionZipIncludesTRUEsectionZipExcludesFALSE" if="sectionZipIncludesTRUEsectionZipExcludesFALSE">
+		<zip destfile="${zipFileName}" whenempty="create" update="true">
+			<zipfileset dir="${buildFolder}/${section}" includes="${sectionZipIncludes}" prefix="${section}" />
+			<zipfileset dir="${section}" includes="${sectionZipIncludes}" />
+		</zip>
+	</target>
+
+	<target name="sectionZipIncludesFALSEsectionZipExcludesTRUE" if="sectionZipIncludesFALSEsectionZipExcludesTRUE">
+		<zip destfile="${zipFileName}" whenempty="create" update="true">
+			<zipfileset dir="${buildFolder}/${section}" excludes="${sectionZipExcludes}" prefix="${section}" />
+			<zipfileset dir="${section}" excludes="${sectionZipExcludes}" />
+		</zip>
+	</target>
+
+	<target name="sectionZipIncludesTRUEsectionZipExcludesTRUE" if="sectionZipIncludesTRUEsectionZipExcludesTRUE">
+		<zip destfile="${zipFileName}" whenempty="create" update="true">
+			<zipfileset dir="${buildFolder}/${section}" includes="${sectionZipIncludes}" excludes="${sectionZipExcludes}" prefix="${section}" />
+			<zipfileset dir="${section}" includes="${sectionZipIncludes}" excludes="${sectionZipExcludes}" />
+		</zip>
 	</target>
 
 </project>

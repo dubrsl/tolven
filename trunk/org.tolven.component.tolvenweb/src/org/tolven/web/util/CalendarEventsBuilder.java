@@ -16,25 +16,26 @@ import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuDataVersion;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
-import org.tolven.web.security.GeneralSecurityFilter;
 
 public class CalendarEventsBuilder {
-	private AccountUser activeAccountUser = null;
 	private String path = null;
 	private MenuLocal menuBean = null;
-	private Date now = null;
 	private Date fromDate = null;
 	private Date toDate = null;
 	private String interval = null;
 	private String getVersions = null;
 	private SimpleDateFormat dateFormat =  new SimpleDateFormat("MMM dd,yyyy hh:mm");
+	
+	AccountUser getAccountUser() {
+	    return TolvenRequest.getInstance().getAccountUser();
+	}
+	
 	public CalendarEventsBuilder(MenuLocal menuBean, HttpServletRequest req) {
 		path = req.getParameter("element");
 		getVersions = req.getParameter("getVersions");
-		activeAccountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
 		this.menuBean = menuBean;
-		now = (Date) req.getAttribute("tolvenNow");
 		fromDate = parseDateStr(Integer.parseInt(req.getParameter("fromDate")));
 		toDate = parseDateStr(Integer.parseInt(req.getParameter("toDate")));
 		interval = req.getParameter("interval");
@@ -42,10 +43,10 @@ public class CalendarEventsBuilder {
 
 	public void buildCalendarEvents(Writer writer) throws IOException {
 	
-		MenuStructure ms = menuBean.findMenuStructure(activeAccountUser,
+		MenuStructure ms = menuBean.findMenuStructure(getAccountUser(),
 				new MenuPath(path).getPath());
 		List<MenuStructure> subMenus = menuBean.findMenuChildren(
-		        activeAccountUser, ms.getAccountMenuStructure());
+		        getAccountUser(), ms.getAccountMenuStructure());
 		MenuPath targetMenuPath = new MenuPath(path);
 		//StringBuffer calendarEventData = new StringBuffer("{events:[");
 		writer.write("{events:[");
@@ -54,7 +55,7 @@ public class CalendarEventsBuilder {
 		for (MenuStructure menu : subMenus) {
 		
 			MenuQueryControl ctrl = new MenuQueryControl();
-			ctrl.setAccountUser(activeAccountUser);
+			ctrl.setAccountUser(getAccountUser());
 			ctrl.setMenuStructure(menu.getAccountMenuStructure());
 			//ctrl.setNow((now));
 			//ctrl.setFromDate(fromDate);
@@ -102,7 +103,7 @@ public class CalendarEventsBuilder {
 				}				
 			}
 			if(menu.getRole().equals("entry") && getVersions != null && getVersions.equals("true")){
-				MenuDataVersion mdv = menuBean.findMenuDataVersion(activeAccountUser.getAccount().getId(),path+":"+menu.getNode());
+				MenuDataVersion mdv = menuBean.findMenuDataVersion(getAccountUser().getAccount().getId(),path+":"+menu.getNode());
 				long version = 0;
 				if(mdv != null)
 					version = mdv.getVersion();
@@ -118,14 +119,14 @@ public class CalendarEventsBuilder {
 	private void convertToJSON(MenuData dataitem,String type,Writer writer,Date start,Date end,String interval) throws IOException {
 		String ppath = dataitem.getReferencePath();//md.getReferencePath( );
 		MenuPath refpath = new MenuPath( ppath );
-		MenuStructure refms = menuBean.findMenuStructure(activeAccountUser, refpath.getPath() );//accountId, refpath.getPath()
-		if( activeAccountUser.getAccount().isEnableBackButton() == true && refms.getDefaultPathSuffix() != null ){
+		MenuStructure refms = menuBean.findMenuStructure(getAccountUser(), refpath.getPath() );//accountId, refpath.getPath()
+		if( getAccountUser().getAccount().isEnableBackButton() == true && refms.getDefaultPathSuffix() != null ){
 			ppath += refms.getDefaultPathSuffix();
 		}
 		if(end == null){
 			writer.write(String.format(Locale.US, "{start:'%s'",dateFormat.format(dataitem.getDate01())));
 			writer.write(String.format(Locale.US, ",title:'%s'",StringUtils.forHTML(dataitem.getString01())));
-			writer.write(String.format(Locale.US, ",path:'%s',accountUser:'%s'",ppath,activeAccountUser));
+			writer.write(String.format(Locale.US, ",path:'%s',accountUser:'%s'",ppath,getAccountUser()));
 			writer.write(String.format(Locale.US, ",type:'%s'}",type));
 		}else{
 			int i = 0;
@@ -142,7 +143,7 @@ public class CalendarEventsBuilder {
 				writer.write(String.format(Locale.US, "{start:'%s'",dateFormat.format(_start.getTime())));
 				writer.write(String.format(Locale.US, ",end:'%s',isDuration:'true'",dateFormat.format(dataitem.getDate02())));
 				writer.write(String.format(Locale.US, ",title:'%s'",StringUtils.forHTML(dataitem.getString01())));
-				writer.write(String.format(Locale.US, ",path:'%s',accountUser:'%s'",ppath,activeAccountUser));
+				writer.write(String.format(Locale.US, ",path:'%s',accountUser:'%s'",ppath,getAccountUser()));
 				writer.write(String.format(Locale.US, ",type:'%s'}",type));
 				i++;
 				// go to next sunday

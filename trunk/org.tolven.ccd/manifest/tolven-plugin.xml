@@ -1,12 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
-	id="org.tolven.ccd" version="2.1.0" vendor="Tolven">
+	id="org.tolven.ccd" version="2.1.2" vendor="Tolven">
 <!-- Include the full name of a class, above, only if that class will be run from TPF. also see runtime library below. -->
 <!-- The requires section, below, causes these plugins to run. UNcomment any of these or add additional plugins as needed, here. -->
-	<requires>
-		<import plugin-id="org.tolven.component.application" />
+	<requires>		
+	     <import plugin-id="org.tolven.component.tolvenejb" />
+	     <import plugin-id="org.tolven.component.tolvenweb" />
+		 <import plugin-id="org.tolven.component.application" />
+		 <import plugin-id="org.tolven.onc.applications" />
+		 <import plugin-id="org.tolven.dataextract" />
+	     <import plugin-id="org.tolven.component.tolvenlocale_en" />	 
 	</requires>
-	<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
-		<parameter id="dir" value="app" />
-	</extension>
+	<extension-point id="devLib" extension-multiplicity="none">
+	<parameter-def id="jar" default-value="devLib.jar" />
+</extension-point>
+
+<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+	<parameter id="dir" value="app" />
+</extension>
+<extension id="trims" plugin-id="org.tolven.component.application"
+	point-id="trims">
+	<parameter id="dir" value="app/trim" />
+</extension>
+
+<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+     <parameter id="dir" value="ejb/classes" />
+</extension>
+ 
+ <extension id="wizardDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="wizardDirectory">
+     <parameter id="sourceDirectory" value="web/wizard" />
+</extension>
+<extension id="drilldownDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="drilldownDirectory">
+     <parameter id="sourceDirectory" value="web/drilldown" />
+</extension>
+
+<!-- <extension id="application-locale" plugin-id="org.tolven.component.tolvenlocale_en" point-id="application-locale">
+     <parameter id="application-name" value="echr" />
+     <parameter id="properties-file" value="ejb/echr-locale.properties" />
+</extension>
+<extension id="application-global-locale"  plugin-id="org.tolven.component.tolvenlocale_en" point-id="application-global-locale">
+     <parameter id="application-name" value="echr" />
+     <parameter id="properties-file" value="ejb/echr-global-locale.properties" />
+</extension>
+<extension id="global-locale"  plugin-id="org.tolven.component.tolvenlocale_en" point-id="global-locale">
+     <parameter id="properties-file" value="ejb/custom-global.properties" />
+</extension> -->
+		
 </plugin>

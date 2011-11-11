@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Select Account using RESTful API</title>
+    </head>
+    <body>
+   		<p>Select an Account (User must be logged in)</p>
+		<a target="results" href="/api/vestibule/accountList">Show Account List</a><br/><br/>
+   		<form action="/api/vestibule/selectAccount" method="post" target="results">
+			  AccountId: <input type="text" name="accountId" value="" size="10"/><br />
+ 					<input type="submit" value="Select Account" />
+		</form>
+		<br/>or<br/>
+   		<form action="/api/vestibule/selectAccountUser" method="post" target="results">
+			  AccountUserId: <input type="text" name="accountUserId" value="" size="10"/><br />
+ 					<input type="submit" value="Select AccountUser" />
+		</form>
+    </body>
+</html>
+				

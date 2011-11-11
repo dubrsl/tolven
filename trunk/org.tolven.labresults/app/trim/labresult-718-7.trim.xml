@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+   xmlns="urn:tolven-org:trim:4.0"
+   xmlns:xs="http://www.w3.org/2001/XMLSchema"	 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xsi:schemaLocation="urn:tolven-org:trim:4.0 http://tolven.org/xsd/trim4">
+  <extends>obs/evn/labresult</extends>
+  <name>obs/evn/labresult-718-7</name>    
+  <description>Hemoglobin</description>
+  <act classCode="OBS" moodCode="EVN">       
+    <code> 
+      <CD>
+    	<code>718-7</code>
+    	<codeSystem>1.3.6.1.4.1.12009.10.2.3</codeSystem>
+    	<codeSystemName>LOINC</codeSystemName>    			
+      </CD>
+    </code>
+    <title><ST>Hemoglobin</ST></title>
+    <observation>
+      <value>
+    	<PQ>
+    	  <label></label>
+    	  <value>0.0</value>
+    	  <unit>g/dl</unit>    				
+    	</PQ>
+      </value>
+    </observation>
+    <relationship direction="OUT" name="referenceRange" typeCode="REFV">
+      <act classCode="OBS" moodCode="EVN.CRT">
+        <observation>
+          <value>
+            <IVLPQ>
+              <low>
+        	<PQ>
+        	  <value>12</value>
+        	  <unit>g/dl</unit>
+        	</PQ>
+              </low>
+              <high>
+        	<PQ>
+        	  <value>16</value>
+        	  <unit>g/dl</unit>
+        	</PQ>
+              </high>
+            </IVLPQ>
+          </value>
+        </observation>
+        <relationship direction="OUT" name="precondition" typeCode="PRCN">
+	  <act classCode="OBS" moodCode="EVN.CRT">
+            <code>
+              <CD>
+		<displayName>Gender</displayName>
+		<code>21840-4</code>
+		<codeSystemName>LOINC</codeSystemName>
+              </CD>
+            </code>
+            <title>
+              <ST>Precondition for Reference Range value</ST>
+            </title>
+            <observation>
+              <value>
+		<CE>
+                  <displayName>Female</displayName>
+                  <code>F</code>
+                  <codeSystemName>HL7</codeSystemName>
+		</CE>
+              </value>
+            </observation>
+	  </act>
+        </relationship>
+      </act>
+    </relationship>
+    <relationship direction="OUT" name="referenceRange" typeCode="REFV">
+      <act classCode="OBS" moodCode="EVN.CRT">
+        <observation>
+          <value>
+            <IVLPQ>
+              <low>
+        	<PQ>
+        	  <value>14</value>
+        	  <unit>g/dl</unit>
+        	</PQ>
+              </low>
+              <high>
+        	<PQ>
+        	  <value>18</value>
+        	  <unit>g/dl</unit>
+        	</PQ>
+              </high>
+            </IVLPQ>
+          </value>
+        </observation>
+        <relationship direction="OUT" name="precondition" typeCode="PRCN">
+	  <act classCode="OBS" moodCode="EVN.CRT">
+            <code>
+              <CD>
+		<displayName>Gender</displayName>
+		<code>21840-4</code>
+		<codeSystemName>LOINC</codeSystemName>
+              </CD>
+            </code>
+            <title>
+              <ST>Precondition for Reference Range value</ST>
+            </title>
+            <observation>
+              <value>
+		<CE>
+                  <displayName>Male</displayName>
+                  <code>M</code>
+                  <codeSystemName>HL7</codeSystemName>
+		</CE>
+              </value>
+            </observation>
+	  </act>
+        </relationship>
+      </act>
+    </relationship>
+  </act>   
+</trim>

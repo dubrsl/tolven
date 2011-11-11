@@ -1,0 +1,185 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<!-- Patient problems -->
+	<!-- Customized problem placeholder: 1. Added field for status 2. Added 
+		field for code to use in PLD. 3. Modified author and enteredBy field -->
+	<extends path="echr:patient">
+		<placeholder name="problem" title="Problem" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/problemLink.xhtml">
+			<field name="title" internal="string01">
+				<from>#{act.observation.value.CE.displayName}</from>
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="code" internal="string06">
+				<from>#{act.observation.value.CE.code}</from>
+				<from>#{act.code.CD.code}</from>
+			</field>
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="availabilityTime" internal="updatetime"/>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, act.participation['author'].role.id)}</from>
+				<from>#{internalId( account, trim.act.participation['author'].role.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="status" internal="string03">
+				<from>#{trim.act.statusCode}</from>
+			</field>
+			<field name="count" internal="long02">
+				<from>#{trim.isName['docclin/evn/problem'].act.relationship['submitStatus'].act.observation.values[0].INT.value}</from>
+			</field>
+			<field name="isSubmitted" internal="string02">
+				<from>#{trim.isName['docclin/evn/problem'].act.relationship['submitStatus'].act.observation.values[1].ST.value}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="probsum" visible="never">
+			<column name="effectiveTime" internal="date01" format="MM/dd/yyyy">
+				<from>#{problem.effectiveTimeLow}</from>
+			</column>
+			<column name="title" internal="string01">
+				<from>#{problem.title}</from>
+			</column>
+			<column name="status" internal="string02">
+				<from>#{problem.status}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="probsum" portalColumn="1" sequence="1" title="Problems" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:probsum" visible="true" drilldown=":problems">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:problemDocMenu">
+				<column name="Problem" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+
+	<extends path="echr:patient">
+		<menu name="problems" sequence="2" title="Problems" page="/five/bar2.xhtml" visible="true">
+			<list name="active" title="Active" page="/five/list.xhtml" visible="true" drilldown=":problem">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="ActivityTime" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.availabilityTime}</from>
+				</column>
+				<column name="Problem" internal="string01" reference="true" width="45.0">
+					<from>#{problem.title}</from>
+				</column>
+				<column name="Code" internal="string06" reference="true" width="15.0">
+					<from>#{problem.code}</from>
+				</column>
+				<column name="Source" internal="string02" width="10.0">
+					<from>#{problem.author.lastName}</from>
+					<from>#{problem.enteredBy}</from>
+					<output>
+						<a title="#{problem.author.lastName}#{problem.enteredBy}">#{processSource(string02)}</a>
+					</output>
+				</column>
+				<column name="Status" internal="string03" width="10.0">
+					<from>#{problem.status}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:problemDocMenu">
+					<column name="Problem" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+			<list name="inactive" title="Inactive" page="/five/list.xhtml" visible="true" drilldown=":problem">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="ActivityTime" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.availabilityTime}</from>
+				</column>
+				<column name="Problem" internal="string01" reference="true" width="45.0">
+					<from>#{problem.title}</from>
+				</column>
+				<column name="Code" internal="string06" reference="true" width="15.0">
+					<from>#{problem.code}</from>
+				</column>
+				<column name="Source" internal="string02" width="10.0">
+					<from>#{problem.author.lastName}</from>
+					<from>#{problem.enteredBy}</from>
+				</column>
+				<column name="Status" internal="string03" width="10.0">
+					<from>#{problem.status}</from>
+				</column>
+			</list>
+			<list name="nullified" title="Nullified" page="/five/list.xhtml" visible="true" drilldown=":problem">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="ActivityTime" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.availabilityTime}</from>
+				</column>
+				<column name="Problem" internal="string01" reference="true" width="45.0">
+					<from>#{problem.title}</from>
+				</column>
+				<column name="Code" internal="string06" reference="true" width="15.0">
+					<from>#{problem.code}</from>
+				</column>
+				<column name="Source" internal="string02" width="10.0">
+					<from>#{problem.author.lastName}</from>
+					<from>#{problem.enteredBy}</from>
+				</column>
+				<column name="Status" internal="string03" width="10.0">
+					<from>#{problem.status}</from>
+				</column>
+			</list>
+			<list name="completed" title="Completed" page="/five/list.xhtml" visible="true" drilldown=":problem">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="ActivityTime" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.availabilityTime}</from>
+				</column>
+				<column name="Problem" internal="string01" reference="true" width="45.0">
+					<from>#{problem.title}</from>
+				</column>
+				<column name="Code" internal="string06" reference="true" width="15.0">
+					<from>#{problem.code}</from>
+				</column>
+				<column name="Source" internal="string02" width="10.0">
+					<from>#{problem.author.lastName}</from>
+					<from>#{problem.enteredBy}</from>
+				</column>
+				<column name="Status" internal="string03" width="10.0">
+					<from>#{problem.status}</from>
+				</column>
+			</list>
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown=":problem">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.effectiveTimeLow}</from>
+				</column>
+				<column name="ActivityTime" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{problem.availabilityTime}</from>
+				</column>
+				<column name="Problem" internal="string01" reference="true" width="45.0">
+					<from>#{problem.title}</from>
+				</column>
+				<column name="Code" internal="string06" reference="true" width="15.0">
+					<from>#{problem.code}</from>
+				</column>
+				<column name="Source" internal="string02" width="10.0">
+					<from>#{problem.author.lastName}</from>
+					<from>#{problem.enteredBy}</from>
+				</column>
+				<column name="Status" internal="string03" width="10.0">
+					<from>#{problem.status}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+	
+</application>

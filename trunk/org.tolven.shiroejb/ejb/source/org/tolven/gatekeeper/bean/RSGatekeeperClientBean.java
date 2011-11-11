@@ -24,6 +24,8 @@ import javax.net.ssl.SSLSession;
 import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.tolven.exeption.GatekeeperAuthenticationException;
+import org.tolven.exeption.GatekeeperAuthorizationException;
 import org.tolven.gatekeeper.RSGatekeeperClientLocal;
 import org.tolven.naming.TolvenContext;
 import org.tolven.naming.WebContext;
@@ -58,6 +60,22 @@ public class RSGatekeeperClientBean implements RSGatekeeperClientLocal {
 
     private static Client client;
 
+    @Override
+    public boolean existsTolvenPerson(String uid, String realm) {
+        String principal = (String) TolvenSessionWrapperFactory.getInstance().getPrincipal();
+        WebResource webResource = getWebResource("user/" + principal + "/user/" + uid + "/exists");
+        ClientResponse response = webResource.queryParam("realm", realm).get(ClientResponse.class);
+        String responseString = response.getEntity(String.class);
+        if (response.getStatus() == 401) {
+            throw new GatekeeperAuthenticationException(responseString);
+        } else if (response.getStatus() == 403) {
+            throw new GatekeeperAuthorizationException(responseString);
+        } else if (response.getStatus() != 200) {
+            throw new RuntimeException("Error: " + response.getStatus() + " " + uid + " " + webResource.getURI() + " " + responseString);
+        }
+        return Boolean.parseBoolean(responseString);
+    }
+
     private Client getClient() {
         if (client == null) {
             SSLContext sslContext = null;
@@ -73,7 +91,7 @@ public class RSGatekeeperClientBean implements RSGatekeeperClientLocal {
         }
         return client;
     }
-    
+
     private String getCookie(ClientResponse response) {
         String ssoCookieName = getTolvenContext().getSsoCookieName();
         for (Cookie cookie : response.getCookies()) {
@@ -165,7 +183,11 @@ public class RSGatekeeperClientBean implements RSGatekeeperClientLocal {
         formData.add("password", new String(password));
         formData.add("realm", realm);
         ClientResponse response = webResource.post(ClientResponse.class, formData);
-        if (response.getStatus() != 200) {
+        if (response.getStatus() == 401) {
+            throw new GatekeeperAuthenticationException(response.getEntity(String.class));
+        } else if (response.getStatus() == 403) {
+            throw new GatekeeperAuthorizationException(response.getEntity(String.class));
+        } else if (response.getStatus() != 200) {
             throw new RuntimeException("Error: " + response.getStatus() + " " + username + " " + webResource.getURI() + " " + response.getEntity(String.class));
         }
         return getCookie(response);
@@ -181,10 +203,15 @@ public class RSGatekeeperClientBean implements RSGatekeeperClientLocal {
         formData.add("uidPassword", new String(password));
         formData.add("realm", realm);
         ClientResponse response = webResource.post(ClientResponse.class, formData);
-        if (response.getStatus() != 200) {
-            throw new RuntimeException("Error: " + response.getStatus() + " " + uid + " " + webResource.getURI() + " " + response.getEntity(String.class));
+        String responseString = response.getEntity(String.class);
+        if (response.getStatus() == 401) {
+            throw new GatekeeperAuthenticationException(responseString);
+        } else if (response.getStatus() == 403) {
+            throw new GatekeeperAuthorizationException(responseString);
+        } else if (response.getStatus() != 200) {
+            throw new RuntimeException("Error: " + response.getStatus() + " " + uid + " " + webResource.getURI() + " " + responseString);
         }
-        return Boolean.parseBoolean(response.getEntity(String.class));
+        return Boolean.parseBoolean(responseString);
     }
 
 }

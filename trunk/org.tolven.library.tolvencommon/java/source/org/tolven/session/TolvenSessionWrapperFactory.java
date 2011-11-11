@@ -20,7 +20,7 @@ public class TolvenSessionWrapperFactory {
     public static TolvenSessionWrapper getInstance() {
         TolvenSessionWrapper wrapper = TolvenSessionWrapperThreadLocal.get();
         if (wrapper == null) {
-            throw new RuntimeException("TolvenSessionWrapper not set in " + TolvenSessionWrapperThreadLocal.class);
+            throw new RuntimeException("TolvenSessionWrapper instance is not in  " + TolvenSessionWrapperThreadLocal.class);
         }
         return wrapper;
     }

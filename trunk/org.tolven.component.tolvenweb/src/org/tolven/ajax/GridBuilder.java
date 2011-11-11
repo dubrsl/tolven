@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.tolven.app.entity.MSAction;
 import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuQueryControl;
+import org.tolven.core.TolvenRequest;
 import org.tolven.locale.ResourceBundleHelper;
-import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.web.util.MiscUtils;
 
@@ -39,8 +38,7 @@ public class GridBuilder {
 	private String gridId; // to allow setting the grid id other than the menupath
 	private String gridType; // represents output format for the grid
 	private String favoritesType;
-	private Logger logger = Logger.getLogger(GridBuilder.class);
-	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+	TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
 	
 	/**
 	 * An instance of this class is constructed for the purpose of building a grid 
@@ -257,7 +255,7 @@ writer.write("\n</tr>\n</thead>\n</table>\n");
 		}
 		
 	   String filterLabel = null;
-	   filterLabel = ResourceBundleHelper.getString(SessionResourceBundleFactory.getBundle(), "Filter");
+	   filterLabel = ResourceBundleHelper.getString(TolvenRequest.getInstance().getResourceBundle(), "Filter");
 	   writer.write(filterLabel);
 	   writer.write(String.format(Locale.US,
 		" <input id=\"%s\" name=\"%s\" type=\"text\"/></td>"+addFavoritesTabs()+"</tr></table>\n", 
@@ -334,11 +332,11 @@ writer.write("\n</tr>\n</thead>\n</table>\n");
         String formattedString = null;
         String pattern = null;
         if (rowCount == 1) {
-            pattern = ResourceBundleHelper.getString(SessionResourceBundleFactory.getBundle(), "item1");
+            pattern = ResourceBundleHelper.getString(TolvenRequest.getInstance().getResourceBundle(), "item1");
         } else {
-            pattern = ResourceBundleHelper.getString(SessionResourceBundleFactory.getBundle(), "itemsN");
+            pattern = ResourceBundleHelper.getString(TolvenRequest.getInstance().getResourceBundle(), "itemsN");
         }
-        MessageFormat formatter = new MessageFormat(pattern, SessionResourceBundleFactory.getBundle().getLocale());
+        MessageFormat formatter = new MessageFormat(pattern, TolvenRequest.getInstance().getResourceBundle().getLocale());
         Object[] messageArgs = { rowCount };
         formattedString = formatter.format(messageArgs);
         writer.write(String.format(Locale.US, "<div class=\"foot\">" + formattedString + "<span id=\"%s\"> </span></div>\n", getId("-foot")));

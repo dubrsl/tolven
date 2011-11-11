@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>HL7 Wizard</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+  <ui:composition>
+		<wiz:body>
+				<h:panelGrid columns="2" cellpadding="6;">
+				   	<h:outputText value="#{trim.trim.act.participation['receiver'].role.player.name.label.value}" />
+	               	<c:if test="#{trim.trim.act.participation['receiver']!=null}">					
+		    		  <h:selectOneMenu id="receiverBy" value="#{trim.trim.act.participation['receiver'].role.id.for[top.accountUser.account].extension}">
+							<f:selectItem itemLabel="Select" itemValue="Select Receiver"/>
+		                	<f:selectItems value="#{trim.list['echr:admin:receivers:all~Name']}"/>
+		                </h:selectOneMenu>					
+					</c:if>
+				</h:panelGrid>	
+				<h:panelGrid columns="3" cellpadding="6;">
+					<h:outputText value="Enter the MenuData ID : " />
+					<h:inputText id="menuDataID" size="20"/> 
+					<input type="button" name="createHL7" value="Create HL7 Message" onclick="createHL7Message('#{menu.elementLabel}:menuDataID','#{menu.elementLabel}:hl7Data','#{menu.elementLabel}:receiverBy');" />
+				</h:panelGrid>
+				<h:panelGrid columns="1" cellpadding="6;">
+					<h:outputText  value="HL7 Data" />
+				</h:panelGrid>
+				<h:panelGrid columns="1" cellpadding="6;">
+					<h:inputTextarea id="hl7Data" rows="5" cols="100" />
+				</h:panelGrid>		
+		</wiz:body>
+	</ui:composition>
+</body>
+</html>

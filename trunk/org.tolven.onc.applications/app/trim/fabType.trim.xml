@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>trial/fabType</name>
+	<page>trial/eligibility.xhtml</page>
+	<drilldown>trial/eligibilityDD.xhtml</drilldown>
+	<menu>global:trialFormMenu</menu>
+	<reference>http://wikihit.org/wiki/index.php/Diagnosis</reference>
+	<application name="echr">
+		<instance>echr:patient:trialForm</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New</label>
+		</transition>
+		<transition name="eie" from="active" to="nullified">
+			<label language="en">Entered in Error</label>
+		</transition>
+	</transitions>
+	<act classCode="OBS" moodCode="EVN">
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Registration and Randomsizaion</ST>
+		</title>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr">
+					<placeholder>
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+			</role>
+		</participation>
+		<participation name="author" typeCode="AUT">
+			<role xsi:type="Role" classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+		<relationship name="diagnosis" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<code>
+					<CD>
+						<code>C0332139</code>
+						<codeSystemName>UMLS</codeSystemName>
+						<codeSystemVersion>2007AA</codeSystemVersion>
+					</CD>
+				</code>
+				<effectiveTime>
+					<label>Time of Diagnosis</label>
+					<TS><value>#{TS(now)}</value></TS>
+				</effectiveTime>
+				<observation>
+					<value>
+						<label>Diagnosis</label>
+						<valueSet>diagnosis</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="ipssScore" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>IPSS Score</ST>
+				</title>
+				<observation>
+					<value>
+						<label>IPSS Score</label>
+						<REAL><value>0.0</value></REAL>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="cytogenicAbnormality" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Cytogenetic Abnormality</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Onset</label>
+						<BL></BL>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="randomisation" direction="OUT" typeCode="COMP" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>IPSS Score</ST>
+				</title>
+				<effectiveTime>
+					<label>Date of Randomisation</label>
+					<TS><value>#{TS(now)}</value></TS>
+				</effectiveTime>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="diagnosis">
+		<CE>
+			<displayName>Acute myeloid leukemia, minimal differentiation, FAB M0 (disorder)</displayName>
+			<code>359640008</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Acute myeloid leukemia without maturation, FAB M1 (disorder)</displayName>
+			<code>359640008</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Acute myeloid leukemia with maturation, FAB M2 (disorder)</displayName>
+			<code>359648001</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Acute promyelocytic leukemia, FAB M3 (disorder)</displayName>
+			<code>110004001</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Acute myelomonocytic leukemia, FAB M4 (disorder)</displayName>
+			<code>110005000</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Acute monocytic leukemia, FAB M5b (disorder)</displayName>
+			<code>413441006</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Erythroleukemia, FAB M6 (disorder)</displayName>
+			<code>93451002</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Acute megakaryoblastic leukemia, FAB M7 (disorder)</displayName>
+			<code>277602003</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Refractory anemia with excess blasts (disorder)</displayName>
+			<code>398623004</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Refractory anemia with excess blasts in transformation (disorder)</displayName>
+			<code>110000005</code>
+			<codeSystem>SNOMED</codeSystem>
+			<codeSystemVersion>CT</codeSystemVersion>
+		</CE>
+	</valueSet>
+</trim>

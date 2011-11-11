@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="deploy-to-local-repository" name="Plugin manager kit">
+<project basedir="." default="deploy-to-local-repository" name="org.tolven.source.ant.plugin">
 	<!-- 
 	*** You probably don't need to use this build file. ***
 	This builds the ant pluginManager that holds this plugin project. 
@@ -19,10 +19,12 @@
 			<zipfileset dir="manifest" prefix="manifest"/>
 			<zipfileset dir=".">
 				<include name="build.xml" />
+				<include name="buildAll.xml" />
 				<include name="buildCommon.xml" />
 				<include name="buildImport.xml" />
 				<include name="buildTemplate.xml" />
 				<include name="managePlugins.xml" />
+				<include name="pluginsToBuild.xml" />
 				<include name="tolven-log4j.xml" />
 			</zipfileset>
 			<zipfileset dir="template" prefix="template">

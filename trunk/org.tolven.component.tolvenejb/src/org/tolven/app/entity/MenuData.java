@@ -39,15 +39,16 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.Version;
 
 import org.tolven.app.bean.MenuPath;
 import org.tolven.app.bean.StopList;
 import org.tolven.app.el.TrimExpressionEvaluator;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.Status;
 import org.tolven.el.ExpressionEvaluator;
@@ -176,7 +177,11 @@ public class MenuData  implements Serializable {
     @Column
     private Date date04;
     
+    @Temporal(TemporalType.TIMESTAMP)
     @Column
+    private Date updatetime;
+    
+	@Column
     private String date01String;
     
     @Column
@@ -193,6 +198,12 @@ public class MenuData  implements Serializable {
 
     @Column
     private String code01Code;
+    
+    @Column
+    private String code02CodeSystem;
+
+    @Column
+    private String code02Code;
 //
 //    @Column
 //    private String code02Source;
@@ -448,6 +459,12 @@ public class MenuData  implements Serializable {
     	denormalizeParentPaths();
     	denormalizeReferencePath();
     	setPath(newPath);
+    	writeTimestamp();
+    }
+    
+    @PreUpdate
+    protected void writeTimestamp() {
+    	setUpdatetime(TolvenRequest.getInstance().getNow());
     }
     
     public void initPath() {
@@ -1756,4 +1773,51 @@ public class MenuData  implements Serializable {
 		}
 
 	}
+	
+	public String getCode02CodeSystem() {
+		return code02CodeSystem;
+	}
+
+	public void setCode02CodeSystem(String code02CodeSystem) {
+		this.code02CodeSystem = code02CodeSystem;
+	}
+
+	public String getCode02Code() {
+		return code02Code;
+	}
+
+	public void setCode02Code(String code02Code) {
+		this.code02Code = code02Code;
+	}
+	
+	public CD getCode02( ) {
+		if (getCode02Code()==null) {
+			return null;
+		}
+		CD cd = trimFactory.createCD();
+		cd.setCodeSystem(getCode02CodeSystem());
+		cd.setCode(getCode02Code());
+		return cd;
+	}
+	
+	public void setCode02( CD cd ) {
+		if (cd==null) {
+			setCode02CodeSystem( null );
+			setCode02Code( null );
+		} else {
+			setCode02CodeSystem( cd.getCodeSystem() );
+			setCode02Code( cd.getCode() );
+		}
+
+	}
+
+	
+	public Date getUpdatetime() {
+		return updatetime;
+	}
+
+	private void setUpdatetime(Date updatetime) {
+		this.updatetime = updatetime;
+	}
+
 }

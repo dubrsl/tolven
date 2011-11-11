@@ -1,0 +1,191 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<!-- Staff Encounters with patients -->
+	<extends path="echr:assigned">
+		<menu name="encounters" sequence="8" title="Encounters" page="/five/bar2.xhtml" visible="true">
+			<list name="in" title="Inpatient" page="/five/list.xhtml" visible="true" drilldown="echr:patient:encounter">
+				<column name="Admit" internal="date01" width="15.0">
+					<from>#{encounter.effectiveTimeLow}</from>
+				</column>
+				<column name="Discharge" internal="date02" width="15.0">
+					<from>#{encounter.effectiveTimeHigh}</from>
+				</column>
+				<column name="Patient" internal="string01" reference="true" width="20.0">
+					<from>#{encounter.patient.lastName}, #{encounter.patient.firstName} - #{encounter.patient.sex} </from>
+				</column>
+				<column name="Purpose" internal="string03" width="30.0">
+					<from>#{encounter.purpose}</from>
+				</column>
+				<column name="Location" internal="string02" width="20.0">
+					<from>#{encounter.location.name}</from>
+					<from>#{encounter.otherLocation}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+
+
+	<!-- Patient Encounters -->
+	<extends path="echr:patient">
+		<placeholder name="encounter" title="Encounter" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/encounterLink.xhtml">
+			<field name="effectiveTimeLow" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="effectiveTimeHigh" internal="date02">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field name="purpose" internal="string01">
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="account" internal="string02">
+			</field>
+			<field name="status" internal="actStatus">
+				<from>#{act.statusCode}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="admitter" internal="parent02">
+				<from>#{internalId( account, act.participation['admitter'].role.id)}</from>
+			</field>
+			<field name="otherAdmitter">
+				<from>#{act.participation['admitter'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<field name="location" internal="parent03">
+				<from>#{internalId( account, act.participation['location'].role.id)}</from>
+			</field>
+			<field name="otherLocation">
+				<from>#{act.participation['location'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<field name="attender" internal="parent04">
+				<from>#{internalId( account, act.participation['attender'].role.id)}</from>
+			</field>
+			<field name="otherAttender">
+				<from>#{act.participation['attender'].role.player.name.EN['L'].formatted}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="encsum" visible="never">
+			<column name="Date" internal="date01">
+				<from>#{encounter.effectiveTimeLow}</from>
+			</column>
+			<column name="purpose" internal="string01">
+				<from>#{encounter.purpose}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="encsum" portalColumn="2" sequence="4" title="Encounters" page="/five/encounterSummary.xhtml" query="echr:patient:summary:encsum" visible="true" drilldown=":encounters">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:encounterMenu">
+				<column name="Encounter" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+
+	<extends path="echr:patient:summary:calendar">
+		<entry name="encounter" sequence="1" title="Encounter" query="echr:patient:summary:encsum" visible="true" drilldown=":encounters" />
+	</extends>
+	<extends path="echr:patient">
+		<menu name="encounters" sequence="8" title="Encounters" page="/five/bar2.xhtml" visible="true">
+			<list name="active" title="Active" page="/five/list.xhtml" visible="true" drilldown=":encounter">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{encounter.effectiveTimeLow}</from>
+				</column>
+				<column name="To" internal="date02" format="MMM-dd-yyyy hh:mm" width="10.0" visible="false">
+					<from>#{encounter.effectiveTimeHigh}</from>
+				</column>
+				<column name="Purpose" internal="string01" reference="true" width="20.0">
+					<from>#{encounter.purpose}</from>
+				</column>
+				<column name="Status" internal="string03" width="10.0" visible="false">
+					<from>#{encounter.actStatus}</from>
+				</column>
+				<column name="Admitting" internal="_computed" width="20.0">
+					<from>#{encounter.otherAdmitter}</from>
+					<from>#{encounter.admitter.lastName} (#{encounter.admitter.workTelecom})</from>
+				</column>
+				<column name="Attending" internal="_computed" width="20.0">
+					<from>#{encounter.otherAttender}</from>
+					<from>#{encounter.attender.lastName} (#{encounter.attender.workTelecom})</from>
+				</column>
+				<column name="Location" internal="string02" width="20.0">
+					<from>#{encounter.location.name}</from>
+					<from>#{encounter.otherLocation}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:encounterMenu">
+					<column name="Encounter" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+			<list name="inactive" title="Inactive" page="/five/list.xhtml" visible="true" drilldown=":encounter">
+				<column name="From" internal="date01" format="MMM-dd-yyyy" width="10.0">
+					<from>#{encounter.effectiveTimeLow}</from>
+				</column>
+				<column name="To" internal="date02" format="MMM-dd-yyyy" width="10.0">
+					<from>#{encounter.effectiveTimeHigh}</from>
+				</column>
+				<column name="Purpose" internal="string01" reference="true" width="20.0">
+					<from>#{encounter.purpose}</from>
+				</column>
+				<column name="Status" internal="string03" width="10.0">
+					<from>#{encounter.actStatus}</from>
+				</column>
+				<column name="Admitting" internal="_computed" width="20.0">
+					<from>#{encounter.otherAdmitter}</from>
+					<from>#{encounter.admitter.lastName} (#{encounter.admitter.workTelecom})</from>
+				</column>
+				<column name="Attending" internal="_computed" width="20.0">
+					<from>#{encounter.otherAttender}</from>
+					<from>#{encounter.attender.lastName} (#{encounter.attender.workTelecom})</from>
+				</column>
+			</list>
+			<list name="annualPhysical" title="AnnualPhysical" page="/five/list.xhtml" visible="true" drilldown=":physical">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{physical.effectiveTime}</from>
+				</column>
+				<column name="Action" internal="string01" reference="true" width="20.0">
+					<from>#{physical.action}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:annualPhysicalMenu">
+					<column name="AnnualPhysical" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+		</menu>
+	</extends>
+	<!-- Encounters for the account -->
+	<extends path="echr:admin">
+		<menu name="encounters" title="Encounters" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown="echr:patient:encounter">
+				<column name="From" internal="date01" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{encounter.effectiveTimeLow}</from>
+				</column>
+				<column name="To" internal="date02" format="MMM-dd-yyyy hh:mm" width="10.0">
+					<from>#{encounter.effectiveTimeHigh}</from>
+				</column>
+				<column name="Patient" internal="parent02" visible="false">
+					<from>#{encounter.patient}</from>
+				</column>
+				<column name="PatientName" width="20.0">
+					<from>#{encounter.patient.lastName}, #{encounter.patient.firstName}</from>
+				</column>
+				<column name="Purpose" internal="string01" reference="true" width="20.0">
+					<from>#{encounter.purpose}</from>
+				</column>
+				<column name="Status" internal="string03" width="10.0">
+					<from>#{encounter.actStatus}</from>
+				</column>
+				<column name="Attending" internal="string06" width="20.0">
+					<from>#{encounter.attender.lastName}</from>
+					<from>#{encounter.otherAttender}</from>
+				</column>
+				<column name="Admitting" internal="string02" width="20.0">
+					<from>#{encounter.admitter.lastName}</from>
+					<from>#{encounter.otherAdmitter}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+</application>

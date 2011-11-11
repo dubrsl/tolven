@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<abstract>true</abstract>
+	<name>entry/obs/evn/diagnosis</name>
+	<page>dxEntry.xhtml</page>
+	<reference>http://wikihit.org/wiki/index.php/Diagnosis</reference>
+	<act classCode="OBS" moodCode="EVN">
+		<code>
+			<CD>
+				<code>C0332139</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Diagnosis</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of Diagnosis</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>
+		<observation>
+			<value>
+				<label>Diagnosis</label>
+			</value>
+		</observation>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<relationship name="episodicity" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Episodicity</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Episodicity</label>
+						<valueSet>episodicity</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="severity" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Severity</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Severity</label>
+						<valueSet>severity</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="course" direction="OUT" typeCode="PERT" >
+			<act xsi:type="Act"  classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Course</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Course</label>
+						<valueSet>course</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship name="onset" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Onset</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Onset</label>
+						<valueSet>onset</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+</trim>

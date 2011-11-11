@@ -46,11 +46,11 @@ public class WSAuthorizationFilter extends AuthorizationFilter {
             TolvenContext tolvenContext = (TolvenContext) ictx.lookup("tolvenContext");
             String webContextId = (String) ictx.lookup("java:comp/env/webContextId");
             WebContext webContext = (WebContext) tolvenContext.getWebContext(webContextId);
-            String loginPathUrl = webContext.getWsLoginPath();
-            if (loginPathUrl == null) {
-                throw new RuntimeException("No loginUrl found for contextPath: " + webContextId);
+            String loginPath = webContext.getWsLoginPath();
+            if (loginPath == null) {
+                throw new RuntimeException("No WebContext loginPath found for contextPath: " + webContextId);
             }
-            setLoginUrl(loginPathUrl);
+            setLoginUrl(loginPath);
             return super.onPreHandle(request, response, mappedValue);
         } catch (Exception ex) {
             throw new RuntimeException("Could not get loginUrl", ex);

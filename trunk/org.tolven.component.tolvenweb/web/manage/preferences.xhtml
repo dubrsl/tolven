@@ -14,13 +14,6 @@
         <ui:param name="pageTitle" value="Preferences"/>
         <ui:define name="body">
 	        <h:form id="accountAdmin">
-				<h:panelGroup rendered="#{top.accountUser==null}">
-		        	<div class="breadcrumbs">
-						<h:commandLink value="Vestibule " action="/vestibule/selectAccount" immediate="true"/>
-						<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
-						<h:outputText value="Preferences"/><br/>
-					</div>
-				</h:panelGroup>
 				<h:panelGroup rendered="#{top.accountUser!=null}">
 		        	<div class="breadcrumbs">
 						<h:commandLink value="Application " action="dispatch" immediate="true"/>
@@ -74,43 +67,10 @@
 						  <h:commandLink value="Edit Practice Preferences" action="editPractice" immediate="true" rendered="#{top.accountAdmin}"/>
 					</fieldset>
 				</h:panelGroup>
-				<fieldset>
-					<legend>User</legend>
-						<h:outputText value="Note: This is a demo user" rendered="#{reg.user.demoUser}"/>
-			                    
-						<h:panelGrid columns="3" cellpadding="5" >  
-				           <h:outputLabel for="uTitle" value="User Id" />
-				           <h:outputText value=":" />
-				           <h:outputText id="uTitle" value="#{reg.user.ldapUID}" />
-				            
-				           <h:outputLabel for="uRoles" value="User Roles" />
-				           <h:outputText value=":" />
-				           <h:outputText id="uRoles" value="#{reg.userRoleString}" />
-				           
-				           <h:outputLabel value="User Timezone" />
-				           <h:outputText value=":" />
-				           <h:outputText value="#{reg.user.timeZone}" rendered="#{reg.user.timeZone!=null}"/>
-						   <h:outputText value="None selected (Using Default: #{top.timeZone})" rendered="#{reg.user.timeZone==null}" />
-				           
-				           <h:outputLabel value="User Locale" />
-				           <h:outputText value=":" />
-				           <h:outputText value="#{reg.user.locale}" rendered="#{reg.user.locale!=null}" />
-				           <h:outputText value="None selected (Using default: #{top.locale})" rendered="#{reg.user.locale==null}" />
-					      
-				           <h:outputLabel value="eMail Format" />
-				           <h:outputText value=":" />
-							<h:outputText  value="#{reg.user.emailFormat}" rendered="#{reg.user.emailFormat!=null}" />
-							<h:outputText value="None selected (Using Default: Text)" rendered="#{reg.user.emailFormat==null}" />
-			
-				      </h:panelGrid>
-			          <h:panelGrid columns="2">
-					      <h:commandLink value="User Certificate" action="userCertificate" />
-					      <h:commandLink value="Edit User Profile" action="editUser" />
-					      <!--<h:commandLink value="Manage Password" action="managePassword" />-->
-						  <h:commandLink value="Edit User Preferences" action="editUserPreferences" />						  
-					  </h:panelGrid>
-				  </fieldset>		     
-
+				<ui:include src="/vestibule/preferencesPagelet.xhtml" />
+				<h:panelGrid>
+					<h:commandLink value="Edit User Preferences" action="editUserPreferences" />						  
+				</h:panelGrid>
 			 </h:form>
 	        	
         </ui:define>

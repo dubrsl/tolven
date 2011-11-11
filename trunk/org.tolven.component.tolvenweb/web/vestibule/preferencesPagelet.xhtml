@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>Vestibule Preferences Pagelet</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+	<fieldset>
+		<legend>User</legend>
+		<h:outputText value="Note: This is a demo user" rendered="#{reg.user.demoUser}"/>
+		<h:panelGrid columns="3" cellpadding="5" >  
+			<h:outputLabel for="uTitle" value="User Id" />
+			<h:outputText value=":" />
+	        <h:outputText id="uTitle" value="#{reg.user.ldapUID}" />
+	         
+	        <h:outputLabel for="uRoles" value="User Roles" />
+	        <h:outputText value=":" />
+	        <h:outputText id="uRoles" value="#{reg.userRoleString}" />
+	        
+	        <h:outputLabel value="User Timezone" />
+	        <h:outputText value=":" />
+	        <h:outputText value="#{reg.user.timeZone}" rendered="#{reg.user.timeZone!=null}"/>
+	  		<h:outputText value="None selected (Using Default: #{top.timeZone})" rendered="#{reg.user.timeZone==null}" />
+	        
+	        <h:outputLabel value="User Locale" />
+	        <h:outputText value=":" />
+	        <h:outputText value="#{reg.user.locale}" rendered="#{reg.user.locale!=null}" />
+	        <h:outputText value="None selected (Using default: #{top.locale})" rendered="#{reg.user.locale==null}" />
+	    
+	        <h:outputLabel value="eMail Format" />
+	        <h:outputText value=":" />
+			<h:outputText  value="#{reg.user.emailFormat}" rendered="#{reg.user.emailFormat!=null}" />
+			<h:outputText value="None selected (Using Default: Text)" rendered="#{reg.user.emailFormat==null}" />
+		</h:panelGrid>
+		<h:panelGrid>
+			<h:commandLink value="User Certificate" action="userCertificate" />
+			<h:commandLink value="Edit User Profile" action="editUser" />
+		</h:panelGrid>
+	</fieldset>
+  </body>
+</html>

@@ -12,7 +12,6 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id: TolvenWebSecurityManager.java 1777 2011-07-21 23:13:45Z joe.isaac $
  */
 package org.tolven.shiro.web.mgt;
 

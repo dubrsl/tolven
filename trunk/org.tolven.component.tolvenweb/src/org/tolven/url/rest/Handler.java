@@ -11,6 +11,7 @@ import javax.naming.NamingException;
 
 import org.tolven.app.MenuLocal;
 import org.tolven.app.entity.MSResource;
+import org.tolven.core.TolvenRequest;
 import org.tolven.logging.TolvenLogger;
 
 public class Handler extends URLStreamHandler {
@@ -35,7 +36,7 @@ public class Handler extends URLStreamHandler {
 //		TolvenLogger.info("openConnection: " + url + " Thread=" + Thread.currentThread().getId(), Handler.class);
 //    	FacesContext fc = FacesContext.getCurrentInstance();
 //    	HttpServletRequest request = (HttpServletRequest) fc.getExternalContext().getRequest();
-//    	AccountUser accountUser = (AccountUser) request.getAttribute("accountUser");
+//    	AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 		if (url.getQuery()==null) throw new IllegalStateException("Missing TemplateAccount number in rest URL " + url);
 		
 		MSResource msResource = null;
