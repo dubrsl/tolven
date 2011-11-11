@@ -8,7 +8,7 @@ import java.util.List;
 import org.tolven.app.MenuEventHandler;
 import org.tolven.app.bean.MenuPath;
 import org.tolven.app.entity.MSAction;
-import org.tolven.locale.SessionResourceBundleFactory;
+import org.tolven.core.TolvenRequest;
 
 public class MiscUtils {
     
@@ -41,7 +41,7 @@ public class MiscUtils {
         writer.write("_dropdown_loc','");
         writer.write(path);
         writer.write("_drpDwn')\">");
-        writer.write(action.getLocaleText(SessionResourceBundleFactory.getBundle()));
+        writer.write(action.getLocaleText(TolvenRequest.getInstance().getResourceBundle()));
         writer.write("</button>");
         writer.write("<element id='");
         writer.write(path);
@@ -65,7 +65,7 @@ public class MiscUtils {
         try {
             MenuEventHandler menuEventHandler = MenuEventHandler.createMenuEventHandler(menuEventHandlerFactoryClass, action);
             menuEventHandler.setElement(element);
-            menuEventHandler.setResourceBundle(SessionResourceBundleFactory.getBundle());
+            menuEventHandler.setResourceBundle(TolvenRequest.getInstance().getResourceBundle());
             menuEventHandler.setWriter(writer);
             menuEventHandler.initializeAction();
         } catch (Exception ex) {

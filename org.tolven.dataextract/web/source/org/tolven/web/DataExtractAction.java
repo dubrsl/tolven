@@ -156,6 +156,7 @@ public class DataExtractAction extends TolvenAction {
     public void xmlDataExtract() throws IOException {
         FacesContext faces = FacesContext.getCurrentInstance();
         Writer out = header(faces, "text/xml", "data-extract.xml");
+        dq.setLimit(-1);
         getDataExtractBean().streamResultsXML(out, dq);
         faces.responseComplete();
     }
@@ -163,6 +164,7 @@ public class DataExtractAction extends TolvenAction {
     public void csvDataExtract() throws IOException {
         FacesContext faces = FacesContext.getCurrentInstance();
         Writer out = header(faces, "text/csv", "data-extract.csv");
+        dq.setLimit(-1);
         getDataExtractBean().streamResultsCSV(out, dq);
         faces.responseComplete();
     }

@@ -17,8 +17,6 @@ package org.tolven.shiro.web.servlet;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Date;
-import java.util.Map;
 
 import javax.naming.InitialContext;
 import javax.servlet.FilterChain;
@@ -34,31 +32,31 @@ import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.apache.log4j.Logger;
-import org.apache.shiro.config.Ini;
 import org.apache.shiro.crypto.AesCipherService;
 import org.apache.shiro.web.filter.mgt.FilterChainResolver;
-import org.apache.shiro.web.servlet.IniShiroFilter;
+import org.apache.shiro.web.servlet.AbstractShiroFilter;
 import org.apache.shiro.web.servlet.SimpleCookie;
 import org.tolven.exeption.TolvenSessionNotFoundException;
 import org.tolven.naming.TolvenContext;
 import org.tolven.session.SecretKeyThreadLocal;
+import org.tolven.session.ShiroSessionWrapper;
+import org.tolven.session.TolvenSessionWrapperThreadLocal;
 import org.tolven.shiro.web.config.TolvenFilterChainResolverFactory;
+import org.tolven.shiro.web.mgt.TolvenWebSecurityManager;
 
-public class TolvenShiroFilter extends IniShiroFilter {
+public class TolvenShiroFilter extends AbstractShiroFilter {
 
     private AesCipherService aesCipherService;
 
     private Logger logger = Logger.getLogger(TolvenShiroFilter.class);
 
-    /*
-     * This method is required to change the IniFilterChainResolverFactory used in the superclass because that one
-     * does not allow a custom PathMatchingFilterChainResolver
-     * (non-Javadoc)
-     * @see org.apache.shiro.web.servlet.IniShiroFilter#applyFilterChainResolver(org.apache.shiro.config.Ini, java.util.Map)
-     */
+    public TolvenShiroFilter() {
+    }
+
     @Override
-    protected void applyFilterChainResolver(Ini ini, Map<String, ?> defaults) {
-        TolvenFilterChainResolverFactory filterChainResolverFactory = new TolvenFilterChainResolverFactory(ini, defaults);
+    public void init() throws Exception {
+        setSecurityManager(new TolvenWebSecurityManager());
+        TolvenFilterChainResolverFactory filterChainResolverFactory = new TolvenFilterChainResolverFactory();
         filterChainResolverFactory.setFilterConfig(getFilterConfig());
         FilterChainResolver resolver = filterChainResolverFactory.getInstance();
         setFilterChainResolver(resolver);
@@ -67,25 +65,30 @@ public class TolvenShiroFilter extends IniShiroFilter {
         }
     }
 
-    protected void doFilterInternal(ServletRequest servletRequest, ServletResponse servletResponse, final FilterChain chain) throws ServletException, IOException {
-        long start = 0;
-        if (logger.isDebugEnabled()) {
-            start = System.currentTimeMillis();
-        }
-        double beginNanoTime = System.nanoTime();
-
-        InitialContext ctx;
-        UserTransaction ut = null;
-        // Establish "now" for anything that happens during this interaction.
-        Date now = new Date();
-
+    @Override
+    protected void executeChain(ServletRequest request, ServletResponse response, FilterChain origChain) throws IOException, ServletException {
         try {
-            ctx = new InitialContext();
+            TolvenSessionWrapperThreadLocal.set(new ShiroSessionWrapper());
+            super.executeChain(request, response, origChain);
+        } finally {
+            TolvenSessionWrapperThreadLocal.remove();
+        }
+    }
+
+    @Override
+    protected void doFilterInternal(ServletRequest servletRequest, ServletResponse servletResponse, final FilterChain chain) throws ServletException, IOException {
+        double beginNanoTime = System.nanoTime();
+        UserTransaction ut = null;
+        try {
+            long start = 0;
+            if (logger.isDebugEnabled()) {
+                start = System.currentTimeMillis();
+            }
+            InitialContext ctx = new InitialContext();
             while (true) {
                 ut = (UserTransaction) ctx.lookup("UserTransaction");
                 if (ut.getStatus() == Status.STATUS_NO_TRANSACTION) {
                     ut.begin();
-                    servletRequest.setAttribute("tolvenNow", now);
                     break;
                 } else if (ut.getStatus() == Status.STATUS_ACTIVE) {
                     if (logger.isDebugEnabled()) {
@@ -98,11 +101,6 @@ public class TolvenShiroFilter extends IniShiroFilter {
                     ut.rollback();
                 }
             }
-        } catch (Exception e) {
-            getFilterConfig().getServletContext().log("Error setting up UserTransaction or starting a transaction", e);
-        }
-
-        try {
             if (logger.isDebugEnabled()) {
                 logger.debug("TOLVEN_PERF: " + (System.currentTimeMillis() - start));
                 start = System.currentTimeMillis();
@@ -153,7 +151,7 @@ public class TolvenShiroFilter extends IniShiroFilter {
                 }
             } finally {
                 /*
-                 * The only location guaranteed to ensure that the session secret key is removed for this request
+                 * The only location guaranteed to ensure that the session secret key is removed from SecretKeyThreadLocal
                  */
                 SecretKeyThreadLocal.remove();
             }

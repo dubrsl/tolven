@@ -1,0 +1,18 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<extends path="echr">
+		<menu name="reports" title="Reports" page="/five/bar1.xhtml" visible="true">
+			<list name="all" title="My Reports" page="/five/reportLink.xhtml" visible="true" drilldown="echr:reports">
+
+				<action name="menu" title="New" page="/five/reportLink.xhtml" visible="true" query="global:reportMenu">
+					<column name="Report" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+			<instance name="wip" title="New" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml" />
+		</menu>
+	</extends>
+	<extends path="echr">
+		<placeholder name="report" title="Report" page="/wizard/wizard.xhtml" heading="/five/reportLink.xhtml">
+
+		</placeholder>
+	</extends>
+</application>

@@ -1,0 +1,62 @@
+package hl7
+// See http://wiki.tolven.org/doc/index.php/Plugin:org.tolven.component.tolvenejb#PlaceholderFacts
+// for details on the following annotation:
+//@use echr placeholders
+
+ /* Tolven */
+import java.util.*;
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+import org.tolven.hl7.HL7Local;
+
+global org.tolven.app.AppEvalAdaptor app;
+global Date now;
+import function org.tolven.trim.contstants.PatientImportance.isVIP;
+
+rule "Initialize HL7 Bean"
+	when
+		eval(true)
+	then
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/HL7Bean!org.tolven.hl7.HL7Local"));
+end
+
+
+rule "Add Receiver id to Receiver list"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:receiver" )
+		$msList: MenuStructure( role == "list", path == "echr:admin:receivers:all" )
+		$md: MenuData( menuStructure == $ms )
+	then
+		MenuData mdLocList = app.createReferenceMD( $md, $msList );
+end
+
+rule "Create HL7 message for immunization"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:immunization" )
+		$md: MenuData( menuStructure == $ms )
+		$hl7Bean: HL7Local()
+	then
+		$hl7Bean.saveHL7Message($md);
+end
+
+rule "Create HL7 message for Diagnosis"
+	when
+		$ms: MenuStructure( role == "placeholder", path == "echr:patient:diagnosis" )
+		$md: MenuData( menuStructure == $ms )
+		$hl7Bean: HL7Local()
+	then
+		$hl7Bean.saveHL7Message($md);
+end
+
+//echr:patient:immunization
+//echr:patient:diagnosis
+
+/**
+rule "observation on observation summary list"
+	when
+		$msObservation: MenuStructure( role == "placeholder", path == "echr:patient:observation" )
+		$mdObservation: MenuData( menuStructure == $msObservation, actStatus!="nullified" )
+	then
+		MenuData mdDXList = app.createReferenceMD( $mdObservation, "echr:patient:summary:obssum" );
+end
+*/

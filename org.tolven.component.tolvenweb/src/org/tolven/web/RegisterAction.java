@@ -13,11 +13,9 @@
  */
 package org.tolven.web;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.Principal;
-import java.security.PublicKey;
 import java.security.acl.Group;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -31,6 +29,7 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
@@ -45,6 +44,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.log4j.Logger;
 import org.tolven.core.SponsoredUser;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountType;
 import org.tolven.core.entity.AccountUser;
@@ -52,11 +52,13 @@ import org.tolven.core.entity.Sponsorship;
 import org.tolven.core.entity.TolvenUser;
 import org.tolven.doc.entity.Invitation;
 import org.tolven.el.ExpressionEvaluator;
+import org.tolven.exeption.GatekeeperSecurityException;
+import org.tolven.gatekeeper.RSGatekeeperClientLocal;
 import org.tolven.gen.bean.GenControlCHRAccount;
 import org.tolven.gen.bean.GenControlPHRAccount;
 import org.tolven.naming.TolvenContext;
 import org.tolven.security.TolvenPerson;
-import org.tolven.security.hash.SSHA;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.tolven.util.ExceptionFormatter;
 import org.tolven.web.security.GeneralSecurityFilter;
 import org.tolven.web.util.AccountProperties;
@@ -136,6 +138,10 @@ public class RegisterAction extends TolvenAction {
     private String userCertificateUpload;
     private boolean formattedUserCertificate = true;
     private static CertificateFactory certificateFactory;
+    
+    private @EJB
+    RSGatekeeperClientLocal rsGatekeeperClientBean;
+    
     private Logger logger = Logger.getLogger(RegisterAction.class);
     
     
@@ -158,9 +164,17 @@ public class RegisterAction extends TolvenAction {
             getAccountBean().addAccountUser(account, getUser(), getNow(), true, getUserPublicKey());
             logger.info("Added first admin to: " + account.getId() + ", acct type " + getNewAccountType().getKnownType());
         } catch (Exception ex) {
-            ex.printStackTrace();
-            FacesContext.getCurrentInstance().addMessage("newAccountForm:createAccount", new FacesMessage("Failed to create Account: " + ExceptionFormatter.toSimpleStringMessage(ex, ",", true)));
-            return "fail";
+            GatekeeperSecurityException gex = GatekeeperSecurityException.getRootGatekeeperException(ex);
+            String principal = (String) TolvenSessionWrapperFactory.getInstance().getPrincipal();
+            String realm = TolvenSessionWrapperFactory.getInstance().getRealm();
+            String shortErrorMessage = "Failed to create account for user " + principal + " in realm: " + realm;
+            if (gex == null) {
+                throw new RuntimeException(shortErrorMessage, ex);
+            } else {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("newAccountForm:createAccount", new FacesMessage(shortErrorMessage + ": " + ExceptionFormatter.toSimpleStringMessage(ex, ",", true)));
+                return "fail";
+            }
         }
 		accountUsers = null;
 //        menu.createDefaultMenuStructure( account );
@@ -221,12 +235,12 @@ public class RegisterAction extends TolvenAction {
         account.setEnableBackButton( enableBackButton );
     	account.setDisableAutoRefresh( disableAutoRefresh );
     	account.setManualMetadataUpdate(manualMetadataUpdate);
-    	getTop().getAccountUser().getAccount().getProperty().put(AccountProperties.ERROR_EMAIL_TO,sendErrorEmailTo);
+    	TolvenRequest.getInstance().getAccountUser().getAccount().getProperty().put(AccountProperties.ERROR_EMAIL_TO,sendErrorEmailTo);
 //    	TolvenLogger.info( "disableAutoRefresh: " + disableAutoRefresh, RegisterAction.class );
     	//updateEmergencyAccountStatus();
     	getAccountBean().updateAccount(account);
-//    	getTop().setAccountTitle(getAccountTitle());
-//    	getTop().setAccountTimeZone(getAccount().getTimeZone());
+//    	TolvenRequest.getInstance().setAccountTitle(getAccountTitle());
+//    	TolvenRequest.getInstance().setAccountTimeZone(getAccount().getTimeZone());
     	return "success";
     }
     
@@ -258,13 +272,13 @@ public class RegisterAction extends TolvenAction {
 	}
     */
     public String saveUserPreferences(){
-    	getTop().getAccountUser().getProperty().put(AccountUserProperties.USER_LEVEL_PREF,userLevelPref);
+    	TolvenRequest.getInstance().getAccountUser().getProperty().put(AccountUserProperties.USER_LEVEL_PREF,userLevelPref);
     	return "success";
     }
     
     public String setFormat()
     	{
-    		TolvenUser user = getTop().getAccountUser().getUser();
+    		TolvenUser user = TolvenRequest.getInstance().getAccountUser().getUser();
     		Invitation invitation = new Invitation();
     		invitation.setEmailFormat(user.getEmailFormat());
     		String email = invitation.getEmailFormat();
@@ -276,7 +290,7 @@ public class RegisterAction extends TolvenAction {
     	ExpressionEvaluator ee = new ExpressionEvaluator();
     	ee.addVariable("now", getNow());
     	ee.addVariable("subject", "Test Message");
-    	ee.addVariable("bodyProperty", "org.tolven.message.testMessage");
+        ee.addVariable("bodyProperty", "org.tolven.message.testMessage");
     	ee.addVariable("accountUser", getAccountUser());
     	ee.addVariable("brand", request.getLocalAddr());
         getInvitationLocal().sendMessage( ee );
@@ -506,9 +520,10 @@ public class RegisterAction extends TolvenAction {
             FacesContext.getCurrentInstance().addMessage("register:oldUserPassword", new FacesMessage("Password must be supplied"));
             error = true;
         }
-        String sshaUserPassword = getTolvenPersonString("userPassword");
-        boolean passwordVerfied = SSHA.checkPassword(getOldUserPassword().toCharArray(), sshaUserPassword);
-        if(!passwordVerfied) {
+        String principal = (String) TolvenSessionWrapperFactory.getInstance().getPrincipal();
+        String realm = TolvenSessionWrapperFactory.getInstance().getRealm();
+        boolean passwordVerified = rsGatekeeperClientBean.verifyUserPassword(principal, getOldUserPassword().toCharArray(), realm);
+        if(!passwordVerified) {
             FacesContext.getCurrentInstance().addMessage("register:oldUserPassword", new FacesMessage("Incorrect password"));
             error = true;
         }
@@ -547,24 +562,23 @@ public class RegisterAction extends TolvenAction {
         this.uid = uid;
     }
 
-     public String verifyPassword() throws Exception {
-     boolean error = false;
-     
-     if (getOldUserPassword() == null || getOldUserPassword().trim().length() == 0) {
-         FacesContext.getCurrentInstance().addMessage("check:password", new FacesMessage("Password must be supplied"));
-         error=true;
-     }
-     if (error) return "error";
-     if(!getLDAPLocal().verifyPassword(getTp().getUid(), getOldUserPassword().toCharArray())) {
-         FacesContext context = FacesContext.getCurrentInstance(); 
-         FacesMessage message = new FacesMessage("Invalid Password"); 
-         context.addMessage("check:password", message); 
-         return "error";
-     }
-	HttpSession session = (HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-//	TolvenLogger.info(getClass() + " REGISTER ACTION :VESTIBULE_PASS=" + session.getAttribute(GeneralSecurityFilter.VESTIBULE_PASS));
-	session.setAttribute(GeneralSecurityFilter.VESTIBULE_PASS, "true");
-	return "success";
+    @Deprecated
+    public String verifyPassword() throws Exception {
+        boolean error = false;
+
+        if (getOldUserPassword() == null || getOldUserPassword().trim().length() == 0) {
+            FacesContext.getCurrentInstance().addMessage("check:password", new FacesMessage("Password must be supplied"));
+            error = true;
+        }
+        if (error)
+            return "error";
+        if (!getLDAPLocal().verifyPassword(getTp().getUid(), getOldUserPassword().toCharArray())) {
+            FacesContext context = FacesContext.getCurrentInstance();
+            FacesMessage message = new FacesMessage("Invalid Password");
+            context.addMessage("check:password", message);
+            return "error";
+        }
+        return "success";
  }
      
      /**
@@ -867,38 +881,45 @@ public class RegisterAction extends TolvenAction {
     }
 
     private String inviteUser(boolean isReinvite) {
-        String uid = getNewDemoUser().toLowerCase().trim();
-        TolvenUser invitedUser = getActivationBean().findUser(uid);
-        if (invitedUser == null) {
-            FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("User " + uid + " not found"));
+        String invitedUserId = getNewDemoUser().toLowerCase().trim();
+        String realm = TolvenSessionWrapperFactory.getInstance().getRealm();
+        if (!rsGatekeeperClientBean.existsTolvenPerson(invitedUserId, realm)) {
+            FacesContext.getCurrentInstance().addMessage("userAccessAddForm:uid", new FacesMessage("User " + invitedUserId + " not found in realm: " + realm));
             return "fail";
         }
-        AccountUser accountUser = getAccountBean().findAccountUser(uid, getAccount().getId());
+        AccountUser accountUser = getAccountBean().findAccountUser(invitedUserId, getAccount().getId());
         if (isReinvite) {
             if (accountUser == null) {
-                FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("User " + uid + " does not exist on this account"));
-                return "fail";
+                FacesContext.getCurrentInstance().addMessage("userAccessAddForm:uid", new FacesMessage("User " + invitedUserId + " does not exist on this account"));
+                return "error";
             }
         } else {
             if (accountUser != null) {
-                FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("User " + uid + " already exists on this account"));
-                return "fail";
+                FacesContext.getCurrentInstance().addMessage("userAccessAddForm:uid", new FacesMessage("User " + invitedUserId + " already exists on this account"));
+                return "error";
             }
         }
         try {
-            getAccountBean().inviteAccountUser(getAccount(), getAccountUser(), invitedUser, getInvitedUserRealm(), getUserPrivateKey(), getNow(), false, isReinvite);
+            getAccountBean().inviteAccountUser(getAccount(), getAccountUser(), invitedUserId, getInvitedUserRealm(), getUserPrivateKey(), getNow(), false, isReinvite);
         } catch (Exception ex) {
-            FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("Failed to invite user to Account: " + ExceptionFormatter.toSimpleStringMessage(ex, ",", true)));
-            return "fail";
+            GatekeeperSecurityException gex = GatekeeperSecurityException.getRootGatekeeperException(ex);
+            String principal = (String) TolvenSessionWrapperFactory.getInstance().getPrincipal();
+            String shortErrorMessage = "Failed to invite user " + invitedUserId + " in realm: " + realm + " to account: " + getAccount().getId() + " by user: " + principal;
+            if (gex == null) {
+                throw new RuntimeException(shortErrorMessage, ex);
+            } else {
+                ex.printStackTrace();
+                FacesContext.getCurrentInstance().addMessage("userAccessAddForm:uid", new FacesMessage(shortErrorMessage + ": " + ExceptionFormatter.toSimpleStringMessage(ex, ",", true)));
+                return "fail";
+            }
         }
         if (isReinvite) {
-            FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("User " + uid + " reinvited to this account"));
+            FacesContext.getCurrentInstance().addMessage("userAccessAddForm:uid", new FacesMessage("User " + invitedUserId + " reinvited to this account"));
         } else {
-            FacesContext.getCurrentInstance().addMessage("userAccess:uid", new FacesMessage("User " + uid + " added to this account"));
+            FacesContext.getCurrentInstance().addMessage("userAccessAddForm:uid", new FacesMessage("User " + invitedUserId + " added to this account"));
         }
         // force a refresh of the list
         accountUsers = null;
-        uid = null;
         setUserCertificateUpload(null);
         return "success";
     }
@@ -1136,11 +1157,11 @@ public class RegisterAction extends TolvenAction {
 
 
 	public String getUserLevelPref() {
-		userLevelPref = getTop().getAccountUser().getProperty().get(AccountUserProperties.USER_LEVEL_PREF);
+		userLevelPref = TolvenRequest.getInstance().getAccountUser().getProperty().get(AccountUserProperties.USER_LEVEL_PREF);
 		// If there is no level set already default it to Standard
 		if(userLevelPref == null){
 			userLevelPref = "Standard";
-			getTop().getAccountUser().getProperty().put(AccountUserProperties.USER_LEVEL_PREF,userLevelPref);
+			TolvenRequest.getInstance().getAccountUser().getProperty().put(AccountUserProperties.USER_LEVEL_PREF,userLevelPref);
 		}
 		return userLevelPref;
 	}
@@ -1152,7 +1173,7 @@ public class RegisterAction extends TolvenAction {
 
 
 	public String getSendErrorEmailTo() {
-		return getTop().getAccountUser().getAccount().getProperty().get(AccountProperties.ERROR_EMAIL_TO);
+		return TolvenRequest.getInstance().getAccountUser().getAccount().getProperty().get(AccountProperties.ERROR_EMAIL_TO);
 	}
 
 

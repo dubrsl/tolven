@@ -2691,7 +2691,7 @@ function reviseVitalSign(element,action ){
 			   'reviseVitalSign.ajaxcchit',
 			   {
 			    method: 'get',
-			    parameters: 'element='+arr[0]+':'+arr[1]+':'+arr[2]+'&action=nullifiedActive',
+			    parameters: 'element='+arr[0]+':'+arr[1]+':'+arr[2]+'&action='+action,
 			    onFailure: function(request) {displayError(request,element.split());},
 			    onSuccess: function(request) {reviseVitalSignDone(request,element);}
 			   });
@@ -2747,30 +2747,6 @@ wizSelectEA=function(root) {
                       }
                 }
         });
-}
-
-/**
- * This function displays the Medline plus Connect page in Prooblems/Diagnosis 
- * @author Nevin
- * added on 01/06/2011
- */
-function displayMedLinePage(code, frameId, divId, type) {
-	if (type == 'problem') {
-		$(frameId).src = "http://apps.nlm.nih.gov/medlineplus/services/mpconnect.cfm?mainSearchCriteria.v.c="+code+"&mainSearchCriteria.v.cs=2.16.840.1.113883.6.96&mainSearchCriteria.v.dn=&informationRecipient.languageCode.c=en";
-	} else if (type == 'diagnosis') {
-		$(frameId).src = "http://apps.nlm.nih.gov/medlineplus/services/mpconnect.cfm?mainSearchCriteria.v.c="+code+"&mainSearchCriteria.v.cs=2.16.840.1.113883.6.103&mainSearchCriteria.v.dn=&informationRecipient.languageCode.c=en";
-	} else if (type == 'prescription') {
-		$(frameId).src = "http://apps.nlm.nih.gov/medlineplus/services/mpconnect.cfm?mainSearchCriteria.v.cs=2.16.840.1.113883.6.69&mainSearchCriteria.v.c="+code+"&mainSearchCriteria.v.dn=&informationRecipient.languageCode.c=en";
-	}		
-	$(divId).style.visibility = 'visible';
-}
-/**
- * This function hides the Medline plus Connect page div in Prooblems/Diagnosis 
- * @author Nevin
- * added on 01/06/2011
- */
-function closeMedLinePagePopup(divId){
-	$(divId).style.visibility = 'hidden';
 }
 
 

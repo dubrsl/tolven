@@ -68,4 +68,11 @@
 			</zipfileset>
 		</zip>
 	</target>
+	<target name="javadoc" description="Generate Javadoc for this plugin">
+		<javadoc access="public" author="true" destdir="${respositoryLocal.location}/javadoc/${plugin(id)}-${plugin(version)}" doctitle="Tolven Analysis"
+			packagenames="*"
+			classpathref="project.classpath" 
+			source="1.6" sourcepath="ejb/source:web/source" splitindex="true" use="true" version="true"
+		    encoding="UTF-8"  docencoding="UTF-8"/>
+	</target>
 </project>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>ann/evn/annualPhysical</name>
+	<description>Annual Physical Assessment</description>
+	<page>annualPhysical.xhtml</page>
+	<drilldown>annualPhysicalDD.xhtml</drilldown>
+	<menu>global:annualPhysicalMenu</menu>
+	<application name="echr">
+		<instance>echr:patient:physical</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<act classCode="ENC" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:physical</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:physical</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>AnnualPhysical</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3.0</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Annual Physical Assessment</ST>
+		</title>
+		<effectiveTime>
+			<label>Date of Visit</label>
+			<TS>
+				<label>Date of Visit</label>
+				<value>#{TS(now)}</value>
+			</TS>
+		</effectiveTime>
+	</act>
+</trim>

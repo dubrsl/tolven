@@ -19,19 +19,25 @@ package org.tolven.cda.doctype;
 
 import java.io.ByteArrayInputStream;
 
+import javax.ejb.EJB;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.tolven.core.TolvenPropertiesLocal;
 import org.tolven.core.entity.Status;
 import org.tolven.doc.entity.DocBase;
 import org.tolven.doc.entity.DocXML;
 import org.tolven.doctype.DocumentTypeAbstract;
 import org.tolven.el.ExpressionEvaluator;
+import org.tolven.security.key.UserPrivateKey;
+import org.tolven.session.TolvenSessionWrapperFactory;
 import org.w3c.dom.Document;
 
 public class CDADocumentType extends DocumentTypeAbstract {
 	public final static String MEDIA_TYPE = "text/xml";
 	public final static String NAMESPACE = "urn:hl7-org:v3";
+	 @EJB
+	   private TolvenPropertiesLocal propertyBean;
 	
 
 	/**
@@ -40,7 +46,8 @@ public class CDADocumentType extends DocumentTypeAbstract {
 	@Override
 	public Object getParsed() {
 		try {
-			ByteArrayInputStream bis = new ByteArrayInputStream(getPayload());
+			String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
+			ByteArrayInputStream bis = new ByteArrayInputStream(getPayload(TolvenSessionWrapperFactory.getInstance().getUserPrivateKey(keyAlgorithm)));
 			DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			Document dom = documentBuilder.parse(bis);
 			return dom;

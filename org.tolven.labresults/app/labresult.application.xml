@@ -1,0 +1,119 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<trimMenu name="global:labresultMenu" initialSort="name ASC">
+		<field name="name" internal="string01" >
+			<from>#{trim.description}</from>
+		</field>
+		<field name="description" internal="string02" >
+			<from>#{trim.name}</from>
+		</field>
+	</trimMenu>
+	<!-- Patient lab results -->
+	<extends path="echr:patient">
+		<placeholder name="labresult" title="Lab Result" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/resultLink.xhtml">
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="title" internal="string01">
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="status" internal="string04">
+				<from>#{act.statusCode}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="code" internal="code01">
+				<from>#{act.code.CD}</from>
+			</field>
+			<field name="value" internal="pqValue01">
+				<from>#{act.observation.value.PQ.value}</from>
+			</field>
+			<field name="units" internal="pqUnits01">
+				<from>#{act.observation.value.PQ.unit}</from>
+			</field>
+			<field name="interpretationCode" internal="code02">
+				<from>#{act.observation.interpretationCode.CDS[0]}</from>
+			</field>
+			<!-- The following low/high value/units are for normal range -->
+			<field name="lowvalue" internal="pqValue02">
+				<from>#{act.relationship['referenceRange'].act.observation.value.IVLPQ.low.PQ.value}</from>
+			</field>
+			<field name="lowunits" internal="pqUnits02">
+				<from>#{act.relationship['referenceRange'].act.observation.value.IVLPQ.low.PQ.unit}</from>
+			</field>			
+			<field name="highvalue" internal="pqValue03">
+				<from>#{act.relationship['referenceRange'].act.observation.value.IVLPQ.high.PQ.value}</from>
+			</field>
+			<field name="highunits" internal="pqUnits03">
+				<from>#{act.relationship['referenceRange'].act.observation.value.IVLPQ.high.PQ.unit}</from>
+			</field>
+			<!-- <field name="refvalues" internal="string06">
+			  <from>#{genderRefValues(trim.act.relationshipsList['referenceRange'],trim.act.participation['subject'].role.player.livingSubject.administrativeGenderCode.ce.displayName)}</from> 
+			</field> -->
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="labresultsum" visible="never">
+			<column name="effectiveTime" internal="date01" format="MM/dd/yy">
+				<from>#{labresult.effectiveTime}</from>
+			</column> 
+			<column name="title" internal="string01">
+				<from>#{labresult.title}</from>
+			</column>
+			<column name="Value" internal="pqValue01" width="6.0" align="right">
+				<from>#{labresult.value}</from>
+			</column>
+			<column name="Units" internal="pqUnits01" width="6.0">
+				<from>#{labresult.units}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="labresultsum" portalColumn="1" sequence="2" title="Lab Result" page="/five/resultSummary.xhtml" query="echr:patient:summary:labresultsum" visible="true" drilldown=":labresults">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:labresultMenu">
+				<column name="Labresult" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+	
+	<extends path="echr:patient">
+		<menu name="labresults" sequence="6" title="Lab Results" page="/five/bar2.xhtml" visible="true">
+			<list name="completed" title="Completed" page="/five/list.xhtml" visible="true" drilldown=":labresult">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{labresult.effectiveTime}</from>
+				</column>
+				<column name="title" internal="string02" reference="true" width="15.0">
+					<from>#{labresult.title}</from>
+				</column>
+				<column name="code" internal="string03" reference="true" width="15.0">
+					<from>#{labresult.code.code}</from>
+				</column>
+				<column name="Value" internal="pqValue01" width="5.0" align="right">
+					<from>#{labresult.value}</from>
+				</column>
+				<column name="Units" internal="pqUnits01" width="5.0">
+					<from>#{labresult.units}</from>
+				</column>
+				<column name="NormalRange" width="10.0">
+					<from>#{labresult.lowvalue}#{labresult.lowunits}-#{labresult.highvalue}#{labresult.highunits}</from>
+					<!-- <from>#{labresult.refvalues}</from> -->
+				</column>
+				<column name="AbnormalFlags" width="10.0">
+					<from>#{labresult.interpretationCode}</from>
+					<output>
+						<a class="#{interpCodeClass(labresult.interpretationCode.code)}">#{labresult.interpretationCode.code}</a>
+					</output>
+				</column>				
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:labresultMenu">
+					<column name="Labresult" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>			
+		</menu>
+	</extends>	
+</application>

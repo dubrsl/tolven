@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.annotation.Resource;
-import javax.annotation.security.RunAs;
 import javax.ejb.EJB;
 import javax.ejb.EJBContext;
 import javax.ejb.Local;
@@ -70,7 +69,6 @@ import org.tolven.doc.bean.XMLBean;
 import org.tolven.doc.entity.Invitation;
 import org.tolven.el.ExpressionEvaluator;
 import org.tolven.security.LDAPLocal;
-import org.tolven.security.TolvenPerson;
 import org.tolven.session.TolvenSessionWrapperFactory;
 
 /**
@@ -217,13 +215,9 @@ public class InvitationBean implements InvitationLocal {
 	        msg.setFrom(InternetAddress.parse(fromString)[0]);
 	        // To
 	        String toString = getAttribute(ee, "to");
-	        if (toString==null) {
-	            TolvenPerson tp = ldapBean.findTolvenPerson((String) TolvenSessionWrapperFactory.getInstance().getPrincipal()); 
-            	List<String> mail = tp.getMail();
-            	if (mail.size()>0) {
-	            	toString = mail.get(0);
-            	}
-	        }
+            if (toString == null) {
+                toString = (String) TolvenSessionWrapperFactory.getInstance().getAttribute("mail");
+            }
 	        if (toString!=null) {
 		        msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(toString));
 	        }

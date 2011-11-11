@@ -12,7 +12,7 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id: GatekeeperSecurityException.java 3245 2011-09-14 09:12:36Z joe.isaac $
+ * @version $Id: GatekeeperSecurityException.java 3745 2011-10-03 21:29:32Z joe.isaac $
  */
 package org.tolven.exeption;
 
@@ -82,7 +82,7 @@ public abstract class GatekeeperSecurityException extends RuntimeException {
     public abstract String getExceptionHeader();
 
     public String getFormattedMessage() {
-        return getExceptionHeader() + SEPARATOR + USER_HEADER + getUserId() + SEPARATOR + REALM_HEADER + SEPARATOR + MESSAGE_HEADER + getMessage();
+        return getExceptionHeader() + SEPARATOR + USER_HEADER + SEPARATOR + getUserId() + SEPARATOR + REALM_HEADER + SEPARATOR + getRealm() + SEPARATOR + MESSAGE_HEADER + SEPARATOR + getMessage();
     }
 
     public abstract String getRealm();

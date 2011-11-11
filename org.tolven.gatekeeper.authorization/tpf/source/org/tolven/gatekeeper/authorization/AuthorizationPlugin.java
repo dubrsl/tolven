@@ -16,6 +16,7 @@
 package org.tolven.gatekeeper.authorization;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.GnuParser;
@@ -23,6 +24,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.tolven.plugin.TolvenCommandPlugin;
 import org.tolven.tools.ant.TolvenSQL;
@@ -35,6 +37,7 @@ import org.tolven.tools.ant.TolvenSQL;
  */
 public class AuthorizationPlugin extends TolvenCommandPlugin {
 
+    public static final String CMD_TABLE_PREFIX = "tablePrefix";
     public static final String CMD_DBURL = "dbUrl";
     public static final String CMD_DRIVERCLASS = "driverClass";
     public static final String CMD_DRIVERCLASSPATH = "driverClasspath";
@@ -73,7 +76,29 @@ public class AuthorizationPlugin extends TolvenCommandPlugin {
             sqlFile = new File(sqlFilename);
             logger.info("Execute SQL file " + sqlFile.getPath() + " with URL: " + url);
         }
-        TolvenSQL.sql(sqlFile, url, driverClass, user, password, driverClasspath, TolvenSQL.ABORT);
+        String sqlString = null;
+        try {
+            sqlString = FileUtils.readFileToString(sqlFile);
+        } catch (Exception ex) {
+            throw new RuntimeException("Could not read sql file: " + sqlFile.getPath(), ex);
+        }
+        File tmpFile = null;
+        try {
+            tmpFile = File.createTempFile("tolven-tmp", "sql");
+            String tablePrefix = commandLine.getOptionValue(CMD_TABLE_PREFIX);
+            if(tablePrefix == null) {
+                tablePrefix = "";
+            }
+            String substitutedString = sqlString.replace("@tablePrefix@", tablePrefix);
+            FileUtils.writeStringToFile(tmpFile, substitutedString);
+            TolvenSQL.sql(tmpFile, url, driverClass, user, password, driverClasspath);
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not write sql to temporary file " + tmpFile, ex);
+        } finally {
+            if (tmpFile != null) {
+                tmpFile.delete();
+            }
+        }
     }
 
     private CommandLine getCommandLine(String[] args) {
@@ -89,6 +114,8 @@ public class AuthorizationPlugin extends TolvenCommandPlugin {
 
     private Options getCommandOptions() {
         Options cmdLineOptions = new Options();
+        Option tablePrefixOption = new Option(CMD_TABLE_PREFIX, CMD_TABLE_PREFIX, true, "\"tablePrefix\"");
+        cmdLineOptions.addOption(tablePrefixOption);
         Option dbUrlOption = new Option(CMD_DBURL, CMD_DBURL, true, "\"dbUrl\"");
         dbUrlOption.setRequired(true);
         cmdLineOptions.addOption(dbUrlOption);

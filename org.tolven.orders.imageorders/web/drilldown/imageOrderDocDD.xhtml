@@ -17,11 +17,10 @@
 			 <table width="100%">
 				<thead>
 					<tr>
-						<th style="text-align:center; width:40%;"><b>Image Order</b></th>
+						<th style="text-align:center; width:50%;"><b>Image Order</b></th>
 						<th style="text-align:center; width:10%;" nowrap="nowrap"><b>Date Of Order*</b></th>
 						<th style="text-align:center; width:10%;"><b>Reason</b></th>
 						<th style="text-align:center; width:10%;"><b>Priority</b></th>
-						<th style="text-align:center; width:10%;"><b>Schedule</b></th>
 						<th style="text-align:center; width:10%;"><b>Frequency</b></th>
 						<th style="text-align:center; width:10%;"><b>Timing</b></th>
 
@@ -36,14 +35,13 @@
 								<c:set var="i" value="0"/>
 								<c:if test="#{(widgetIndex.index%2)==1}"><c:set var="class" value="even"/><c:set var="i" value="1"/></c:if>
 								<tr class="#{class}">
-									<!--td style="text-align:center; width:40%;">#{imgOrder.act.code.CE.displayName}</td-->
-									<td style="text-align:center; width:40%;">#{imgOrder.act.text.ST.value}</td>
-									<td style="text-align:center; width:1%;"><trim:TS value="#{imgOrder.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
+									<!--td style="text-align:center; width:40%;">#{imgOrder.act.code.CD.displayName}</td-->
+									<td style="text-align:center; width:50%;">#{imgOrder.act.text.ST.value}</td>
+									<td style="text-align:center; width:10%;"><trim:TS value="#{imgOrder.act.effectiveTime.TS}" dateStyle="short" readonly="true"/></td>
 									<td style="text-align:center; width:10%;">#{imgOrder.act.observation.values[0].ST.value}</td>
 									<td style="text-align:center; width:10%;">#{imgOrder.act.observation.values[1].CE}</td>
 									<td style="text-align:center; width:10%;">#{imgOrder.act.observation.values[2].ST.value}</td>
 									<td style="text-align:center; width:10%;">#{imgOrder.act.observation.values[3].ST.value}</td>
-									<td style="text-align:center; width:10%;">#{imgOrder.act.observation.values[4].ST.value}</td>
 								</tr>
 							</c:if>
 						</c:forEach>

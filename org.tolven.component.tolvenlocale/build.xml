@@ -44,9 +44,6 @@
 			<zipfileset dir="manifest" />
 		</zip>
 		<!-- Each section adds itself to the zip file-->
-		<antcall target="buildSection">
-			<param name="section" value="lib" />
-		</antcall>
 		<!-- Add DevLib.jar to plugin zip -->
 		<zip destfile="${zipFileName}" update="true">
 			<zipfileset dir="${buildFolder}">

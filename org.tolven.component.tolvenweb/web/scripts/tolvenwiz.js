@@ -1718,6 +1718,24 @@ function checkFormat(id,root, msgContainerId){
 		}
 		if(val==""){
 		    $(msgContainerId).style.display="none";
-		}  
-		
+		}  		
+}
+
+/**
+ * This function displays the Medline plus Connect page in Prooblems/Diagnosis 
+ *  
+ */
+function displayMedLinePage(code, displayName,codeSystem) {
+	var medLineConnect = window.open("http://apps.nlm.nih.gov/medlineplus/services/mpconnect.cfm?mainSearchCriteria.v.c="+code+"&mainSearchCriteria.v.cs="+codeSystem+"&mainSearchCriteria.v.dn="+displayName+"&informationRecipient.languageCode.c=en",'medlineConnect','left=150px,top=100px');
+	medLineConnect.focus();
+	//$(frameId).src = "http://apps.nlm.nih.gov/medlineplus/services/mpconnect.cfm?mainSearchCriteria.v.c="+code+"&mainSearchCriteria.v.cs="+codeSystem+"&mainSearchCriteria.v.dn="+displayName+"&informationRecipient.languageCode.c=en";
+	//$(divId).style.visibility = 'visible';
+	/*if (type == 'problem') {
+		$(frameId).src = "http://apps.nlm.nih.gov/medlineplus/services/mpconnect.cfm?mainSearchCriteria.v.c="+code+"&mainSearchCriteria.v.cs=2.16.840.1.113883.6.96&mainSearchCriteria.v.dn=&informationRecipient.languageCode.c=en";
+	} else if (type == 'diagnosis') {
+		$(frameId).src = "http://apps.nlm.nih.gov/medlineplus/services/mpconnect.cfm?mainSearchCriteria.v.c="+code+"&mainSearchCriteria.v.cs=2.16.840.1.113883.6.103&mainSearchCriteria.v.dn=&informationRecipient.languageCode.c=en";
+	} else if (type == 'prescription') {
+		$(frameId).src = "http://apps.nlm.nih.gov/medlineplus/services/mpconnect.cfm?mainSearchCriteria.v.cs=2.16.840.1.113883.6.69&mainSearchCriteria.v.c="+code+"&mainSearchCriteria.v.dn=&informationRecipient.languageCode.c=en";
+	}*/		
+	
 }

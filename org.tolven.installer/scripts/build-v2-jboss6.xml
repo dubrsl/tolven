@@ -224,40 +224,10 @@
 
 		<guide-echo args="Install Database Service" />
 		<property name="tolven-ds.xml" value="${jboss6.deploy.dir}/tolven-ds.xml" />
+		<guide-echo args="Setup the default properties in ${tolven-ds.xml}:" />
 		<antcall target="config-tolven-jboss6-legacypostgresql" />
 		<antcall target="config-tolven-jboss6-oracle" />
 		<guide-echo args="" />
-
-		<guide-echo args="Check the default properties in ${tolven-ds.xml}:" />
-		<guide-echo args="Add the extra property: &lt;xa-datasource-property name=&quot;Compatible&quot;>7.1&lt;/xa-datasource-property>" />
-		<replace token="&lt;xa-datasource-property name=&quot;Password&quot;>password&lt;/xa-datasource-property>" value="&lt;xa-datasource-property name=&quot;Password&quot;>password&lt;/xa-datasource-property>&lt;xa-datasource-property name=&quot;Compatible&quot;>7.1&lt;/xa-datasource-property>" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace PostgresDS with TolvenDS" />
-		<replace token="PostgresDS" value="TolvenDS" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace server_name with ${db.host}" />
-		<replace token="server_name" value="${db.host}" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace 5432 with ${db.port}" />
-		<replace token="5432" value="${db.port}" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace database_namee with ${db.name}" />
-		<replace token="database_name" value="${db.name}" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace user with ${rootdb}" />
-		<replace token="user" value="${rootdb}" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace password with ${rootdb.password}" />
-		<replace token="password" value="${rootdb.password}" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace jdbc:oracle:oci8:@tc with ${db.url}" />
-		<replace token="jdbc:oracle:oci8:@tc" value="${db.url}" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace scott with ${rootdb}" />
-		<replace token="scott" value="${rootdb}" file="${tolven-ds.xml}" />
-
-		<guide-echo args="Replace tiger with ${rootdb.password}" />
-		<replace token="tiger" value="${rootdb.password}" file="${tolven-ds.xml}" />
 
 		<tpf args="-plugin org.tolven.assembler.jboss6 -propertiesDir ${basedir}" />
 
@@ -281,12 +251,14 @@
 		<guide-echo args="     keystoreFile=&quot;${openam.keystore}&quot;" />
 		<guide-echo args="     keystorePass=&quot;tolven&quot;" />
 		<guide-echo args="     keyAlias=&quot;tolven&quot;/>" />
-		<replace file="${jboss6.serverxml}" value="&lt;Connector protocol=&quot;HTTP/1.1&quot; port=&quot;${jboss.web.http.port}&quot; address=&quot;${jboss.bind.address}&quot; /> &lt;Connector address=&quot;${gatekeeper.domain}&quot; port=&quot;${gatekeeper.port}&quot; protocol=&quot;HTTP/1.1&quot; SSLEnabled=&quot;true&quot; maxThreads=&quot;150&quot; scheme=&quot;https&quot; secure=&quot;true&quot; clientAuth=&quot;false&quot; sslProtocol=&quot;TLS&quot; keystoreFile=&quot;${openam.keystore}&quot; keystorePass=&quot;${openam.keystore.password}&quot; />">
-			<replacetoken><![CDATA[<Connector protocol="HTTP/1.1" port="${jboss.web.http.port}" address="${jboss.bind.address}" 
-         redirectPort="${jboss.web.https.port}" />]]></replacetoken>
-		</replace>
+		<antcall target="fixcrlf-server.xml" />
+		<replace file="${jboss6.serverxml}" token="&lt;Connector protocol=&quot;HTTP/1.1&quot; port=&quot;${jboss.web.http.port}&quot; address=&quot;${jboss.bind.address}&quot; ${line.separator}         redirectPort=&quot;${jboss.web.https.port}&quot; />" value="&lt;Connector protocol=&quot;HTTP/1.1&quot; port=&quot;${jboss.web.http.port}&quot; address=&quot;${gatekeeper.domain}&quot; redirectPort=&quot;${gatekeeper.port}&quot; /> ${line.separator}      &lt;Connector address=&quot;${gatekeeper.domain}&quot; port=&quot;${gatekeeper.port}&quot; protocol=&quot;HTTP/1.1&quot; SSLEnabled=&quot;true&quot; maxThreads=&quot;150&quot; scheme=&quot;https&quot; secure=&quot;true&quot; clientAuth=&quot;false&quot; sslProtocol=&quot;TLS&quot; keystoreFile=&quot;${openam.keystore}&quot; keystorePass=&quot;${openam.keystore.password}&quot; />" />
 		<guide-echo args="" />
 
+	</target>
+	
+	<target name="fixcrlf-server.xml" if="jboss6.on.win">
+		<fixcrlf srcdir="${jboss6.serverxml}/.." includes="server.xml" eol="crlf" />
 	</target>
 
 	<target name="config-tolven-jboss6-scripts-linux" unless="jboss6.on.win">
@@ -354,11 +326,46 @@
 	<target name="config-tolven-jboss6-legacypostgresql" if="INCLUDE.LEGACYPOSTGRESQL">
 		<guide-echo args="Copy ${jboss6.dir}/docs/examples/jca/postgres-xa-ds.xml to ${jboss6.deploy.dir}/tolven-ds.xml" />
 		<copy file="${jboss6.dir}/docs/examples/jca/postgres-xa-ds.xml" tofile="${tolven-ds.xml}" verbose="true" />
+
+		<guide-echo args="Replace PostgresDS with TolvenDS" />
+		<replace token="PostgresDS" value="TolvenDS" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Replace server_name with ${db.host}" />
+		<replace token="server_name" value="${db.host}" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Replace 5432 with ${db.port}" />
+		<replace token="5432" value="${db.port}" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Replace database_name with ${db.name}" />
+		<replace token="database_name" value="${db.name}" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Replace user with ${rootdb}" />
+		<replace token="user" value="${rootdb}" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Add the extra property: &lt;xa-datasource-property name=&quot;Compatible&quot;>7.1&lt;/xa-datasource-property>" />
+		<replace token="&lt;xa-datasource-property name=&quot;Password&quot;>password&lt;/xa-datasource-property>" value="&lt;xa-datasource-property name=&quot;Password&quot;>password&lt;/xa-datasource-property>&lt;xa-datasource-property name=&quot;Compatible&quot;>7.1&lt;/xa-datasource-property>" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Replace password with ${rootdb.password}" />
+		<replace token="password" value="${rootdb.password}" file="${tolven-ds.xml}" />
+
 	</target>
 
 	<target name="config-tolven-jboss6-oracle" if="INCLUDE.ORACLE">
 		<guide-echo args="Copy ${jboss6.dir}/docs/examples/jca/oracle-xa-ds.xml to ${jboss6.deploy.dir}/tolven-ds.xml" />
 		<copy file="${jboss6.dir}/docs/examples/jca/oracle-xa-ds.xml" tofile="${tolven-ds.xml}" verbose="true" />
+
+		<guide-echo args="Replace XAOracleDS with TolvenDS}" />
+		<replace token="XAOracleDS" value="TolvenDS" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Replace jdbc:oracle:oci8:@tc with ${db.url}" />
+		<replace token="jdbc:oracle:oci8:@tc" value="${db.url}" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Replace scott with ${rootdb}" />
+		<replace token="scott" value="${rootdb}" file="${tolven-ds.xml}" />
+
+		<guide-echo args="Replace tiger with ${rootdb.password}" />
+		<replace token="tiger" value="${rootdb.password}" file="${tolven-ds.xml}" />
+
 	</target>
 
 	<target name="start-jboss6" depends="props">

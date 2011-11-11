@@ -31,10 +31,10 @@ import org.tolven.app.bean.MenuPath;
 import org.tolven.app.entity.MDQueryResults;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.web.MenuAction;
-import org.tolven.web.security.GeneralSecurityFilter;
 /*
  * Servlet to create Live Grids with a custom defined html element id to them and allow accessing favorites lists  
  */
@@ -46,7 +46,7 @@ public class FavoritesServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     	String uri = req.getRequestURI();
-    	AccountUser activeAccountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+    	AccountUser activeAccountUser = TolvenRequest.getInstance().getAccountUser();
     	resp.setContentType("text/xml");
 	    resp.setHeader("Cache-Control", "no-cache");
 	    Writer writer=resp.getWriter();

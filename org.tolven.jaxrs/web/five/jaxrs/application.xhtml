@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>Test RESTful API</title>
+    </head>
+    <body>    
+    	<table style="width:90%">
+    		<tr><td>
+			<a target="results" href="/api/application/metadata">Show all metadata</a><br/><br/>
+    		<p><b>Describe Metadata columns</b></p>
+    		<form action="/api/application/describe" method="get" target="results">
+    		<input type="hidden" value="#{top.accountUserId}" name="accountUserId"/>
+				  Path: <input type="text" name="path" value="echr:patient" size="50"/><br />
+  					<input type="submit" value="Columns" />
+				</form>
+			</td>
+    		<td>
+    		<p><b>Get List</b></p>
+    		<form action="/api/application/list" method="get" target="results">    		
+    			<input type="hidden" value="#{top.accountUserId}" name="accountUserId"/>	
+				  Path: <input type="text" name="path" value="echr:patients:all" size="50"/><br />
+				  Fields: <input type="text" name="fields" value="" size="50"/><br />
+				  Sort: <input type="text" name="order" value="id asc" size="50"/><br />
+				  Offset: <input type="text" name="offset" value="0" size="5"/>&nbsp;
+				  Limit: <input type="text" name="limit" value="10" size="5"/><br />
+				  Count (total): <input type="text" name="totalCount" value="true" size="5"/>&nbsp;
+				  Count (filter): <input type="text" name="totalFilter" value="true" size="5"/><br />
+  					<input type="submit" value="List" />
+				</form>
+			</td>
+    		<td>
+    		<p><b>Get Item</b></p>
+    		<form action="/api/application/item" method="get" target="results">
+    		<input type="hidden" value="#{top.accountUserId}" name="accountUserId"/>
+				  Path: <input type="text" name="path" value="" size="50"/><br />
+				  Fields: <input type="text" name="fields" value="" size="50"/><br />
+  					<input type="submit" value="Item" />
+				</form>
+			</td></tr>
+			<tr><td>
+			<p><b>XSLT</b></p>
+    		<form action="/api/application/xslt" method="get" target="results">
+    		<input type="hidden" value="#{top.accountUserId}" name="accountUserId"/>
+				  Stylesheet Property: <input type="text" name="xslt" value="" size="50"/><br />
+				  Context: <input type="text" name="context" value="" size="50"/><br />
+  					<input type="submit" value="xslt" />
+				</form>
+			</td></tr>
+			</table>
+    </body>
+</html>
+				

@@ -32,16 +32,10 @@
 			<param name="section" value="app"/>
 		</antcall>
 		<antcall target="buildSection">
-			<param name="section" value="ejb"/>
-		</antcall>
-		<antcall target="buildSection">
 			<param name="section" value="web"/>
 			<!-- Uncomment the following to include ejb classes in the classpath of the web section compile
 			<param name="lib" value="${buildFolder}/ejb/classes"/>
 			-->
-		</antcall>
-		<antcall target="buildSection">
-			<param name="section" value="tpf"/>
 		</antcall>
 		<!-- End of list of sections to build -->
 		<!-- Add DevLib.jar to plugin zip -->

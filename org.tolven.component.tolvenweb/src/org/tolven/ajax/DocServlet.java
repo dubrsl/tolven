@@ -34,6 +34,7 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.tolven.core.ActivationLocal;
 import org.tolven.core.TolvenPropertiesLocal;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.doc.DocumentLocal;
 import org.tolven.doc.entity.DocBase;
@@ -107,7 +108,7 @@ public class DocServlet extends TolvenServlet {
                     boolean isInMemory = item.isInMemory();
                     // TODO less than int bytes 
                     int sizeInBytes = (int) item.getSize();
-                    AccountUser accountUser = (AccountUser) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+                    AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
                     DocBase doc = docBean.createNewDocument(contentType, "", accountUser);
                     // Get the logged in user and set as the author
                     Object obj = request.getSession().getAttribute(GeneralSecurityFilter.ACCOUNT_ID);
@@ -188,7 +189,7 @@ protected InputStream openXSLT(AccountUser accountUser, DocBase doc, String bran
  * @throws ImageFormatException 
  */	
 protected void returnXML(DocBase doc, HttpServletRequest req, HttpServletResponse res) throws IOException {
-	AccountUser accountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+	AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 //	res.setContentType("text/xml");
 //	res.setCharacterEncoding("UTF-8");
 	try {
@@ -215,7 +216,7 @@ protected void returnXML(DocBase doc, HttpServletRequest req, HttpServletRespons
  */	
 protected void returnText(DocBase doc, HttpServletRequest req, HttpServletResponse res) throws IOException {
 	TolvenLogger.debug( "Returning text", DocServlet.class );
-	AccountUser accountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+	AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 	res.setContentType("text/html");
 	res.setCharacterEncoding("UTF-8");
     String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
@@ -248,7 +249,7 @@ protected void returnText(DocBase doc, HttpServletRequest req, HttpServletRespon
 	 * @throws ImageFormatException 
 	 */	
 protected void returnImage(DocBase doc, HttpServletRequest req, HttpServletResponse res) throws ImageFormatException, IOException {
-	AccountUser accountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+	AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 	// Look for dimension settings
 	String widthString = req.getParameter("width");
 	String heightString = req.getParameter("height");
@@ -275,7 +276,7 @@ protected void returnImage(DocBase doc, HttpServletRequest req, HttpServletRespo
  * @throws ImageFormatException 
  */	
 protected void returnApplication(DocBase doc, HttpServletRequest req, HttpServletResponse res) throws ImageFormatException, IOException {
-	AccountUser accountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+	AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 	TolvenLogger.info( "Returning application file", DocServlet.class );
 	res.setHeader("Pragma", null);
 	res.setHeader("Cache-Control", "max-age=1000");
@@ -336,7 +337,7 @@ protected void returnApplication(DocBase doc, HttpServletRequest req, HttpServle
             // Output as JPEG, regardless of input format.
             res.setContentType("image/jpeg");
             res.setHeader("Cache-Control", "no-cache");
-            AccountUser activeAccountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+            AccountUser activeAccountUser = TolvenRequest.getInstance().getAccountUser();
             String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
             TolvenSessionWrapper sessionWrapper = TolvenSessionWrapperFactory.getInstance();
             docProtectionBean.streamJPEGThumbnail(doc, targetWidth, targetHeight, res.getOutputStream(), activeAccountUser, sessionWrapper.getUserPrivateKey(keyAlgorithm));

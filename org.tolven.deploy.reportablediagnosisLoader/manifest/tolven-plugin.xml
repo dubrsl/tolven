@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd"
+	id="org.tolven.deploy.reportablediagnosisLoader" version="2.1.0" vendor="Tolven" 
+	class="org.tolven.deploy.reportablediagnosisLoader.LoaderReportableDiagnosis">
+<!-- 
+	Some plugins include code that actually runs in the TPF (client) environment. For example, the assemblers and loaders contribute code that runs
+	in TPF. HelloWorld, is a small example of such code.
+	Other plugins are passive in TPF, supplying components to be used in, for example, building the Tolven application server.
+	To create an active TPF function, include the full name of a class (see HelloWorld) in the plugin element above. 
+	For a passive plugin, completely remove the class attribute from the plugin element above, remove the runtime element and its contents below, 
+	and remove the HelloWorld.java from tpf/source folder. 
+-->
+<!-- 
+	Any plugin mentioned in extensions below will need declaration in the requires element. 
+	The most common plugins are already included. Add additional plugins as needed. 
+-->
+<requires>
+     <import plugin-id="org.tolven.component.tolvenejb" />
+     <import plugin-id="org.tolven.component.tolvenweb" />
+	 <import plugin-id="org.tolven.component.application" />
+	 <import plugin-id="org.tolven.library.application" />
+</requires>
+<!-- 
+	Include the following only if you have code that runs in TPF itself. 
+-->
+<runtime>
+	<library id="classes" path="tpf/classes/" type="code">
+		<export prefix="*" />
+	</library>
+</runtime>
+
+<!-- 
+	In most case, you plugin will be included in the development library which will allow
+	others to compile and debug against your code.
+-->
+<extension-point id="devLib" extension-multiplicity="none">
+	<parameter-def id="jar" default-value="devLib.jar" />
+</extension-point>
+
+<!-- 
+    Uncomment this extension to activate the application folder containing *.application.xml, *.drl, trims and reports.
+	Also, be sure your build file includes the /app section
+    
+<extension id="applications" plugin-id="org.tolven.component.application" point-id="applications">
+	<parameter id="dir" value="app" />
+</extension>
+-->
+
+<!-- 
+	tolvenWeb components, uncomment those sections that have content
+	Also, be sure your build file includes the /web section
+-->
+<!--
+Files with the same folder and name as corresponding files in core tolven will override core tolven files
+<extension id="ajaxDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="ajaxDirectory">
+     <parameter id="sourceDirectory" value="web/ajax" />
+</extension>
+<extension id="drilldownDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="drilldownDirectory">
+     <parameter id="sourceDirectory" value="web/drilldown" />
+</extension>
+<extension id="fiveDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="fiveDirectory">
+     <parameter id="sourceDirectory" value="web/five" />
+</extension>
+<extension id="imagesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="imagesDirectory">
+     <parameter id="sourceDirectory" value="web/images" />
+</extension>
+<extension id="invitationDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="invitationDirectory">
+     <parameter id="sourceDirectory" value="web/invitation" />
+</extension>
+<extension id="manageDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="manageDirectory">
+     <parameter id="sourceDirectory" value="web/manage" />
+</extension>
+<extension id="privateDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="privateDirectory">
+     <parameter id="sourceDirectory" value="web/private" />
+</extension>
+<extension id="publicDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="publicDirectory">
+     <parameter id="sourceDirectory" value="web/public" />
+</extension>
+<extension id="scriptsDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="scriptsDirectory">
+     <parameter id="sourceDirectory" value="web/scripts" />
+</extension>
+<extension id="stylesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="stylesDirectory">
+     <parameter id="sourceDirectory" value="web/styles" />
+</extension>
+<extension id="templatesDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="templatesDirectory">
+     <parameter id="sourceDirectory" value="web/templates" />
+</extension>
+<extension id="wizardDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="wizardDirectory">
+     <parameter id="sourceDirectory" value="web/wizard" />
+</extension>
+ -->
+<!-- 
+	Add a value to a property associated with a specific class.
+	Copy this prototype for each property added to a class in EJB
+	The class name is the one being configured. The name and value of the property
+	are defined by that class. 
+	In many cases, the value is the name of your class, below.
+	Add an override parameter...
+	   <parameter id="override" value="existingProperty" />
+	if this extension is overriding an existing property setting.
+<extension id="property" plugin-id="org.tolven.component.tolvenejb" point-id="property">
+     <parameter id="class" value="com.myorg.SomeClass" />
+     <parameter id="name" value="myProperty1" />
+     <parameter id="value" value="myProperty1Value" />
+</extension>
+ -->
+<!-- 
+	Uncomment this extension to include classes that will be deployed to the EJB component
+	Also, be sure your build file includes the /ejb section
+<extension id="ejbclasses" plugin-id="org.tolven.component.tolvenejb" point-id="classes">
+     <parameter id="dir" value="ejb/classes" />
+</extension>
+ -->
+
+</plugin>

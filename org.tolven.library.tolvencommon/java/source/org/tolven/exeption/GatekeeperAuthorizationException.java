@@ -12,10 +12,13 @@
  * Contact: info@tolvenhealth.com 
  *
  * @author Joseph Isaac
- * @version $Id: GatekeeperAuthorizationException.java 3245 2011-09-14 09:12:36Z joe.isaac $
+ * @version $Id: GatekeeperAuthorizationException.java 3745 2011-10-03 21:29:32Z joe.isaac $
  */
 package org.tolven.exeption;
 
+import javax.ejb.ApplicationException;
+
+@ApplicationException
 public class GatekeeperAuthorizationException extends GatekeeperSecurityException {
 
     private String realm;

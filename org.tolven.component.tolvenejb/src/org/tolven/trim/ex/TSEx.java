@@ -12,7 +12,7 @@ public class TSEx extends TS implements Serializable {
 		if (time==null) {
 			setValue("");
 		} else {
-			setValue( HL7DateFormatUtility.getHL7FullDateFormat().format(time));
+			setValue( HL7DateFormatUtility.formatHL7TSFormatL16Date(time));
 		}
 	}
 	public Date getDate( ) throws ParseException {

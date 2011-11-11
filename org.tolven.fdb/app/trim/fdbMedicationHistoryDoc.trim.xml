@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<name>obs/evn/fdbMedicationHistory</name>
+	<description>Medication Document(FDB)</description>
+	<page>fdbMedicationHistoryDoc.xhtml</page>
+	<drilldown>fdbMedicationHistoryDocDD.xhtml</drilldown>
+	<menu>global:medicationDocMenu</menu>
+ 	<application name="ephr">
+		<instance>ephr:patient:medication</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:medication</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">Active</label>
+		</transition>
+		<transition name="completedActive" from="active" to="completed">
+			<label language="en">Completed</label>
+		</transition>		
+		<transition name="abortedActive" from="active" to="aborted">
+			<label language="en">Discontinue</label>
+		</transition>
+		<transition name="cancelActive" from="active" to="cancelled">
+			<label language="en">Cancel</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+	</transitions>
+	<act classCode="DOCCLIN" moodCode="EVN">
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Medication Document</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of Medication</label>
+			<new datatype="TS" function="now"/>
+		</effectiveTime>		
+		<participation typeCode="SBJ" name="subject">
+            <role classCode="PAT">
+                <bind application="echr">
+                    <placeholder>
+                        <path>echr:patient</path>
+                    </placeholder>
+                </bind>
+                <bind application="ephr">
+                    <placeholder>
+                        <path>ephr:patient</path>
+                    </placeholder>
+                </bind>
+               	<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{patient.path}</extension>
+					</II>
+				</id>
+                <player determinerCode="INSTANCE" classCode="PSN">
+                    <name>
+                        <label>Patient Name</label>
+                        <EN>
+                            <label>Legal Name</label>
+                            <use>L</use>
+                            <part>
+								<label>First Name</label>
+								<type>GIV</type>
+								<ST>#{patient.firstName}</ST>
+                            </part>
+                            <part>
+								<label>Middle Name</label>
+								<type>GIV</type>
+								<ST>#{patient.middleName}</ST>
+                            </part>
+                            <part>
+								<label>Last Name</label>
+								<type>FAM</type>
+								<ST>#{patient.lastName}</ST>
+                            </part>
+                        </EN>
+                    </name>
+                </player>
+            </role>
+        </participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+		<participation name="author" typeCode="AUT">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+			</role>
+		</participation>
+		<relationship name="encounter" direction="OUT" typeCode="PERT" >
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Encounter</ST>
+				</title>
+				<observation>
+		 			<value>
+		 				<label>Associate with Encounter</label>
+		 				<valueSet>encounter</valueSet>
+		 			</value>
+		 		</observation>
+			</act>
+		</relationship>
+		<compute>
+			<type>org.tolven.process.EditFdbMedicationAct</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="arName">
+		        <value xsi:type="xs:string">medication</value>
+			</property>
+			<property name="arDirection">
+				<value xsi:type="xs:string">OUT</value>
+			</property>
+			<property name="arTypeCode">
+		        <value xsi:type="xs:string">COMP</value>
+			</property>
+			<property name="template">
+		       <value xsi:type="xs:string">obs/evn/fdbMedicationHistoryEntry</value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">add</value>
+			</property>
+			<property name="position">
+		        <value xsi:type="xs:string">0</value>
+			</property>
+			<property name="fdbDrugCode">
+		        <value xsi:type="xs:string"></value>
+			</property>
+			<property name="drugStatus">
+		        <value xsi:type="xs:string"></value>
+			</property>			
+		</compute>	
+		
+	</act>
+	<field name="seqNo">	
+		<value xsi:type="xs:string">0</value>
+	</field>
+	<valueSet name="route">
+		<CE>
+			<displayName>1=by mouth (PO)</displayName>
+			<code>C1527415</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2=Sublingual (SL)</displayName>
+			<code>C0001565</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3=Intramuscular (IM)</displayName>
+			<code>C1556154</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>4=Intravenous (IV)</displayName>
+			<code>C1522726</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>5=Subcutaneous (SQ)</displayName>
+			<code>C1522438</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>6=Rectal (R)</displayName>
+			<code>C1527425</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>7=Topical</displayName>
+			<code>C1522168</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>8=Inhalation</displayName>
+			<code>C0205535</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>9=Enteral Tube</displayName>
+			<code>C0150271</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>10=Other</displayName>
+			<code>C0205394</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="frequency">
+		<CE>
+			<displayName>PR=(PRN) as necessary</displayName>
+			<code>C1883728</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1H=(QH) every hour (includes every 12 hrs)</displayName>
+			<code>C0558292</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2H=(Q2H) every two hours</displayName>
+			<code>C0585322</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3H=(Q3H) every three hours</displayName>
+			<code>C0585323</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>4H=(Q4H) every four hours</displayName>
+			<code>C0585324</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>6H=(Q6H) every six hours</displayName>
+			<code>C0585325</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>8H=(Q8H) every eight hours</displayName>
+			<code>C0585326</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1D=(QD or HS) once daily</displayName>
+			<code>C0332173</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2D=(BID) two times daily</displayName>
+			<code>C0585361</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3D=(TID) three times daily</displayName>
+			<code>C0556984</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>4D=(QID) four times daily</displayName>
+			<code>C0585291</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>5D=five times daily</displayName>
+			<code>C0585292</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1W=(Q week) once each week</displayName>
+			<code>C0558293</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2W=two times every week</displayName>
+			<code>C0556985</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3W=three times every week</displayName>
+			<code>C0556987</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>QO=every other day</displayName>
+			<code>C0558287</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>4W=4 times each week</displayName>
+			<code>C0585297</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>5W=five times each week</displayName>
+			<code>C0585298</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>6W=six times each week</displayName>
+			<code>C0585299</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1M=(Q month) once every month</displayName>
+			<code>C0585302</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2M=twice every month</displayName>
+			<code>C0585303</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>C=continuous</displayName>
+			<code>C0549178</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>O=other</displayName>
+			<code>C0205394</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2010AB</codeSystemVersion>
+		</CE>
+	</valueSet>
+ 
+</trim>

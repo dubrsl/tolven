@@ -1,0 +1,35 @@
+package labresults
+
+// See http://wiki.tolven.org/doc/index.php/Plugin:org.tolven.component.tolvenejb#PlaceholderFacts
+// for details on the following annotation:
+
+/* Tolven */
+import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.MenuData;
+
+global org.tolven.app.AppEvalAdaptor app;
+
+/**
+ * If we find a lab result resolved, add it to the resolved observation list. 
+ */
+rule "Place lab result on lab result resolved list"
+	when
+		$msLabResult: MenuStructure( role == "placeholder", path == "echr:patient:labresult" )
+		$mdLabResult: MenuData( menuStructure == $msLabResult, actStatus == "completed" )
+		$msLabResultList: MenuStructure( role == "list", path == "echr:patient:labresults:completed" )		
+	then
+		app.createReferenceMD( $mdLabResult, $msLabResultList );
+end
+/**
+ * If we find a lab result placeholder, add it to the lab result summary. 
+ */
+rule "Place lab result on lab result summary list"
+	when
+		$msLabResult: MenuStructure( role == "placeholder", path == "echr:patient:labresult" )
+		$mdLabResult: MenuData( menuStructure == $msLabResult, actStatus == "completed" )
+		$msLabResultSummary: MenuStructure( role == "list", path == "echr:patient:summary:labresultsum" )		
+	then
+		app.createReferenceMD( $mdLabResult, $msLabResultSummary );
+end
+
+

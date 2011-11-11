@@ -27,13 +27,12 @@ import org.tolven.app.entity.MSAction;
 import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuStructure;
 import org.tolven.app.entity.UMSDataTransferObject;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
-import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.logging.TolvenLogger;
 import org.tolven.provider.ProviderLocal;
 import org.tolven.provider.entity.Provider;
-import org.tolven.web.security.GeneralSecurityFilter;
 import org.tolven.web.util.CalendarEventsBuilder;
 import org.tolven.web.util.MiscUtils;
 import org.tolven.web.util.SimileDataBuilder;
@@ -79,7 +78,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	try {
 		      
 		String uri = req.getRequestURI();
-		AccountUser activeAccountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+		AccountUser activeAccountUser = TolvenRequest.getInstance().getAccountUser();
 //		TolvenLogger.info(" Account User:  " + activeAccountUser, GenericServlet.class );
 		resp.setContentType("text/xml");
 	    resp.setHeader("Cache-Control", "no-cache");
@@ -97,7 +96,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    	AccountMenuStructure ams = menuBean.findAccountMenuStructure(activeAccountUser.getAccount().getId(), path );
 	    	// get its preferred children
 	    	List<MenuStructure> children = menuBean.findSortedChildren(activeAccountUser, ams);
-	    	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+	    	TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
 
 
     		writer.write("<div id=\"prefBox\" class=\"\" style=\"width:100%;display:block;\">");
@@ -174,7 +173,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    	
 	    	// get its preferred children
 	    	List<MenuStructure> children = menuBean.findSortedChildren(activeAccountUser, ams);
-	    	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+	    	TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
             String title = tolvenResourceBundle.getString("UserPreferencesTitle");
 	    	
 	    	// prepare xml
@@ -277,7 +276,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
         					UMSDataTransferObject dto = new UMSDataTransferObject();
         					dto.setVisible( visibility );
                 			menuBean.updateUserMenuStructure(activeAccountUser, path, dto );
-                			TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+                			TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
                 	    	
                 			writer.write( "<undo>" + tolvenResourceBundle.getString( "Undo") +  "</undo>");
         				}
@@ -312,7 +311,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 	    	// get its preferred children
 	    	List<MenuStructure> children = menuBean.findSortedChildren(activeAccountUser, ams);
 
-	    	TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+	    	TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
 	    	
 	    	writer.write("<ajax-response>");
 	    	writer.write("<head>" + tolvenResourceBundle.getString("UserPreferencesTitle") + "</head>");
@@ -363,7 +362,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
                 String command = req.getParameter("command");
                 String actionPath = req.getParameter("path");
                 String element = req.getParameter("element");
-                Date tolvenNow = (Date) req.getAttribute("tolvenNow");
+                Date tolvenNow = TolvenRequest.getInstance().getNow();
                 MSAction action = menuBean.findAccountMenuStructure(activeAccountUser.getAccount().getId(), actionPath);
                 String menuEventHandlerFactoryClassname = action.getMenuEventHandlerFactory();
                 Class<?> menuEventHandlerFactoryClass = Class.forName(menuEventHandlerFactoryClassname);
@@ -373,7 +372,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
                 menuEventHandler.setElement(element);
                 menuEventHandler.setAccountUser(activeAccountUser);
                 menuEventHandler.setTolvenNow(tolvenNow);
-                TolvenResourceBundle tolvenResourceBundle = SessionResourceBundleFactory.getBundle();
+                TolvenResourceBundle tolvenResourceBundle = TolvenRequest.getInstance().getResourceBundle();
                 menuEventHandler.setResourceBundle(tolvenResourceBundle);
                 menuEventHandler.setWriter(writer);
                 Method method = menuEventHandler.getClass().getDeclaredMethod(command, new Class[] {});

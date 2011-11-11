@@ -15,7 +15,11 @@
 			<table width="30%">
 				<tr>
 					<td width="10%"><h:outputLabel value="#{trim.trim.act.availabilityTime.label.value}"/></td>
-					<td width="10%"><trim:TS value="#{trim.trim.act.availabilityTime.TS}" dateStyle="short" readonly="true"/></td>
+					<td width="10%">
+						<h:outputText value="#{menu.menuDataItem.activityTime}">
+							<f:converter converterId="DateFormatL12Converter"/>
+						</h:outputText>
+					</td>
 				</tr>
 			</table>
 		</wiz:body>
@@ -28,9 +32,7 @@
 								<h:outputLabel value="#{trim.trim.act.effectiveTime.label.value}"/>
 							</td>
 							<td width="10%">
-								<trim:TS id="dateOfDeath"
-								value="#{trim.trim.act.effectiveTime.TS}"
-								dateStyle="short" readonly="true"></trim:TS>
+								<trim:TS id="dateOfDeath" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short" timeStyle="short" readonly="true"></trim:TS>
 							</td>
 						</tr>
 	  					<tr>

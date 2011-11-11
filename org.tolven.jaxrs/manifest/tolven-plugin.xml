@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.jaxrs" version="2.1.1" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.jaxrs" version="2.1.3" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<!-- 
 	Any plugin mentioned in extensions below will need declaration in the requires element. 
 	The most common plugins are already included. Add additional plugins as needed. 
@@ -15,8 +15,8 @@
 	<extension-point id="devLib" extension-multiplicity="none">
 		<parameter-def id="jar" default-value="devLib.jar" />
 	</extension-point>
-	<extension id="publicDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="publicDirectory">
-		<parameter id="sourceDirectory" value="web/public" />
+	<extension id="fiveDirectory" plugin-id="org.tolven.component.tolvenweb" point-id="fiveDirectory">
+     <parameter id="sourceDirectory" value="web/five" />
 	</extension>
 	<extension id="JAXRSServlet" plugin-id="org.tolven.component.war" point-id="servlet">
 		<parameter id="servlet-name" value="JAXRSServlet" />

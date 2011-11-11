@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>share/problem</name>
+	<description>Share a Problem</description>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="receive">
+			<placeholder bindAction="merge">
+				<path>echr:patient:problem</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="receive">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:problem</path>
+			</placeholder>
+		</bind>
+		<id>
+			<II>
+				<root>#{computeIDRoot(account)}</root>
+				<extension>#{problem.path}</extension>			
+			</II>
+		</id>
+		<code>
+			<CD>
+				<code>OINT</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3</codeSystemVersion>
+			</CD>
+		</code>
+		<text>
+			<label>Problem</label>
+			<ST>#{problem.title}</ST>
+		</text>
+		<effectiveTime>
+			<label>Onset of Symptoms</label>
+			<TS><value>#{TS(problem.effectiveTimeLow)}</value></TS>
+		</effectiveTime>
+	</act>
+</trim>

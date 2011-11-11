@@ -201,7 +201,7 @@ public class CreateScanner extends BindScanner {
 	@Override
 	protected void processObservationValue(ObservationValueSlot value) {
 		super.processObservationValue(value);
-		if (value.getCE()!=null && this.getMenuDataSource()!=null) {
+		if (value != null && value.getCE()!=null && this.getMenuDataSource()!=null) {
 			CE ce = value.getCE();
 			MenuData mdSource = getMenuDataSource();
 			if ("@string01@".equals(ce.getCode())) ce.setCode(mdSource.getString01());

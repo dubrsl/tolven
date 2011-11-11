@@ -33,10 +33,7 @@
 				<c:if test="#{trim.trim.act.participation['admitter']!=null}">
 					<wiz:group title="Admitting physician">
 		    			<p>Select an Admitting physician:</p>
-		                <h:selectOneMenu id="admit" value="#{trim.trim.act.participation['admitter'].role.id.for[top.accountUser.account].extension}">
-							<f:selectItem itemLabel="Select" itemValue=""/>
-		                	<f:selectItems value="#{trim.list['echr:admin:staff:all~Name']}"/>
-		                </h:selectOneMenu>
+						<wiz:selectWithOther id="admit"  role="#{trim.trim.act.participation['admitter'].role}" list="#{trim.list['echr:admin:staff:all~Name']}" readonly="false" />
 					</wiz:group>
 				</c:if>
 				<c:if test="#{trim.trim.act.participation['attender']!=null}">

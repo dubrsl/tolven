@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin id="org.tolven.assembler.tomcatserver" version="2.1.0" class="org.tolven.assembler.tomcatserver.TomcatServerXMLAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<plugin id="org.tolven.assembler.tomcatserver" version="2.1.1" class="org.tolven.assembler.tomcatserver.TomcatServerXMLAssembler" vendor="Tolven" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<!--DEPRECATED -->
 	<requires>
 		<import plugin-id="org.tolven.component.tomcatserver" />
 	</requires>

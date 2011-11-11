@@ -15,41 +15,35 @@
  */
 package org.tolven.shiro.web.config;
 
-import java.util.Map;
-
 import javax.servlet.FilterConfig;
 
-import org.apache.shiro.config.Ini;
-import org.apache.shiro.web.config.IniFilterChainResolverFactory;
+import org.apache.shiro.util.AbstractFactory;
 import org.apache.shiro.web.filter.mgt.FilterChainResolver;
 import org.tolven.shiro.web.filter.mgt.TolvenFilterChainResolver;
 
-public class TolvenFilterChainResolverFactory extends IniFilterChainResolverFactory {
+public class TolvenFilterChainResolverFactory extends AbstractFactory<FilterChainResolver> {
 
+    private FilterConfig filterConfig;
+    
     public TolvenFilterChainResolverFactory() {
     }
 
-    public TolvenFilterChainResolverFactory(Ini ini) {
-        super(ini);
-    }
-
-    public TolvenFilterChainResolverFactory(Ini ini, Map<String, ?> defaultBeans) {
-        super(ini, defaultBeans);
-    }
-
-    /*
-     * This method is required to get a custom TolvenFilterChainResolver
-     * (non-Javadoc)
-     * @see org.apache.shiro.web.config.IniFilterChainResolverFactory#createDefaultInstance()
-     */
     @Override
-    protected FilterChainResolver createDefaultInstance() {
+    protected FilterChainResolver createInstance() {
         FilterConfig filterConfig = getFilterConfig();
         if (filterConfig != null) {
             return new TolvenFilterChainResolver(filterConfig);
         } else {
             return new TolvenFilterChainResolver();
         }
+    }
+
+    public FilterConfig getFilterConfig() {
+        return filterConfig;
+    }
+
+    public void setFilterConfig(FilterConfig filterConfig) {
+        this.filterConfig = filterConfig;
     }
 
 }

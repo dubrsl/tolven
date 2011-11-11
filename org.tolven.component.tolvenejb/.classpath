@@ -3,10 +3,7 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/devLib"/>
-	<classpathentry kind="lib" path="lib/jakarta-httpcore-4.0-alpha1.jar"/>
-	<classpathentry kind="lib" path="lib/jaxb-impl.jar"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
-	<classpathentry kind="lib" path="ejb/lib/jakarta-httpcore-4.0-alpha1.jar"/>
-	<classpathentry kind="lib" path="conf/sun-ejb-jar.xml"/>
+	<classpathentry kind="lib" path="lib/jakarta-httpcore-4.0-alpha1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

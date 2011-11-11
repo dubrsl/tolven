@@ -1,0 +1,111 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+
+	<!-- Patient Procedures (px) -->
+	<!-- Customized procedure placeholder: 1. Added field for code to use in PLD. -->
+	<extends path="echr:patient">
+		<placeholder name="px" sequence="15" title="Procedure" eventInstance="echr:patient:wip" heading="/five/treatmentLink.xhtml" page="/wizard/wizard.xhtml">
+			<field internal="string01" name="title">
+				<from>#{act.code.CE.displayName}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="code" internal="string06">
+				<from>#{act.code.CE.translations[0].code}</from>
+				<from>#{act.code.CE.code}</from>
+			</field>
+			<field internal="date01" name="effectiveTimeLow">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field internal="date02" name="effectiveTimeHigh">
+				<from>#{act.effectiveTime.IVLTS.high.date}</from>
+			</field>
+			<field internal="parent01" name="patient">
+				<from>#{patient}</from>
+			</field>
+			<field name="status" internal="string02">
+				<from>#{trim.act.statusCode}</from>
+			</field>
+			<field internal="parent02" name="author">
+				<from>#{internalId( account, trim.act.participation['author'].role.id)}</from>
+			</field>
+			<field internal="string05" name="enteredBy">
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="procsum" visible="never">
+			<column name="FromDate" internal="date01" format="MM/dd/yyyy">
+				<from>#{procedure.effectiveTimeLow}</from>
+				<from>#{px.effectiveTimeLow}</from>
+			</column>
+			<column name="title" internal="string01">
+				<from>#{procedure.title}</from>
+				<from>#{px.title}</from>
+			</column>
+			<column name="status" internal="string02">
+				<from>#{px.status}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="procsum" portalColumn="3" sequence="3" title="Procedures" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:procsum" visible="true" drilldown=":procedures">
+			<action title="New" name="menu1" query="global:pxDocMenu" visible="true" page="/five/list.xhtml">
+				<column width="40.0" instantiate="true" internal="string01" name="Procedure" />
+			</action>
+			<action title="New" name="menu" query="global:pxDocMenu" visible="true" page="/five/list.xhtml">
+				<column width="40.0" instantiate="true" internal="string01" name="Procedure" />
+			</action>
+		</portlet>
+	</extends>
+
+	<extends path="echr:patient:summary:calendar">
+		<entry name="procedure" sequence="5" title="Procedure" query="echr:patient:summary:procsum" visible="true" drilldown=":procedures" />
+	</extends>
+	<!-- Customized procedures menu: 1. Added additional column for code to use in PLD. -->
+	<extends path="echr:patient">
+		<menu name="procedures" sequence="19" title="Procedures" page="/five/bar2.xhtml" visible="true">
+			<list name="pxList" title="Current" drilldown=":px" visible="true" page="/five/list.xhtml">
+				<column width="10.0" format="MMM-dd-yyyy" internal="date01" name="Date">
+					<from>#{px.effectiveTimeLow}</from>
+				</column>
+				<column width="40.0" reference="true" internal="string01" name="Procedure">
+					<from>#{px.title}</from>
+				</column>
+				<column name="Code" internal="string06" reference="true" width="15.0" visible="false">
+					<from>#{px.code}</from>
+				</column>
+				<column width="15.0" internal="string02" name="Status">
+					<from>#{px.status}</from>
+				</column>
+				<column width="15.0" internal="string03" name="Performer">
+					<from>#{px.author.lastName}</from>
+					<from>#{px.enteredBy}</from>
+				</column>
+				<action title="New" name="menu" query="global:pxDocMenu" visible="true" page="/five/list.xhtml">
+					<column width="40.0" instantiate="true" internal="string01" name="Procedure" />
+				</action>
+			</list>
+			<list name="nullified" title="Nullified" drilldown=":px" visible="true" page="/five/list.xhtml">
+				<column width="10.0" format="MMM-dd-yyyy" internal="date01" name="Date">
+					<from>#{px.effectiveTimeLow}</from>
+				</column>
+				<column width="40.0" reference="true" internal="string01" name="Procedure">
+					<from>#{px.title}</from>
+				</column>
+				<column name="Code" internal="string06" reference="true" width="15.0" visible="false">
+					<from>#{px.code}</from>
+				</column>
+				<column width="15.0" internal="string02" name="Status">
+					<from>#{px.status}</from>
+				</column>
+				<column width="15.0" internal="string03" name="Performer">
+					<from>#{px.author.lastName}</from>
+					<from>#{px.enteredBy}</from>
+				</column>				
+			</list>
+		</menu>
+	</extends>
+	</application>

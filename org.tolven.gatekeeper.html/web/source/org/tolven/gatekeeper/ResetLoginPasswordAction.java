@@ -53,7 +53,7 @@ public class ResetLoginPasswordAction {
         } catch (Exception ex) {
             GatekeeperSecurityException gex = GatekeeperSecurityException.getRootGatekeeperException(ex);
             if (gex == null) {
-                throw new RuntimeException("Could not find user " + getUid() + " in realm: " + getRealm(), ex);
+                throw new RuntimeException("Could not find user " + getSearchUid() + " in realm: " + getRealm(), ex);
             } else {
                 ex.printStackTrace();
                 FacesContext.getCurrentInstance().addMessage("findUserForm", new FacesMessage(gex.getMessage()));
@@ -61,12 +61,12 @@ public class ResetLoginPasswordAction {
             }
         }
         if (tp == null) {
-            FacesContext.getCurrentInstance().addMessage("findUserForm", new FacesMessage("No result found for user: " + getUid() + " in realm: " + getRealm()));
+            FacesContext.getCurrentInstance().addMessage("findUserForm", new FacesMessage("No result found for user: " + getSearchUid() + " in realm: " + getRealm()));
             setUid(null);
             setCn(null);
             setSn(null);
         } else {
-            FacesContext.getCurrentInstance().addMessage("findUserForm", new FacesMessage("Found user " + tp.getUid() + " in realm: " + getRealm()));
+            FacesContext.getCurrentInstance().addMessage("findUserForm", new FacesMessage("Found user " + getSearchUid() + " in realm: " + getRealm()));
             setUid(tp.getUid());
             setCn(tp.getCn());
             setSn(tp.getSn());

@@ -17,7 +17,7 @@
       <div id="popupGrids">
   			<div id="#{top.accountType}:#{trim.fieldMap['formType']}" class="popupgrid"/>          
       </div>
-   <c:if test="${fn:length(trim.trim.act.relationshipsList['entry']) == 0}">
+   <c:if test="${fn:length(trim.trim.act.relationshipsList[trim.trim.act.computes[0].property['arName']]) == 0}">
         <div class="add" style="display:none;"> 
           <li>
           <a class="inactive" href="#" onclick="javascript:openTemplate('#{top.accountType}:#{trim.fieldMap['formType']}','#{top.accountType}:#{trim.fieldMap['formType']}', 'addTemplate', '#{menu.elementLabel}', 0)">Add #{trim.trim.act.relationship['type'].act.title.ST.value}</a>
@@ -35,10 +35,10 @@
 		 <h:inputText id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" style="display: none;" />		
 
     	<c:forEach var="rel" items="#{trim.trim.act.relationships}" varStatus="relIndex">
-			<c:if test="#{rel.name=='entry'}">
-    			<ui:include src="#{trim.fieldMap['pageName']}DocclinContent.xhtml">
+			<c:if test="#{rel.name==trim.trim.act.computes[0].property['arName']}">
+    			<ui:include src="#{trim.trim.act.computes[0].property['arName']}DocclinContent.xhtml">
 					<ui:param name="rel" value="#{rel}"/>
-           			<ui:param name="type" value="#{trim.trim.act.relationship['type'].act.title.ST.value}"/>
+           			<ui:param name="type" value="#{trim.trim.act.computes[0].property['arName']}"/>
            			<ui:param name="index" value="#{relIndex.index}"/>
 	     		</ui:include>	     			
 			</c:if>

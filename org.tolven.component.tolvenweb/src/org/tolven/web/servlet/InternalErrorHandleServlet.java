@@ -30,8 +30,8 @@ import javax.transaction.Status;
 import javax.transaction.UserTransaction;
 
 import org.apache.commons.lang.StringUtils;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
-import org.tolven.web.security.GeneralSecurityFilter;
 
 
 /** This servlet will send an email when there is an error in the application(server side) 
@@ -55,7 +55,7 @@ public class InternalErrorHandleServlet extends HttpServlet {
 				ut.begin();				
 	        }
 			//check if the error.email is configured. If found send an email
-			Object accountUser = req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+			Object accountUser = TolvenRequest.getInstance().getAccountUser();
 			if(accountUser != null){		 
 				String errorEmail = ((AccountUser)accountUser).getAccount().getProperty().get("org.tolven.error.email.to");
 				if(!StringUtils.isBlank(errorEmail)){

@@ -27,7 +27,7 @@
 	If sectionZipIncludes is undefined for a given section, then **/* is assumed for both the build/section and build/section/classes
 	If sectionZipExcludes is undefined for a given section, then **/source is assumed for build/section (since source files appear in devLib.jar)
 	-->
-	<target name="build-plugin" depends="clean,init" description="Build all sections of this plugin">
+	<target name="build-plugin" depends="init" description="Build all sections of this plugin">
 		<zip destfile="${zipFileName}">
 			<!-- Add Manifest section -->
 			<zipfileset dir="manifest"/>

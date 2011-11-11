@@ -23,7 +23,7 @@ public class LoadImageOrder extends LoadRESTfulClient {
 	public static final int Proc_Short_Name = 6;
 	public static final int Code = 7;
 	public static final int CodeSystemName = 3;
-	public static final int CodeSystemVersion = 4;
+	public static final int CodeSystemVersion = 8;
 	public static final int Proc_Name = 5;
 	public static final int BATCH_SIZE = 100;
 	List<String> trims = new ArrayList<String>(BATCH_SIZE);
@@ -69,7 +69,7 @@ public class LoadImageOrder extends LoadRESTfulClient {
 	public static void writeCode( String fields[], XMLStreamWriter writer ) throws XMLStreamException {
 		writer.writeStartElement("code");
 		{
-			writer.writeStartElement("CE");
+			writer.writeStartElement("CD");
 			{
 				writer.writeStartElement("displayName");
 				writer.writeCharacters(fields[Proc_Short_Name]);
@@ -81,7 +81,7 @@ public class LoadImageOrder extends LoadRESTfulClient {
 				writer.writeCharacters("CPT");
 				writer.writeEndElement();
 				writer.writeStartElement("codeSystemVersion");
-				writer.writeCharacters("CodeSystemVersion");
+				writer.writeCharacters(fields[CodeSystemVersion]);
 				writer.writeEndElement();
 			}
 			writer.writeEndElement();
@@ -103,7 +103,7 @@ public class LoadImageOrder extends LoadRESTfulClient {
 	 * @throws Exception 
 	 */
 	public void load(String fileName) throws Exception {
-		TolvenLogger.info("Uploading UMLS Image Orders list from: " + fileName, LoadImageOrder.class);
+		TolvenLogger.info("Uploading Image Orders list from: " + fileName, LoadImageOrder.class);
         BufferedReader reader;
         reader = new BufferedReader(new InputStreamReader(new FileInputStream( new File(fileName)),"ISO-8859-1"));
         String record;
@@ -119,7 +119,7 @@ public class LoadImageOrder extends LoadRESTfulClient {
             }
             // Skip the heading line
             if (rowCount==1) continue;
-            fields  = record.split("\\t",8);
+            fields  = record.split("\\t", 9);
 		   	StringWriter bos = new StringWriter();
 			XMLOutputFactory factory = XMLOutputFactory.newInstance();
 			XMLStreamWriter writer = factory.createXMLStreamWriter(bos);

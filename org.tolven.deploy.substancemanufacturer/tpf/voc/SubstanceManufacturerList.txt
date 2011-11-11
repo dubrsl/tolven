@@ -1,0 +1,63 @@
+MVX_CODE|manufacturer_name|Notes|status|last_updated_date|manufacturer_id
+AB|Abbott Laboratories|includes Ross Products Division, Solvay|Active|28-May-10|1
+ACA|Acambis, Inc|acquired by sanofi in sept 2008|Inactive|28-May-10|2
+AD|Adams Laboratories, Inc.||Active|28-May-10|3
+ALP|Alpha Therapeutic Corporation||Active|28-May-10|4
+AR|Armour|part of CSL|Inactive|28-May-10|5
+AVB|Aventis Behring L.L.C.|part of CSL|Inactive|28-May-10|6
+AVI|Aviron|acquired by Medimmune|Inactive|28-May-10|7
+BA|Baxter Healthcare Corporation-inactive||Inactive|28-May-10|8
+BAH|Baxter Healthcare Corporation|includes Hyland Immuno, Immuno International AG,and North American Vaccine, Inc./acquired some assets from alpha therapeutics|Active|28-May-10|9
+BAY|Bayer Corporation|Bayer Biologicals now owned by Talecris|Inactive|28-May-10|10
+BP|Berna Products||Inactive|28-May-10|11
+BPC|Berna Products Corporation|includes Swiss Serum and Vaccine Institute Berne|Active|28-May-10|12
+BTP|Biotest Pharmaceuticals Corporation|New owner of NABI HB as of December 2007, Does NOT replace NABI Biopharmaceuticals in this code list.|Active|28-May-10|13
+MIP|Emergent BioDefense Operations Lansing|Bioport renamed. Formerly Michigan Biologic Products Institute|Active|28-May-10|14
+CSL|CSL Behring, Inc|CSL Biotherapies renamed to CSL Behring|Active|28-May-10|15
+CNJ|Cangene Corporation||Active|28-May-10|16
+CMP|Celltech Medeva Pharmaceuticals|Part of Novartis|Inactive|28-May-10|17
+CEN|Centeon L.L.C.||Inactive|28-May-10|18
+CHI|Chiron Corporation|Part of Novartis|Inactive|28-May-10|19
+CON|Connaught|acquired by Merieux|Inactive|28-May-10|21
+DVC|DynPort Vaccine Company, LLC||Active|28-May-10|22
+EVN|Evans Medical Limited|Part of Novartis|Inactive|28-May-10|23
+GEO|GeoVax Labs, Inc.||Active|28-May-10|24
+SKB|GlaxoSmithKline|includes SmithKline Beecham and Glaxo Wellcome|Active|28-May-10|25
+GRE|Greer Laboratories, Inc.||Active|28-May-10|26
+IAG|Immuno International AG|Part of Baxter|Inactive|28-May-10|27
+IUS|Immuno-U.S., Inc.||Active|28-May-10|28
+INT|Intercell Biomedical||Active|28-May-10|29
+KGC|Korea Green Cross Corporation||Active|28-May-10|30
+LED|Lederle|became a part of WAL, now owned by Pfizer|Inactive|28-May-10|31
+MBL|Massachusetts Biologic Laboratories|formerly Massachusetts Public Health Biologic Laboratories|Active|28-May-10|32
+MA|Massachusetts Public Health Biologic Laboratories||Inactive|28-May-10|33
+MED|MedImmune, Inc.|acquisitions of U.S. Bioscience in 1999 and Aviron in 2002, as well as the integration with Cambridge Antibody Technology and the strategic alignment with our new parent company, AstraZeneca, in 2007.|Active|28-May-10|34
+MSD|Merck & Co., Inc.||Active|28-May-10|35
+IM|Merieux|Part of sanofi|Inactive|28-May-10|36
+MIL|Miles||Inactive|28-May-10|37
+NAB|NABI|formerly North American Biologicals, Inc.|Active|28-May-10|38
+NYB|New York Blood Center||Active|28-May-10|39
+NAV|North American Vaccine, Inc.|part of Baxter|Inactive|28-May-10|40
+NOV|Novartis Pharmaceutical Corporation|includes Chiron, PowderJect Pharmaceuticals, Celltech Medeva Vaccines and Evans Limited, Ciba-Geigy Limited and Sandoz Limited|Active|28-May-10|41
+NVX|Novavax, Inc.||Active|28-May-10|42
+OTC|Organon Teknika Corporation||Active|02-Nov-10|43
+ORT|Ortho-clinical Diagnostics|a J & J company (formerly Ortho Diagnostic Systems, Inc.)|Active|28-May-10|44
+PD|Parkedale Pharmaceuticals|no website and no news articles (formerly Parke-Davis)|Inactive|28-May-10|45
+PWJ|PowderJect Pharmaceuticals|See Novartis|Inactive|28-May-10|46
+PRX|Praxis Biologics|became a part of WAL, now owned by Pfizer|Inactive|28-May-10|47
+JPN|The Research Foundation for Microbial Diseases of Osaka University (BIKEN)||Active|28-May-10|48
+PMC|sanofi pasteur|formerly Aventis Pasteur, Pasteur Merieux Connaught; includes Connaught Laboratories and Pasteur Merieux. Acquired ACAMBIS.|Active|28-May-10|49
+SCL|Sclavo, Inc.||Active|28-May-10|50
+SOL|Solvay Pharmaceuticals|Part of Abbott|Inactive|28-May-10|51
+SI|Swiss Serum and Vaccine Inst.|Part of Berna|Inactive|28-May-10|52
+TAL|Talecris Biotherapeutics|includes Bayer Biologicals|Active|28-May-10|53
+USA|United States Army Medical Research and Material Command||Active|28-May-10|54
+VXG|VaxGen|acquired by Emergent Biodefense Operations Lansing, Inc|Inactive|28-May-10|55
+WA|Wyeth-Ayerst|became WAL, now owned by Pfizer|Inactive|28-May-10|56
+WAL|Wyeth|acquired by Pfizer 10/15/2009|Active|28-May-10|57
+ZLB|ZLB Behring|acquired by CSL|Inactive|28-May-10|58
+OTH|Other manufacturer||Active|28-May-10|59
+UNK|Unknown manufacturer||Active|28-May-10|60
+AKR|Akorn, Inc||Active|28-May-10|61
+PFR|Pfizer, Inc|includes Wyeth-Lederle Vaccines and Pediatrics, Wyeth Laboratories, Lederle Laboratories, and Praxis Biologics,|Active|28-May-10|62
+BRR|Barr Laboratories|Subsidiary of Teva Pharmaceuticals|Active|20-Mar-11|64

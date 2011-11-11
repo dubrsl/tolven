@@ -4,7 +4,6 @@
 	<import file="../plugin/buildImport.xml" />
 
 	<property name="buildFolder" value="build" />
-
 	<property name="includeSourceInDevLib" value="true" />
 
 	<target depends="init" name="compile">
@@ -15,6 +14,8 @@
 			<classpath path="lib/jsf-api.jar" />
 			<classpath path="lib/javax.annotation.jar" />
 			<classpath path="lib/openssoclientsdk.jar" />
+			<classpath path="lib/shiro-core-1.1.0.jar" />
+			<classpath path="lib/shiro-web-1.1.0.jar" />
 		</javac>
 	</target>
 
@@ -54,9 +55,6 @@
 				<include name="trim/*" />
 				<include name="wizard/*" />
 			</zipfileset>
-			<!--<zipfileset dir="lib" prefix="web/WEB-INF/lib">
-				<include name="jsf-facelets.jar" />
-			</zipfileset>-->
 		</zip>
 	</target>
 

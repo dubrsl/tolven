@@ -26,7 +26,6 @@ import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.tolven.gatekeeper.RSGatekeeperClientLocal;
@@ -66,6 +65,7 @@ public class QueueSessionInterceptor {
     @AroundInvoke
     public Object initializeSession(final InvocationContext invCtx) throws Exception {
         Object result = null;
+        Subject subject = null;
         try {
             InitialContext ictx = new InitialContext();
             TolvenContext tolvenContext = (TolvenContext) ictx.lookup("tolvenContext");
@@ -73,15 +73,14 @@ public class QueueSessionInterceptor {
             String user = queueContext.getUser();
             char[] password = queueContext.getPassword().toCharArray();
             String realm = queueContext.getRealm();
-            SecurityManager securityManager = new TolvenSecurityManager();
-            SecurityUtils.setSecurityManager(securityManager);
             String extendedSessionId = rsGatekeeperClientBean.login(user, password, realm);
             String sessionId = SecretKeyThreadLocal.getSessionId(extendedSessionId);
             byte[] secretKey = SecretKeyThreadLocal.getSecretKey(extendedSessionId);
             SecretKeyThreadLocal.set(secretKey);
-            Subject subject = new Subject.Builder(securityManager).sessionId(sessionId).buildSubject();
+            SecurityManager securityManager = new TolvenSecurityManager();
+            subject = new Subject.Builder(securityManager).sessionId(sessionId).buildSubject();
             if (!subject.isAuthenticated()) {
-                throw new RuntimeException("Authentication failed");
+                throw new RuntimeException("Authentication failed for user: " + user);
             }
             result = subject.execute(new Callable<Object>() {
                 public Object call() throws Exception {
@@ -97,7 +96,7 @@ public class QueueSessionInterceptor {
             ctx.setRollbackOnly();
             logger.error(ex.getMessage());
             ex.printStackTrace();
-            if("true".equals(System.getProperty("suppressOnMessageException"))) {
+            if ("true".equals(System.getProperty("suppressOnMessageException"))) {
                 /*
                  * A bug in JBoss causes an infinite loop if an exception is thrown: JBAS-7950
                  * suppressOnMessageException has been placed in the jboss.xml file so that
@@ -107,12 +106,24 @@ public class QueueSessionInterceptor {
                 throw new RuntimeException(ex);
             }
         } finally {
-            //Clean up Shiro login
-            Subject subject = SecurityUtils.getSubject();
-            if (subject != null) {
-                subject.logout();
+            try {
+                //Clean up Shiro login
+                if (subject != null) {
+                    subject.logout();
+                }
+            } catch (Exception ex) {
+                if ("true".equals(System.getProperty("suppressOnMessageException"))) {
+                    /*
+                     * A bug in JBoss causes an infinite loop if an exception is thrown: JBAS-7950
+                     * suppressOnMessageException has been placed in the jboss.xml file so that
+                     * it does not impact Glassfish, which works correctly 
+                     */
+                } else {
+                    throw new RuntimeException(ex);
+                }
+            } finally {
+                SecretKeyThreadLocal.remove();
             }
-            SecretKeyThreadLocal.remove();
         }
         return result;
     }

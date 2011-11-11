@@ -25,7 +25,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -42,25 +41,24 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.antlr.runtime.ANTLRStringStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.RuleReturnScope;
-import org.antlr.runtime.tree.Tree;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.tolven.app.DataExtractLocal;
 import org.tolven.app.DataExtractRemote;
 import org.tolven.app.DataField;
 import org.tolven.app.DataQueryResults;
 import org.tolven.app.MenuLocal;
 import org.tolven.app.SQLDialectHandler;
+import org.tolven.app.el.ELFunctions;
 import org.tolven.app.entity.AccountMenuStructure;
 import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuLocator;
 import org.tolven.app.entity.MenuStructure;
+import org.tolven.app.entity.PlaceholderID;
 import org.tolven.core.AccountDAOLocal;
 import org.tolven.core.TolvenPropertiesLocal;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountUser;
 
@@ -355,6 +353,7 @@ class DataExtractBean implements DataExtractLocal, DataExtractRemote {
 					xmlStreamWriter.writeAttribute("totalCount", totalCount.toString());
 				}
 				addExtendedFields(dq);
+				//addPlaceholderIds(dq);
 				if(MenuStructure.PLACEHOLDER.equals(dq.getMenuStructure().getRole())) {
 					addParentFields(dq);
 				}
@@ -404,9 +403,28 @@ class DataExtractBean implements DataExtractLocal, DataExtractRemote {
     
     protected void writeXMLColumn(XMLStreamWriter xmlStreamWriter, DataField field, Object obj ) throws XMLStreamException {
         if (obj != null) {
+        	String value;
             xmlStreamWriter.writeStartElement(xmlName(field));
-            String value = obj.toString();
-            xmlStreamWriter.writeCharacters(StringEscapeUtils.escapeXml(value));
+            if(field.getExternal().equalsIgnoreCase("placeholderIds")) {
+            	//fill me in with a for loop over the placeholder ids
+            	Object[] plist = (Object[]) obj;
+            	for (Object pobj : plist) {
+            		String[] pentry = pobj.toString().split(",");
+            		String proot = pentry[0].toString();
+            		String pext = pentry[1].toString();
+            		xmlStreamWriter.writeStartElement("id");
+            		xmlStreamWriter.writeAttribute("root", StringEscapeUtils.escapeXml(proot));
+            		xmlStreamWriter.writeAttribute("extension", StringEscapeUtils.escapeXml(pext));            		
+            		xmlStreamWriter.writeEndElement();
+            	}
+            } else {
+	            value = obj.toString();
+	            String df = field.getDisplayFunction();
+				if(df != null && "age".equalsIgnoreCase(df)) {
+	            	value = ELFunctions.age((Date) obj, TolvenRequest.getInstance().getAccountUser());
+	            }
+				xmlStreamWriter.writeCharacters(StringEscapeUtils.escapeXml(value));
+            }            
             xmlStreamWriter.writeEndElement();
         }
     }
@@ -431,7 +449,7 @@ class DataExtractBean implements DataExtractLocal, DataExtractRemote {
         	xmlStreamWriter.writeStartElement("row");
         	if (fields.size() > 1) {
 	        	Object[] row = (Object[]) dq.next();
-	        	if(dq.getMenuPath().getPath().startsWith("global:genericMedicationMenu")) {
+	        	if(dq.getMenuPath().getPath().startsWith("global:genericMedicationMenu")) {  //TODO: FIXME
 	        		for (int j = 0; j < fields.size(); j++) {
 	        			Object genericMedication=null;
 	        			if(fields.get(j).getLabel().startsWith("genericmedication")) {
@@ -684,12 +702,16 @@ class DataExtractBean implements DataExtractLocal, DataExtractRemote {
 				{
 					for(int i=1,j=1;i<fields.size();i++)
 					{
-						if(fields.get(i).getInternal().contains("_extended"))
+						if(fields.get(i).getInternal().contains("_extended")) {
 							newRow[i] = md.getExtendedField(fields.get(i).getExternal());
+						} else if (fields.get(i).getInternal().contains("placeholderIds")) {
+							//grab the placeholderIds							
+							newRow[i] = addPlaceholderIds(md);
+						}
 						else
 						{
 							newRow[i] = row[j++];
-						}
+						}						
 					}
 					rows.add(newRow);
 				}
@@ -699,6 +721,20 @@ class DataExtractBean implements DataExtractLocal, DataExtractRemote {
 			
 		}
 		dq.setIterator(rows.iterator());
+	}
+	
+	public Object[] addPlaceholderIds(MenuData md)
+	{
+		//grab the placeholderIds
+		Object[] plist = new Object[md.getPlaceholderIDs().size()];
+		int x = 0;
+		for(PlaceholderID pid : md.getPlaceholderIDArray())
+		{			
+			String placeholderIdXML = pid.getRoot().toString() + "," + pid.getExtension().toString();
+			plist[x] = placeholderIdXML;
+			x++;
+		}
+		return plist;
 	}
 	
 	/**
@@ -894,7 +930,7 @@ class DataExtractBean implements DataExtractLocal, DataExtractRemote {
 						flag.add(k);
 						continue;
 					}
-					newFields.add(new DataField( externalPrefix +"."+df.getExternal() , df.getInternal(), true));
+					newFields.add(new DataField( externalPrefix +"."+df.getExternal() , df.getInternal(), true, null));
 				}
 			}
 		}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.shiroejb" version="2.1.1" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.shiroejb" version="2.1.6" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.assembler.ejbmodule" />
 		<import plugin-id="org.tolven.component.ejb" />
@@ -214,5 +214,19 @@
 	</extension>
 	<extension id="oracle-persistence-unit-metadata" plugin-id="org.tolven.shiroejb" point-id="persistence-unit-metadata">
 		<parameter id="ormId" value="oracle" />
+	</extension>
+	<extension id="oracle-org.tolven.shiro.authz.entity.DefaultTolvenAuthorization-entity" plugin-id="org.tolven.shiroejb" point-id="entity">
+		<parameter id="ormId" value="oracle" />
+		<parameter id="class" value="org.tolven.shiro.authz.entity.DefaultTolvenAuthorization" />
+		<parameter id="table">
+			<parameter id="name" value="TOLVENAUTH" />
+		</parameter>
+	</extension>
+	<extension id="oracle-org.tolven.shiro.session.entity.TolvenSimpleSession-entity" plugin-id="org.tolven.shiroejb" point-id="entity">
+		<parameter id="ormId" value="oracle" />
+		<parameter id="class" value="org.tolven.shiro.session.entity.TolvenSimpleSession" />
+		<parameter id="table">
+			<parameter id="name" value="TOLVEN_SESSION" />
+		</parameter>
 	</extension>
 </plugin>

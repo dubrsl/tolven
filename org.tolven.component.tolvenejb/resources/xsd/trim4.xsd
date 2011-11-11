@@ -483,7 +483,7 @@
 					<xs:element name="effectiveTime" type="GTSSlot" minOccurs="0"/>
 					<xs:element name="activityTime" type="GTSSlot" minOccurs="0"/>
 					<xs:element name="availabilityTime" type="TSSlot" minOccurs="0"/>
-					<xs:element name="priorityCode" type="SET_CESlot" minOccurs="0" />
+					<xs:element name="priorityCode" type="SET_CDSlot" minOccurs="0" />
 					<xs:element name="confidentialityCode" type="SET_CESlot" minOccurs="0" />
 					<xs:element name="repeatNumber" type="IVLINTSlot" minOccurs="0"/>
 					<xs:element name="interruptibleInd" type="BLSlot" minOccurs="0"/>
@@ -494,6 +494,7 @@
 					<xs:element name="observation" type="Observation" minOccurs="0"/>
 					<xs:element name="patientEncounter" type="PatientEncounter" minOccurs="0"/>
 					<xs:element name="procedure" type="Procedure" minOccurs="0"/>
+					<xs:element name="substanceAdministration" type="SubstanceAdministration" minOccurs="0"/>
 					<xs:element name="supply" type="Supply" minOccurs="0"/>
 					<xs:element name="participation" type="ActParticipation" minOccurs="0" maxOccurs="unbounded"/>
 					<xs:element name="relationship" type="ActRelationship" minOccurs="0" maxOccurs="unbounded"/>
@@ -508,7 +509,7 @@
 	<xs:complexType name="Observation">
 		<xs:sequence>
 			<xs:element name="value" type="ObservationValueSlot" minOccurs="0" maxOccurs="unbounded"/>
-			<xs:element name="interpretationCode" type="SET_CESlot" minOccurs="0" />
+			<xs:element name="interpretationCode" type="SET_CDSlot" minOccurs="0" />
 			<xs:element name="methodCode" type="SET_CESlot" minOccurs="0" />
 			<xs:element name="targetSiteCode" type="SET_CDSlot" minOccurs="0" />
 			<xs:element name="publicHealthCase" type="PublicHealthCase" minOccurs="0" />
@@ -541,7 +542,6 @@
 			<xs:element name="methodCode" type="SET_CESlot" minOccurs="0"/>
 			<xs:element name="approachSiteCode" type="SET_CDSlot" minOccurs="0"/>
 			<xs:element name="targetSiteCode" type="SET_CDSlot" minOccurs="0"/>
-			<xs:element name="substanceAdministration" type="SubstanceAdministration" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="SubstanceAdministration">

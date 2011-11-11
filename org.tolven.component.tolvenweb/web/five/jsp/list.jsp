@@ -7,8 +7,8 @@
 	<jsp:useBean id="tolBean" scope="request" class="org.tolven.web.TolvenJSPBean">
 		<jsp:setProperty name="tolBean" property="element" /> 
 	    <jsp:scriptlet>	
-		    tolBean.setAccountUser((org.tolven.core.entity.AccountUser)request.getAttribute("accountUser"));
-		    tolBean.setTolvenNow((java.util.Date)request.getAttribute("tolvenNow"));
+		    tolBean.setAccountUser(org.tolven.core.TolvenRequest.getInstance().getAccountUser());
+		    tolBean.setTolvenNow(org.tolven.core.TolvenRequest.getInstance().getNow());
 	    </jsp:scriptlet>
 	</jsp:useBean>
 

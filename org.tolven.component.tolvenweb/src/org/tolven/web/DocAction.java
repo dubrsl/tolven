@@ -22,6 +22,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.naming.NamingException;
 
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.doc.entity.DocBase;
 import org.tolven.doc.entity.DocImage;
@@ -207,7 +208,7 @@ public class DocAction  extends TolvenAction {
 	public DataModel getPhotosModel() throws NamingException {
 		if (photosModel==null) {
 			photosModel = new ListDataModel();
-			photosModel.setWrappedData(getDocBean().findImages(getTop().getAccountId(), 100, 0, "id", "ASC"));
+			photosModel.setWrappedData(getDocBean().findImages(TolvenRequest.getInstance().getAccountUser().getId(), 100, 0, "id", "ASC"));
 		}
 		return photosModel;
 	}
@@ -219,12 +220,12 @@ public class DocAction  extends TolvenAction {
 	public String selectUserLikeness( ) throws NamingException {
 		DataModel model = getPhotosModel();
 		DocImage doc = (DocImage) model.getRowData();
-		getTop().getAccountUser().getUser().setLikeness(doc);
+		TolvenRequest.getInstance().getAccountUser().getUser().setLikeness(doc);
 		return "success";
 	}
 	
 	public String selectNoUserLikeness( ) {
-		getTop().getAccountUser().getUser().setLikeness(null);
+		TolvenRequest.getInstance().getAccountUser().getUser().setLikeness(null);
 		return "success";
 	}
 

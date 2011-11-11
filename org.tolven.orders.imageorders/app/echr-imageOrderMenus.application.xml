@@ -7,7 +7,7 @@
 			<from>#{trim.name}</from>
 		</field>
 		<field name="code" internal="string03" >
-            <from>#{trim.act.code.CE.code}</from>
+            <from>#{trim.act.code.CD.code}</from>
         </field>
         <field name="longName" internal="string06">
 			<from>#{trim.act.text.ST.value}</from>

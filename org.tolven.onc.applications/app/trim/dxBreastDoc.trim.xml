@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>docclin/evn/breastdiagnosis</name>
+	<page>dxBreast.xhtml</page>
+	<drilldown>dxBreastDD.xhtml</drilldown>
+	<menu>global:dxMenu</menu>
+	<reference>http://wikihit.org/wiki/index.php/Diagnosis</reference>
+	<application name="ephr">
+		<instance>ephr:patient:diagnosis</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<application name="echr">
+		<instance>echr:patient:diagnosis</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New Patient</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+	</transitions>	
+	<act classCode="DOCCLIN" moodCode="EVN">
+		<statusCode>active</statusCode>		
+		<title>
+			<ST>Breast Diagnosis</ST>
+		</title>
+		<participation name="subject" typeCode="SBJ">
+			<role classCode="PAT">
+				<bind application="echr">
+					<placeholder>
+						<path>echr:patient</path>
+					</placeholder>
+				</bind>
+				<bind application="ephr">
+					<placeholder>
+						<path>ephr:patient</path>
+					</placeholder>
+				</bind>
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{patient.path}</extension>
+					</II>
+				</id>				
+			</role>
+		</participation>
+		<participation name="dataEnterer" typeCode="ENT">
+			<role classCode="ROL">
+				<id>
+					<II>
+						<root>#{computeIDRoot(account)}</root>
+						<extension>#{user.ldapUID}</extension>
+					</II>
+				</id>
+			</role>
+		</participation>
+		<compute>
+			<type>org.tolven.process.InsertAct</type>
+			<property name="enabled">
+		        <value xsi:type="xs:boolean">false</value>
+			</property>
+			<property name="arName">
+		        <value xsi:type="xs:string">entry</value>
+			</property>
+			<property name="arDirection">
+				<value xsi:type="xs:string">OUT</value>
+			</property>
+			<property name="arTypeCode">
+		        <value xsi:type="xs:string">COMP</value>
+			</property>
+			<property name="template">
+		       <value xsi:type="xs:string"></value>
+			</property>
+			<property name="action">
+		        <value xsi:type="xs:string">add</value>
+			</property>
+			<property name="position">
+		        <value xsi:type="xs:string">0</value>
+			</property>
+		</compute>
+	</act>
+	<valueSet name="isMetastaticVS">
+		<CE>
+			<displayName>Yes</displayName>
+			<code>C0565959</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>No</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="diagnosisLocationVS">
+		<CE>
+			<displayName>Left</displayName>
+			<code>C0565959</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Right</displayName>
+			<code>C0580798</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="metastaticLocationVC">
+		<CE>
+			<displayName>Lymph nodes above the collarbone (supraclavicular nodes)</displayName>
+			<code>C0547040</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Lymph nodes below the collarbone (infraclavicular nodes)</displayName>
+			<code>C1299392</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Chest wall</displayName>
+			<code>C0205081</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Other</displayName>
+			<code>C1299393</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="currentStatusVS">
+		<CE>
+			<displayName>Active</displayName>
+			<code>C0205178</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Inactive</displayName>
+			<code>C0205191</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>	
+</trim>

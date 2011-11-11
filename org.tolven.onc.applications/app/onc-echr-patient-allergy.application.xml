@@ -1,0 +1,127 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+
+	<!-- Patient Allergies -->
+	<extends path="echr:patient">
+		<placeholder name="allergy" title="Allergy" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/allergyLink.xhtml">
+			<field name="title" internal="string01">
+				<from>#{act.observation.value.CE.displayName}</from>
+				<from>#{act.text.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="reactionseverity" internal="string03">
+				<from>#{reactionSeverity(act.relationshipsList['allergyDetailsStore'])}</from>
+			</field>
+			<field name="reactions" internal="string04">
+				<from>#{reactions(act.relationshipsList['allergyDetailsStore'])}</from>
+			</field>
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="availabilityTime" internal="updatetime"/>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, act.participation['author'].role.id)}</from>
+			</field>
+			<field name="encounter" internal="parent03">
+				<from>#{internalId( account, act.relationship['encounter'].act.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="allergysum" visible="never">
+			<column name="date" internal="date01" format="MM/dd/yyyy">
+				<from>#{allergy.effectiveTime}</from>
+			</column>
+			<column name="title" internal="string01">
+				<from>#{allergy.title}</from>
+			</column>
+			<column name="Status" internal="actStatus" width="10.0">
+				<from>#{allergy.actStatus}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="allergysum" portalColumn="3" sequence="1" title="Allergies" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:allergysum" visible="true" drilldown=":allergies">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:allergyDocMenu">
+				<column name="Allergy" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+	<!-- Customized allergies menu: 1. Added additional column for code to use in PLD. -->
+	<extends path="echr:patient">
+		<menu name="allergies" sequence="3" title="Allergies" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="All" page="/five/list.xhtml" visible="true" drilldown=":allergy">
+				<column name="Allergy" internal="string01" reference="true" width="30.0">
+					<from>#{allergy.title}</from>
+				</column>
+				<column name="ReactionSeverity" internal="string03" width="25.0">
+					<from>#{allergy.reactionseverity}</from>
+				</column>
+				<column name="Occurred" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.effectiveTime}</from>
+				</column>
+				<column name="Status" internal="actStatus" width="5.0">
+					<from>#{allergy.actStatus}</from>
+				</column>
+				<column name="UserName" internal="string02" width="10.0">
+					<from>#{allergy.author.lastName}</from>
+					<from>#{allergy.enteredBy}</from>
+				</column>
+				<column name="Entered" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.availabilityTime}</from>
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:allergyDocMenu">
+					<column name="Allergy" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+			<list name="active" title="Active" page="/five/list.xhtml" visible="true" drilldown=":allergy">
+				<column name="Allergy" internal="string01" reference="true" width="30.0">
+					<from>#{allergy.title}</from>
+				</column>
+				<column name="ReactionSeverity" internal="string03" width="25.0">
+					<from>#{allergy.reactionseverity}</from>
+				</column>
+				<column name="Occurred" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.effectiveTime}</from>
+				</column>
+				<column name="Status" internal="actStatus" width="5.0">
+					<from>#{allergy.actStatus}</from>
+				</column>
+				<column name="UserName" internal="string02" width="10.0">
+					<from>#{allergy.author.lastName}</from>
+					<from>#{allergy.enteredBy}</from>
+				</column>
+				<column name="Entered" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.availabilityTime}</from>
+				</column>
+			</list>
+			<list name="inactive" title="Inactive" page="/five/list.xhtml" visible="true" drilldown=":allergy">
+				<column name="Allergy" internal="string01" reference="true" width="30.0">
+					<from>#{allergy.title}</from>
+				</column>
+				<column name="ReactionSeverity" internal="string03" width="25.0">
+					<from>#{allergy.reactionseverity}</from>
+				</column>
+				<column name="Occurred" internal="date01" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.effectiveTime}</from>
+				</column>
+				<column name="Status" internal="actStatus" width="5.0">
+					<from>#{allergy.actStatus}</from>
+				</column>
+				<column name="UserName" internal="string02" width="10.0">
+					<from>#{allergy.author.lastName}</from>
+					<from>#{allergy.enteredBy}</from>
+				</column>
+				<column name="Entered" internal="date02" format="MMM-dd-yyyy" width="8.0">
+					<from>#{allergy.availabilityTime}</from>
+				</column>
+			</list>
+		</menu>
+	</extends>
+</application>

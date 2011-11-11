@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+      
+<head>
+    <title>CCD Clinical Summary</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+    <ui:composition>
+    	<wiz:step title="Start" >
+			<wiz:body>
+				<h:outputText value="You are about to create a Clinical Summary for the selected patient."/><br/>
+				<h:outputText value="You can share this summary with another clinician (an eCHR account) or the patient or the patient's designee (an ePHR account). "/><br/>
+				<h:outputText value="The other clinician or the patient must first have an eCHR or ePHR account set up in Tolven before you can create and share the Clinical Summary."/><br/>
+			</wiz:body>
+		</wiz:step>
+		<wiz:step title="Provider" >
+			<wiz:body>
+				<wiz:group title="Select a provider">
+					 <h:selectOneMenu id="provider" value="#{trim.trim.message.receiver.accountPath}">
+		                   	<f:selectItem itemLabel="Select"/>
+		                	<f:selectItems value="#{trim.list['echr:admin:providers:all~Name']}"/>
+		                </h:selectOneMenu>
+				</wiz:group>
+			</wiz:body>
+		</wiz:step>
+		<!-- 
+		<wiz:uploadStep title="Upload a CCD document">
+			TBD.
+		</wiz:uploadStep> -->
+	</ui:composition>
+</body>
+</html>
+

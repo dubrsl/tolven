@@ -1,0 +1,35 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<!-- Link Patient-->
+	 <extends path="echr">
+        <list name="manufacturer" title="Substance Manufacturer" page="/five/list.xhtml" visible="never" query="global:manufacturerMenu">
+            <column name="name" title="ManufacturerName" instantiate="true" visible="true" internal="string04" width="40.0" />
+        </list>
+    </extends>	
+	<extends path="echr">
+		<placeholder name="receiver" title="Receiver" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/wipLink.xhtml">		
+			<field name="name" internal="string01">				
+				<from>#{act.relationship['facility'].act.observation.value.ST.value}</from>
+			</field>
+			<field name="application" internal="string02">				
+				<from>#{act.relationship['application'].act.observation.value.ST.value}</from>
+			</field>			
+		</placeholder>
+	</extends>
+	
+	<extends path="echr:admin">
+		<menu name="receivers" title="Receiver" page="/five/bar2.xhtml" visible="true">
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown="echr:receiver">				
+				<column name="Name" internal="string01" reference="true" width="10.0">
+					<from>#{receiver.name}</from>
+				</column>
+				<column name="Application" internal="string02" width="10.0">
+					<from>#{receiver.application}</from>
+				</column>											
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:receiverMenu">
+					<column name="Name" internal="string01" instantiate="true" width="40.0"/>
+				</action>
+			</list>
+		</menu>
+	</extends>	
+	
+</application>

@@ -40,13 +40,6 @@
 		</transition>
 	 </transitions>	
 	<act classCode="OBS" moodCode="RQO">
-		<code>
-			<CD>
-				<code>OINT</code>
-				<codeSystemName>HL7</codeSystemName>
-				<codeSystemVersion>3.0</codeSystemVersion>
-			</CD>
-		</code>
 		<statusCode>active</statusCode>
 		<title>
 			<ST>Image Orders</ST>

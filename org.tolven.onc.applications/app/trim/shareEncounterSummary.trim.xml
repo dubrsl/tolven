@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://tolven.org/xsd/trim4">
+	<name>docclin/evn/ShareEncounterSummary</name>
+	<description>Share Encounter Summary</description>
+	<application name="echr">
+		<instance>echr:patient:outShare</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<message>
+		<sender>
+			<comment/>
+			<status></status>
+			<accountId></accountId>
+			<accountName></accountName>
+		</sender>
+		<receiver>
+			<comment/>
+			<status></status>
+			<accountId></accountId>
+			<accountName></accountName>
+		</receiver>
+	</message>
+</trim>

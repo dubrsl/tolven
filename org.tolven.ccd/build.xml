@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="deploy-to-local-repository" name="org.tolven.ccd">
 	<!-- 
-	Build file for org.tolven.prototype.applications 
+	Build file for org.tolven.ccd 
 	-->
 	<import file="../plugin/buildImport.xml"/>
 
@@ -31,6 +31,15 @@
 		<antcall target="buildSection">
 			<param name="section" value="app"/>
 		</antcall>
+		<antcall target="buildSection">
+			<param name="section" value="ejb"/>
+		</antcall>
+		<antcall target="buildSection">
+			<param name="section" value="web"/>
+			<!-- Uncomment the following to include ejb classes in the classpath of the web section compile
+			<param name="lib" value="${buildFolder}/ejb/classes"/>
+			-->
+		</antcall>
 		<!-- End of list of sections to build -->
 		<!-- Add DevLib.jar to plugin zip -->
 		<zip destfile="${zipFileName}" update="true">
@@ -38,5 +47,14 @@
 				<include name="devLib.jar"/>
 			</zipfileset>
 		</zip>
+	</target>
+	
+	<!--classpath="${xslt.processor.classpath}"
+	   <param name="repositoryRuntime" expression="${tolvenConfig.location}/repositoryRuntime/plugins.xml"/>-->
+	<target name="buildHTMLfromXML">
+		<xslt style="app/xslt/WebViewLayout_CDA.xsl"	   
+		   in="app/xml/myccd.xml" 
+		   out="app/html/myccd.html">		
+	  	</xslt>
 	</target>
 </project>

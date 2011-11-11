@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="org.tolven.component.tolvenear.config" version="2.1.0" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
+<plugin id="org.tolven.component.tolvenear.config" version="2.1.1" vendor="Tolven" xmlns="urn:tolven-org:tpf:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:tpf:1.0 http://tolven.org/xsd/tpf.xsd">
 	<requires>
 		<import plugin-id="org.tolven.component.war" />
 		<import plugin-id="org.tolven.shirolib" />
@@ -9,12 +9,6 @@
 		<import plugin-id="org.tolven.ws" />
 		<import plugin-id="org.tolven.component.tolvenear" />
 	</requires>
-
-	<!-- LOCAL Resources -->
-	<extension-point id="shiro-ini" extension-multiplicity="none">
-		<parameter-def id="jar" default-value="shiro-ini.jar" multiplicity="none-or-one" />
-	</extension-point>
-	<!-- LOCAL Resources End -->
 
 	<!-- LIB Extensions -->
 	<extension id="org.tolven.library.apache-commons-commons-beanutils" plugin-id="org.tolven.component.tolvenear" point-id="libProduct-adaptor">
@@ -41,10 +35,6 @@
 		<parameter id="source-plugin-id" value="org.tolven.shirolib" />
 		<parameter id="extension-point" value="shiroLIB" />
 	</extension>
-	<extension id="shiro-ini" plugin-id="org.tolven.component.tolvenear" point-id="libProduct-adaptor">
-		<parameter id="source-plugin-id" value="org.tolven.component.tolvenear.config" />
-		<parameter id="extension-point" value="shiro-ini" />
-	</extension>
 	<!-- LIB Extensions End -->
 
 	<!-- EJB Extensions -->
@@ -62,6 +52,16 @@
 	</extension>
 	<!-- WEB-INF-LIBS End -->
 
+	<extension id="org.tolven.api-listener" plugin-id="org.tolven.api" point-id="listener-adaptor">
+		<parameter id="listener-class" value="org.tolven.shiro.web.servlet.GatekeeperServletContextListener" />
+	</extension>
+	<extension id="org.tolven.component.tolvenweb-listener" plugin-id="org.tolven.component.tolvenweb" point-id="listener-adaptor">
+		<parameter id="listener-class" value="org.tolven.shiro.web.servlet.GatekeeperServletContextListener" />
+	</extension>
+	<extension id="org.tolven.ws-listener-adaptor" plugin-id="org.tolven.ws" point-id="listener-adaptor">
+		<parameter id="listener-class" value="org.tolven.shiro.web.servlet.GatekeeperServletContextListener" />
+	</extension>
+	
 	<extension id="org.tolven.api-TolvenShiroFilter" plugin-id="org.tolven.component.war" point-id="filter">
 		<parameter id="filter-name" value="TolvenShiroFilter" />
 		<parameter id="filter-class" value="org.tolven.shiro.web.servlet.TolvenShiroFilter" />
@@ -70,17 +70,6 @@
 	</extension>
 	<extension id="org.tolven.api-TolvenShiroFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
 		<parameter id="filter-name" value="TolvenShiroFilter" />
-		<parameter id="url-pattern" value="/*" />
-		<parameter id="target-plugin-id" value="org.tolven.api" />
-	</extension>
-	<extension id="ShiroSessionWrapperFilter-org.tolven.api" plugin-id="org.tolven.component.war" point-id="transaction-filter">
-		<parameter id="filter-name" value="ShiroSessionWrapperFilter" />
-		<parameter id="filter-class" value="org.tolven.shiro.web.servlet.ShiroSessionWrapperFilter" />
-		<parameter id="filter-sequence" value="100" />
-		<parameter id="target-plugin-id" value="org.tolven.api" />
-	</extension>
-	<extension id="ShiroSessionWrapperFilter-org.tolven.api-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
-		<parameter id="filter-name" value="ShiroSessionWrapperFilter" />
 		<parameter id="url-pattern" value="/*" />
 		<parameter id="target-plugin-id" value="org.tolven.api" />
 	</extension>
@@ -105,17 +94,6 @@
 		<parameter id="url-pattern" value="/*" />
 		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
 	</extension>
-	<extension id="ShiroSessionWrapperFilter-org.tolven.component.tolvenweb" plugin-id="org.tolven.component.war" point-id="transaction-filter">
-		<parameter id="filter-name" value="ShiroSessionWrapperFilter" />
-		<parameter id="filter-class" value="org.tolven.shiro.web.servlet.ShiroSessionWrapperFilter" />
-		<parameter id="filter-sequence" value="100" />
-		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
-	</extension>
-	<extension id="ShiroSessionWrapperFilter-org.tolven.component.tolvenweb-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
-		<parameter id="filter-name" value="ShiroSessionWrapperFilter" />
-		<parameter id="url-pattern" value="/*" />
-		<parameter id="target-plugin-id" value="org.tolven.component.tolvenweb" />
-	</extension>
 	<!-- org.tolven.component.tolvenweb End -->
 
 	<!-- org.tolven.ws -->
@@ -134,17 +112,6 @@
 	</extension>
 	<extension id="org.tolven.ws-TolvenShiroFilter-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
 		<parameter id="filter-name" value="TolvenShiroFilter" />
-		<parameter id="url-pattern" value="/*" />
-		<parameter id="target-plugin-id" value="org.tolven.ws" />
-	</extension>
-	<extension id="ShiroSessionWrapperFilter-org.tolven.ws" plugin-id="org.tolven.component.war" point-id="transaction-filter">
-		<parameter id="filter-name" value="ShiroSessionWrapperFilter" />
-		<parameter id="filter-class" value="org.tolven.shiro.web.servlet.ShiroSessionWrapperFilter" />
-		<parameter id="filter-sequence" value="100" />
-		<parameter id="target-plugin-id" value="org.tolven.ws" />
-	</extension>
-	<extension id="ShiroSessionWrapperFilter-org.tolven.ws-contribution" plugin-id="org.tolven.component.war" point-id="filter-mapping-contribution">
-		<parameter id="filter-name" value="ShiroSessionWrapperFilter" />
 		<parameter id="url-pattern" value="/*" />
 		<parameter id="target-plugin-id" value="org.tolven.ws" />
 	</extension>

@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *         &lt;element name="id" type="{urn:tolven-org:trim:4.0}SET_IISlot" minOccurs="0"/>
  *         &lt;element name="code" type="{urn:tolven-org:trim:4.0}CDSlot" minOccurs="0"/>
  *         &lt;element name="negationInd" type="{urn:tolven-org:trim:4.0}BLSlot" minOccurs="0"/>
+ *         &lt;element name="initialStatusCode" type="{urn:tolven-org:trim:4.0}ActStatus" minOccurs="0"/>
  *         &lt;element name="statusCode" type="{urn:tolven-org:trim:4.0}ActStatus" minOccurs="0"/>
  *         &lt;element name="derivationExpr" type="{urn:tolven-org:trim:4.0}STSlot" minOccurs="0"/>
  *         &lt;element name="title" type="{urn:tolven-org:trim:4.0}EDSlot" minOccurs="0"/>
@@ -36,7 +37,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *         &lt;element name="effectiveTime" type="{urn:tolven-org:trim:4.0}GTSSlot" minOccurs="0"/>
  *         &lt;element name="activityTime" type="{urn:tolven-org:trim:4.0}GTSSlot" minOccurs="0"/>
  *         &lt;element name="availabilityTime" type="{urn:tolven-org:trim:4.0}TSSlot" minOccurs="0"/>
- *         &lt;element name="priorityCode" type="{urn:tolven-org:trim:4.0}SET_CESlot" minOccurs="0"/>
+ *         &lt;element name="priorityCode" type="{urn:tolven-org:trim:4.0}SET_CDSlot" minOccurs="0"/>
  *         &lt;element name="confidentialityCode" type="{urn:tolven-org:trim:4.0}SET_CESlot" minOccurs="0"/>
  *         &lt;element name="repeatNumber" type="{urn:tolven-org:trim:4.0}IVLINTSlot" minOccurs="0"/>
  *         &lt;element name="interruptibleInd" type="{urn:tolven-org:trim:4.0}BLSlot" minOccurs="0"/>
@@ -71,6 +72,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
     "id",
     "code",
     "negationInd",
+    "initialStatusCode",
     "statusCode",
     "derivationExpr",
     "title",
@@ -107,6 +109,7 @@ public class Act
     protected SETIISlot id;
     protected CDSlot code;
     protected BLSlot negationInd;
+    protected ActStatus initialStatusCode;
     protected ActStatus statusCode;
     protected STSlot derivationExpr;
     protected EDSlot title;
@@ -114,7 +117,7 @@ public class Act
     protected GTSSlot effectiveTime;
     protected GTSSlot activityTime;
     protected TSSlot availabilityTime;
-    protected SETCESlot priorityCode;
+    protected SETCDSlot priorityCode;
     protected SETCESlot confidentialityCode;
     protected IVLINTSlot repeatNumber;
     protected BLSlot interruptibleInd;
@@ -291,6 +294,30 @@ public class Act
     }
 
     /**
+     * Gets the value of the initialStatusCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ActStatus }
+     *     
+     */
+    public ActStatus getInitialStatusCode() {
+        return initialStatusCode;
+    }
+
+    /**
+     * Sets the value of the initialStatusCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ActStatus }
+     *     
+     */
+    public void setInitialStatusCode(ActStatus value) {
+        this.initialStatusCode = value;
+    }
+
+    /**
      * Gets the value of the statusCode property.
      * 
      * @return
@@ -463,10 +490,10 @@ public class Act
      * 
      * @return
      *     possible object is
-     *     {@link SETCESlot }
+     *     {@link SETCDSlot }
      *     
      */
-    public SETCESlot getPriorityCode() {
+    public SETCDSlot getPriorityCode() {
         return priorityCode;
     }
 
@@ -475,10 +502,10 @@ public class Act
      * 
      * @param value
      *     allowed object is
-     *     {@link SETCESlot }
+     *     {@link SETCDSlot }
      *     
      */
-    public void setPriorityCode(SETCESlot value) {
+    public void setPriorityCode(SETCDSlot value) {
         this.priorityCode = value;
     }
 

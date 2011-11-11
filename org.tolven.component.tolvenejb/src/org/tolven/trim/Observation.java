@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="value" type="{urn:tolven-org:trim:4.0}ObservationValueSlot" maxOccurs="unbounded" minOccurs="0"/>
- *         &lt;element name="interpretationCode" type="{urn:tolven-org:trim:4.0}SET_CESlot" minOccurs="0"/>
+ *         &lt;element name="interpretationCode" type="{urn:tolven-org:trim:4.0}SET_CDSlot" minOccurs="0"/>
  *         &lt;element name="methodCode" type="{urn:tolven-org:trim:4.0}SET_CESlot" minOccurs="0"/>
  *         &lt;element name="targetSiteCode" type="{urn:tolven-org:trim:4.0}SET_CDSlot" minOccurs="0"/>
  *         &lt;element name="publicHealthCase" type="{urn:tolven-org:trim:4.0}PublicHealthCase" minOccurs="0"/>
@@ -47,7 +47,7 @@ public class Observation
 
     @XmlElement(name = "value")
     protected List<ObservationValueSlot> values;
-    protected SETCESlot interpretationCode;
+    protected SETCDSlot interpretationCode;
     protected SETCESlot methodCode;
     protected SETCDSlot targetSiteCode;
     protected PublicHealthCase publicHealthCase;
@@ -86,10 +86,10 @@ public class Observation
      * 
      * @return
      *     possible object is
-     *     {@link SETCESlot }
+     *     {@link SETCDSlot }
      *     
      */
-    public SETCESlot getInterpretationCode() {
+    public SETCDSlot getInterpretationCode() {
         return interpretationCode;
     }
 
@@ -98,10 +98,10 @@ public class Observation
      * 
      * @param value
      *     allowed object is
-     *     {@link SETCESlot }
+     *     {@link SETCDSlot }
      *     
      */
-    public void setInterpretationCode(SETCESlot value) {
+    public void setInterpretationCode(SETCDSlot value) {
         this.interpretationCode = value;
     }
 

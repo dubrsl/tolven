@@ -1,0 +1,143 @@
+CVX_Code|Description|VaccineName|Note|VaccineStatus|internalID|nonvaccine|update_date
+143|Adenovirus types 4 and 7|Adenovirus, type 4 and type 7, live, oral|This vaccine is administered as 2 tablets.|Active|161|FALSE|20-Mar-11
+54|adenovirus, type 4|adenovirus vaccine, type 4, live, oral||Inactive|1|FALSE|28-May-10
+55|adenovirus, type 7|adenovirus vaccine, type 7, live, oral||Inactive|2|FALSE|28-May-10
+82|adenovirus, unspecified formulation|adenovirus vaccine, unspecified formulation|This CVX code is intended to allow reporting of adenovirus vaccinations where the formulation is not known.  For example, this may occur if a historic record of an adenovirus vaccination is recorded from a vaccination card.|Inactive|3|FALSE|30-Sep-10
+24|anthrax|anthrax vaccine||Active|4|FALSE|28-May-10
+19|BCG|Bacillus Calmette-Guerin vaccine||Active|5|FALSE|28-May-10
+27|botulinum antitoxin|botulinum antitoxin||Active|6|FALSE|28-May-10
+26|cholera|cholera vaccine||Inactive|7|FALSE|28-May-10
+29|CMVIG|cytomegalovirus immune globulin, intravenous||Active|8|FALSE|28-May-10
+56|dengue fever|dengue fever vaccine||Never Active|9|FALSE|28-May-10
+12|diphtheria antitoxin|diphtheria antitoxin||Active|10|FALSE|28-May-10
+28|DT (pediatric)|diphtheria and tetanus toxoids, adsorbed for pediatric use||Active|11|FALSE|28-May-10
+20|DTaP|diphtheria, tetanus toxoids and acellular pertussis vaccine||Active|12|FALSE|28-May-10
+106|DTaP, 5 pertussis antigens|diphtheria, tetanus toxoids and acellular pertussis vaccine, 5 pertussis antigens||Active|13|FALSE|28-May-10
+107|DTaP, unspecified formulation|diphtheria, tetanus toxoids and acellular pertussis vaccine, unspecified formulation|This CVX code is intended to allow reporting of DTAP vaccinations where the formulation is not known.  For example, this may occur if a historic record of an DTAP vaccination is recorded from a vaccination card.|Inactive|14|FALSE|30-Sep-10
+110|DTaP-Hep B-IPV|DTaP-hepatitis B and poliovirus vaccine||Active|15|FALSE|28-May-10
+50|DTaP-Hib|DTaP-Haemophilus influenzae type b conjugate vaccine||Active|16|FALSE|28-May-10
+120|DTaP-Hib-IPV|diphtheria, tetanus toxoids and acellular pertussis vaccine, Haemophilus influenzae type b conjugate, and poliovirus vaccine, inactivated (DTaP-Hib-IPV)||Active|17|FALSE|28-May-10
+130|DTaP-IPV|Diphtheria, tetanus toxoids and acellular pertussis vaccine, and poliovirus vaccine, inactivated||Active|19|FALSE|28-May-10
+132|DTaP-IPV-HIB-HEP B, historical|Historical record of vaccine containing diphtheria,tetanus toxoids and acellular pertussis||Inactive|148|FALSE|28-May-10
+01|DTP|diphtheria, tetanus toxoids and pertussis vaccine||Inactive|21|FALSE|28-May-10
+22|DTP-Hib|DTP-Haemophilus influenzae type b conjugate vaccine||Inactive|22|FALSE|28-May-10
+102|DTP-Hib-Hep B|DTP- Haemophilus influenzae type b conjugate and hepatitis b vaccine||Inactive|23|FALSE|28-May-10
+57|hantavirus|hantavirus vaccine||Never Active|24|FALSE|28-May-10
+30|HBIG|hepatitis B immune globulin||Active|31|FALSE|28-May-10
+52|Hep A, adult|hepatitis A vaccine, adult dosage||Active|25|FALSE|28-May-10
+83|Hep A, ped/adol, 2 dose|hepatitis A vaccine, pediatric/adolescent dosage, 2 dose schedule||Active|26|FALSE|28-May-10
+84|Hep A, ped/adol, 3 dose|hepatitis A vaccine, pediatric/adolescent dosage, 3 dose schedule|This vaccine formulation is inactive and should not be used, except to record historic vaccinations with this formulation.|Inactive|27|FALSE|28-May-10
+31|Hep A, pediatric, unspecified formulation|hepatitis A vaccine, pediatric dosage, unspecified formulation|Do NOT use this code.  If formulation is unknown, use CVX 85.  There is only one formulation of Hep A, peds.|Inactive|28|FALSE|30-Sep-10
+85|Hep A, unspecified formulation|hepatitis A vaccine, unspecified formulation|This CVX code is intended to allow reporting of Hep A vaccinations where the formulation is not known.  For example, this may occur if a historic record of an Hep A vaccination is recorded from a vaccination card.|Inactive|29|FALSE|30-Sep-10
+104|Hep A-Hep B|hepatitis A and hepatitis B vaccine||Active|30|FALSE|28-May-10
+08|Hep B, adolescent or pediatric|hepatitis B vaccine, pediatric or pediatric/adolescent dosage|This code applies to any standard pediatric formulation of Hepatitis B vaccine. It should not be used for the 2-dose hepatitis B schedule for adolescents (11-15 year olds). It requires Merck's Recombivax HB® adult formulation. Use code 43 for that vaccine.|Active|32|FALSE|28-May-10
+42|Hep B, adolescent/high risk infant|hepatitis B vaccine, adolescent/high risk infant dosage|As of August 27, 1998, Merck ceased distribution of their adolescent/high risk infant hepatitis B vaccine dosage. Code 42 should only be used to record historical records. For current administration of hepatitis B vaccine, pediatric/adolescent dosage, use code 08.|Inactive|33|FALSE|28-May-10
+43|Hep B, adult|hepatitis B vaccine, adult dosage|As of September 1999, a 2-dose hepatitis B schedule for adolescents (11-15 year olds) was FDA approved for Merck's Recombivax HB® adult formulation. Use code 43 for the 2-dose. This code should be used for any use of standard adult formulation of hepatitis B vaccine.|Active|34|FALSE|28-May-10
+44|Hep B, dialysis|hepatitis B vaccine, dialysis patient dosage||Active|35|FALSE|28-May-10
+45|Hep B, unspecified formulation|hepatitis B vaccine, unspecified formulation|This CVX code is intended to allow reporting of hepatitis B vaccinations where the formulation is not known.  For example, this may occur if a historic record of a Hep B vaccination is recorded from a vaccination card.|Inactive|36|FALSE|30-Sep-10
+58|Hep C|hepatitis C vaccine||Never Active|37|FALSE|28-May-10
+59|Hep E|hepatitis E vaccine||Never Active|38|FALSE|28-May-10
+60|herpes simplex 2|herpes simplex virus, type 2 vaccine||Never Active|39|FALSE|28-May-10
+47|Hib (HbOC)|Haemophilus influenzae type b vaccine, HbOC conjugate||Inactive|41|FALSE|28-May-10
+46|Hib (PRP-D)|Haemophilus influenzae type b vaccine, PRP-D conjugate||Inactive|40|FALSE|28-May-10
+49|Hib (PRP-OMP)|Haemophilus influenzae type b vaccine, PRP-OMP conjugate||Active|43|FALSE|28-May-10
+48|Hib (PRP-T)|Haemophilus influenzae type b vaccine, PRP-T conjugate||Active|42|FALSE|28-May-10
+17|Hib, unspecified formulation|Haemophilus influenzae type b vaccine, conjugate unspecified formulation||Inactive|44|FALSE|30-Sep-10
+51|Hib-Hep B|Haemophilus influenzae type b conjugate and Hepatitis B vaccine||Active|45|FALSE|28-May-10
+61|HIV|human immunodeficiency virus vaccine||Never Active|46|FALSE|28-May-10
+118|HPV, bivalent|human papilloma virus vaccine, bivalent||Active|47|FALSE|28-May-10
+62|HPV, quadrivalent|human papilloma virus vaccine, quadrivalent||Active|49|FALSE|28-May-10
+137|HPV, unspecified formulation|HPV, unspecified formulation|This CVX code is intended to allow reporting of HPV vaccinations where the formulation is not known.  For example, this may occur if a historic record of an HPV vaccination is recorded from a vaccination card.|Inactive|144|FALSE|30-Sep-10
+86|IG|immune globulin, intramuscular||Active|51|FALSE|28-May-10
+14|IG, unspecified formulation|immune globulin, unspecified formulation||Inactive|53|FALSE|30-Sep-10
+87|IGIV|immune globulin, intravenous||Active|52|FALSE|28-May-10
+123|influenza, H5N1-1203|influenza virus vaccine, H5N1, A/Vietnam/1203/2004 (national stockpile)||Inactive|58|FALSE|28-May-10
+135|Influenza, high dose seasonal|influenza, high dose seasonal, preservative-free||Active|146|FALSE|28-May-10
+111|influenza, live, intranasal|influenza virus vaccine, live, attenuated, for intranasal use|Seasonal Influenza|Active|54|FALSE|28-May-10
+141|Influenza, seasonal, injectable|Influenza, seasonal, injectable|This is one of two codes replacing CVX 15, which is being retired.|Active|159|FALSE|30-Sep-10
+140|Influenza, seasonal, injectable, preservative free|Influenza, seasonal, injectable, preservative free|This vaccine code is one of two which replace CVX 15, influenza, split virus.|Active|156|FALSE|30-Sep-10
+144|influenza, seasonal, intradermal, preservative free|seasonal influenza, intradermal, preservative free||Active|162|FALSE|16-Jun-11
+15|influenza, split (incl. purified surface antigen)|influenza virus vaccine, split virus (incl. purified surface antigen)-retired CODE|This code is being retired. It will still be found in older immunization records. It included both preservative free and non-preservative free.|Inactive|55|FALSE|30-Sep-10
+88|influenza, unspecified formulation|influenza virus vaccine, unspecified formulation|This CVX code is intended to allow reporting of seasonal flu vaccinations where the formulation is not known.  For example, this may occur if a historic record of an seasonal flu vaccination is recorded from a vaccination card.|Inactive|57|FALSE|30-Sep-10
+16|influenza, whole|influenza virus vaccine, whole virus||Inactive|56|FALSE|28-May-10
+10|IPV|poliovirus vaccine, inactivated||Active|60|FALSE|28-May-10
+134|Japanese Encephalitis IM|Japanese Encephalitis vaccine for intramuscular administration||Active|142|FALSE|28-May-10
+39|Japanese encephalitis SC|Japanese Encephalitis Vaccine SC||Active|63|FALSE|28-May-10
+129|Japanese Encephalitis, unspecified formulation|Japanese Encephalitis vaccine, unspecified formulation|This CVX code is intended to allow reporting of JE vaccinations where the formulation is not known.  For example, this may occur if a historic record of an JE vaccination is recorded from a vaccination card.|Inactive|157|FALSE|30-Sep-10
+63|Junin virus|Junin virus vaccine||Never Active|64|FALSE|28-May-10
+64|leishmaniasis|leishmaniasis vaccine||Never Active|65|FALSE|28-May-10
+65|leprosy|leprosy vaccine||Never Active|66|FALSE|28-May-10
+66|Lyme disease|Lyme disease vaccine||Inactive|67|FALSE|28-May-10
+04|M/R|measles and rubella virus vaccine||Active|69|FALSE|28-May-10
+67|malaria|malaria vaccine||Never Active|71|FALSE|28-May-10
+05|measles|measles virus vaccine||Inactive|72|FALSE|31-Aug-10
+68|melanoma|melanoma vaccine||Never Active|73|FALSE|28-May-10
+103|meningococcal C conjugate|meningococcal C conjugate vaccine||Inactive|75|FALSE|28-May-10
+136|Meningococcal MCV4O|meningococcal oligosaccharide (groups A, C, Y and W-135) diphtheria toxoid conjugate vaccine (MCV4O)||Active|145|FALSE|28-May-10
+114|meningococcal MCV4P|meningococcal polysaccharide (groups A, C, Y and W-135) diphtheria toxoid conjugate vaccine (MCV4P)||Active|76|FALSE|28-May-10
+32|meningococcal MPSV4|meningococcal polysaccharide vaccine (MPSV4)||Active|74|FALSE|28-May-10
+108|meningococcal, unspecified formulation|meningococcal vaccine, unspecified formulation|This CVX code is intended to allow reporting of meningococcal vaccinations where the formulation is not known.  For example, this may occur if a historic record of meningococcal vaccination is recorded from a vaccination card.|Inactive|77|FALSE|30-Sep-10
+03|MMR|measles, mumps and rubella virus vaccine||Active|68|FALSE|28-May-10
+94|MMRV|measles, mumps, rubella, and varicella virus vaccine||Active|70|FALSE|28-May-10
+07|mumps|mumps virus vaccine||Active|79|FALSE|28-May-10
+127|Novel influenza-H1N1-09|Novel influenza-H1N1-09, injectable||Inactive|152|FALSE|28-Aug-10
+128|Novel Influenza-H1N1-09, all formulations|Novel influenza-H1N1-09, all formulations|This code is used whenever the actual formulation is not determined or when aggregating all Novel H1N1 Influenza-09 immunizations for reporting to CRA. It should not be used for seasonal influenza vaccine that is not otherwise specified. (NOS)|Inactive|149|FALSE|28-Aug-10
+125|Novel Influenza-H1N1-09, nasal|Novel Influenza-H1N1-09, live virus for nasal administration||Inactive|150|FALSE|28-Aug-10
+126|Novel influenza-H1N1-09, preservative-free|Novel influenza-H1N1-09, preservative-free, injectable||Inactive|151|FALSE|28-Aug-10
+02|OPV|poliovirus vaccine, live, oral||Inactive|61|FALSE|28-May-10
+69|parainfluenza-3|parainfluenza-3 virus vaccine||Inactive|80|FALSE|28-May-10
+11|pertussis|pertussis vaccine||Inactive|81|FALSE|28-May-10
+23|plague|plague vaccine||Active|82|FALSE|28-May-10
+133|Pneumococcal conjugate PCV 13|pneumococcal conjugate vaccine, 13 valent||Active|141|FALSE|28-May-10
+100|pneumococcal conjugate PCV 7|pneumococcal conjugate vaccine, 7 valent||Active|84|FALSE|28-May-10
+33|pneumococcal polysaccharide PPV23|pneumococcal polysaccharide vaccine, 23 valent||Active|83|FALSE|28-May-10
+109|pneumococcal, unspecified formulation|pneumococcal vaccine, unspecified formulation|This CVX code is intended to allow reporting of pneumoccoccal vaccinations where the formulation is not known.  For example, this may occur if a historic record of an pneumococcal vaccination is recorded from a vaccination card.|Inactive|85|FALSE|30-Sep-10
+89|polio, unspecified formulation|poliovirus vaccine, unspecified formulation||Inactive|62|FALSE|30-Sep-10
+70|Q fever|Q fever vaccine||Never Active|86|FALSE|28-May-10
+40|rabies, intradermal injection|rabies vaccine, for intradermal injection||Active|88|FALSE|28-May-10
+18|rabies, intramuscular injection|rabies vaccine, for intramuscular injection||Active|87|FALSE|28-May-10
+90|rabies, unspecified formulation|rabies vaccine, unspecified formulation||Inactive|89|FALSE|30-Sep-10
+72|rheumatic fever|rheumatic fever vaccine||Never Active|90|FALSE|28-May-10
+73|Rift Valley fever|Rift Valley fever vaccine||Never Active|91|FALSE|28-May-10
+34|RIG|rabies immune globulin||Active|92|FALSE|28-May-10
+119|rotavirus, monovalent|rotavirus, live, monovalent vaccine||Active|93|FALSE|28-May-10
+116|rotavirus, pentavalent|rotavirus, live, pentavalent vaccine||Active|97|FALSE|28-May-10
+74|rotavirus, tetravalent|rotavirus, live, tetravalent vaccine||Inactive|99|FALSE|28-May-10
+122|rotavirus, unspecified formulation|rotavirus vaccine, unspecified formulation||Inactive|95|FALSE|30-Sep-10
+71|RSV-IGIV|respiratory syncytial virus immune globulin, intravenous||Active|101|FALSE|28-May-10
+93|RSV-MAb|respiratory syncytial virus monoclonal antibody (palivizumab), intramuscular||Active|102|FALSE|28-May-10
+06|rubella|rubella virus vaccine||Active|103|FALSE|28-May-10
+38|rubella/mumps|rubella and mumps virus vaccine||Active|104|FALSE|28-May-10
+76|Staphylococcus bacterio lysate|Staphylococcus bacteriophage lysate||Inactive|105|FALSE|28-May-10
+138|Td (adult)|tetanus and diphtheria toxoids, not adsorbed, for adult use|Note that this Td is not adsorbed.|Active|154|FALSE|30-Sep-10
+113|Td (adult) preservative free|tetanus and diphtheria toxoids, adsorbed, preservative free, for adult use||Active|106|FALSE|30-Sep-10
+09|Td (adult), adsorbed|tetanus and diphtheria toxoids, adsorbed, for adult use|Note that this vaccine name has changed.  See also Td (adult). It is not adsorbed.|Active|107|FALSE|20-Aug-10
+139|Td(adult) unspecified formulation|Td(adult) unspecified formulation|This CVX code is intended to allow reporting of Td vaccinations where the formulation is not known.  For example, this may occur if a historic record of an Td vaccination is recorded from a vaccination card.|Inactive|155|FALSE|30-Sep-10
+115|Tdap|tetanus toxoid, reduced diphtheria toxoid, and acellular pertussis vaccine, adsorbed||Active|108|FALSE|28-May-10
+35|tetanus toxoid, adsorbed|tetanus toxoid, adsorbed||Active|110|FALSE|14-Feb-11
+142|tetanus toxoid, not adsorbed|tetanus toxoid, not adsorbed||Active|160|FALSE|14-Feb-11
+112|tetanus toxoid, unspecified formulation|tetanus toxoid, unspecified formulation||Inactive|111|FALSE|30-Sep-10
+77|tick-borne encephalitis|tick-borne encephalitis vaccine||Inactive|112|FALSE|28-May-10
+13|TIG|tetanus immune globulin||Active|113|FALSE|28-May-10
+98|TST, unspecified formulation|tuberculin skin test; unspecified formulation|TB Skin test is not vaccine.|Inactive|117|FALSE|30-Sep-10
+95|TST-OT tine test|tuberculin skin test; old tuberculin, multipuncture device|TB Skin test is not vaccine.|Inactive|114|FALSE|28-May-10
+96|TST-PPD intradermal|tuberculin skin test; purified protein derivative solution, intradermal|TB Skin test is not vaccine.|Inactive|115|FALSE|28-May-10
+97|TST-PPD tine test|tuberculin skin test; purified protein derivative, multipuncture device|TB Skin test is not vaccine.|Inactive|116|FALSE|28-May-10
+78|tularemia vaccine|tularemia vaccine||Inactive|118|FALSE|28-May-10
+25|typhoid, oral|typhoid vaccine, live, oral||Active|120|FALSE|28-May-10
+41|typhoid, parenteral|typhoid vaccine, parenteral, other than acetone-killed, dried||Active|121|FALSE|28-May-10
+53|typhoid, parenteral, AKD (U.S. military)|typhoid vaccine, parenteral, acetone-killed, dried (U.S. military)||Active|122|FALSE|28-May-10
+91|typhoid, unspecified formulation|typhoid vaccine, unspecified formulation||Inactive|119|FALSE|30-Sep-10
+101|typhoid, ViCPs|typhoid Vi capsular polysaccharide vaccine||Active|123|FALSE|28-May-10
+131|typhus, historical|Historical record of a typhus vaccination||Inactive|147|FALSE|28-May-10
+75|vaccinia (smallpox)|vaccinia (smallpox) vaccine||Active|124|FALSE|28-May-10
+105|vaccinia (smallpox) diluted|vaccinia (smallpox) vaccine, diluted||Inactive|125|FALSE|28-May-10
+79|vaccinia immune globulin|vaccinia immune globulin||Active|126|FALSE|28-May-10
+21|varicella|varicella virus vaccine||Active|127|FALSE|28-May-10
+81|VEE, inactivated|Venezuelan equine encephalitis, inactivated||Active|128|FALSE|28-May-10
+80|VEE, live|Venezuelan equine encephalitis, live, attenuated||Inactive|129|FALSE|28-May-10
+92|VEE, unspecified formulation|Venezuelan equine encephalitis vaccine, unspecified formulation||Inactive|130|FALSE|30-Sep-10
+36|VZIG|varicella zoster immune globulin||Active|131|FALSE|28-May-10
+117|VZIG (IND)|varicella zoster immune globulin (Investigational New Drug)||Inactive|132|FALSE|28-May-10
+37|yellow fever|yellow fever vaccine||Active|134|FALSE|28-May-10
+121|zoster|zoster vaccine, live||Active|135|FALSE|28-May-10

@@ -1,0 +1,555 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>trial/inductionTreatmentEvaluation</name>
+	<description>Induction Treatment Evaluation</description>
+	<author>Tolven</author>
+	<page>trial/inductionTreatmentEvaluation.xhtml</page>
+	<drilldown>trial/inductionTreatmentEvaluationDD.xhtml</drilldown>
+	<menu>global:trialFormMenu</menu>
+	<reference>HOVON_43_AML</reference>
+	<application name="echr">
+		<instance>echr:patient:trialForm</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<transitions path="trim.act.statusCodeValue">
+		<transition name="create" to="active">
+			<label language="en">New</label>
+		</transition>
+		<transition name="reviseActive" from="active" to="active">
+			<label language="en">Revise</label>
+		</transition>
+		<transition name="eie" from="active" to="nullified">
+			<label language="en">Entered in Error</label>
+		</transition>
+	</transitions>
+	<act classCode="ORGANIZER" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="merge">
+				<path>echr:patient:trialForm</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CE>
+				<displayName>Induction Treatment Evaluation Form</displayName>
+				<code>XXXXXX</code>
+				<codeSystemName>XXXXXX</codeSystemName>
+				<codeSystemVersion>XXXXXX</codeSystemVersion>
+			</CE>
+		</code>
+		<statusCode>active</statusCode>
+		<title>
+			<ST>Induction Treatment Evaluation Form</ST>
+		</title>
+		<effectiveTime>
+			<label>Date of form</label>
+			<TS>
+				<value>#{TS(now)}</value>
+			</TS>
+		</effectiveTime>
+		<relationship name="relatedToCycle" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Related to Cycle</ST>
+				</title>
+				<effectiveTime>
+					<label>Date start of this cycle</label>
+					<TS>
+						<value>#{TS(now)}</value>
+					</TS>
+				</effectiveTime>
+				<observation>
+					<value>
+						<label>Related to Cycle</label>
+						<valueSet>relatedToCycle</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>		
+		<relationship name="response" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Response Evaluation</ST>
+				</title>
+				<effectiveTime>
+					<label>Date of evaluation</label>
+					<TS>
+						<value>#{TS(now)}</value>
+					</TS>
+				</effectiveTime>
+				<observation>
+					<value>
+						<label>Response</label>
+						<valueSet>response</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>		
+		<relationship name="survival" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Survival Status</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Survival Status</label>
+						<valueSet>survivalStatus</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>		
+		<relationship name="treatmentPlanned" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Treatment planned</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Treatment planned</label>
+						<valueSet>treatmentPlan</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>		
+		<relationship name="infection" direction="OUT" typeCode="COMP">
+			<act classCode="OBS" moodCode="EVN">
+				<title>
+					<ST>Infection Report</ST>
+				</title>
+				<effectiveTime>
+					<label>Date start of this period</label>
+					<TS>
+						<value>#{TS(now)}</value>
+					</TS>
+				</effectiveTime>
+				<relationship name="relatedToPeriod" direction="OUT" typeCode="COMP">
+					<act classCode="OBS" moodCode="EVN">
+						<code>
+							<CD>
+								<code>C0005902</code>
+								<codeSystemName>UMLS</codeSystemName>
+								<codeSystemVersion>2006AC</codeSystemVersion>
+							</CD>
+						</code>
+						<title>
+							<ST>Infection report related to period</ST>
+						</title>
+						<observation>
+							<value>
+								<label>Infection Report Relating to Period</label>
+								<valueSet>infectionReportRelatingtoPeriod</valueSet>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship name="site1" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<code>
+							<label>Site</label>
+							<valueSet>site</valueSet>
+						</code>
+						<title>
+							<ST>Site</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship name="ANC1" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<code>
+							<label>ANC</label>
+							<valueSet>anc</valueSet>
+						</code>
+						<title>
+							<ST>ANC</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship name="grade1" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<title>
+							<ST>Agent</ST>
+						</title>
+						<observation>
+							<value>
+								<label>Agent</label>
+								<INT><value>0</value></INT>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship name="agent1" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<code>
+							<label>Agent</label>
+							<valueSet>agent</valueSet>
+						</code>
+						<title>
+							<ST>Agent</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship name="spec1" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<title>
+							<ST>Specification (site/agent/treatment)</ST>
+						</title>
+						<observation>
+							<value>
+								<label>Agent</label>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship name="site2" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<code>
+							<label>Site</label>
+							<valueSet>site</valueSet>
+						</code>
+						<title>
+							<ST>Site</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship name="ANC2" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<code>
+							<label>ANC</label>
+							<valueSet>anc</valueSet>
+						</code>
+						<title>
+							<ST>ANC</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship name="grade2" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<title>
+							<ST>Agent</ST>
+						</title>
+						<observation>
+							<value>
+								<label>Agent</label>
+								<INT><value>0</value></INT>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+				<relationship name="agent2" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<code>
+							<label>Agent</label>
+							<valueSet>agent</valueSet>
+						</code>
+						<title>
+							<ST>Agent</ST>
+						</title>
+					</act>
+				</relationship>
+				<relationship name="spec2" direction="OUT" typeCode="PERT">
+					<act classCode="OBS" moodCode="EVN">
+						<title>
+							<ST>Specification (site/agent/treatment)</ST>
+						</title>
+						<observation>
+							<value>
+								<label>Agent</label>
+								<ST></ST>
+							</value>
+						</observation>
+					</act>
+				</relationship>
+			</act>
+		</relationship>
+	</act>
+	<valueSet name="relatedToCycle">
+		<CE>
+			<displayName>Cycle 1</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cycle 2</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="infectionReportRelatingtoPeriod">
+		<CE>
+			<displayName>Remission induction treatment cycle 1</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Remission induction treatment cycle 2</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Post Induction GO Cycle 1</displayName>
+			<code>3</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Post Induction GO Cycle 2</displayName>
+			<code>4</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Post Induction GO Cycle 3</displayName>
+			<code>5</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="response">
+		<CE>
+			<displayName>CPR</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>PR</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>RD</displayName>
+			<code>3</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Other Induction Failure</displayName>
+			<code>4</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="survivalStatus">
+		<CE>
+			<displayName>Alive</displayName>
+			<code>0</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Dead</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="treatmentPlan">
+		<CE>
+			<displayName>No further Treatment</displayName>
+			<code>0</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Cycle II</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Post Remission Treatment with GO</displayName>
+			<code>3</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>mini-SCT</displayName>
+			<code>4</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Treatment off Protocol other than mini-SCT</displayName>
+			<code>5</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="ctcGrade">
+		<CE>
+			<displayName>0</displayName>
+			<code>0</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>1</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>2</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>3</displayName>
+			<code>3</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="site">
+		<CE>
+			<displayName>Blood</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Pulmonary</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Ear/Nose/Throat</displayName>
+			<code>3</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Oesophagus</displayName>
+			<code>4</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>GI Tract</displayName>
+			<code>5</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Liver</displayName>
+			<code>6</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>GU Tract</displayName>
+			<code>7</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>CNS</displayName>
+			<code>8</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>Skin/sub-cutaneous</displayName>
+			<code>9</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>Fever e.c.i**</displayName>
+			<code>10</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Other</displayName>
+			<code>11</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+		<valueSet name="anc">
+		<CE>
+			<displayName>less than 1.0 x 10(9)/l</displayName>
+			<code>0</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Greater than 1.0 x 10(9)/l</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Unknown</displayName>
+			<code>9</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="agent">
+		<CE>
+			<displayName>Gram-positive bacteria</displayName>
+			<code>1</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Gram-negative bacteria</displayName>
+			<code>2</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Fungi</displayName>
+			<code>3</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Protozoa</displayName>
+			<code>4</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Virus</displayName>
+			<code>5</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Mycoplasma</displayName>
+			<code>6</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>Combined agents</displayName>
+			<code>7</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>Other</displayName>
+			<code>8</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+		<CE>
+			<displayName>Unknown</displayName>
+			<code>9</code>
+			<codeSystem>XXXXXX</codeSystem>
+			<codeSystemVersion>XXXXXX</codeSystemVersion>
+		</CE>		
+	</valueSet>
+</trim>

@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+<head>
+    <title>Vestibule Edit User Profile Pagelet</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+	<h:form id="register">
+		<h:panelGrid columns="2">
+			<h:outputText value="User ID"/>
+			<h:panelGroup>
+				<h:inputText id="uid" value="#{top.getTolvenPersonString('uid')}" size="50" readonly="true"/>
+				<h:message for="uid" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+			</h:panelGroup>
+			<h:outputText value="Email Address"/>
+			<h:panelGroup>
+				<h:panelGroup>
+					<h:inputText id="email" value="#{top.getTolvenPersonString('mail')}" size="50" readonly="true"/>
+					<h:message for="email" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+				</h:panelGroup>
+				<h:commandButton action="#{reg.sendTestMessage}" value="Send Test eMail"/>
+			</h:panelGroup>
+			<h:outputLabel value="eMail Format" />
+			<h:selectOneRadio  value="#{reg.user.emailFormat}" >
+				<f:selectItem itemLabel="HTML" itemValue="html" />
+				<f:selectItem itemLabel="Text" itemValue="text" />
+			</h:selectOneRadio>
+			<h:outputText value="User Timezone"/>
+			<h:selectOneMenu value="#{reg.user.timeZone}" >
+				<f:selectItems value="#{reg.timeZones}"/>
+			</h:selectOneMenu>
+		  	<h:outputLabel value="User Locale" />
+			<h:selectOneMenu value="#{reg.user.locale}" >
+				<f:selectItems value="#{reg.localesList}" />
+		  	</h:selectOneMenu>
+		  	<h:outputText value="First Name"/>
+			<h:panelGroup>
+				<h:inputText id="givenName" value="#{top.getTolvenPersonString('givenName')}" size="50" required="true" readonly="true"/>
+				<h:message for="givenName" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+			</h:panelGroup>
+			<h:outputText value="Last Name"/>
+			<h:panelGroup>
+				<h:inputText id="sn" value="#{top.getTolvenPersonString('sn')}" size="50" required="true" readonly="true"/>
+				<h:message for="sn" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+			</h:panelGroup>
+			<h:outputText value="Password"/>
+			<h:panelGroup>
+			    <h:inputSecret id="oldUserPassword" value="#{reg.oldUserPassword}" size="50" required="true" />
+			    <h:message for="oldUserPassword" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+			</h:panelGroup>
+		</h:panelGrid>
+		<br />
+		<!--<h:panelGroup rendered="#{reg.user.likeness!=null}">
+			<img src="xxx.tdoc?docId=#{reg.user.likeness.id}&amp;width=100&amp;height=100"/>
+			<br />
+			<h:outputLink value="#{facesContext.externalContext.request.contextPath}/manage/prefPhotos.jsf">
+			    <h:outputText value="Change Picture" />
+			</h:outputLink>
+		</h:panelGroup>
+		<h:panelGroup rendered="#{reg.user.likeness==null}">
+			<h:commandLink value="Add Picture" action="addPhoto" immediate="true"/>
+		</h:panelGroup>-->
+		<br/>
+		<h:panelGroup rendered="#{reg.defaultAccount!=null}">
+			<h:outputText value="Default account: #{reg.defaultAccount.account.title}"/>
+			<br/>
+			<h:selectBooleanCheckbox id="clearRememberDefault" value="#{reg.clearRememberDefault}"  />
+			<h:outputText value="Let me choose an account when I login"/>
+		</h:panelGroup>
+		<br/>
+		<!--<h:outputLink value="deleteUser.jsf" rendered="#{top.properties['tolven.ldap.deleteUser']}">
+			<h:outputText value="Delete User" />
+		</h:outputLink>-->
+		<br/>
+		<h:commandButton action="#{reg.updatePrefs}" value="Update User Preferences"/>
+	</h:form>
+	      
+	<h3>All accounts you are a member of</h3>
+	<h:form id="defaultLogin">
+		<h:dataTable value="#{reg.userAccounts}" var="au" onmouseover="getCheckboxStatus()">
+			<h:column>
+		       <f:facet name="header">
+		           <h:outputText value="Account Id"/>
+		       </f:facet>
+		       <h:outputText value="#{au.account.id}"/>
+			</h:column>
+			<h:column>
+				<f:facet name="header">
+				    <h:outputText value="Account Type"/>
+				</f:facet>
+				<h:outputText value="#{au.account.accountType.knownType}"/>
+			</h:column>
+			<h:column>
+				<f:facet name="header">
+				    <h:outputText value="Title"/>
+				</f:facet>
+				<h:outputText value="#{au.account.title}"/>
+			</h:column>
+			<h:column>
+				<f:facet name="header">
+					<h:outputText value="Permission"/>
+				</f:facet>
+				<h:outputText value="admin" rendered="#{au.accountPermission}"/>
+			</h:column>
+		</h:dataTable>
+	</h:form>	     
+  </body>
+</html>

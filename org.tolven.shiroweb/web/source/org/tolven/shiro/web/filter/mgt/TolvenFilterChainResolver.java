@@ -15,7 +15,9 @@
  */
 package org.tolven.shiro.web.filter.mgt;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -32,28 +34,33 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.log4j.Logger;
 import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.web.filter.mgt.DefaultFilterChainManager;
+import org.apache.shiro.web.filter.mgt.FilterChainResolver;
 import org.apache.shiro.web.filter.mgt.NamedFilterList;
-import org.apache.shiro.web.filter.mgt.PathMatchingFilterChainResolver;
+import org.apache.shiro.web.util.WebUtils;
 import org.tolven.shiro.authz.TolvenAuthorizationLocal;
 import org.tolven.shiro.authz.entity.TolvenAuthorization;
 
-public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
+public class TolvenFilterChainResolver implements FilterChainResolver {
 
     @EJB
     private TolvenAuthorizationLocal authBean;
 
-    private Map<String, Class<?>> filterClasses;
     private FilterConfig filterConfig;
 
-    //TODO External these filters, to make the configurable
+    //TODO External these filters, to make them configurable
     private String[] filters = {
             "anon,org.apache.shiro.web.filter.authc.AnonymousFilter",
+            "apiaf,org.tolven.api.security.AccountFilter",
+            "af,org.tolven.web.security.AccountFilter",
             "authc,org.apache.shiro.web.filter.authc.FormAuthenticationFilter",
             "authcBasic,org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter",
+            "entervf,org.tolven.web.security.EnterVestibuleFilter",
+            "exitvf,org.tolven.web.security.ExitVestibuleFilter",
             "perms,org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter",
             "port,org.apache.shiro.web.filter.authz.PortFilter",
             "rest,org.apache.shiro.web.filter.authz.HttpMethodPermissionFilter",
             "roles,org.apache.shiro.web.filter.authz.RolesAuthorizationFilter",
+            "selectvf,org.tolven.web.security.SelectAccountVestibuleFilter",
             "ssl,org.apache.shiro.web.filter.authz.SslFilter",
             "user,org.apache.shiro.web.filter.authc.UserFilter",
             "tssl,org.tolven.shiro.web.servlet.TolvenSslFilter",
@@ -63,14 +70,13 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
             "rspreauthz,org.tolven.shiro.web.servlet.RSPreAuthFilter",
             "wspreauthz,org.tolven.shiro.web.servlet.WSPreAuthFilter",
             "wsauthz,org.tolven.shiro.web.servlet.WSAuthorizationFilter" };
-    
+
     private Logger logger = Logger.getLogger(TolvenFilterChainResolver.class);
 
     public TolvenFilterChainResolver() {
     }
 
     public TolvenFilterChainResolver(FilterConfig filterConfig) {
-        super(filterConfig);
         setFilterConfig(filterConfig);
     }
 
@@ -93,7 +99,7 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
         }
         return authBean;
     }
-
+    
     /*
      * This method is required to ensure filter chains are not cached, but created on the fly from the database
      * (non-Javadoc)
@@ -127,7 +133,13 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
             if (logger.isDebugEnabled()) {
                 logger.debug("Adding filters to temporary manager");
             }
-            for (Entry<String, Filter> entry : getFilters().entrySet()) {
+            Map<String, Filter> filters = null;
+            try {
+                filters = getFilters(filterString);
+            } catch (Exception ex) {
+                throw new RuntimeException("Failed to get chain filters for: " + request.getContextPath(), ex);
+            }
+            for (Entry<String, Filter> entry : filters.entrySet()) {
                 temporaryManager.addFilter(entry.getKey(), entry.getValue(), init);
             }
             if (logger.isDebugEnabled()) {
@@ -146,17 +158,18 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
         }
     }
 
-    private Map<String, Class<?>> getFilterClasses() {
-        if(filterClasses == null) {
-            filterClasses = new HashMap<String, Class<?>>();
-            for (String filter : filters) {
-                String name = filter.substring(0, filter.indexOf(","));
+    private Map<String, Class<?>> getFilterClasses(String filterString) {
+        List<String> filterNames = Arrays.asList(filterString.split(","));
+        Map<String, Class<?>> filterClasses = new HashMap<String, Class<?>>();
+        for (String filter : filters) {
+            String name = filter.substring(0, filter.indexOf(","));
+            if (filterNames.contains(name)) {
                 String value = filter.substring(filter.indexOf(",") + 1);
                 try {
                     Class<?> clazz = Class.forName(value);
                     filterClasses.put(name, clazz);
                 } catch (Exception ex) {
-                    throw new RuntimeException("Could not create class", ex);
+                    throw new RuntimeException("Could not create chain filter: " + name + "=" + value, ex);
                 }
             }
         }
@@ -167,9 +180,9 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
         return filterConfig;
     }
 
-    private Map<String, Filter> getFilters() {
+    private Map<String, Filter> getFilters(String filterString) {
         Map<String, Filter> map = new HashMap<String, Filter>();
-        for (Entry<String, Class<?>> entry : getFilterClasses().entrySet()) {
+        for (Entry<String, Class<?>> entry : getFilterClasses(filterString).entrySet()) {
             try {
                 String name = entry.getKey();
                 Class<?> clazz = entry.getValue();
@@ -179,6 +192,10 @@ public class TolvenFilterChainResolver extends PathMatchingFilterChainResolver {
             }
         }
         return map;
+    }
+
+    protected String getPathWithinApplication(ServletRequest request) {
+        return WebUtils.getPathWithinApplication(WebUtils.toHttp(request));
     }
 
     public void setFilterConfig(FilterConfig filterConfig) {

@@ -17,6 +17,7 @@ import org.tolven.app.MenuLocal;
 import org.tolven.app.TrimLocal;
 import org.tolven.app.bean.MenuPath;
 import org.tolven.core.TolvenPropertiesLocal;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.doc.DocumentLocal;
 import org.tolven.locale.ResourceBundleHelper;
@@ -237,7 +238,7 @@ public class ComputeScanner extends Scanner {
     public void setGlobalBundle(AccountUser accountUser) {
         String accountType = accountUser.getAccount().getAccountType().getKnownType();
         String appGlobalBundleName = ResourceBundleHelper.getAppGlobalBundleName(accountType);
-        Locale locale = ResourceBundleHelper.getLocale(accountUser.getUser().getLocale(), accountUser.getAccount().getLocale());
+        Locale locale = TolvenRequest.getInstance().getLocale();
         this.globalBundle = ResourceBundle.getBundle(appGlobalBundleName, locale);
     }
     

@@ -160,7 +160,23 @@ public interface AccountDAOLocal {
       * @see AccountDAOBean
       */
      public AccountUser inviteAccountUser(Account account, AccountUser accountUser, TolvenUser invitedUser, String invitedUserRealm, PrivateKey anInviterPrivateKey, Date now, boolean accountPermission);
-     
+
+     /**
+      * Invite to account, a user with invitedUserId. If invitedUserId does not exist, the associated TolvenUser will be created,
+      * although the TolvenPerson (e.g. in LDAP) is not created at this time.
+      * 
+      * @param account
+      * @param accountUser
+      * @param invitedUserId
+      * @param invitedUserRealm
+      * @param anInviterPrivateKey
+      * @param now
+      * @param accountPermission
+      * @param isReinvite
+      * @return
+      */
+     public AccountUser inviteAccountUser(Account account, AccountUser accountUser, String invitedUserId, String invitedUserRealm, PrivateKey anInviterPrivateKey, Date now, boolean accountPermission, boolean isReinvite);
+
      /**
       * Invite or reinvite a user to an Account
       */

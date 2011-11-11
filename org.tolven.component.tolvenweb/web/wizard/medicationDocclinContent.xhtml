@@ -13,12 +13,15 @@
 		<wiz:group title="#{msg.Effective}"> 
 			<trim:TS id="effectiveTime#{rel.sequenceNumber}"  value="#{rel.act.effectiveTime.TS}" dateStyle="short"	timeStyle="short" />
 		</wiz:group>
-
-		<wiz:group title="#{msg.Quantity}">
-			<trim:PQ id="quantity#{rel.sequenceNumber}" value="#{rel.act.participation['consumable'].role.player.quantity}" />
+		<wiz:group title="#{msg.Product}">
+			<trim:CE id="product#{rel.sequenceNumber}" layout="pageDirection" valueSet="material"
+				value="#{rel.act.participation['consumable'].role.player.code}" required="true"/>
 		</wiz:group>
-		<wiz:group title="#{msg.Refills}">
-			<trim:INT id="refills#{rel.sequenceNumber}" value="#{rel.act.repeatNumber}" />
+		<wiz:group title="#{msg.Route}">
+			<trim:valueSetMenu  id="route#{rel.sequenceNumber}" slot="#{rel.act.substanceAdministration.routeCode}" required="true"/>
+		</wiz:group>
+		<wiz:group title="#{msg.Frequency}">
+			<trim:valueSetMenu id="frequency#{rel.sequenceNumber}"  slot="#{rel.act.relationship['frequency'].act.observation.value}" required="true"/>			
 		</wiz:group>
 		<wiz:group title="#{msg.DoseInstr}">
 			<trim:ED id="dose#{rel.sequenceNumber}" value="#{rel.act.text}"	readonly="false" />

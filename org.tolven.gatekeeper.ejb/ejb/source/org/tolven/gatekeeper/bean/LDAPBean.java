@@ -31,7 +31,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
 import org.tolven.exeption.GatekeeperSecurityException;
 import org.tolven.gatekeeper.LdapLocal;
-import org.tolven.ldap.LdapException;
 import org.tolven.ldap.LdapManager;
 import org.tolven.naming.LdapRealmContext;
 import org.tolven.naming.TolvenContext;
@@ -266,12 +265,9 @@ public class LdapBean implements LdapLocal {
             ldapManager = ldapRealmContext.getLdapManager(uid, password);
             ldapManager.checkPassword();
             return true;
-        } catch (LdapException ex) {
-            if (ex.getLDAPErrorCode() == LdapException.PASSWORD_VALIDATION) {
-                return false;
-            } else {
-                throw ex;
-            }
+        } catch (GatekeeperSecurityException ex) {
+            logger.info(ex.getMessage());
+            return false;
         } catch (Exception ex) {
             throw new RuntimeException("Failed to verify password for uid: " + uid + " in realm " + realm + " by: " + uid, ex);
         } finally {

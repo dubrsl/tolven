@@ -19,6 +19,7 @@ import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
@@ -26,10 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.tolven.core.TolvenPropertiesLocal;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
-import org.tolven.locale.ResourceBundleHelper;
-import org.tolven.locale.SessionResourceBundleFactory;
 import org.tolven.locale.TolvenResourceBundle;
 import org.tolven.security.key.UserPrivateKey;
 import org.tolven.session.TolvenSessionWrapper;
@@ -48,8 +48,6 @@ public abstract class TolvenAction extends TolvenBean {
 
     @EJB
     private TolvenPropertiesLocal propertyBean;
-
-    private Locale locale;
 
     public TolvenAction() {
         super();
@@ -98,15 +96,15 @@ public abstract class TolvenAction extends TolvenBean {
     }
 
     protected Date getNow() {
-        Date now = (Date) getRequestAttribute("tolvenNow");
-        return now;
+        return TolvenRequest.getInstance().getNow();
     }
 
     protected TopAction getTop() {
         TopAction top = (TopAction) getRequestAttribute("top");
         if (top == null) {
-            top = new TopAction();
-            setRequestAttribute("top", top);
+        	throw new RuntimeException("attribute 'top' not found in request context");
+            /*top = new TopAction();
+            setRequestAttribute("top", top);*/
         }
         return top;
     }
@@ -148,18 +146,7 @@ public abstract class TolvenAction extends TolvenBean {
      * @return
      */
     public Locale getLocale() {
-        if (locale == null) {
-            String accountUserLocale = getSessionProperty(ResourceBundleHelper.USER_LOCALE);
-            if (accountUserLocale != null && accountUserLocale.length() == 0) {
-                accountUserLocale = null;
-            }
-            String accountLocale = getSessionProperty(ResourceBundleHelper.ACCOUNT_LOCALE);
-            if (accountLocale != null && accountLocale.length() == 0) {
-                accountLocale = null;
-            }
-            locale = ResourceBundleHelper.getLocale(accountUserLocale, accountLocale);
-        }
-        return locale;
+        return TolvenRequest.getInstance().getLocale();
     }
 
     public String logout() {
@@ -233,8 +220,16 @@ public abstract class TolvenAction extends TolvenBean {
      * @return
      */
     public AccountUser getAccountUser() {
-        AccountUser accountUser = (AccountUser) getRequestAttribute(GeneralSecurityFilter.ACCOUNTUSER);
-        return accountUser;
+        return TolvenRequest.getInstance().getAccountUser();
+    }
+
+    public long getAccountUserId() {
+        AccountUser accountUser = getAccountUser();
+        if (accountUser == null) {
+            return 0;
+        } else {
+            return accountUser.getId();
+        }
     }
 
     /**
@@ -242,8 +237,7 @@ public abstract class TolvenAction extends TolvenBean {
      * @return
      */
     public TolvenUser getUser() {
-        TolvenUser user = (TolvenUser) getRequestAttribute(GeneralSecurityFilter.TOLVENUSER);
-        return user;
+        return TolvenRequest.getInstance().getTolvenUser();
     }
 
     /**
@@ -253,11 +247,29 @@ public abstract class TolvenAction extends TolvenBean {
      * @return
      */
     public TolvenResourceBundle getTolvenResourceBundle() {
-        return SessionResourceBundleFactory.getBundle();
+        return TolvenRequest.getInstance().getResourceBundle();
     }
 
     public String getTolvenPersonString(String name) {
         return getSessionProperty(name);
+    }
+
+    /**
+     * Get the default timezone for this user, the first non-null value is selected:
+     * <ol>
+     * <li>The user's timezone if not null</li>
+     * <li>The account's timezone if not null</li>
+     * <li>From tolven.properties: tolven.timezone</li>
+     * <li>From Java TimeZone.getDefault()</li>
+     * </ol>
+     * @return
+     */
+    public String getTimeZone() {
+        return TolvenRequest.getInstance().getTimeZone();
+    }
+
+    public TimeZone getTimeZoneObject() {
+        return TolvenRequest.getInstance().getTimeZoneObject();
     }
 
 }

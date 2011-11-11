@@ -14,14 +14,16 @@
         <ui:param name="pageTitle" value="User Access for #{reg.account.id} - #{reg.account.title}"/>
         <ui:define name="body">
 			<c:set var="msg" value="#{top.appBundle}" />
-          <h:form id="userAccess" rendered="#{top.accountAdmin}">
-        	<div class="breadcrumbs">
+		<h:form id="breadcrumbsForm">
+			<div class="breadcrumbs">
 				<h:commandLink value="#{msg.Application}" action="dispatch" immediate="true"/>
 				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
 				<h:commandLink value="#{msg.Preferences}" action="preferences" immediate="true"/>
 				<h:outputText value="&nbsp; &gt; &nbsp;" escape="false"/>
 				<h:outputText value="${msg.AccountUsers}" />
 			</div>
+		</h:form>
+		<h:form id="userAccessAddForm" rendered="#{top.accountAdmin}">
 			<fieldset><legend>#{msg.AddUserToAccount}</legend>
 				<h:panelGrid columns="2" rendered="#{top.accountAdmin}">
 	               	<h:outputText value="Realm"/>
@@ -31,12 +33,14 @@
 					<h:outputText value="User Id " />
 					<h:panelGrid>
 						<h:inputText id="uid" value="#{reg.newDemoUser}" size="30" required="true" />
-						<h:message for="userAccess:uid" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
+						<h:message for="userAccessAddForm:uid" errorClass="errorMsg" infoClass="infoMsg" warnClass="warnMsg" fatalClass="fatalMsg"/>
 					</h:panelGrid>
-					<h:commandButton action="#{reg.inviteUser}" value="Invite User" />
-					<h:commandButton action="#{reg.reinviteUser}" value="Reinvite User" />
+					<h:commandButton action="#{reg.inviteUser}" value="Add User" />
+					<h:commandButton action="#{reg.reinviteUser}" value="Re-Add User" />
 				</h:panelGrid>
 			</fieldset>
+		</h:form>
+		<h:form id="userAccessTableForm" rendered="#{top.accountAdmin}">
 		      <h:dataTable id="accountUser" value="#{reg.accountUsers}" var="au" styleClass="general">
 	            <!--h:column>
 	                <f:facet name="header">
@@ -103,7 +107,7 @@
 					</h:commandLink>
 	           </h:column>
 	          </h:dataTable>
-	      </h:form>
+		</h:form>
       </ui:define>
     </ui:composition>
   </body>

@@ -59,7 +59,7 @@
 					</c:if>
 				</wiz:group>
 			</c:if>
-			<c:if test="#{empty msg['tolven.web.showxml'] or msg['tolven.web.showxml']=='true'}">
+			<c:if test="#{empty top.properties['tolven.web.showxml'] or top.properties['tolven.web.showxml']=='true'}">
 				<ui:include src="xml.xhtml"/>
 				<br/>
 			</c:if>

@@ -4,6 +4,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
 	xmlns:wiz="http://www.tolven.org/jsf/wizard"
 	xmlns:trim="http://www.tolven.org/jsf/trim">
 <head>
@@ -51,8 +52,13 @@
 		   	userLocale = '#{top.locale.language}';
    			serverContext = '#{facesContext.externalContext.request.contextPath}/';
 	        titlePrefix = '[#{top.getTolvenPersonString('givenName')} #{top.getTolvenPersonString('sn')}]'; 
-	        initialPage = '#{top.accountUser.openMeFirst==null ? top.accountType : top.accountUser.openMeFirst}';
+	        initialPage = '#{top.accountUser.openMeFirst==null || fn:length(top.accountUser.openMeFirst) == 0? top.accountType : top.accountUser.openMeFirst}';
 	        contextPath = '#{facesContext.externalContext.request.contextPath}';
+                // FIXME: come back here.
+	        setCvNextCheck(#{top.accountUser.property['tolven.web.cvNextCheck']});
+	        setCvLongest(#{top.accountUser.property['tolven.web.cvLongest']});
+	        setCvBlank( #{top.accountUser.property['tolven.web.cvBlank']} );
+	        setCvLogout( #{top.accountUser.property['tolven.web.cvLogout']} );
 	        if( "#{top.accountUser.account.enableBackButton}" == "true" ){
 			  	initHistory( contextPath + "/scripts/blank.html" );
 	        }
@@ -86,7 +92,12 @@
 				</h:panelGroup>
 			</td>
 			<td >
-				<h:panelGroup rendered="#{top.tp!=null}">
+				<h:panelGroup rendered="#{top.tp!=null and top.accountUserId==0}">
+					<h:commandLink action="vestibulePreferences">
+						<h:outputText value="#{msg.Preferences}"/>
+					</h:commandLink>
+				</h:panelGroup>
+				<h:panelGroup rendered="#{top.tp!=null and top.accountUserId!=0}">
 					<h:commandLink action="preferences">
 						<h:outputText value="#{msg.Preferences}"/>
 					</h:commandLink>

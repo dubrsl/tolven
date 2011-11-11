@@ -11,7 +11,6 @@ import org.tolven.analysis.AnalysisLocal;
 import org.tolven.analysis.SnapshotEvent;
 import org.tolven.analysis.SnapshotLocal;
 import org.tolven.app.MenuLocal;
-import org.tolven.app.CCHITLocal;
 
 
 global org.tolven.app.AppEvalAdaptor app;
@@ -23,8 +22,7 @@ rule "Insert SnapshotBean"
 	then
 		insert(app.lookupResource( "java:global/tolven/tolvenEJB/SnapshotBean!org.tolven.analysis.SnapshotLocal" ));
 		insert(app.lookupResource( "java:global/tolven/tolvenEJB/AnalysisBean!org.tolven.analysis.AnalysisLocal" ));
-		insert(app.lookupResource( "java:global/tolven/tolvenEJB/MenuBean!org.tolven.app.MenuLocal" ));
-		insert(app.lookupResource( "java:global/tolven/tolvenEJB/CCHITBean!org.tolven.app.CCHITLocal" ));
+		insert(app.lookupResource( "java:global/tolven/tolvenEJB/MenuBean!org.tolven.app.MenuLocal" ));		
 end
 
 rule "Snapshot command rule"

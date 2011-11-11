@@ -1,0 +1,118 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+	<!-- Patient Diagnosis -->
+	<!-- Customized diagnoses placeholder: 1. Added field for code to use in PLD. 2. Modified author and enteredBy field -->
+	<extends path="echr:patient">
+		<placeholder name="diagnosis" title="Diagnosis" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/dxLink.xhtml">
+			<field name="title" internal="string01">
+				<from>#{act.observation.value.CE.displayName}</from>
+				<from>#{act.title.ST.value}</from>
+				<from>#{trim.description}</from>
+			</field>
+			<field name="code" internal="string02">
+				<from>#{act.observation.values[0].CE.translations[0].code}</from>
+			</field>
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, act.participation['author'].role.id)}</from>
+				<from>#{internalId( account, trim.act.participation['author'].role.id)}</from>
+			</field>
+			<field name="encounter" internal="parent03">
+				<from>#{internalId( account, act.relationship['encounter'].act.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+				<from>#{internalId( account, trim.act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="displayName">
+				<from>#{act.observation.value.CE.displayName}</from>
+			</field>
+			<field name="codeSystem">
+				<from>#{act.observation.value.CE.codeSystem}</from>
+			</field>
+			<field name="codeSystemName">
+				<from>#{act.observation.value.CE.codeSystemName}</from>
+			</field>
+			<field name="isReportable" internal="string04">
+				<from>#{act.relationship['isReportable'].act.observation.value.ST.value}</from>
+			</field>
+			<field name="status" internal="string03">
+				<from>#{trim.act.statusCode}</from>
+			</field>
+			<field name="receiver" internal="string06">
+				<from>#{diagnosis.receiverBy.name}</from>
+			</field>
+			<field name="receiverBy" internal="parent04">
+				<from>#{internalId( account, trim.act.participation['receiver'].role.id)}</from>
+			</field>
+			<field name="facilityFormat" internal="_extended">
+				<from>#{trim.act.participation['receiver'].role.player.name.EN['L'].formatted}</from>
+			</field>
+			<field name="facilityExtension" internal="_extended">
+				<from>#{trim.act.participation['receiver'].role.id.IIS[0].extension}</from>
+			</field>
+			<!-- <field name="hl7Message" internal="string08">
+				<from>#{createHL7(diagnosis,diagnosis.receiverFacility)}</from>
+			</field> -->
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="dxsum" visible="never">
+			<column name="Date" internal="date01" format="MM/dd/yy">
+				<from>#{diagnosis.effectiveTime}</from>
+			</column>
+			<column name="title" internal="string01">
+				<from>#{diagnosis.title}</from>
+			</column>
+			<column name="status" internal="string03">
+				<from>#{diagnosis.status}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="dxsum" portalColumn="3" sequence="2" title="Diagnoses" page="/five/summaryPortletList.xhtml" query="echr:patient:summary:dxsum" visible="true" drilldown=":diagnoses">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:diagnosisMenu">
+				<column name="Diagnosis" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</portlet>
+	</extends>
+	<!-- Customized diagnoses menu: 1. Added additional column for code to use in PLD. -->
+	<extends path="echr:patient">
+		<menu name="diagnoses" sequence="10" title="Diagnoses" page="/five/bar2.xhtml" visible="true">
+			<list name="current" title="Current" page="/five/list.xhtml" visible="true" drilldown=":diagnosis">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="10.0">
+					<from>#{diagnosis.effectiveTime}</from>
+				</column>
+				<column name="Diagnosis" internal="string01" reference="true" width="35.0">
+					<from>#{diagnosis.title}</from>
+				</column>
+				<column name="Code" internal="string02" reference="true" width="15.0">
+					<from>#{diagnosis.code}</from>
+				</column>
+				<column name="Status" internal="string03" reference="true" width="10.0">
+					<from>#{diagnosis.status}</from>
+				</column>
+				<column name="Source" internal="string05" width="10.0">
+					<from>#{diagnosis.author.lastName}</from>
+					<from>#{diagnosis.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="15.0">
+				</column>
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:diagnosisMenu">
+					<column name="Diagnosis" internal="string01" instantiate="true" width="40.0" />
+				</action>
+			</list>
+			<trimList name="menu" title="New" page="/five/list.xhtml" visible="false" placeholder="global:icd9DiagnosisMenu">
+				<column name="Name" internal="string02" instantiate="true" visible="false" />
+				<column name="Code" internal="string03" instantiate="true" width="10.0" />
+				<column name="SearchField" internal="string01" instantiate="true" visible="false" />
+				<column name="Diagnosis" internal="string04" instantiate="true" width="30.0" />
+			</trimList>
+		</menu>
+	</extends>
+</application>

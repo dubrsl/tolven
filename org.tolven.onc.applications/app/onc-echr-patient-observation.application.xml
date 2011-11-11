@@ -1,0 +1,211 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+
+	<!-- Progress Notes -->
+	<!-- Patient Observations -->
+	<extends path="echr:patient">
+		<placeholder name="observation" title="Observation" eventInstance="echr:patient:wip" page="/wizard/wizard.xhtml" heading="/five/obsLink.xhtml">
+			<field name="test" internal="string01">
+				<from>#{act.text.ST.value}</from>
+				<from>#{act.title.ST.value}</from>
+			</field>
+			<field name="effectiveTime" internal="date01">
+				<from>#{act.effectiveTime.TS.date}</from>
+				<from>#{act.effectiveTime.IVLTS.low.date}</from>
+			</field>
+			<field name="value" internal="string07">
+				<from>#{act.observation.value.ST.value}</from>
+				<from>#{act.observation.value.PQ.value}</from>
+			</field>
+			<field name="units" internal="string08">
+				<from>#{act.observation.value.PQ.unit}</from>
+				<from>#{act.observation.value.label.value}</from>
+			</field>
+			<field name="value2" internal="_extended" type="string">
+				<from>#{act.relationship['systolic'].act.observation.value.ST.value}</from>
+			</field>
+			<field name="value3" internal="_extended" type="string">
+				<from>#{act.relationship['diastolic'].act.observation.value.ST.value}</from>
+			</field>
+			<field name="code" internal="code01">
+				<from>#{act.code.value}</from>
+			</field>
+			<field name="patient" internal="parent01">
+				<from>#{patient}</from>
+			</field>
+			<field name="author" internal="parent02">
+				<from>#{internalId( account, act.participation['author'].role.id)}</from>
+			</field>
+			<field name="encounter" internal="parent03">
+				<from>#{internalId( account, act.relationship['encounter'].act.id)}</from>
+			</field>
+			<field name="enteredBy" internal="string05">
+				<from>#{internalId( account, act.participation['dataEnterer'].role.id)}</from>
+			</field>
+			<field name="status" internal="string06">
+				<from>#{trim.act.statusCode}</from>
+			</field>
+		</placeholder>
+	</extends>
+	<extends path="echr:patient:summary">
+		<list name="obssum" visible="never">
+			<column name="test" internal="string01" width="16.0">
+				<from>#{observation.test}</from>
+			</column>
+			<column name="effectiveTime" internal="date01" format="MM/dd/yyyy" width="15.0">
+				<from>#{observation.effectiveTime}</from>
+			</column>
+			<column name="value" internal="string07">
+				<from>#{observation.value}</from>
+			</column>
+			<column name="units" internal="string08">
+				<from>#{observation.units}</from>
+			</column>
+			<column name="author" internal="parent02">
+				<from>#{observation.author}</from>
+			</column>
+			<column name="encounter" internal="parent03">
+				<from>#{observation.encounter}</from>
+			</column>
+			<column name="enteredBy" internal="string05">
+				<from>#{observation.enteredBy}</from>
+			</column>
+			<column name="status" internal="string06">
+				<from>#{observation.status}</from>
+			</column>
+		</list>
+	</extends>
+	<extends path="echr:patient:summary:portal">
+		<portlet name="obssum" portalColumn="1" sequence="3" title="Observations" page="/five/obsSummary.xhtml" query="echr:patient:summary:obssum" visible="true" drilldown=":observations">
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:observationMenu">
+				<column name="Date" internal="date01" instantiate="true" width="25.0" visible="false" />
+				<column name="Observation" internal="string01" instantiate="true" width="25.0" />
+				<column name="Value" internal="string07" instantiate="true" width="25.0" visible="false" />
+				<column name="Units" internal="string08" instantiate="true" width="25.0" visible="false" />
+			</action>
+		</portlet>
+	</extends>
+	<extends path="echr:patient">
+		<menu name="observations" sequence="12" title="Observations" page="/five/bar2.xhtml" visible="true">
+			<list name="active" title="Active" page="/five/list.xhtml" visible="true" drilldown=":observation">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{observation.effectiveTime}</from>
+				</column>
+				<column name="Test" internal="string01" reference="true" width="16.0">
+					<from>#{observation.test}</from>
+				</column>
+				<column name="Value" internal="string07" width="6.0" align="right">
+					<from>#{observation.value}</from>
+				</column>
+				<column name="Units" internal="string08" width="6.0">
+					<from>#{observation.units}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{observation.author.lastName}</from>
+					<from>#{observation.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="21.0" />
+				<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:observationMenu">
+					<column name="Observation" internal="string01" instantiate="true" width="40.0" />
+				</action>
+				<action name="graph" title="Graph" page="/five/list.xhtml" visible="true" query="global:observationMenu">
+					<menuEventHandler factory="org.tolven.graph.GraphMenuEventHandlerFactory">
+						<data name="timeColumn" value="Date" />
+						<data name="valueColumn" value="Value" />
+						<data name="unitsColumn" value="Units" />
+						<data name="datasetColumn" value="Test" />
+						<data name="title" value="Observations" />
+						<data name="xAxisLabel" value="Date" />
+						<data name="yAxisLabel" value="Value" />
+					</menuEventHandler>
+				</action>
+			</list>
+			<list name="suspended" title="Suspended" page="/five/list.xhtml" visible="true" drilldown=":observation">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{observation.effectiveTime}</from>
+				</column>
+				<column name="Test" internal="string01" reference="true" width="16.0">
+					<from>#{observation.test}</from>
+				</column>
+				<column name="Value" internal="string07" width="6.0" align="right">
+					<from>#{observation.value}</from>
+				</column>
+				<column name="Units" internal="string08" width="6.0">
+					<from>#{observation.units}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{observation.author.lastName}</from>
+					<from>#{observation.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="21.0" />
+			</list>
+			<list name="nullified" title="Nullified" page="/five/list.xhtml" visible="true" drilldown=":observation">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{observation.effectiveTime}</from>
+				</column>
+				<column name="Test" internal="string01" reference="true" width="16.0">
+					<from>#{observation.test}</from>
+				</column>
+				<column name="Value" internal="string07" width="6.0" align="right">
+					<from>#{observation.value}</from>
+				</column>
+				<column name="Units" internal="string08" width="6.0">
+					<from>#{observation.units}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{observation.author.lastName}</from>
+					<from>#{observation.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="21.0" />
+			</list>
+			<list name="completed" title="Completed" page="/five/list.xhtml" visible="true" drilldown=":observation">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{observation.effectiveTime}</from>
+				</column>
+				<column name="Test" internal="string01" reference="true" width="16.0">
+					<from>#{observation.test}</from>
+				</column>
+				<column name="Value" internal="string07" width="6.0" align="right">
+					<from>#{observation.value}</from>
+				</column>
+				<column name="Units" internal="string08" width="6.0">
+					<from>#{observation.units}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{observation.author.lastName}</from>
+					<from>#{observation.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="21.0" />
+			</list>
+			<list name="all" title="All" page="/five/list.xhtml" visible="true" drilldown=":observation">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+					<from>#{observation.effectiveTime}</from>
+				</column>
+				<column name="Test" internal="string01" reference="true" width="16.0">
+					<from>#{observation.test}</from>
+				</column>
+				<column name="Value" internal="string07" width="6.0" align="right">
+					<from>#{observation.value}</from>
+				</column>
+				<column name="Units" internal="string08" width="6.0">
+					<from>#{observation.units}</from>
+				</column>
+				<column name="Source" internal="string02" width="20.0">
+					<from>#{observation.author.lastName}</from>
+					<from>#{observation.enteredBy}</from>
+				</column>
+				<column name="Encounter" internal="string04" width="21.0" />
+			</list>
+			<list name="graphs" title="Graphs" page="/five/list.xhtml" visible="false" drilldown=":graph">
+				<column name="Date" internal="date01" format="MMM-dd-yyyy" width="10.0" />
+				<column name="Graph" internal="string01" reference="true" width="20.0" />
+				<column name="Source" internal="string02" width="25.0">
+					<from>#{graph.author.lastName}</from>
+					<from>#{graph.enteredBy}</from>
+				</column>
+			</list>
+			<trimList name="graph" title="Graph" page="/five/list.xhtml" visible="true" placeholder="global:observationGraphMenu">
+				<column name="Graph" internal="string01" instantiate="true" width="40.0" />
+			</trimList>
+		</menu>
+	</extends>
+</application>

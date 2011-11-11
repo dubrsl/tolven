@@ -25,9 +25,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.tolven.core.ActivationLocal;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.report.ReportLocal;
-import org.tolven.web.security.GeneralSecurityFilter;
 
 /**
  * The main task of the ReportServlet is to write a report to the servlet output stream.
@@ -101,7 +101,7 @@ public class ReportServlet extends HttpServlet {
         String tolvenQueryParameter = request.getParameter(TOLVEN_QUERY_PARAMETER);
         String sortOrder = request.getParameter(TOLVEN_QUERY_SORT_ORDER);
         String sortDirection = request.getParameter(TOLVEN_QUERY_SORT_DIRECTION);
-        AccountUser accountUser = (AccountUser) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+        AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
         response.setHeader("Cache-Control", "no-cache");
         response.setHeader("Content-Disposition", "attachment; filename=" + tolvenQueryParameter + "." + reportFormat);
         try {

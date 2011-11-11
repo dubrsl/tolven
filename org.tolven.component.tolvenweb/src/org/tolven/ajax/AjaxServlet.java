@@ -33,6 +33,7 @@ import org.tolven.app.entity.MSColumn;
 import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.doc.DocumentLocal;
 import org.tolven.doc.entity.DocImage;
@@ -135,7 +136,7 @@ public class AjaxServlet extends HttpServlet {
 					fow.writeEscape( stringValue );
 					fow.writeVerbatim("</a>");
 					if(null != rowData.get("sourceAccountId")) {
-						AccountUser accountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+						AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 						Long accountId = accountUser.getAccount().getId();
 						if(Long.parseLong(rowData.get("sourceAccountId").toString()) != (accountId)) {
 							fow.writeVerbatim(" <img src='../images/vcard.gif' class='shareInfo' title='Data shared from account:"+rowData.get("sourceAccountId")+"'/>");						
@@ -147,7 +148,7 @@ public class AjaxServlet extends HttpServlet {
 					fow.writeEscape( stringValue );
 					fow.writeVerbatim("</a>");
 					if(null != rowData.get("sourceAccountId")) {
-						AccountUser accountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+						AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 						Long accountId = accountUser.getAccount().getId();
 						if(Long.parseLong(rowData.get("sourceAccountId").toString()) != (accountId)) {
 							fow.writeVerbatim(" <img src='../images/vcard.gif' class='shareInfo' title='Data shared from account:"+rowData.get("sourceAccountId")+"'/>");						
@@ -248,9 +249,9 @@ public class AjaxServlet extends HttpServlet {
 		String sortCol = req.getParameter( "sort_col");
 		String sortDir = req.getParameter( "sort_dir");
 		// Figure out timeZone
-		AccountUser accountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+		AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 		// Get now
-		Date now = (Date) req.getAttribute( "tolvenNow" );
+		Date now = TolvenRequest.getInstance().getNow();
 		String tableId = req.getParameter( "id");
 		writer.write( "<response type=\"object\" id=\"" + tableId + "_updater\">\n" );
 		writer.write( "<rows update_ui='true'>\n" );

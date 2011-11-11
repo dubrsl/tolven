@@ -16,9 +16,7 @@ package org.tolven.core.bean;
 import java.util.Date;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.EJBContext;
 import javax.ejb.Local;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -27,6 +25,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.log4j.Logger;
 import org.tolven.core.ActivationLocal;
 import org.tolven.core.ActivationRemote;
 import org.tolven.core.TolvenPropertiesLocal;
@@ -52,13 +51,17 @@ import org.tolven.security.TolvenPerson;
 @Local(ActivationLocal.class)    
 @Remote(ActivationRemote.class)  
 public class ActivationBean implements ActivationLocal, ActivationRemote {
-    @PersistenceContext private EntityManager em;
     
-    @Resource EJBContext ejbContext;
+    @PersistenceContext
+    private EntityManager em;
 
-    @EJB private LDAPLocal ldapBean;
+    @EJB
+    private LDAPLocal ldapBean;
+
+    @EJB
+    private TolvenPropertiesLocal propertyBean;
     
-	@EJB TolvenPropertiesLocal propertyBean;
+    private Logger logger = Logger.getLogger(ActivationBean.class);
 
     /**
      * Given the principal's name, get the TolvenUser object. the parameter must be converted to lower case to ensure we find a match.
@@ -86,9 +89,10 @@ public class ActivationBean implements ActivationLocal, ActivationRemote {
      * @return new TolvenUser object properly initialized and persisted
      */
     public TolvenUser createTolvenUser( String principal, Date now ) {
+        logger.info("Creating TolvenUser: " + principal);
         TolvenUser user = new TolvenUser();
         user.setLdapUID( principal );
-        String activeStatus = Status.fromValue("active").value();
+        String activeStatus = Status.ACTIVE.value();
         user.setStatus( activeStatus);
         user.setLastLogin( null );    // Last login is null, never logged in before this
         user.setCreation( now ); 

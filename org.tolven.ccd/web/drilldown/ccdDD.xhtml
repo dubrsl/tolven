@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>CCD Clinical Summary - Drilldown</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+			  [#{menu.element}/#{menu.firstAttachedDocument.id}]<br/>
+    <div id="#{menu.elementLabel}x"/>
+	<iframe id="#{menu.elementLabel}iFrame" src="/Tolven/document?docId=#{menu.firstAttachedDocument.id}" width="100%" height="450px" border="0" frameborder="0" marginheight="0" marginwidth="0" scrolling="auto"></iframe>
+	<script language="JavaScript" type="text/javascript">
+	 // <![CDATA[
+		document.getElementById("#{menu.elementLabel}iFrame").style.height = screen.availHeight - 300 +"px";
+	  // ]]>
+	</script>
+	</ui:composition>
+</body>
+</html>

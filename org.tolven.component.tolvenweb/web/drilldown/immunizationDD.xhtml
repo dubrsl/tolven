@@ -1,8 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
       xmlns:c="http://java.sun.com/jsp/jstl/core"
       xmlns:wiz="http://www.tolven.org/jsf/wizard"
       xmlns:trim="http://www.tolven.org/jsf/trim">
@@ -41,21 +41,15 @@
 				<h:outputText value="#{trim.trim.act.substanceAdministration.doseQuantity.label.value}: " />
 				<h:outputText value="#{trim.trim.act.substanceAdministration.doseQuantity.PQ.value}"/>
 				<h:outputText value="consumable :" />
-				<h:outputText value="#{trim.trim.act.participation['consumable'].role.player.quantity.PQ.value}"/>
+ 	 			<h:outputText value="#{trim.trim.act.participation['consumable'].role.player.quantity.PQ.value}"/>
 				<h:outputText value="#{trim.trim.act.relationship['LOTnumber'].act.title.ST.value}: " />
 				<h:outputText value="#{trim.trim.act.relationship['LOTnumber'].act.observation.value.ST.value}" />
 				<h:outputText value="Substance Manufacturer (Name~Code) : " />
-				<h:outputText id="manufacturerName" value="#{trim.trim.act.relationship['manufacturer'].act.observation.values[0].ST.value}"/>				
+				<h:outputText id="manufacturerName" value="#{trim.trim.act.relationship['manufacturer'].act.observation.values[0].ST.value}"/>                          
 				<h:outputText value="Receiver :" />
 				<wiz:selectWithOther id="receiverBy"  role="#{trim.trim.act.participation['receiver'].role}" list="#{trim.list['echr:admin:receivers:all']}" readonly="true" />
 			</h:panelGrid>
-			<h:panelGrid columns="1" >
-				<br></br>
-				<a href="#" onclick="$('#{menu.elementLabel}hl7msg').toggle();">Show/Hide HL7 Message</a>
-				<div id="#{menu.elementLabel}hl7msg" style="display:none">
-					<pre>#{menu.hl7Message}</pre>
-				</div>
-			</h:panelGrid>
+			<ui:include src="immunizationExtnDD.xhtml"/>
 			</c:if>
 		</wiz:body>
 	</ui:composition>

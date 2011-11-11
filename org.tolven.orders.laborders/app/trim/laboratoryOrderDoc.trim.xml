@@ -40,13 +40,6 @@
 		</transition>
 	 </transitions>	
 	<act classCode="OBS" moodCode="RQO">
-		<code>
-			<CD>
-				<code>OINT</code>
-				<codeSystemName>HL7</codeSystemName>
-				<codeSystemVersion>3.0</codeSystemVersion>
-			</CD>
-		</code>
 		<statusCode>active</statusCode>
 		<title>
 			<ST>Laboratory Orders</ST>
@@ -116,6 +109,12 @@
 			</property>
 			<property name="arType">
 		        <value xsi:type="xs:string">Laboratory Order</value>
+			</property>
+		</compute>
+		<compute>
+			<type>org.tolven.process.SaveOldInstanceToCurrentPlaceholder</type>
+			<property name="fieldName">
+		        <value xsi:type="xs:string">parent03</value>
 			</property>
 		</compute>
 	</act>

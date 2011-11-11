@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0 http://www.tolven.org/xsd/trim4">
+	<name>path/allergyDetailTemplate</name>
+	<description>Allergy Detail Template</description>
+	<author>Tolven</author>
+	<act moodCode="EVN" classCode="PROC" enabled="false">		
+		<relationship typeCode="PERT" direction="OUT" name="reaction">
+			<act moodCode="EVN" classCode="OBS">
+				<observation>
+					<value>
+						<label>Reaction</label>
+						<valueSet>reaction</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship typeCode="PERT" direction="OUT" name="severity">
+			<act moodCode="EVN" classCode="OBS">
+				<observation>
+					<value>
+						<label>Severity</label>
+						<valueSet>severity</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+	</act>
+</trim>

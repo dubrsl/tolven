@@ -13,24 +13,6 @@
 
 <body>
 	<ui:composition>
-		<script type="text/javascript">
-		// <![CDATA[ 
-		ProblemDocumentDD = function() {
-			return {
-				toggleHistory: function(anc, tab) {
-					if ($(tab).style.display != 'block') {
-						$(tab).style.display = 'block';
-						anc.innerHTML = 'Hide History';
-					} else {
-						$(tab).style.display = 'none';
-						anc.innerHTML = 'Show History';
-					}
-				}
-			}
-		}();
-	
-		// ]]> 
-		</script>
 		<wiz:body>
 			<table width="100%">
         		<thead>
@@ -64,7 +46,7 @@
 										<td style="width: 15%;">#{rel.act.relationship['treatment'].act.text.ST.value}</td>
 										<td style="width: 15%;">#{rel.act.relationship['comments'].act.text.ST.value}</td>
 										<td style="width: 10%;">
-											<a href="javascript:displayMedLinePage('#{rel.act.observation.value.CE.code}', 'medLinePageFrame', 'medLinePageDiv', 'problem');">
+											<a href="javascript:displayMedLinePage('#{rel.act.observation.value.CE.code}','#{rel.act.observation.value.CE.displayName}','#{rel.act.observation.value.CE.codeSystem}');">
 												<h:outputText value="More Info"/>
 											</a>
 										</td>
@@ -74,12 +56,7 @@
           				</c:if>
 					</tbody>			
 				</table>
-				<div id="medLinePageDiv" style="width:70%;height:60%; padding: 5px;visibility: hidden;position: absolute;left: 150px;top: 100px;">
-					<div class="popupgridheader"><img onclick="closeMedLinePagePopup('medLinePageDiv');return false;" src="../images/x_black.gif" class="closetab"/>&nbsp;</div>
-					<iframe id="medLinePageFrame" src ="" width="100%" height="300" style="border: 0px;">
-					  <p>Your browser does not support iframes.</p>
-					</iframe>
-				</div>
+				
 				<table>
 					<tr>
 						<td><b><h:outputText value="#{trim.trim.act.relationship['encounter'].act.observation.value.label.value} :"/></b></td>
@@ -90,8 +67,8 @@
 				</table>
 				<c:if test="#{trim.history != null}">
     				<div style="width:100%;height:100%; padding: 5px;">
-						<a href="#" onclick="$('historyDisplayTable').toggle();return false;">History</a>
-						<table cellspacing="0" cellpadding="0" style="display: none;" id="historyDisplayTable" width="60%">
+						<a href="#" onclick="$('#{menu.elementLabel}:historyDisplayTable').toggle();return false;">History</a>
+						<table cellspacing="0" cellpadding="0" style="display: none;" id="#{menu.elementLabel}:historyDisplayTable" width="60%">
 							<thead>
 			    				<tr>
 			    					<th>User</th>

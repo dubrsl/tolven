@@ -1,0 +1,25 @@
+<application xmlns="urn:tolven-org:menuStructure:1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:menuStructure:1.0 http://tolven.org/xsd/menuStructure.xsd">
+
+	<extends path="echr:patient:orders">
+		<list name="referralRequests" title="Referral Requests" page="/five/list.xhtml" visible="true" drilldown=":referralRequest">
+			<column name="Date" internal="date01" format="MMM-dd-yyyy" width="15.0">
+				<from>#{referralRequest.date}</from>
+			</column>
+			<column name="Name" internal="string01" width="30.0" reference="true">
+				<from>#{referralRequest.serviceName}</from>
+			</column>
+			<column name="Status" internal="string02" width="30.0">
+				<from>#{referralRequest.status}</from>
+			</column>
+			<column width="15.0" internal="string03" name="Performer">
+				<from>#{referralRequest.author.lastName}</from>
+				<from>#{referralRequest.enteredBy}</from>
+			</column>
+			<action name="menu" title="New" page="/five/list.xhtml" visible="true" query="global:referralRequestDocMenu">
+				<column name="Title" internal="string01" instantiate="true" width="40.0" />
+			</action>
+		</list>
+	</extends>
+</application>

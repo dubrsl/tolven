@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim 
+	xmlns="urn:tolven-org:trim:4.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<name>share/labresult</name>
+	<description>Share a Lab Results</description>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="receive">
+			<placeholder bindAction="merge">
+				<path>echr:patient:result</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="receive">
+			<placeholder bindAction="merge">
+				<path>ephr:patient:result</path>
+			</placeholder>
+		</bind>
+		<id>
+			<II>
+				<root>#{computeIDRoot(account)}</root>
+				<extension>#{result.path}</extension>			
+			</II>
+		</id>
+		<code>
+			<CD>
+				<code>OINT</code>
+				<codeSystemName>HL7</codeSystemName>
+				<codeSystemVersion>3</codeSystemVersion>
+			</CD>
+		</code>
+		<text>
+			<label>result</label>
+			<ST>#{result.title}</ST>
+		</text>
+		<observation>			
+			<value>
+				<label>Date</label>				
+				<TS><value>#{TS(result.effectiveTime)}</value></TS>
+			</value>
+			<value>
+				<label>Test</label>
+				<ST>#{result.request.title}</ST>
+			</value>
+			<value>
+			    <PQ>
+	                <label>Weight</label>
+                    <value>#{result.value}</value>
+                    <unit>#{result.units}</unit>
+                </PQ>
+			</value>
+			<value>
+				<label>NormalRange</label>
+				<ST>#{result.normalRange}</ST>		
+			</value>
+			<value>
+				<label>AbnormalFlags</label>
+				<ST>#{result.abnormalFlags}</ST>		
+			</value>
+			<value>
+				<label>OrderingMD</label>
+				<ST>#{result.orderingMD}</ST>		
+			</value>						
+		</observation>		
+
+	</act>
+</trim>

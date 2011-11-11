@@ -31,6 +31,7 @@ import org.tolven.app.entity.MenuData;
 import org.tolven.app.entity.MenuQueryControl;
 import org.tolven.app.entity.MenuStructure;
 import org.tolven.core.TolvenPropertiesLocal;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.Status;
 import org.tolven.doc.DocumentLocal;
@@ -49,7 +50,6 @@ import org.tolven.trim.ex.ActEx;
 import org.tolven.trim.ex.ActRelationshipsMap;
 import org.tolven.trim.ex.TRIMException;
 import org.tolven.trim.ex.TrimEx;
-import org.tolven.web.security.GeneralSecurityFilter;
 
 public class InstantiateServlet extends HttpServlet {
 	private static final String TRIMns = "urn:tolven-org:trim:4.0";
@@ -95,12 +95,12 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 //		ut.begin();
 		      
 		String uri = req.getRequestURI();
-		AccountUser activeAccountUser = (AccountUser) req.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+		AccountUser activeAccountUser = TolvenRequest.getInstance().getAccountUser();
 		resp.setContentType("text/xml");
 		resp.setCharacterEncoding("UTF-8");
 	    resp.setHeader("Cache-Control", "no-cache");
 	    Writer writer=resp.getWriter();
-    	Date now = (Date) req.getAttribute("tolvenNow");
+    	Date now = TolvenRequest.getInstance().getNow();
 	    //	    writer.write( "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" );
 
         String keyAlgorithm = propertyBean.getProperty(UserPrivateKey.USER_PRIVATE_KEY_ALGORITHM_PROP);
@@ -196,7 +196,7 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 			MenuData mdPrior  = menuBean.findMenuDataItem(activeAccountUser.getAccount().getId(), element);
 			MenuData mdNew = creatorBean.createTRIMEvent( mdPrior, activeAccountUser, action, now, userPrivateKey );
     		// Confirm by returning the path of the element we deleted. (path==element)
-	    	writer.write(mdPrior.getPath());
+			writer.write(mdPrior.getPath());
 	    	writer.write(",");
 	    	writer.write(mdNew.getPath());
 	    	req.setAttribute("activeWriter", writer);
@@ -428,11 +428,11 @@ protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws Se
 @Override
 protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	String uri = request.getRequestURI();
-	AccountUser accountUser = (AccountUser) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+	AccountUser accountUser = TolvenRequest.getInstance().getAccountUser();
 	response.setContentType("application/octet-stream");
 	response.setHeader("Cache-Control", "no-cache");
     Writer writer=response.getWriter();
-	Date now = (Date) request.getAttribute("tolvenNow");
+	Date now = TolvenRequest.getInstance().getNow();
 
 	// Browser puts TRIM XML
     if (uri.endsWith("trimPut.ajaxi")) {
@@ -476,7 +476,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
         if (uri.endsWith("wizSubmit.ajaxi")) {
             String element = request.getParameter("element");
             TolvenLogger.info("[wizSubmit] " + element, InstantiateServlet.class);
-            AccountUser activeAccountUser = (AccountUser) request.getAttribute(GeneralSecurityFilter.ACCOUNTUSER);
+            AccountUser activeAccountUser = TolvenRequest.getInstance().getAccountUser();
             MenuData md = menuBean.findMenuDataItem(activeAccountUser.getAccount().getId(), element);
             if (md.getStatus() == Status.NEW) {
                 DocBase document = getDocBean().findDocument(md.getDocumentId());
@@ -487,14 +487,14 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response) 
                     if (document.isSignatureRequired()) {
                         String password = request.getParameter("password");
                         if (password == null || password.trim().length() == 0) {
-                            response.sendError(599, "To sign a document, the signer's password is required");
+                            response.sendError(403, "To sign a document, the signer's password is required");
                             return;
                         }
                         String principal = (String) sessionWrapper.getPrincipal();
                         String realm = sessionWrapper.getRealm();
                         boolean passwordVerfied = rsGatekeeperClientBean.verifyUserPassword(principal, password.toCharArray(), realm);
                         if (!passwordVerfied) {
-                            response.sendError(599, "Incorrect password");
+                            response.sendError(401, "Incorrect password");
                             return;
                         }
                         getDocProtectionBean().sign(document, activeAccountUser, userPrivateKey, sessionWrapper.getUserX509Certificate());

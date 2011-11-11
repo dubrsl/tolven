@@ -19,6 +19,9 @@
 		</zip>
 		<!-- Each section adds itself to the zip file-->
 		<antcall target="buildSection">
+			<param name="section" value="app"/>
+		</antcall>
+		<antcall target="buildSection">
 			<param name="section" value="ejb"/>
 		</antcall>
 		<!-- Add DevLib.jar to plugin zip -->

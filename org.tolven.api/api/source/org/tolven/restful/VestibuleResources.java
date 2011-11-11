@@ -27,18 +27,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.log4j.Logger;
-import org.tolven.api.APIXMLUtil;
-import org.tolven.api.accountuser.XAccountUser;
-import org.tolven.api.accountuser.XAccountUserFactory;
-import org.tolven.api.facade.accountuser.XFacadeAccountUserFactory;
-import org.tolven.api.facade.accountuser.XFacadeAccountUsers;
 import org.tolven.api.security.GeneralSecurityFilter;
-import org.tolven.api.security.Vestibule;
-import org.tolven.api.security.VestibuleException;
 import org.tolven.app.MenuLocal;
 import org.tolven.core.AccountDAOLocal;
 import org.tolven.core.ActivationLocal;
 import org.tolven.core.TolvenPropertiesLocal;
+import org.tolven.core.TolvenRequest;
 import org.tolven.core.entity.Account;
 import org.tolven.core.entity.AccountUser;
 import org.tolven.core.entity.TolvenUser;
@@ -71,29 +65,29 @@ public class VestibuleResources {
     private TolvenPropertiesLocal propertyBean;
 
     private javax.naming.Context ctx;
-    private static List<String> vestibuleJNDINames = new ArrayList<String>();
 
     private Logger logger = Logger.getLogger(VestibuleResources.class);
 
     public VestibuleResources() {
     }
-
+/*
     protected Response prepareUserAccountList(String username) throws Exception {
         TolvenUser tolvenUser = getActivationBean().findUser(username);
         if (tolvenUser == null) {
             return Response.status(Status.NOT_FOUND).entity("TolvenUser not found").build();
         }
         List<AccountUser> accountUsers = getActivationBean().findUserAccounts(tolvenUser);
-        XFacadeAccountUsers uas = XFacadeAccountUserFactory.createXFacadeAccountUsers(accountUsers, tolvenUser, (Date) request.getAttribute("tolvenNow"));
+        XFacadeAccountUsers uas = XFacadeAccountUserFactory.createXFacadeAccountUsers(accountUsers, tolvenUser, TolvenRequest.getInstance().getNow());
         Response response = Response.ok().entity(uas).build();
         return response;
 
     }
-
+*/
     /**
      * Enter the Vestibule
      * @return
      */
+    /*
     @Path("enter")
     @GET
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
@@ -108,7 +102,7 @@ public class VestibuleResources {
         if (logger.isDebugEnabled()) {
             start = System.currentTimeMillis();
         }
-        Date now = (Date) request.getAttribute("tolvenNow");
+        Date now = TolvenRequest.getInstance().getNow();
         TolvenUser user = getActivationBean().findUser(request.getUserPrincipal().getName());
         XAccountUser xAccountUser = XAccountUserFactory.createXAccountUser(user, now);
         String xAccountUserXML = APIXMLUtil.marshalXAccountUser(xAccountUser);
@@ -133,11 +127,12 @@ public class VestibuleResources {
             return exitVestibule();
         }
     }
-
+*/
     /**
      * Exit the Vestibule
      * @return
      */
+    /*
     @Path("exit")
     @GET
     @Produces(MediaType.APPLICATION_FORM_URLENCODED)
@@ -228,15 +223,15 @@ public class VestibuleResources {
         sessionWrapper.removeAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID);
         sessionWrapper.removeAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNT_HOME);
         sessionWrapper.removeAttribute(GeneralSecurityFilter.VESTIBULE_PASS);
-        /*
-         * SAFETY CHECK HERE - Don't trust the accountUserId alone, it must match user.
-         */
+        //
+        // SAFETY CHECK HERE - Don't trust the accountUserId alone, it must match user.
+        //
         TolvenUser user = getActivationBean().findUser(request.getUserPrincipal().getName());
         if (accountUser.getUser().getId() != user.getId()) {
             throw new RuntimeException("ACCOUNTUSER DOES NOT BELONG TO USER");
         }
         // Record the time when the user logged into this particular account
-        Date now = (Date) request.getAttribute("tolvenNow");
+        Date now = TolvenRequest.getInstance().getNow();
         accountUser.setLastLoginTime(now);
         String proposedDefaultAccount = (String) sessionWrapper.getAttribute(GeneralSecurityFilter.PROPOSED_DEFAULT_ACCOUNT);
         if ("true".equals(proposedDefaultAccount)) {
@@ -264,11 +259,12 @@ public class VestibuleResources {
         sessionWrapper.setAttribute(GeneralSecurityFilter.USER_CONTEXT, "account");
         return mvMap;
     }
-
+*/
     /**
      * Get a list of accounts that the current user is allowed to select
      * @return
      */
+    /*
     @Path("accountList")
     @GET
     @Produces(MediaType.APPLICATION_XML)
@@ -276,22 +272,24 @@ public class VestibuleResources {
         Principal principal = request.getUserPrincipal();
         return prepareUserAccountList(principal.getName());
     }
-
+*/
     /**
      * Get a list of accounts that the specified user is a member of
      * @return
      */
+    /*
     @Path("accountList/{username}")
     @GET
     @Produces(MediaType.APPLICATION_XML)
     public Response getUserAccountListXML(@PathParam("username") String username) throws Exception {
         return prepareUserAccountList(username);
     }
-
+*/
     /**
      * Select an account
      * @param account
      */
+    /*
     @Path("selectAccount")
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -310,7 +308,7 @@ public class VestibuleResources {
         sessionWrapper.setAttribute(GeneralSecurityFilter.PROPOSED_ACCOUNTUSER_ID, String.valueOf(accountUser.getId()));
         return exitVestibule();
     }
-
+*/
     /**
      * Select an accountUser
      * @param accountUser
@@ -368,37 +366,6 @@ public class VestibuleResources {
         return Response.ok().build();
     }
 
-    private List<Vestibule> getVestibules() {
-        List<Vestibule> vestibules = new ArrayList<Vestibule>();
-        for (String vestibuleJNDIName : vestibuleJNDINames) {
-            try {
-                Vestibule vestibule = (Vestibule) getContext().lookup(vestibuleJNDIName);
-                vestibules.add(vestibule);
-            } catch (Exception ex) {
-                throw new RuntimeException("Could lookup: " + vestibuleJNDIName, ex);
-            }
-        }
-        return vestibules;
-    }
-
-    static {
-        String propertyFileName = VestibuleResources.class.getSimpleName() + ".properties";
-        InputStream in = VestibuleResources.class.getResourceAsStream(propertyFileName);
-        if (in != null) {
-            Properties properties = new Properties();
-            try {
-                properties.load(in);
-            } catch (Exception ex) {
-                throw new RuntimeException("Could not load vestibuleJNDINames from: " + propertyFileName, ex);
-            }
-            String vestibuleJNDINamesString = properties.getProperty("vestibuleJNDINames");
-            if (vestibuleJNDINamesString == null) {
-                vestibuleJNDINames = new ArrayList<String>();
-            } else {
-                vestibuleJNDINames = Arrays.asList(vestibuleJNDINamesString.split(","));
-            }
-        }
-    }
     protected AccountDAOLocal getAccountBean() {
         if (accountBean == null) {
             String jndiName = "java:app/tolvenEJB/AccountDAOBean!org.tolven.core.AccountDAOLocal";

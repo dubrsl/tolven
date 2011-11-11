@@ -16,7 +16,10 @@ package org.tolven.tools;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,6 +32,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 
 /**
@@ -56,11 +60,7 @@ public class TolvenInstaller {
             System.out.println("Selected tolven-config Directory:\t" + configDir.getPath());
             File binDirectory = new File(System.getProperty("user.dir"));
             File installDir = binDirectory.getParentFile();
-            File pluginsXMLTemplate = getPluginsXMLTemplate(commandLine, installDir);
-            if (!pluginsXMLTemplate.exists()) {
-                throw new RuntimeException("Template plugins.xml file not found: " + pluginsXMLTemplate.getPath());
-            }
-            System.out.println("Template plugins XML:\t" + pluginsXMLTemplate.getPath());
+            String templatePluginsXML = getTemplatePluginsXML(commandLine);
             File bootPropertiesTemplate = new File(installDir, "installer/template-tolven-config/boot.properties");
             if (!bootPropertiesTemplate.exists()) {
                 throw new RuntimeException("Template boot.properties not found: " + bootPropertiesTemplate.getPath());
@@ -71,7 +71,7 @@ public class TolvenInstaller {
                 throw new RuntimeException("Template repositoryLocal not found: " + repositoryLocalTemplate.getPath());
             }
             System.out.println("Template repositoryLocal:\t" + repositoryLocalTemplate.getPath());
-            upgradeConfigDir(configDir, installDir, pluginsXMLTemplate, bootPropertiesTemplate, repositoryLocalTemplate);
+            upgradeConfigDir(configDir, installDir, templatePluginsXML, bootPropertiesTemplate, repositoryLocalTemplate);
             File templateBinDir = new File(binDirectory.getParent(), "installer/bin");
             updateScripts(binDirectory, templateBinDir, configDir);
             System.out.println("\n*** Installation successful ***");
@@ -96,7 +96,8 @@ public class TolvenInstaller {
         Options cmdLineOptions = new Options();
         Option confOption = new Option(CMD_LINE_CONF_OPTION, CMD_LINE_CONF_OPTION, true, "configuration directory");
         cmdLineOptions.addOption(confOption);
-        Option pluginsXMLSourceOption = new Option(CMD_LINE_PLUGINSXMLTEMPLATE_OPTION, CMD_LINE_PLUGINSXMLTEMPLATE_OPTION, true, "source plugins.xml file");
+        Option pluginsXMLSourceOption = new Option(CMD_LINE_PLUGINSXMLTEMPLATE_OPTION, CMD_LINE_PLUGINSXMLTEMPLATE_OPTION, true, "source plugins.xml url");
+        pluginsXMLSourceOption.setRequired(true);
         cmdLineOptions.addOption(pluginsXMLSourceOption);
         return cmdLineOptions;
     }
@@ -108,9 +109,9 @@ public class TolvenInstaller {
             if (configDir == null) {
                 String configDirPath = null;
                 if (System.getProperty("os.name").toLowerCase().indexOf("windows") == -1) {
-                    configDirPath = "/usr/local/tolven-config";
+                    configDirPath = "/usr/local/tolven/tolven-config";
                 } else {
-                    configDirPath = "c:\\tolven-config";
+                    configDirPath = "c:\\tolven\\tolven-config";
                 }
                 System.out.print("\nPlease enter the Configuration Directory (hit return for the  default:  " + configDirPath + "): ");
                 BufferedReader input = new BufferedReader(new InputStreamReader(System.in, Charset.forName("UTF-8")));
@@ -129,18 +130,33 @@ public class TolvenInstaller {
         return configDir;
     }
 
-    private static File getPluginsXMLTemplate(CommandLine commandLine, File installDir) {
-        String pluginsXMLTemplateFilename = commandLine.getOptionValue(CMD_LINE_PLUGINSXMLTEMPLATE_OPTION);
-        File pluginsXMLTemplate = null;
-        if (pluginsXMLTemplateFilename == null) {
-            pluginsXMLTemplate = new File(installDir, "template-pluginsxml/default-template-plugins.xml");
-        } else {
-            pluginsXMLTemplate = new File(pluginsXMLTemplateFilename);
-            if (!pluginsXMLTemplate.getPath().equals(pluginsXMLTemplate.getAbsolutePath())) {
-                pluginsXMLTemplate = new File(installDir, "template-pluginsxml/" + pluginsXMLTemplateFilename);
-            }
+    private static String getTemplatePluginsXML(CommandLine commandLine) {
+        String urlString = commandLine.getOptionValue(CMD_LINE_PLUGINSXMLTEMPLATE_OPTION);
+        URL url = null;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException ex) {
+            throw new RuntimeException("Could not convert to URL: '" + urlString + "'", ex);
         }
-        return pluginsXMLTemplate;
+        String templatePluginsXML = null;
+        try {
+            InputStream in = null;
+            try {
+                in = url.openStream();
+                templatePluginsXML = IOUtils.toString(in);
+            } finally {
+                if (in != null) {
+                    in.close();
+                }
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not load plugins metadata from: " + url.toExternalForm(), ex);
+        }
+        if (templatePluginsXML == null || templatePluginsXML.trim().length() == 0) {
+            throw new RuntimeException("Template plugins.xml has no content: " + url.toExternalForm());
+        }
+        System.out.println("Template plugins XML:\t" + url.toExternalForm());
+        return templatePluginsXML;
     }
 
     private static void updateScripts(File binDirectory, File templateBinDir, File selectedConfigDir) throws IOException {
@@ -177,14 +193,15 @@ public class TolvenInstaller {
         }
     }
 
-    private static void upgradeConfigDir(File configDir, File installDir, File pluginsXMLTemplate, File bootPropertiesTemplate, File repositoryLocalTemplate) throws IOException {
+    private static void upgradeConfigDir(File configDir, File installDir, String templatePluginsXML, File bootPropertiesTemplate, File repositoryLocalTemplate) throws IOException {
         File pluginsXML = new File(configDir, "plugins.xml");
         if (pluginsXML.exists()) {
-            System.out.println(pluginsXML + " exists, and will NOT be replaced by: " + pluginsXMLTemplate);
+            System.out.println(pluginsXML + " exists, and will NOT be overwritten");
         } else {
-            List<String> sub_lines = getPluginsXMLLines(pluginsXMLTemplate, installDir, configDir);
-            System.out.println("write plugins template content from: " + pluginsXMLTemplate.getPath() + " to: " + pluginsXML.getPath());
-            FileUtils.writeLines(pluginsXML, sub_lines);
+            templatePluginsXML = templatePluginsXML.replace("your-installationDir", installDir.getPath().replace("\\", "/"));
+            templatePluginsXML = templatePluginsXML.replace("your-tolven-configDir", configDir.getPath().replace("\\", "/"));
+            System.out.println("Writing template plugins.xml to: " + pluginsXML);
+            FileUtils.writeStringToFile(pluginsXML, templatePluginsXML);
         }
         File bootProperties = new File(configDir, bootPropertiesTemplate.getName());
         if (bootProperties.exists()) {
@@ -202,17 +219,6 @@ public class TolvenInstaller {
             File repositoryPluginsDir = new File(repositoryLocal, "plugins");
             repositoryPluginsDir.mkdirs();
         }
-    }
-
-    private static List<String> getPluginsXMLLines(File defaultPluginsXMLFile, File installDir, File configDir) throws IOException {
-        List<String> lines = FileUtils.readLines(defaultPluginsXMLFile);
-        List<String> sub_lines = new ArrayList<String>();
-        for (String line : lines) {
-            String replacedLine = line.replace("your-installationDir", installDir.getPath().replace("\\", "/"));
-            replacedLine = replacedLine.replace("your-tolven-configDir", configDir.getPath().replace("\\", "/"));
-            sub_lines.add(replacedLine);
-        }
-        return sub_lines;
     }
 
 }

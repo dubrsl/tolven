@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:wiz="http://www.tolven.org/jsf/wizard"
+      xmlns:trim="http://www.tolven.org/jsf/trim">
+<head>
+    <title>Drug Allergies</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+
+<body>
+    <ui:composition>
+    	<img id="#{menu.elementLabel}:ajaxLoader"  alt="ajax" src="../images/ajax-loader.gif" style="display:none; z-index: 50;position: absolute;margin-top: 40px;margin-left: 450px;"/>
+			<h:inputHidden id="rowId" value="#{fdb.rowId}"/>
+			<h:inputHidden id="hiddenVariable" value="#{fdb.hidden}" />
+			<h:inputHidden id="fdbType" />			
+			<h:inputHidden id="computeEnable"  value="#{trim.trim.act.computes[0].property['enabled']}" converter="javax.faces.Boolean"/>			
+			<h:inputHidden id="computeTemplate" value="#{trim.trim.act.computes[0].property['template']}" />
+			<h:inputHidden id="computePosition" value="#{trim.trim.act.computes[0].property['position']}" />					
+			<h:inputHidden id="computeAction" value="#{trim.trim.act.computes[0].property['action']}" />
+			<h:inputHidden id="fdbDrugAllergyName" value="#{trim.trim.act.computes[0].property['fdbDrugAllergyName']}" />
+			<h:inputHidden id="fdbDrugAllergyType" value="#{trim.trim.act.computes[0].property['fdbDrugAllergyType']}" />
+			<h:inputHidden id="fdbDrugAllergyCode" value="#{trim.trim.act.computes[0].property['fdbDrugAllergyCode']}" />
+			<c:set var="hasUnsavedDrugAllergy" value="false"/>
+			<wiz:step title="Add Drug Allergy" >
+				<wiz:body>
+					 <ui:include src="/wizard/drugAllergiesPopup.xhtml"/>
+			
+					<table width="100%" cellspacing="5" cellpadding="5">
+						<tr>
+							<td>
+								<c:if test="#{trim.trim.act.observation.values[0].CE.displayName==null}">
+									<script>
+										enableAllergiesPopUP('#{menu.elementLabel}', 'drugAllergiesFromFDBPopUP');
+									</script>
+								</c:if>
+								
+								<div id="#{menu.elementLabel}:addProcAnchor" class="widgetAction">
+									<a href="javascript:enableAllergiesPopUP('#{menu.elementLabel}','drugAllergiesFromFDBPopUP');">Add Drug Allergy</a>					
+								</div>
+							</td>
+							<td>
+								<h:outputText value="#{trim.trim.act.observation.values[0].CE.displayName}"/>
+								<h:outputText value=" (#{trim.trim.act.statusCode})"/>
+							</td>
+						</tr>
+						<tr>
+							<td width="15%">
+								<h:outputText value="Enter Start Date : " />
+							</td>
+							<td width="85%" style="text-align: left;">
+								<trim:TS id="startDate" value="#{trim.trim.act.effectiveTime.TS}" dateStyle="short"/>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<div class="widget" style="width: 100%;" id="drugAllergyDetails">
+		                            <table style="width: 100%;" id="#{menu.elementLabel}:newAllergyDetailWidgetTBL" cellpadding="0" cellspacing="0" border="0">
+										<thead>
+											<tr>
+												<th style="width: 5%;" align="center">#</th>
+												<th style="width: 40%;" align="center">Reaction</th>
+												<th style="width: 40%;" align="center">Severity</th>
+												<th style="width: 15%;" align="center">&nbsp;</th>
+											</tr>
+										</thead>
+										<tbody>
+											<c:set var="hasAllergyDetail" value="false" />
+											<c:forEach var="allergyDetail"
+												items="#{trim.trim.act.relationshipsList['allergyDetailsStore']}"
+												varStatus="allergyDetailIndex">
+												<c:set var="class" value="odd"/>
+												<c:if test="#{(allergyDetailIndex.index%2)==1}"><c:set var="class" value="even"/></c:if>
+												<c:if test="#{allergyDetail.enabled == true}">
+													<tr id="#{menu.elementLabel}savedOrder#{allergyDetailIndex.index}" class="#{class}">
+														<td align="center">	#{(allergyDetailIndex.index+1)}</td>
+														<td align="left">
+															#{allergyDetail.act.relationship['reaction'].act.observation.value.CE.displayName}
+														</td>
+														<td align="left">
+															#{allergyDetail.act.relationship['severity'].act.observation.value.CE.displayName}
+														</td>
+														<td align="center" nowrap="nowrap">
+															<img width="20px;" height="20px;" style="cursor:pointer;" onclick="{$('#{menu.elementLabel}savedOrder#{allergyDetailIndex.index}').toggle();$('#{menu.elementLabel}editableOrder#{allergyDetailIndex.index}').toggle();}" alt="Edit" src="../images/edit.jpg"  title="Edit"></img>
+															&nbsp;
+															<img width="20px;" height="20px;" style="cursor:pointer;" onclick="removeFdbDrugAllergy('#{menu.element}','#{allergyDetailIndex.index}')" src="../images/delete.gif" alt="Remove" title="Remove"></img>
+														</td>
+													</tr>
+													<tr id="#{menu.elementLabel}editableOrder#{allergyDetailIndex.index}" class="#{class}" style="display:none">
+														<td>#{(allergyDetailIndex.index+1)}
+															<h:inputHidden id="saveDrugAllergy#{allergyDetailIndex.index}" value="#{allergyDetail.enableRelationship}"/>
+														</td>
+														<td style="text-align: center;width: 10%;">
+															<trim:valueSetMenu id="reaction#{allergyDetailIndex.index}"  slot="#{allergyDetail.act.relationship['reaction'].act.observation.value}" readonly="false" style="width:95%;"/>
+														</td>
+														<td  style="text-align: center;width: 10%;">
+															<trim:valueSetMenu id="severity#{allergyDetailIndex.index}"  slot="#{allergyDetail.act.relationship['severity'].act.observation.value}" readonly="false" style="width:95%;"/>
+														</td>
+														<td style="" align="center" valign="middle">
+															<img onclick="{setEnableAct('#{menu.elementLabel}','saveDrugAllergy#{allergyDetailIndex.index}',true);}" src="../images/save.gif" alt="Save" style="cursor:pointer;" title="Save" height="22" width="22">
+																</img>
+															<img onclick="removeFdbDrugAllergy('#{menu.elementLabel}','#{allergyDetail.sequenceNumber}');" alt="Remove" src="../images/delete.gif" style="cursor:pointer;" title="Remove" height="20" width="20"></img>						
+														</td>
+													</tr>
+												</c:if>
+												<c:if test="#{allergyDetail.enabled == false}">
+												<c:set var="hasUnsavedDrugAllergy" value="true"/>
+													<tr class="#{class}">
+														<td>#{(allergyDetailIndex.index+1)}
+														<h:inputHidden id="saveDrugAllergy#{allergyDetailIndex.index}" value="#{allergyDetail.enableRelationship}"/>
+														</td>
+														<td style="text-align: center;width: 10%;">
+															<trim:valueSetMenu id="reaction#{allergyDetailIndex.index}"  slot="#{allergyDetail.act.relationship['reaction'].act.observation.value}" readonly="false" style="width:95%;"/>
+														</td>
+														<td  style="text-align: center;width: 10%;">
+															<trim:valueSetMenu id="severity#{allergyDetailIndex.index}"  slot="#{allergyDetail.act.relationship['severity'].act.observation.value}" readonly="false" style="width:95%;"/>
+														</td>
+														<td style="" align="center" valign="middle">
+															<img onclick="{setEnableAct('#{menu.elementLabel}','saveDrugAllergy#{allergyDetailIndex.index}',true);}" src="../images/save.gif" alt="Save" style="cursor:pointer;" title="Save" height="22" width="22">
+																</img>
+															<img onclick="removeFdbDrugAllergy('#{menu.elementLabel}','#{allergyDetail.sequenceNumber}');" alt="Remove" src="../images/delete.gif" style="cursor:pointer;" title="Remove" height="20" width="20"></img>								
+														</td>
+													</tr>	
+												</c:if>
+											
+											</c:forEach>
+										</tbody>
+									</table>  	
+								</div>
+								<c:if test="#{hasUnsavedDrugAllergy == 'true'}">
+									<h:inputHidden id="preProcessStepParams" value="2,confirmDeleteUnsavedDrugAllergies;3,confirmDeleteUnsavedDrugAllergies"/>
+								</c:if>
+								<c:if test="#{hasUnsavedDrugAllergy == 'false'}">
+									<div id="#{menu.elementLabel}:add" class="widgetAction" style="position:relative; left:30px">
+										<a href="javascript:addDrugAllergyDetails('#{menu.elementLabel}', '#{trim.trim.act.observation.values[0].CE.displayName}');">Add</a>					
+									</div>
+								</c:if>
+								<div id="msgDrugAllergyDetails"
+									style="color: red; font-weight: bold; text-align: center; width: 100%;"></div>
+							</td>
+						</tr>
+					</table>
+				</wiz:body>								
+			</wiz:step>
+	</ui:composition>
+	
+</body>
+</html>

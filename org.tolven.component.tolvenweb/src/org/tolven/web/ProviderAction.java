@@ -13,6 +13,7 @@ import javax.faces.model.DataModel;
 import javax.faces.model.ListDataModel;
 import javax.faces.model.SelectItem;
 
+import org.tolven.core.TolvenRequest;
 import org.tolven.provider.entity.MyProvider;
 import org.tolven.provider.entity.Provider;
 import org.tolven.provider.entity.ProviderSpecialty;
@@ -99,7 +100,7 @@ public class ProviderAction extends TolvenAction {
 		if (myProviders==null) {
 			myProviders = new ListDataModel();
 			myProviders.setWrappedData(getProviderBean().findMyActiveProviders( this.getSessionAccountId()));
-//			TolvenLogger.info( "Show Inactive=" + getTop().isShowProviderInactive(), ProviderAction.class);
+//			TolvenLogger.info( "Show Inactive=" + TolvenRequest.getInstance().isShowProviderInactive(), ProviderAction.class);
 		}
 		return myProviders;
 	}
@@ -180,7 +181,7 @@ public class ProviderAction extends TolvenAction {
 		if (providers==null) {
 			providers = new ListDataModel();
 			providers.setWrappedData(getProviderBean().findAccountProviders( this.getSessionAccountId(), getTop().isShowProviderInactive()));
-//			TolvenLogger.info( "Show Inactive=" + getTop().isShowProviderInactive(), ProviderAction.class);
+//			TolvenLogger.info( "Show Inactive=" + TolvenRequest.getInstance().isShowProviderInactive(), ProviderAction.class);
 		}
 		return providers;
 	}
@@ -208,7 +209,7 @@ public class ProviderAction extends TolvenAction {
 			} else {
 //				TolvenLogger.info( "New Provider", ProviderAction.class);
 				provider = new Provider();
-				provider.setOwnerAccount(getTop().getAccountUser().getAccount());
+				provider.setOwnerAccount(TolvenRequest.getInstance().getAccountUser().getAccount());
 				provider.setShowFrom(getNow());
 				provider.setShowTo(new Date(getNow().getTime()+ (100*365*24*60*1000)));
 				provider.setStatus(org.tolven.core.entity.Status.ACTIVE.value());

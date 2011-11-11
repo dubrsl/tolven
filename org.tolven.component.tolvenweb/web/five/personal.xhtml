@@ -24,7 +24,6 @@
 		  			<tr><td class="name">#{msg.Sex}</td><td>#{menu.drilldownItem.sex}</td></tr>
 		  			<tr><td class="name">#{msg.Race}</td><td>#{menu.drilldownItem.race}</td></tr>
 		  			<tr><td class="name">#{msg.Ethnicity}</td><td>#{menu.drilldownItem.ethnicity}</td></tr>
-		  			<tr><td class="name">#{msg.Nationality}</td><td>#{menu.drilldownItem.nationality}</td></tr>
 		  			<tr><td class="name">#{msg.Address}</td><td>#{menu.drilldownItem.homeAddr1}</td></tr>
 		  			<tr><td class="name">#{msg.Address}</td><td>#{menu.drilldownItem.homeAddr2}</td></tr>
 		  			<tr><td class="name">#{msg.City}</td><td>#{menu.drilldownItem.homeCity}</td></tr>
@@ -41,75 +40,6 @@
 	  			</table>
 	  		</wiz:group>
   		</div>
-  		<c:if test="#{top.accountType=='echr'}">
-	  		<wiz:group title="#{msg.InsuranceDetails}">
-	  			<table width="99%" >
-	  				<tr>
-	  					<th width="25%" style="text-align:center;text-decoration: underline">#{msg.PrimaryInsurance}</th>
-	  					<th width="25%" style="text-align:center;text-decoration: underline">#{msg.SecondaryInsurance}</th>
-	  					<th width="25%" style="text-align:center;text-decoration: underline">#{msg.WorkersCompensation}</th>
-	  					<th width="25%" style="text-align:center;text-decoration: underline">#{msg.OtherInsurance}</th>
-	  				</tr>
-	  				<tr>
-	  					<td width="25%">
-	  						<table width="100%" class="attributes">
-	  							<tr><td width="40%">#{msg.HolderName}</td><td width="60%">#{menu.drilldownItem.primaryHolderName}</td></tr>
-				  				<tr><td>#{msg.HolderAddressLine1}</td><td>#{menu.drilldownItem.primaryHolderAdd1}</td></tr>
-				  				<tr><td>#{msg.HolderAddressLine2}</td><td>#{menu.drilldownItem.primaryHolderAdd2}</td></tr>
-				  				<tr><td>#{msg.HolderAddressLine3}</td><td>#{menu.drilldownItem.primaryHolderAdd3}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.primaryHolderTel}</td></tr>
-				  				<tr><td>#{msg.HolderRealtiontoPatient}</td><td>#{menu.drilldownItem.primaryHolderRel}</td></tr>
-				  				<tr><td>#{msg.HolderSSN}</td><td>#{menu.drilldownItem.primaryHolderSSN}</td></tr>
-				  				<tr><td>#{msg.EmployerName}</td><td>#{menu.drilldownItem.primaryEmpName}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.primaryEmpTel}</td></tr>
-				  				<tr><td>#{msg.CompanyName}</td><td>#{menu.drilldownItem.primaryCompanyName}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.primaryCompanyTel}</td></tr>
-				  				<tr><td>#{msg.PolicyNumber}</td><td>#{menu.drilldownItem.primaryCompanyPolicy}</td></tr>
-				  				<tr><td>#{msg.GroupNumber}</td><td>#{menu.drilldownItem.primaryCompanyGroup}</td></tr>
-	  						</table>
-	  					</td>
-	  					<td width="25%">
-	  						<table width="100%" class="attributes">
-	  							<tr><td width="40%">#{msg.HolderName}</td><td width="60%">#{menu.drilldownItem.secondaryHolderName}</td></tr>
-				  				<tr><td>#{msg.HolderAddressLine1}</td><td>#{menu.drilldownItem.secondaryHolderAdd1}</td></tr>
-				  				<tr><td>#{msg.HolderAddressLine2}</td><td>#{menu.drilldownItem.secondaryHolderAdd2}</td></tr>
-				  				<tr><td>#{msg.HolderAddressLine3}</td><td>#{menu.drilldownItem.secondaryHolderAdd3}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.secondaryHolderTel}</td></tr>
-				  				<tr><td>#{msg.HolderRealtiontoPatient}</td><td>#{menu.drilldownItem.secondaryHolderRel}</td></tr>
-				  				<tr><td>#{msg.HolderSSN}</td><td>#{menu.drilldownItem.secondaryHolderSSN}</td></tr>
-				  				<tr><td>#{msg.EmployerName}</td><td>#{menu.drilldownItem.secondaryEmpName}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.secondaryEmpTel}</td></tr>
-				  				<tr><td>#{msg.CompanyName}</td><td>#{menu.drilldownItem.secondaryCompanyName}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.secondaryCompanyTel}</td></tr>
-				  				<tr><td>#{msg.PolicyNumber}</td><td>#{menu.drilldownItem.secondaryCompanyPolicy}</td></tr>
-				  				<tr><td>#{msg.GroupNumber}</td><td>#{menu.drilldownItem.secondaryCompanyGroup}</td></tr>
-	  						</table>
-	  					</td>
-						<td width="25%">
-	  						<table width="100%" class="attributes">
-	  							<tr><td width="40%">#{msg.EmployeeatInjury}</td><td width="60%">#{menu.drilldownItem.workersCompEmpName}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.workersCompEmpTel}</td></tr>
-				  				<tr><td>#{msg.ContactPerson}</td><td>#{menu.drilldownItem.workersCompEmpContact}</td></tr>
-				  				<tr><td>#{msg.CompanyName}</td><td>#{menu.drilldownItem.workersCompCompanyName}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.workersCompCompanyTel}</td></tr>
-				  				<tr><td>#{msg.AdjustorName}</td><td>#{menu.drilldownItem.workersCompCompanyAdjustor}</td></tr>
-				  				<tr><td>#{msg.ClaimNumber}</td><td>#{menu.drilldownItem.workersCompCompanyClaim}</td></tr>
-	  						</table>
-	  					</td>
-	  					<td width="25%">
-	  						<table width="100%" class="attributes">
-	  							<tr><td width="40%">#{msg.CoverageType}</td><td width="60%">#{menu.drilldownItem.otherInsuranceType}</td></tr>
-				  				<tr><td>#{msg.ProviderName}</td><td>#{menu.drilldownItem.otherInsuranceProvider}</td></tr>
-				  				<tr><td>#{msg.TelephoneNumber}</td><td>#{menu.drilldownItem.otherInsuranceTel}</td></tr>
-				  				<tr><td>#{msg.ContactPerson}</td><td>#{menu.drilldownItem.otherInsuranceContact}</td></tr>
-				  				<tr><td>#{msg.PolicyNumber}</td><td>#{menu.drilldownItem.otherInsurancePolicy}</td></tr>
-				  				<tr><td>#{msg.GroupNumber}</td><td>#{menu.drilldownItem.otherInsuranceGroup}</td></tr>
-	  						</table>
-	  					</td>
-	  				</tr>
-	  			</table>
-	  		</wiz:group>
-	  	</c:if>
   		<wiz:group title="ID">
   			<table class="attributes">
 			<c:forEach var="id" items="${menu.drilldownItem.placeholderIDArray}"> 

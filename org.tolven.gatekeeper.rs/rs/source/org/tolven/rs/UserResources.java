@@ -38,6 +38,7 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
+import org.tolven.exeption.GatekeeperAuthenticationException;
 import org.tolven.exeption.GatekeeperSecurityException;
 import org.tolven.gatekeeper.LdapLocal;
 import org.tolven.naming.TolvenPerson;
@@ -196,6 +197,41 @@ public class UserResources {
         }
     }
 
+    @Path("{userId}/user/{uid}/exists")
+    @GET
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response existsTolvenPerson(
+            @PathParam("uid") String uid,
+            @QueryParam("realm") String realm,
+            @PathParam("userId") String userId) {
+        try {
+            if (realm == null) {
+                return Response.status(Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN).entity("realm parameter missing").build();
+            }
+            if (!request.getUserPrincipal().getName().equals(userId)) {
+                return Response.status(Status.FORBIDDEN).type(MediaType.TEXT_PLAIN).entity("userId " + userId + " does not match resource path").build();
+            }
+            TolvenPerson tolvenPerson = getLdapBean().findTolvenPerson(uid, realm);
+            Boolean exists = tolvenPerson != null;
+            return Response.ok(Boolean.toString(exists)).build();
+        } catch (Exception ex) {
+            GatekeeperSecurityException gex = GatekeeperSecurityException.getRootGatekeeperException(ex);
+            if (gex == null) {
+                throw new RuntimeException("User: " + userId + " failed to determine if TolvenPerson: " + uid + " exists in realm: " + realm, ex);
+            } else {
+                ex.printStackTrace();
+                Status status = null;
+                if(gex instanceof GatekeeperAuthenticationException) {
+                    status = Status.UNAUTHORIZED;
+                } else {
+                    status = Status.FORBIDDEN;
+                }
+                return Response.status(status).entity(gex.getFormattedMessage()).build();
+            }
+        }
+    }
+
     protected LdapLocal getLdapBean() {
         if (ldapBean == null) {
             String jndiName = "java:app/gatekeeperEJB/LdapBean!org.tolven.gatekeeper.LdapLocal";
@@ -239,7 +275,13 @@ public class UserResources {
                 throw new RuntimeException("User: " + userId + " failed to verify password for user: " + uid + " in realm: " + realm, ex);
             } else {
                 ex.printStackTrace();
-                return Response.status(Status.UNAUTHORIZED).entity(gex.getFormattedMessage()).build();
+                Status status = null;
+                if(gex instanceof GatekeeperAuthenticationException) {
+                    status = Status.UNAUTHORIZED;
+                } else {
+                    status = Status.FORBIDDEN;
+                }
+                return Response.status(status).entity(gex.getFormattedMessage()).build();
             }
         }
     }

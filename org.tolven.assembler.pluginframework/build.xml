@@ -60,8 +60,8 @@
 				<include name="commons-cli-1.2.jar" />
 			</fileset>
 			<fileset dir="lib/javaee">
-				<include name="el-api-1.1.jar" />
-				<include name="el-impl-1.1.jar" />
+				<include name="el-api-2.2.jar" />
+				<include name="el-impl-2.2.jar" />
 			</fileset>
 			<fileset dir="lib/log4j">
 				<include name="log4j-1.2.15.jar" />
@@ -77,13 +77,13 @@
 		<!-- Each section adds itself to the zip file-->
 		<antcall target="buildSection">
 			<param name="section" value="tpfboot" />
-			<param name="lib" value="lib/commons-cli/commons-cli-1.2.jar:lib/log4j/log4j-1.2.15.jar:lib/commons-logging.jar:lib/jpf-boot.jar:lib/jpf-tools.jar:lib/jpf.jar:lib/xercesImpl.jar:lib/xml-apis.jar:lib/commons-io/commons-io-1.4.jar:lib/javaee/el-api-1.1.jar:lib/javee/el-impl-1.1.jar" />
-			<param name="sectionZipExcludes" value="**/*" />
+			<param name="lib" value="lib/commons-cli/commons-cli-1.2.jar:lib/log4j/log4j-1.2.15.jar:lib/commons-logging.jar:lib/jpf-boot.jar:lib/jpf-tools.jar:lib/jpf.jar:lib/xercesImpl.jar:lib/xml-apis.jar:lib/commons-io/commons-io-1.4.jar:lib/javaee/el-api-2.2.jar:lib/javee/el-impl-2.2.jar" />
+			<param name="sectionZipExcludes" value="**/" />
 		</antcall>
 		<antcall target="buildSection">
 			<param name="section" value="kit" />
 			<param name="lib" value="lib/commons-cli/commons-cli-1.2.jar:lib/commons-io/commons-io-1.4.jar" />
-			<param name="sectionZipExcludes" value="**/*" />
+			<param name="sectionZipExcludes" value="**/" />
 		</antcall>
 		<manifestclasspath property="tpf-boot.jar.classpath" jarfile="build/pluginLib/tpf-boot.jar">
 			<classpath>
@@ -121,7 +121,9 @@
 				<include name="pluginLib/jpf.jar" />
 				<include name="pluginLib/tpf-boot.jar" />
 				<include name="pluginLib/commons-logging.jar" />
-				<include name="pluginLib/commons-logging.jar" />
+				<include name="pluginLib/log4j-1.2.15.jar" />
+				<include name="pluginLib/el-api-2.2.jar" />
+				<include name="pluginLib/el-impl-2.2.jar" />
 			</zipfileset>
 			<zipfileset dir="${buildFolder}/installer" />
 		</zip>
@@ -132,18 +134,16 @@
 	<target name="populate-dev-lib-tpf">
 		<copy todir="${tolven.devLib}">
 			<fileset dir="build/pluginLib">
+				<include name="jpf-boot.jar" />
+				<include name="jpf-tools.jar" />
+				<include name="jpf.jar" />
+				<include name="tpf-boot.jar" />
+				<include name="commons-logging.jar" />
+				<include name="log4j-1.2.15.jar" />
+				<include name="el-api-2.2.jar" />
+				<include name="el-impl-2.2.jar" />
 			</fileset>
-			<mapper type="glob" from="tpf*.jar" to="${plugin(id)}.tpf*.jar" />
-		</copy>
-		<copy todir="${tolven.devLib}">
-			<fileset dir="build/pluginLib">
-			</fileset>
-			<mapper type="glob" from="jpf*.jar" to="${plugin(id)}.jpf*.jar" />
-		</copy>
-		<copy todir="${tolven.devLib}">
-			<fileset dir="build/pluginLib">
-			</fileset>
-			<mapper type="glob" from="commons-logging*.jar" to="${plugin(id)}.commons-logging*.jar" />
+			<mapper type="glob" from="*.jar" to="${plugin(id)}.*.jar" />
 		</copy>
 	</target>
 
@@ -197,11 +197,6 @@
 		<copy toDir="${kit.dir}/installer" preservelastmodified="true">
 			<fileset dir=".">
 				<include name="template-tolven-config/**" />
-			</fileset>
-		</copy>
-		<copy toDir="${kit.dir}" preservelastmodified="true">
-			<fileset dir=".">
-				<include name="template-pluginsxml/**" />
 			</fileset>
 		</copy>
 

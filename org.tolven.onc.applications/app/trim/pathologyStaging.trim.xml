@@ -1,0 +1,649 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<trim xmlns="urn:tolven-org:trim:4.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="urn:tolven-org:trim:4.0	http://tolven.org/xsd/trim4">
+	<extends>patientAct</extends>
+	<name>staging</name>
+	<description>Pathology Staging</description>
+	<author>Tolven</author>
+	<page>pathologyStaging.xhtml</page>
+	<drilldown>pathologyStagingDD.xhtml</drilldown>
+	<menu>global:resultMenu</menu>
+	<application name="echr">
+		<instance>echr:patient:result</instance>
+		<wip>echr:activity:all</wip>
+	</application>
+	<application name="ephr">
+		<instance>ephr:patient:result</instance>
+		<wip>ephr:activity:all</wip>
+	</application>
+	<act classCode="OBS" moodCode="EVN">
+		<bind application="echr" phase="create">
+			<placeholder bindAction="create">
+				<path>echr:patient:result</path>
+			</placeholder>
+		</bind>
+		<bind application="ephr" phase="create">
+			<placeholder bindAction="create">
+				<path>ephr:patient:result</path>
+			</placeholder>
+		</bind>
+		<code>
+			<CD>
+				<code>C0017594</code>
+				<codeSystemName>UMLS</codeSystemName>
+				<codeSystemVersion>2007AA</codeSystemVersion>
+			</CD>
+		</code>
+		<title>
+			<ST>Pathology Staging</ST>
+		</title>
+		<effectiveTime>
+			<label>Time of observation</label>
+			<new datatype="TS" function="now" />
+		</effectiveTime>
+		<participation name="clinician" typeCode="ATND">
+			<role classCode="ASSIGNED">
+				<bind application="echr" phase="request">
+					<list cardinality="multiple">
+						<path>echr:admin:staff:all</path>
+					</list>
+				</bind>
+				<bind application="ephr" phase="request">
+					<list cardinality="multiple">
+						<path>ephr:admin:staff:all</path>
+					</list>
+				</bind>
+				<id/>
+				<player classCode="PSN" determinerCode="INSTANCE">
+					<name>
+						<label/>
+						<EN>
+							<label/>
+							<use>L</use>
+							<part>
+								<label>Other Physician Name</label>
+								<ST/>
+							</part>
+						</EN>
+					</name>
+				</player>				
+			</role>
+		</participation>		
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_StagingType">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Left Staging Type</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Staging Type</label>
+						<valueSet>stagingType</valueSet>
+					</value>					
+				</observation>
+			</act>
+		</relationship>		
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_y_NeoadjuvantTherapy">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Neoadjuvant therapy</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Neoadjuvant therapy</label>
+						<valueSet>neoadjuvantTherapy</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_y_Tumor">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Tumor</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Left Tumor</label>
+						<valueSet>tumor</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_y_Node">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Node</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Left Node</label>
+						<valueSet>node</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_y_Metastatis">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Metastasis</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Metastasis</label>
+						<valueSet>metastasis</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>				
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_y_CalculatedStaging">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Calculated staging</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Calculated staging</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>								
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_y_ClinicalStaging">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Clinical Staging</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Clinical Staging</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>				
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_yTNM_NeoadjuvantTherapy">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Neoadjuvant therapy</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Neoadjuvant therapy</label>
+						<valueSet>neoadjuvantTherapy</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_yTNM_Tumor">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Tumor</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Left Tumor</label>
+						<valueSet>tumor</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_yTNM_Node">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Node</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Left Node</label>
+						<valueSet>node</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_yTNM_Metastatis">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Metastasis</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Right Metastasis</label>
+						<valueSet>metastasis</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>				
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_yTNM_CalculatedStaging">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Calculated staging</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Calculated staging</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>								
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="left_yTNM_ClinicalStaging">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Clinical Staging</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Clinical Staging</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>				
+
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_StagingType">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Right Staging Type</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Staging Type</label>
+						<valueSet>stagingType</valueSet>
+					</value>					
+				</observation>
+			</act>
+		</relationship>	
+
+
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_y_NeoadjuvantTherapy">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Neoadjuvant therapy</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Neoadjuvant therapy</label>
+						<valueSet>neoadjuvantTherapy</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_y_Tumor">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Tumor</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Left Tumor</label>
+						<valueSet>tumor</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_y_Node">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Node</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Left Node</label>
+						<valueSet>node</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_y_Metastatis">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Tumor</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Right Metastasis</label>
+						<valueSet>metastasis</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>				
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_y_CalculatedStaging">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Calculated staging</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Calculated staging</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>								
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_y_ClinicalStaging">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Clinical Staging</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Clinical Staging</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>				
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_yTNM_NeoadjuvantTherapy">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Neoadjuvant therapy</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Neoadjuvant therapy</label>
+						<valueSet>neoadjuvantTherapy</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_yTNM_Tumor">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Tumor</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Left Tumor</label>
+						<valueSet>tumor</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_yTNM_Node">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Node</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Left Node</label>
+						<valueSet>node</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_yTNM_Metastatis">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Metastasis</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Right Metastasis</label>
+						<valueSet>metastasis</valueSet>
+					</value>
+				</observation>
+			</act>
+		</relationship>				
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_yTNM_CalculatedStaging">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Calculated staging</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Calculated staging</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>								
+		<relationship enabled="false" typeCode="PERT" direction="OUT" name="right_yTNM_ClinicalStaging">
+			<act moodCode="EVN" classCode="OBS">
+				<title>
+					<ST>Clinical Staging</ST>
+				</title>
+				<observation>
+					<value>
+						<label>Clinical Staging</label>
+						<ST></ST>
+					</value>
+				</observation>
+			</act>
+		</relationship>
+						
+	</act>
+	<valueSet name="laterality">
+		<CE>
+			<displayName>Left</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Right</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="stagingType">
+		<CE>
+			<displayName>y</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>TNM</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>yTNM</displayName>
+			<code>C0183106</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="metastasis">
+		<CE>
+			<displayName>M0</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>M1</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>MX</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="neoadjuvantTherapy">
+		<CE>
+			<displayName>Hormone</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Chemotherapy</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Radiation</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="tumor">
+		<CE>
+			<displayName>T0</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tis</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T1mic</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T1a</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T1b</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T1c</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T2</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T3</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T4a</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T4b</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T4c</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>T4d</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>Tx</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<valueSet name="node">
+		<CE>
+			<displayName>N0</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N0i+</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N0i-</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N1mic</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N1a</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N1b</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N2a</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N2b</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N3a</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N3b</displayName>
+			<code>C0183108</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>N3c</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+		<CE>
+			<displayName>NX</displayName>
+			<code>C0183107</code>
+			<codeSystem>2.16.840.1.113883.6.56</codeSystem>
+			<codeSystemVersion>2007AA</codeSystemVersion>
+		</CE>
+	</valueSet>
+	<field name="leftLaterality">
+		<value xsi:type="xs:boolean">false</value>
+	</field>
+	<field name="rightLaterality">
+		<value xsi:type="xs:boolean">false</value>
+	</field>	
+</trim>

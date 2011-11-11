@@ -22,7 +22,6 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.ejb.EJBContext;
 import javax.ejb.Local;
-import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -44,6 +43,7 @@ import org.tolven.logging.TolvenLogger;
 import org.tolven.report.ReportLocal;
 import org.tolven.report.TolvenReportDataSource;
 import org.tolven.report.entity.TolvenReport;
+import org.tolven.session.TolvenSessionWrapperFactory;
 
 /**
  * 
@@ -108,13 +108,15 @@ public class ReportBean implements ReportLocal {
             if (!JRXML.equals(reportType)) {
                 throw new RuntimeException("Only Jasper jrxml report types are supported");
             }
-            if (getEjbContext().getCallerPrincipal() == null) {
+            String principal = (String)TolvenSessionWrapperFactory.getInstance().getPrincipal();
+            if (principal == null) {
                 /*
                  * This can be removed once roles are operating
                  */
                 throw new RuntimeException("A null principal cannot store or modify JRXML reports");
             }
-            String principalName = getEjbContext().getCallerPrincipal().getName();
+            
+          
             ByteArrayInputStream bis = new ByteArrayInputStream(reportAsString.getBytes());
             JasperReport report = JasperCompileManager.compileReport(bis);
             /*
@@ -132,12 +134,12 @@ public class ReportBean implements ReportLocal {
                 tolvenReport.setName(internalReportName);
                 tolvenReport.setReport(validatedReportAsString);
                 tolvenReport.setType(JRXML);
-                tolvenReport.setUserId(principalName);
+                tolvenReport.setUserId(principal);
                 tolvenReport.setDate(uploadTime);
                 getEm().persist(tolvenReport);
             } else {
                 tolvenReport.setReport(validatedReportAsString);
-                tolvenReport.setUserId(principalName);
+                tolvenReport.setUserId(principal);
                 tolvenReport.setDate(uploadTime);
                 getEm().merge(tolvenReport);
             }

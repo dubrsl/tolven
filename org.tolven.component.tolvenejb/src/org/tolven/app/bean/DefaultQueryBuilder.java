@@ -90,11 +90,8 @@ public @Stateless class DefaultQueryBuilder implements QueryBuilderLocal {
 				if ( !(value instanceof String) ) throw new IllegalArgumentException( "Filter value of " + col.getHeading() + " must be a string");
 				if (((String)value).length() > 0) {
 					filterNo += 2;
-					sbWhere.append( " AND lower(md." + colName + ") BETWEEN :fltr" + filterNo + " AND :fltr" + (filterNo+1)  );
-					//params.put( "fltr"+filterNo, ((String)value).trim().toLowerCase() );
-					//CCHIT merge					
+					sbWhere.append( " AND lower(md." + colName + ") LIKE :fltr" + filterNo   );
 					params.put( "fltr"+filterNo, "%"+((String)value).trim().toLowerCase()+"%" );
-					params.put( "fltr"+(filterNo+1),  ((String)value).trim().toLowerCase() + "zzzzzzzzzzzzzzzzzzzzzzzzzzzz" );
 				}
 			}
 		}

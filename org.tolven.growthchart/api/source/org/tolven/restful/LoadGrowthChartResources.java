@@ -21,6 +21,7 @@ package org.tolven.restful;
 
 import javax.annotation.ManagedBean;
 import javax.ejb.EJB;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -44,6 +45,19 @@ public class LoadGrowthChartResources {
 
     @EJB
     private GrowthChartLocal growthChartLocal;
+    
+    protected GrowthChartLocal getGrowthChartBean() {
+        if (growthChartLocal == null) {
+            String jndiName = "java:app/tolvenEJB/GrowthChartBean!org.tolven.growthchart.GrowthChartLocal";
+            try {
+                InitialContext ctx = new InitialContext();
+                growthChartLocal = (GrowthChartLocal) ctx.lookup(jndiName);
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not lookup " + jndiName);
+            }
+        }
+        return growthChartLocal;
+    }
 
     @Path("createGrowthChart")
     @POST
@@ -55,7 +69,7 @@ public class LoadGrowthChartResources {
      */
     public Response createGrowthChart(String xml) {
     	try {
-	    	growthChartLocal.loadGrowthChart(xml);
+    		getGrowthChartBean().loadGrowthChart(xml);
 	    	return Response.ok().build();
 	    } catch (Exception ex) {
 	        return Response.status(500).type(MediaType.TEXT_PLAIN).entity(ExceptionFormatter.toSimpleString(ex, "\\n")).build();
